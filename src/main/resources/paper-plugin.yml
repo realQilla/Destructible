@@ -1,0 +1,4 @@
+name: Destructible
+version: '1.0.0'
+main: net.qilla.destructible.Destructible
+api-version: '1.21'
