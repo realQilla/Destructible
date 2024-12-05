@@ -1,5 +1,6 @@
-package net.qilla.destructible.mining.customblock;
+package net.qilla.destructible.mining.block;
 
+import net.qilla.destructible.mining.item.ItemDrop;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.inventory.ItemStack;

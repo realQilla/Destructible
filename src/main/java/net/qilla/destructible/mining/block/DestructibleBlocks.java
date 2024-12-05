@@ -1,9 +1,9 @@
-package net.qilla.destructible.mining.customblock;
+package net.qilla.destructible.mining.block;
 
 
+import net.qilla.destructible.mining.item.ItemDrops;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
@@ -38,6 +38,12 @@ public class DestructibleBlocks {
             .durability(80)
             .sound(Sound.BLOCK_STONE_BREAK)
             .blockParticle(Material.COBBLESTONE)));
+
+    public static final DestructibleBlock DIAMOND_ORE = register(Material.DIAMOND_ORE, new DestructibleBlock(DestructibleBlock.Properties.of()
+            .itemDrops(ItemDrops.DIAMOND_ORE)
+            .durability(30)
+            .sound(Sound.BLOCK_STONE_BREAK)
+            .blockParticle(Material.DIAMOND_ORE)));
 
     private static DestructibleBlock register(final Material id, final DestructibleBlock block) {
         return BLOCK_REGISTRY.put(id, block);

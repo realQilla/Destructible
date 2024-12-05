@@ -1,4 +1,4 @@
-package net.qilla.destructible.player;
+package net.qilla.destructible.mining.player;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;

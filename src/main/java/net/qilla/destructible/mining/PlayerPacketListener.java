@@ -9,8 +9,8 @@ import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.player.data.InstancePlayerData;
-import net.qilla.destructible.player.data.PlayerData;
+import net.qilla.destructible.mining.player.data.InstancePlayerData;
+import net.qilla.destructible.mining.player.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -36,12 +36,7 @@ public final class PlayerPacketListener {
                         case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> {
                                 miningData.init(playerData, actionPacket);
                         }
-                        case ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK,
-                             ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS,
-                             ServerboundPlayerActionPacket.Action.DROP_ITEM,
-                             ServerboundPlayerActionPacket.Action.SWAP_ITEM_WITH_OFFHAND,
-                             ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK,
-                             ServerboundPlayerActionPacket.Action.RELEASE_USE_ITEM -> {
+                        default-> {
                             miningData.stop(playerData);
                         }
                     }

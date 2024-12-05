@@ -1,23 +1,30 @@
 package net.qilla.destructible.mining;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
-import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
-import net.minecraft.network.protocol.game.ServerboundSwingPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.qilla.destructible.mining.customblock.DestructibleBlock;
-import net.qilla.destructible.player.data.MiningData;
-import net.qilla.destructible.player.data.PlayerData;
-import net.qilla.destructible.util.GivePlayer;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.Vec3;
+import net.qilla.destructible.Destructible;
+import net.qilla.destructible.mining.block.DestructibleBlock;
+import net.qilla.destructible.mining.item.ItemDrop;
+import net.qilla.destructible.mining.player.data.MiningData;
+import net.qilla.destructible.mining.player.data.PlayerData;
+import net.qilla.destructible.util.ItemManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public final class DestructibleMining {
+
+    private final Destructible plugin = Destructible.getInstance();
 
     public void init(final PlayerData playerData, final ServerboundPlayerActionPacket actionPacket) {
         final MiningData miningData = playerData.getMiningData();
@@ -36,19 +43,45 @@ public final class DestructibleMining {
         if(miningData == null || miningData.getDestructibleBlock() == null) return;
         if(miningData.getDestructibleBlock().getDurability() < 0) return;
 
-        final ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         final Location location = miningData.getLocation();
         final DestructibleBlock destructibleBlock = miningData.getDestructibleBlock();
 
+        final BlockPos blockPos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+        final ServerLevel level = serverPlayer.serverLevel();
+
         if(miningData.damage(1)) {
-            ((ServerLevel) nmsPlayer.level()).getChunkSource().broadcastAndSend(nmsPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 10));
+            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(blockPos.hashCode(), blockPos, 10));
             location.getWorld().playSound(location, destructibleBlock.getSound(), 1, 1);
             location.getWorld().spawnParticle(Particle.BLOCK, location.clone().add(0.5, 0.5, 0.5), 50, 0.25, 0.25, 0.25, 0, destructibleBlock.getBlockParticle().createBlockData());
             location.getWorld().getBlockAt(location).setType(Material.COBBLESTONE);
-            GivePlayer.item(player, destructibleBlock.getItemDrops());
+
+            ItemStack[] items = ItemManager.pullItem(destructibleBlock.getItemDrops());
+
+            Thread thread = new Thread(() -> {
+                for(ItemStack item : items) {
+                    final ItemEntity itemEntity = new ItemEntity(level, blockPos.getCenter().x, blockPos.getCenter().y + 0.33, blockPos.getCenter().z, ((CraftItemStack) item).handle);
+
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundAddEntityPacket(itemEntity.getId(), itemEntity.getUUID(), itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 0, 0, itemEntity.getType(), 0, new Vec3(0, 0, 0), 0));
+                        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityDataPacket(itemEntity.getId(), itemEntity.getEntityData().packAll()));
+                        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundTakeItemEntityPacket(itemEntity.getId(), serverPlayer.getId(), item.getAmount()));
+                        ItemManager.give(player, item);
+                    });
+                    try {
+                        Thread.sleep(250);
+                    } catch(InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                Thread.currentThread().interrupt();
+            });
+
+            thread.start();
+
             miningData.updateBlock();
         } else {
-            ((ServerLevel) nmsPlayer.level()).getChunkSource().broadcastAndSend(nmsPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), miningData.getIncrementProgress()));
+            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(blockPos.hashCode(), blockPos, miningData.getIncrementProgress()));
         }
     }
 
@@ -59,11 +92,11 @@ public final class DestructibleMining {
 
         final Player player = playerData.getPlayer();
         final ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+        final ServerLevel level = (ServerLevel) nmsPlayer.level();
         final Location location = miningData.getLocation();
+        final BlockPos blockPos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
-        final ServerGamePacketListenerImpl connection = nmsPlayer.connection;
-        connection.send(new ClientboundBlockDestructionPacket(location.hashCode(), new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 10));
-        ((ServerLevel) nmsPlayer.level()).getChunkSource().broadcastAndSend(nmsPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ()), 10));
+        level.getChunkSource().broadcastAndSend(nmsPlayer, new ClientboundBlockDestructionPacket(blockPos.hashCode(), blockPos, 10));
 
 
         playerData.setMiningData(null);

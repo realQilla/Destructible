@@ -1,19 +1,26 @@
 package net.qilla.destructible;
 
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.command.TestCommand;
+import net.qilla.destructible.command.ToolCommand;
 import net.qilla.destructible.mining.DestructibleMining;
 import net.qilla.destructible.mining.PlayerPacketListener;
-import net.qilla.destructible.player.PlayerSetup;
-import net.qilla.destructible.player.data.InstancePlayerData;
+import net.qilla.destructible.mining.player.PlayerSetup;
+import net.qilla.destructible.mining.player.data.InstancePlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Destructible extends JavaPlugin {
 
     private static Destructible instance = null;
 
-    private DestructibleMining destructibleMining = null;
+    private final LifecycleEventManager<Plugin> lifecycleMan = this.getLifecycleManager();
 
+    private DestructibleMining destructibleMining = null;
     private InstancePlayerData instancePlayerData = null;
     private PlayerPacketListener playerPacketListener = null;
     private PlayerSetup playerSetup = null;
@@ -37,7 +44,11 @@ public final class Destructible extends JavaPlugin {
     }
 
     private void initCommand() {
-
+        this.lifecycleMan.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            final Commands commands = event.registrar();
+            new ToolCommand(this, commands).register();
+            new TestCommand(this, commands).register();
+        });
     }
 
     @Override

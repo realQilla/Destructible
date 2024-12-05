@@ -1,4 +1,4 @@
-package net.qilla.destructible.player.data;
+package net.qilla.destructible.mining.player.data;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

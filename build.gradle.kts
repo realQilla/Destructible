@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "1.7.5"
@@ -30,7 +32,7 @@ tasks {
         options.release.set(21)
     }
 
-    withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    withType<ShadowJar> {
         configurations = listOf(project.configurations.getByName("shade"))
         destinationDirectory.set(file("C:\\Users\\Richard\\Development\\Servers\\1.21.3\\plugins"))
     }

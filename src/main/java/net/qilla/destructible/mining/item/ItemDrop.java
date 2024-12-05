@@ -1,23 +1,26 @@
-package net.qilla.destructible.mining.customblock;
+package net.qilla.destructible.mining.item;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.function.Consumer;
 
 public final class ItemDrop {
 
-    private final Material material;
+    private final ItemStack itemStack;
     private final int minAmount;
     private final int maxAmount;
     private final float dropChance;
 
     public ItemDrop(final Properties properties) {
-        this.material = properties.material;
+        this.itemStack = properties.itemStack;
         this.minAmount = properties.minAmount;
         this.maxAmount = properties.maxAmount;
         this.dropChance = properties.dropChance;
     }
 
-    public Material getMaterial() {
-        return this.material;
+    public ItemStack getItemStack() {
+        return this.itemStack;
     }
 
     public int getMinAmount() {
@@ -33,7 +36,7 @@ public final class ItemDrop {
     }
 
     public static class Properties {
-        Material material;
+        ItemStack itemStack;
         int minAmount;
         int maxAmount;
         float dropChance;
@@ -42,8 +45,15 @@ public final class ItemDrop {
             return new ItemDrop.Properties();
         }
 
-        public ItemDrop.Properties setMaterial(final Material material) {
-            this.material = material;
+        public ItemDrop.Properties setItemStack(final ItemStack itemStack) {
+            this.itemStack = itemStack;
+            return this;
+        }
+
+        public ItemDrop.Properties setItemStack(final Material material, final Consumer<ItemStack> consumer) {
+            ItemStack itemStack = new ItemStack(material);
+            consumer.accept(itemStack);
+            this.itemStack = itemStack;
             return this;
         }
 
@@ -61,7 +71,7 @@ public final class ItemDrop {
         }
 
         private Properties() {
-            this.material = Material.STONE;
+            this.itemStack = new ItemStack(Material.STONE);
             this.minAmount = 1;
             this.maxAmount = 1;
             this.dropChance = 1.0f;

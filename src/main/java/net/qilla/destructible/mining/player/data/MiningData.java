@@ -1,7 +1,7 @@
-package net.qilla.destructible.player.data;
+package net.qilla.destructible.mining.player.data;
 
-import net.qilla.destructible.mining.customblock.DestructibleBlock;
-import net.qilla.destructible.mining.customblock.DestructibleBlocks;
+import net.qilla.destructible.mining.block.DestructibleBlock;
+import net.qilla.destructible.mining.block.DestructibleBlocks;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
