@@ -19,14 +19,14 @@ public class PlayerSetup implements Listener {
 
     @EventHandler
     private void playerJoin(final PlayerJoinEvent event) {
-        final Player player = event.getPlayer();
+        Player player = event.getPlayer();
 
         initPlayer(player);
     }
 
     @EventHandler
     private void playerLeave(final PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
+        Player player = event.getPlayer();
 
         removePlayer(player);
     }

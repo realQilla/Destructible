@@ -12,6 +12,7 @@ import net.qilla.destructible.Destructible;
 import net.qilla.destructible.mining.player.data.InstancePlayerData;
 import net.qilla.destructible.mining.player.data.PlayerData;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -29,24 +30,30 @@ public final class PlayerPacketListener {
         ChannelDuplexHandler handler = new ChannelDuplexHandler() {
             @Override
             public void channelRead(ChannelHandlerContext context, Object packet) throws Exception {
-                if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
-                    final PlayerData playerData = instancePlayerData.getPlayerData(player);
+                if(player.getGameMode() == GameMode.SURVIVAL) {
+                    if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
+                        final PlayerData playerData = instancePlayerData.getPlayerData(player);
 
-                    switch(actionPacket.getAction()) {
-                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> {
+                        switch(actionPacket.getAction()) {
+                            case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> {
                                 miningData.init(playerData, actionPacket);
+                            }
+                            case ServerboundPlayerActionPacket.Action.DROP_ITEM,
+                                 ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS-> {
+                                //Temp
+                            }
+                            default -> {
+                                miningData.stop(playerData);
+                            }
                         }
-                        default-> {
-                            miningData.stop(playerData);
-                        }
-                    }
-                } else if(packet instanceof ServerboundSwingPacket swingPacket) {
-                    if(!swingPacket.getHand().equals(InteractionHand.MAIN_HAND)) return;
-                    final PlayerData playerData = instancePlayerData.getPlayerData(player);
+                    } else if(packet instanceof ServerboundSwingPacket swingPacket) {
+                        if(!swingPacket.getHand().equals(InteractionHand.MAIN_HAND)) return;
+                        final PlayerData playerData = instancePlayerData.getPlayerData(player);
 
-                    Bukkit.getScheduler().runTask(Destructible.getInstance(), () -> {
-                        miningData.tick(playerData, swingPacket);
-                    });
+                        Bukkit.getScheduler().runTask(Destructible.getInstance(), () -> {
+                            miningData.tick(playerData, swingPacket);
+                        });
+                    }
                 }
                 super.channelRead(context, packet);
             }

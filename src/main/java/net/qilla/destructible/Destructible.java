@@ -19,14 +19,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Destructible extends JavaPlugin {
 
     private final LifecycleEventManager<Plugin> lifecycleMan = this.getLifecycleManager();
-    private DestructibleMining destructibleMining = null;
-    private InstancePlayerData instancePlayerData = null;
-    private PlayerPacketListener playerPacketListener = null;
-    private PlayerSetup playerSetup = null;
+    private DestructibleMining destructibleMining;
+    private InstancePlayerData instancePlayerData;
+    private PlayerPacketListener playerPacketListener;
+    private PlayerSetup playerSetup;
 
     static {
-        Class<?> toolsClass = Tools.class;
-        Class<?> destructibleBlocksClass = DestructibleBlocks.class;
+        new Tools();
+        new DestructibleBlocks();
     }
 
     @Override
@@ -48,7 +48,7 @@ public final class Destructible extends JavaPlugin {
 
     private void initCommand() {
         this.lifecycleMan.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
-            final Commands commands = event.registrar();
+            Commands commands = event.registrar();
             new ToolCommand(this, commands).register();
             new TestCommand(this, commands).register();
         });
