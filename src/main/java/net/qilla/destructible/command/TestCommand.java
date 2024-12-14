@@ -5,8 +5,6 @@ import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.mining.item.ItemRegistry;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -35,8 +33,6 @@ public class TestCommand {
 
     private int test(CommandContext<CommandSourceStack> context) {
         if(!(context.getSource().getSender() instanceof Player player)) return 0;
-        final Location loc = player.getLocation();
-        player.sendMessage(ItemRegistry.getInstance().getTools().size() + "");
 
         player.sendMessage("Command Success!");
         return Command.SINGLE_SUCCESS;

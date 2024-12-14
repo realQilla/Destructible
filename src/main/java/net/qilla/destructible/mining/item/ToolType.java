@@ -1,6 +1,7 @@
 package net.qilla.destructible.mining.item;
 
 public enum ToolType {
+    ANY,
     PICKAXE,
     DRILL,
     AXE,

@@ -1,7 +1,12 @@
 package net.qilla.destructible.mining.item;
 
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+
 public abstract class Tool implements Breakable {
-    private final String name;
+    private final String id;
+    private final Component displayName;
+    private final Material material;
     private final Rarity rarity;
     private final int stackSize;
     private final int durability;
@@ -9,8 +14,10 @@ public abstract class Tool implements Breakable {
     private final int strength;
     private final int efficiency;
 
-    public Tool(String name, Rarity rarity, int stackSize, ToolType toolType, int durability, int strength, int efficiency) {
-        this.name = name;
+    public Tool(String id, Component displayName, Material material, Rarity rarity, int stackSize, ToolType toolType, int durability, int strength, int efficiency) {
+        this.id = id;
+        this.displayName = displayName;
+        this.material = material;
         this.rarity = rarity;
         this.stackSize = Math.max(1, Math.min(99, stackSize));
         this.toolType = toolType;
@@ -20,8 +27,18 @@ public abstract class Tool implements Breakable {
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return this.displayName;
+    }
+
+    @Override
+    public Material getMaterial() {
+        return this.material;
     }
 
     @Override

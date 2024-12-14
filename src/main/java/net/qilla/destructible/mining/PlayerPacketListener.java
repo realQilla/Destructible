@@ -41,6 +41,7 @@ public final class PlayerPacketListener {
                             case ServerboundPlayerActionPacket.Action.DROP_ITEM,
                                  ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS-> {
                                 //Temp
+                                miningData.stop(playerData);
                             }
                             default -> {
                                 miningData.stop(playerData);

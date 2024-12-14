@@ -1,7 +1,14 @@
 package net.qilla.destructible.mining.item;
 
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+
 public interface Item {
-    String getName();
+    String getId();
+
+    Component getDisplayName();
+
+    Material getMaterial();
 
     Rarity getRarity();
 
