@@ -1,5 +1,6 @@
 package net.qilla.destructible.mining.player.data;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.mining.block.DestructibleBlock;
 import net.qilla.destructible.mining.block.DestructibleBlocks;
@@ -8,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 public final class MiningData {
     private final Location location;
-    private final Vec3 vec3;
+    private final Direction direction;
     private DestructibleBlock destructibleBlock;
     private float durabilityTotal;
     private float durabilityRemaining;
     private int incrementProgress = 0;
 
-    public MiningData(@NotNull final Location location, @NotNull final Vec3 vec3) {
+    public MiningData(@NotNull final Location location, @NotNull final Direction dir) {
         this.location = location;
-        this.vec3 = vec3;
+        this.direction = dir;
         this.destructibleBlock = DestructibleBlocks.getBlock(this.location.getWorld().getBlockAt(this.location).getType());
         if(destructibleBlock == null) destructibleBlock = DestructibleBlocks.NONE;
 
@@ -40,8 +41,8 @@ public final class MiningData {
         return this.location;
     }
 
-    public Vec3 getVec3() {
-        return this.vec3;
+    public Direction getDirection() {
+        return this.direction;
     }
 
     public DestructibleBlock getDestructibleBlock() {
