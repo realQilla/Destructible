@@ -35,7 +35,7 @@ public class DestructibleBlocks {
 
     public static final DestructibleBlock COBBLESTONE = register(Material.COBBLESTONE, new DestructibleBlock(DestructibleBlock.Properties.of()
             .itemDrops(ItemDrops.COBBLESTONE)
-            .durability(80)
+            .durability(15)
             .sound(Sound.BLOCK_STONE_BREAK)
             .blockParticle(Material.COBBLESTONE)));
 

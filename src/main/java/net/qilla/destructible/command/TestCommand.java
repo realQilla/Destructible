@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.mining.item.ItemRegistry;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -49,16 +50,8 @@ public class TestCommand {
     private int test(CommandContext<CommandSourceStack> context) {
         if(!(context.getSource().getSender() instanceof Player player)) return 0;
         final Location loc = player.getLocation();
-        final ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        final ServerLevel level = (ServerLevel) serverPlayer.level();
+        player.sendMessage(ItemRegistry.getInstance().getTools().size() + "");
 
-        final BlockPos blockPos = new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        final ItemStack itemStack = new ItemStack(Items.COBBLESTONE);
-        final ItemEntity itemEntity = new ItemEntity(level, blockPos.getX(), blockPos.getY(), blockPos.getZ(), itemStack.copy());
-
-        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundAddEntityPacket(itemEntity.getId(), itemEntity.getUUID(), itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 0, 0,  itemEntity.getType(), 0, new Vec3(0,0,0), 0));
-        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityDataPacket(itemEntity.getId(), itemEntity.getEntityData().packAll()));
-        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundTakeItemEntityPacket(itemEntity.getId(), serverPlayer.getId(), 1));
         player.sendMessage("Command Success!");
         return Command.SINGLE_SUCCESS;
     }
