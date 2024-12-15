@@ -69,7 +69,7 @@ public final class DestructibleMining {
             if(Arrays.stream(destructibleBlock.getProperTools()).noneMatch(properTools -> properTools.equals(ToolType.ANY))) return;
         }
 
-        if(miningData.damage(tool == null ? 1 : 1 + (tool.getEfficiency() * 0.25f))) {
+        if(miningData.damage(tool == null ? 1 : tool.getEfficiency())) {
             Vec3 midFace = BlockUtil.getMiddleFace(miningData.getDirection());
 
             level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), BlockUtil.locToBlockPos(location), 10));

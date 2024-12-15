@@ -12,7 +12,7 @@ public abstract class Tool implements Breakable {
     private final int durability;
     private final ToolType toolType;
     private final int strength;
-    private final int efficiency;
+    private final float efficiency;
 
     public Tool(String id, Component displayName, Material material, Rarity rarity, int stackSize, ToolType toolType, int durability, int strength, int efficiency) {
         this.id = id;
@@ -64,7 +64,7 @@ public abstract class Tool implements Breakable {
         return this.strength;
     }
 
-    public int getEfficiency() {
+    public float getEfficiency() {
         return this.efficiency;
     }
 }

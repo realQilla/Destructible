@@ -17,9 +17,9 @@ public class DestructibleBlocks {
             .noTools());
 
     public static final DestructibleBlock STONE = register(Material.STONE, new DestructibleBlock(DestructibleBlock.Properties.of()
-            .strengthRequirement(3)
-            .instaBreak()
-            .properTools(new ToolType[]{ToolType.PICKAXE})
+            .strengthRequirement(0)
+            .durability(20)
+            .properTools(new ToolType[]{ToolType.ANY})
             .itemDrops(ItemDrops.STONE)
             .sound(Sound.BLOCK_STONE_BREAK)
             .particle(Material.STONE)));
@@ -42,7 +42,7 @@ public class DestructibleBlocks {
 
     public static final DestructibleBlock COBBLESTONE = register(Material.COBBLESTONE, new DestructibleBlock(DestructibleBlock.Properties.of()
             .strengthRequirement(1)
-            .durability(15)
+            .durability(30)
             .properTools(new ToolType[]{ToolType.PICKAXE})
             .itemDrops(ItemDrops.COBBLESTONE)
             .sound(Sound.BLOCK_STONE_BREAK)
