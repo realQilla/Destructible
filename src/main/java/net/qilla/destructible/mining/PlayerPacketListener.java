@@ -40,7 +40,7 @@ public final class PlayerPacketListener {
                         if(!swingPacket.getHand().equals(InteractionHand.MAIN_HAND)) return;
                         PlayerData playerData = Registries.PLAYER_DATA.get(player.getUniqueId());
 
-                            DestructibleMining.tickBlock(playerData);
+                        DestructibleMining.tickBlock(playerData);
                     }
                 }
                 super.channelRead(context, packet);

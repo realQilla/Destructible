@@ -187,7 +187,7 @@ public abstract class DTool implements Breakable {
             this.dToolType = DToolType.ANY;
             this.rarity = Rarity.NONE;
             this.stackSize = 1;
-            this.durability = -1;
+            this.durability = 1;
             this.strength = 0;
             this.efficiency = 1;
         }

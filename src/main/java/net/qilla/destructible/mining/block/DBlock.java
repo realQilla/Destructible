@@ -79,7 +79,7 @@ public class DBlock {
          * @return
          */
         public DBlock.Properties durability(int durability) {
-            this.durability = Math.min(1, durability);
+            this.durability = Math.max(1, durability);
             return this;
         }
 
@@ -88,7 +88,8 @@ public class DBlock {
          * @return
          */
         public DBlock.Properties instaBreak() {
-            return this.durability(0);
+            this.durability = 0;
+            return this;
         }
 
         /**
@@ -96,7 +97,8 @@ public class DBlock {
          * @return
          */
         public DBlock.Properties neverBreak() {
-            return this.durability(-1);
+            this.durability = -1;
+            return this;
         }
 
         /**
@@ -165,5 +167,4 @@ public class DBlock {
             this.sound = Sound.BLOCK_STONE_BREAK;
             this.particle = Material.BEDROCK;
         }
-    }
-}
+    }}

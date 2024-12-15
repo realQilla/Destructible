@@ -49,8 +49,7 @@ public final class DestructibleMining {
     public static void tickBlock(@NotNull final PlayerData playerData) {
         MineData mineData = playerData.getMiningData();
 
-        if(mineData == null || mineData.getDBlock() == DBlocks.NONE) return;
-        if(mineData.getDBlock().getDurability() < 0) return;
+        if(mineData == null || mineData.getDBlock().getDurability() < 0) return;
 
         Bukkit.getScheduler().runTask(PLUGIN, () -> {
             Player player = playerData.getPlayer();

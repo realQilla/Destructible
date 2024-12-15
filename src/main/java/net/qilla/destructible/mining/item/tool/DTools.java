@@ -63,6 +63,17 @@ public class DTools {
             .efficiency(1.5f)
     ));
 
+    public static final DTool IRON_AXE = register(new PickaxeDTool(DTool.Properties.of("iron_axe")
+            .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.RARE.getColor() + "><!italic>Iron Axe"))
+            .material(Material.IRON_AXE)
+            .dToolType(DToolType.AXE)
+            .rarity(Rarity.RARE)
+            .stackSize(1)
+            .noDurability()
+            .strength(3)
+            .efficiency(4.0f)
+    ));
+
     private static DTool register(DTool dTool) {
         return Registries.TOOLS.register(dTool.getId(), dTool);
     }

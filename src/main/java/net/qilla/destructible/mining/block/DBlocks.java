@@ -50,6 +50,15 @@ public class DBlocks {
             .particle(Material.GRAVEL))
     );
 
+    public static final DBlock HAY_BLOCK = register(Material.HAY_BLOCK, new DBlock(DBlock.Properties.of()
+            .strengthRequirement(0)
+            .neverBreak()
+            .properTools(new DToolType[]{DToolType.ANY})
+            .noDrops()
+            .sound(Sound.BLOCK_GRASS_BREAK)
+            .particle(Material.HAY_BLOCK))
+    );
+
     public static final DBlock COBBLESTONE = register(Material.COBBLESTONE, new DBlock(DBlock.Properties.of()
             .strengthRequirement(1)
             .durability(30)
