@@ -36,10 +36,10 @@ public final class DDrop {
     }
 
     public static class Properties {
-        ItemStack itemStack;
-        int minAmount;
-        int maxAmount;
-        float dropChance;
+        private ItemStack itemStack;
+        private int minAmount;
+        private int maxAmount;
+        private float dropChance;
 
         public static DDrop.Properties of() {
             return new DDrop.Properties();
@@ -64,6 +64,12 @@ public final class DDrop {
             return this;
         }
 
+        public DDrop.Properties amount(final int amount) {
+            this.minAmount = amount;
+            this.maxAmount = amount;
+            return this;
+        }
+
         public DDrop.Properties dropChance(final float chance) {
             if(chance > 1.0f || chance < 0.0f) return this;
             this.dropChance = chance;
@@ -71,7 +77,7 @@ public final class DDrop {
         }
 
         private Properties() {
-            this.itemStack = new ItemStack(Material.STONE);
+            this.itemStack = new ItemStack(Material.AIR);
             this.minAmount = 1;
             this.maxAmount = 1;
             this.dropChance = 1.0f;

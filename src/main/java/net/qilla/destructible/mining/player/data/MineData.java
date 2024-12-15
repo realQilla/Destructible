@@ -1,39 +1,51 @@
 package net.qilla.destructible.mining.player.data;
 
 import net.minecraft.core.Direction;
+import net.qilla.destructible.data.DataKey;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTool;
+import net.qilla.destructible.mining.item.tool.DTools;
 import org.bukkit.Location;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public final class MiningData {
+/**
+ * Player data specifically related to the current block being mined.
+ */
+public final class MineData {
     private final Location location;
     private final Direction direction;
+    private final Equipment equipment;
     private DBlock dBlock;
-    private final DTool dTool;
+    private DTool dTool;
     private float durabilityTotal;
     private float durabilityRemaining;
-    private int incrementProgress = 0;
+    private int crackStage = 0;
 
-    public MiningData(@NotNull final Location location, @NotNull final Direction dir, @NotNull DTool dTool) {
+    public MineData(@NotNull final Equipment equipment, @NotNull final Location location, @NotNull final Direction dir) {
         this.location = location;
         this.direction = dir;
-        this.dBlock = Registries.BLOCKS.get(this.location.getWorld().getBlockAt(this.location).getType());
-        if(dBlock == null) dBlock = DBlocks.NONE;
-        this.dTool = dTool;
-
-        this.durabilityTotal = dBlock.getDurability();
-        this.durabilityRemaining = durabilityTotal;
+        this.equipment = equipment;
+        updateBlock();
+        updateTool();
     }
 
+    /**
+     * Damages a block by a specified amount
+     * @param amount
+     * @return Returns true when the block durability threshold has been passed.
+     */
     public boolean damage(float amount) {
-        this.incrementProgress = Math.round(((durabilityTotal - durabilityRemaining) * 9 / durabilityTotal));
+        this.crackStage = Math.round(((durabilityTotal - durabilityRemaining) * 9 / durabilityTotal));
         return (this.durabilityRemaining -= amount) <= 0;
     }
 
+    /**
+     * Updates the currently cached block.
+     */
     public void updateBlock() {
         this.dBlock = Registries.BLOCKS.get(this.location.getWorld().getBlockAt(this.location).getType());
         if(dBlock == null) this.dBlock = DBlocks.NONE;
@@ -41,18 +53,27 @@ public final class MiningData {
         this.durabilityRemaining = durabilityTotal;
     }
 
+    public DTool updateTool() {
+        String toolId = this.equipment
+                .getHeldItem()
+                .getPersistentDataContainer()
+                .get(DataKey.TOOL, PersistentDataType.STRING);
+
+        return this.dTool = toolId == null ? DTools.DEFAULT : Registries.TOOLS.get(toolId);
+    }
+
     @NotNull
     public Location getLocation() {
         return this.location;
     }
 
-    @Nullable
+    @NotNull
     public Direction getDirection() {
         return this.direction;
     }
 
     @Nullable
-    public DBlock getDestructibleBlock() {
+    public DBlock getDBlock() {
         return this.dBlock;
     }
 
@@ -69,7 +90,7 @@ public final class MiningData {
         return this.durabilityRemaining;
     }
 
-    public int getIncrementProgress() {
-        return incrementProgress;
+    public int getCrackStage() {
+        return crackStage;
     }
 }
