@@ -11,7 +11,9 @@ public class DBlocks {
 
     public static final DBlock NONE = new DBlock(DBlock.Properties.of()
             .noDrops()
-            .noTools());
+            .noTools()
+            .neverBreak()
+    );
 
     public static final DBlock STONE = register(Material.STONE, new DBlock(DBlock.Properties.of()
             .strengthRequirement(0)
@@ -24,18 +26,20 @@ public class DBlocks {
     public static final DBlock SAND = register(Material.SAND, new DBlock(DBlock.Properties.of()
             .strengthRequirement(0)
             .instaBreak()
-            .properTools(new DToolType[]{DToolType.ALL})
+            .properTools(new DToolType[]{DToolType.ANY})
             .itemDrops(DDrops.SAND)
             .sound(Sound.BLOCK_SAND_BREAK)
-            .particle(Material.SAND)));
+            .particle(Material.SAND))
+    );
 
     public static final DBlock RED_SAND = register(Material.RED_SAND, new DBlock(DBlock.Properties.of()
             .strengthRequirement(0)
             .instaBreak()
-            .properTools(new DToolType[]{DToolType.ALL})
+            .properTools(new DToolType[]{DToolType.ANY})
             .itemDrops(DDrops.RED_SAND)
             .sound(Sound.BLOCK_SAND_BREAK)
-            .particle(Material.RED_SAND)));
+            .particle(Material.RED_SAND))
+    );
 
     public static final DBlock GRAVEL = register(Material.GRAVEL, new DBlock(DBlock.Properties.of()
             .strengthRequirement(1)
@@ -43,7 +47,8 @@ public class DBlocks {
             .properTools(new DToolType[]{DToolType.PICKAXE})
             .itemDrops(DDrops.GRAVEL)
             .sound(Sound.BLOCK_GRAVEL_BREAK)
-            .particle(Material.GRAVEL)));
+            .particle(Material.GRAVEL))
+    );
 
     public static final DBlock COBBLESTONE = register(Material.COBBLESTONE, new DBlock(DBlock.Properties.of()
             .strengthRequirement(1)
@@ -51,15 +56,17 @@ public class DBlocks {
             .properTools(new DToolType[]{DToolType.PICKAXE})
             .itemDrops(DDrops.COBBLESTONE)
             .sound(Sound.BLOCK_STONE_BREAK)
-            .particle(Material.COBBLESTONE)));
+            .particle(Material.COBBLESTONE))
+    );
 
     public static final DBlock OAK_PLANK = register(Material.OAK_PLANKS, new DBlock(DBlock.Properties.of()
             .strengthRequirement(0)
             .durability(40)
-            .properTools(new DToolType[]{DToolType.ALL})
+            .properTools(new DToolType[]{DToolType.ANY})
             .itemDrops(DDrops.OAK_PLANK)
             .sound(Sound.BLOCK_WOOD_BREAK)
-            .particle(Material.OAK_PLANKS)));
+            .particle(Material.OAK_PLANKS))
+    );
 
     public static final DBlock OAK_LOG = register(Material.OAK_LOG, new DBlock(DBlock.Properties.of()
             .strengthRequirement(1)
@@ -67,7 +74,8 @@ public class DBlocks {
             .properTools(new DToolType[]{DToolType.AXE})
             .itemDrops(DDrops.OAK_LOG)
             .sound(Sound.BLOCK_WOOD_BREAK)
-            .particle(Material.OAK_LOG)));
+            .particle(Material.OAK_LOG))
+    );
 
     public static final DBlock DIAMOND_ORE = register(Material.DIAMOND_ORE, new DBlock(DBlock.Properties.of()
             .strengthRequirement(3)
@@ -75,7 +83,8 @@ public class DBlocks {
             .properTools(new DToolType[]{DToolType.PICKAXE})
             .noDrops()
             .sound(Sound.BLOCK_STONE_BREAK)
-            .particle(Material.DIAMOND_ORE)));
+            .particle(Material.DIAMOND_ORE))
+    );
 
     private static DBlock register(final Material id, final DBlock block) {
         return Registries.BLOCKS.register(id, block);

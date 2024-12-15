@@ -64,7 +64,7 @@ public final class DestructibleMining {
                 DTool dTool = mineData.updateTool();
 
                 if(dBlock.getStrengthRequirement() > dTool.getStrength()) return;
-                if(Arrays.stream(dBlock.getProperTools()).noneMatch(properTool -> properTool.equals(dTool.getToolType()) || properTool.equals(DToolType.ALL)))
+                if(Arrays.stream(dBlock.getProperTools()).noneMatch(properTool -> properTool.equals(dTool.getToolType()) || properTool.equals(DToolType.ANY)))
                     return;
 
                 if(mineData.damage(dTool.getEfficiency())) {

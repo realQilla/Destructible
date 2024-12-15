@@ -77,7 +77,7 @@ public abstract class DTool implements Breakable {
     }
 
     public static class Properties {
-        private String id;
+        private final String id;
         private Component displayName;
         private Material material;
         private DToolType dToolType;
@@ -91,46 +91,90 @@ public abstract class DTool implements Breakable {
             return new DTool.Properties(id);
         }
 
+        /**
+         * Displayed name for tool
+         * @param displayName
+         * @return
+         */
         public DTool.Properties displayName(Component displayName) {
             this.displayName = displayName;
             return this;
         }
 
+        /**
+         * The item that the tool will be
+         * @param material
+         * @return
+         */
         public DTool.Properties material(Material material) {
             this.material = material;
             return this;
         }
 
+        /**
+         * What type enum the tool is
+         * @param type
+         * @return
+         */
         public DTool.Properties dToolType(DToolType type) {
             this.dToolType = type;
             return this;
         }
 
+        /**
+         * The tools set rarity
+         * @param rarity
+         * @return
+         */
         public DTool.Properties rarity(Rarity rarity) {
             this.rarity = rarity;
             return this;
         }
 
+        /**
+         * The amount this tool can be stacked to
+         * @param amount
+         * @return
+         */
         public DTool.Properties stackSize(int amount) {
             this.stackSize = Math.max(0, Math.min(99, amount));
             return this;
         }
 
+        /**
+         * Total durability of the tool
+         * @param amount
+         * @return
+         */
         public DTool.Properties durability(int amount) {
             this.durability = Math.max(1, amount);
             return this;
         }
 
+        /**
+         * Flags tool to have infinite durability
+         * @return
+         */
         public DTool.Properties noDurability() {
             this.durability = -1;
             return this;
         }
 
+        /**
+         * The tool's strength, used when mining custom blocks
+         * @param amount
+         * @return
+         */
         public DTool.Properties strength(int amount) {
             this.strength = Math.max(0, amount);
             return this;
         }
 
+        /**
+         * Rate at which the tool mines a block, base rate is 1
+         * @param amount
+         * @return
+         */
         public DTool.Properties efficiency(float amount) {
             this.efficiency = Math.max(0, amount);
             return this;
@@ -140,7 +184,7 @@ public abstract class DTool implements Breakable {
             this.id = id;
             this.displayName = Component.empty();
             this.material = Material.AIR;
-            this.dToolType = DToolType.ALL;
+            this.dToolType = DToolType.ANY;
             this.rarity = Rarity.NONE;
             this.stackSize = 1;
             this.durability = -1;

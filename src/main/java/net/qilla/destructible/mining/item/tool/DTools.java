@@ -6,7 +6,7 @@ import net.qilla.destructible.mining.item.Rarity;
 import org.bukkit.Material;
 
 public class DTools {
-    public static final DTool DEFAULT = new DefaultDTool(DTool.Properties.of("default"));
+    public static final DTool DEFAULT = new AnyDTool(DTool.Properties.of("default"));
 
     public static final DTool WOODEN_PICKAXE = register(new PickaxeDTool(DTool.Properties.of("wooden_pickaxe")
             .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.COMMON.getColor() + "><!italic>Wooden Pickaxe"))

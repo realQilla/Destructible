@@ -45,11 +45,22 @@ public final class DDrop {
             return new DDrop.Properties();
         }
 
+        /**
+         * Basic item stack drop
+         * @param itemStack
+         * @return
+         */
         public DDrop.Properties itemStack(final ItemStack itemStack) {
             this.itemStack = itemStack;
             return this;
         }
 
+        /**
+         * Item stack that may be modified with a consumer
+         * @param material
+         * @param consumer
+         * @return
+         */
         public DDrop.Properties itemStack(final Material material, final Consumer<ItemStack> consumer) {
             ItemStack itemStack = new ItemStack(material);
             consumer.accept(itemStack);
@@ -57,6 +68,12 @@ public final class DDrop {
             return this;
         }
 
+        /**
+         * Minimum and amount of item that will drop
+         * @param min
+         * @param max
+         * @return
+         */
         public DDrop.Properties amount(final int min, final int max) {
             if(min < 0 || min > max) return this;
             this.minAmount = min;
@@ -64,12 +81,22 @@ public final class DDrop {
             return this;
         }
 
+        /**
+         * Set amount of item that will drop
+         * @param amount
+         * @return
+         */
         public DDrop.Properties amount(final int amount) {
             this.minAmount = amount;
             this.maxAmount = amount;
             return this;
         }
 
+        /**
+         * The chance that the item will drop
+         * @param chance
+         * @return
+         */
         public DDrop.Properties dropChance(final float chance) {
             if(chance > 1.0f || chance < 0.0f) return this;
             this.dropChance = chance;
