@@ -21,8 +21,7 @@ public final class MineData {
     private final Equipment equipment;
     private DBlock dBlock;
     private DTool dTool;
-    private float durabilityTotal;
-    private float durabilityRemaining;
+    private Durability durability;
     private int crackStage = 0;
 
     public MineData(@NotNull final Equipment equipment, @NotNull final Location location, @NotNull final Direction dir) {
@@ -34,31 +33,27 @@ public final class MineData {
     }
 
     /**
-     * Damages a block by a specified amount
+     * Damages the block by a specified amount
      * @param amount
      * @return Returns true when the block durability threshold has been passed.
      */
     public boolean damage(float amount) {
-        this.crackStage = Math.round(((durabilityTotal - durabilityRemaining) * 9 / durabilityTotal));
-        return (this.durabilityRemaining -= amount) <= 0;
+        this.crackStage = Math.round(((durability.getTotal() - durability.getCurrent()) * 9 / durability.getTotal()));
+        return this.durability.damage(amount) <= 0;
     }
 
     /**
      * Updates the currently cached block.
      */
-    public void updateBlock() {
-        this.dBlock = Registries.BLOCKS.get(this.location.getWorld().getBlockAt(this.location).getType());
-        if(dBlock == null) this.dBlock = DBlocks.NONE;
-        this.durabilityTotal = dBlock.getDurability();
-        this.durabilityRemaining = durabilityTotal;
+    public DBlock updateBlock() {
+        DBlock dBlock = Registries.BLOCKS.get(this.location.getWorld().getBlockAt(this.location).getType());
+        dBlock = dBlock == null ? DBlocks.NONE : dBlock;
+        this.durability = new Durability(dBlock.getDurability());
+        return this.dBlock = dBlock;
     }
 
     public DTool updateTool() {
-        String toolId = this.equipment
-                .getHeldItem()
-                .getPersistentDataContainer()
-                .get(DataKey.TOOL, PersistentDataType.STRING);
-
+        String toolId = this.equipment.getHeldItem().getPersistentDataContainer().get(DataKey.TOOL, PersistentDataType.STRING);
         return this.dTool = toolId == null ? DTools.DEFAULT : Registries.TOOLS.get(toolId);
     }
 
@@ -72,7 +67,7 @@ public final class MineData {
         return this.direction;
     }
 
-    @Nullable
+    @NotNull
     public DBlock getDBlock() {
         return this.dBlock;
     }
@@ -82,12 +77,8 @@ public final class MineData {
         return this.dTool;
     }
 
-    public float getDurabilityTotal() {
-        return this.durabilityTotal;
-    }
-
-    public float getDurabilityRemaining() {
-        return this.durabilityRemaining;
+    public Durability getDurabilityTotal() {
+        return this.durability;
     }
 
     public int getCrackStage() {

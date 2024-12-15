@@ -15,6 +15,16 @@ public class DDrops {
             )
     };
 
+    public static final DDrop[] RED_SAND = new DDrop[]{
+            new DDrop(DDrop.Properties.of()
+                    .itemStack(ItemStack.of(Material.RED_SAND))
+            ),
+            new DDrop(DDrop.Properties.of()
+                    .itemStack(ItemStack.of(Material.COBBLESTONE))
+                    .dropChance(0.15f)
+            )
+    };
+
     public static final DDrop[] GRAVEL = new DDrop[]{
             new DDrop(DDrop.Properties.of()
                     .itemStack(ItemStack.of(Material.GRAVEL))

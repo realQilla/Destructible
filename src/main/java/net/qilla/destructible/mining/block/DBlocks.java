@@ -29,6 +29,14 @@ public class DBlocks {
             .sound(Sound.BLOCK_SAND_BREAK)
             .particle(Material.SAND)));
 
+    public static final DBlock RED_SAND = register(Material.RED_SAND, new DBlock(DBlock.Properties.of()
+            .strengthRequirement(0)
+            .instaBreak()
+            .properTools(new DToolType[]{DToolType.ALL})
+            .itemDrops(DDrops.RED_SAND)
+            .sound(Sound.BLOCK_SAND_BREAK)
+            .particle(Material.RED_SAND)));
+
     public static final DBlock GRAVEL = register(Material.GRAVEL, new DBlock(DBlock.Properties.of()
             .strengthRequirement(1)
             .durability(20)

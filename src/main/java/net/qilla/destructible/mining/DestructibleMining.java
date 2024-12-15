@@ -9,6 +9,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.item.tool.DToolType;
 import net.qilla.destructible.mining.player.data.MineData;
@@ -48,7 +49,7 @@ public final class DestructibleMining {
     public static void tickBlock(@NotNull final PlayerData playerData) {
         MineData mineData = playerData.getMiningData();
 
-        if(mineData == null || mineData.getDBlock() == null) return;
+        if(mineData == null || mineData.getDBlock() == DBlocks.NONE) return;
         if(mineData.getDBlock().getDurability() < 0) return;
 
         Bukkit.getScheduler().runTask(PLUGIN, () -> {
