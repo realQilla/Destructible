@@ -1,8 +1,6 @@
 package net.qilla.destructible.command;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -12,13 +10,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DataKey;
-import net.qilla.destructible.mining.item.ItemRegistry;
-import net.qilla.destructible.mining.item.Tool;
+import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.util.ItemUtil;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -46,7 +41,7 @@ public class ToolCommand {
                 .then(Commands.argument(argumentType, StringArgumentType.string())
                         .suggests((context, builder) -> {
                             final String argument = builder.getRemaining();
-                            for(String id : ItemRegistry.getInstance().getTools().keySet()) {
+                            for(String id : Registries.TOOLS.getRegistry().keySet()) {
                                 if(id.regionMatches(true, 0, argument, 0, argument.length())) {
                                     builder.suggest(id);
                                 }
@@ -60,26 +55,26 @@ public class ToolCommand {
     private int get(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
         String toolName = context.getArgument(argumentType, String.class).toLowerCase();
-        Tool tool = ItemRegistry.getInstance().getTool(toolName);
-        if(tool == null) {
+        DTool dTool = Registries.TOOLS.get(toolName);
+        if(dTool == null) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Invalid tool"));
             return 0;
         }
 
-        ItemStack item = ItemStack.of(tool.getMaterial());
+        ItemStack item = ItemStack.of(dTool.getMaterial());
 
         item.editMeta(meta -> {
-           meta.getPersistentDataContainer().set(DataKey.TOOL, PersistentDataType.STRING, tool.getId());
-           meta.displayName(tool.getDisplayName());
+           meta.getPersistentDataContainer().set(DataKey.TOOL, PersistentDataType.STRING, dTool.getId());
+           meta.displayName(dTool.getDisplayName());
            meta.setEnchantmentGlintOverride(true);
 
            meta.setAttributeModifiers(ArrayListMultimap.create());
 
            List<Component> lore = List.of(
-                   MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency: " + tool.getEfficiency()),
-                   MiniMessage.miniMessage().deserialize("<!italic><gray>Strength: " + tool.getStrength()),
+                   MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency: " + dTool.getEfficiency()),
+                   MiniMessage.miniMessage().deserialize("<!italic><gray>Strength: " + dTool.getStrength()),
                    MiniMessage.miniMessage().deserialize(""),
-                   tool.getRarity().getFormatted()
+                   dTool.getRarity().getFormatted()
                    );
 
            meta.lore(lore);

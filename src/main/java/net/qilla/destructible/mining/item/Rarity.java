@@ -2,13 +2,11 @@ package net.qilla.destructible.mining.item;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
-import java.awt.*;
-
 public enum Rarity {
+    NONE(Component.empty(), NamedTextColor.WHITE),
     COMMON(MiniMessage.miniMessage().deserialize("<!italic><white><bold>COMMON"), NamedTextColor.WHITE),
     UNUSUAL(MiniMessage.miniMessage().deserialize("<!italic><yellow><bold>UNUSUAL"), NamedTextColor.YELLOW),
     RARE(MiniMessage.miniMessage().deserialize("<!italic><blue><bold>RARE"), NamedTextColor.BLUE),

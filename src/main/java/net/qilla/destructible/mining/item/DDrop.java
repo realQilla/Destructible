@@ -5,14 +5,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
 
-public final class ItemDrop {
+public final class DDrop {
 
     private final ItemStack itemStack;
     private final int minAmount;
     private final int maxAmount;
     private final float dropChance;
 
-    public ItemDrop(final Properties properties) {
+    public DDrop(final Properties properties) {
         this.itemStack = properties.itemStack;
         this.minAmount = properties.minAmount;
         this.maxAmount = properties.maxAmount;
@@ -41,30 +41,30 @@ public final class ItemDrop {
         int maxAmount;
         float dropChance;
 
-        public static ItemDrop.Properties of() {
-            return new ItemDrop.Properties();
+        public static DDrop.Properties of() {
+            return new DDrop.Properties();
         }
 
-        public ItemDrop.Properties setItemStack(final ItemStack itemStack) {
+        public DDrop.Properties itemStack(final ItemStack itemStack) {
             this.itemStack = itemStack;
             return this;
         }
 
-        public ItemDrop.Properties setItemStack(final Material material, final Consumer<ItemStack> consumer) {
+        public DDrop.Properties itemStack(final Material material, final Consumer<ItemStack> consumer) {
             ItemStack itemStack = new ItemStack(material);
             consumer.accept(itemStack);
             this.itemStack = itemStack;
             return this;
         }
 
-        public ItemDrop.Properties setAmount(final int min, final int max) {
+        public DDrop.Properties amount(final int min, final int max) {
             if(min < 0 || min > max) return this;
             this.minAmount = min;
             this.maxAmount = max;
             return this;
         }
 
-        public ItemDrop.Properties setDropChance(final float chance) {
+        public DDrop.Properties dropChance(final float chance) {
             if(chance > 1.0f || chance < 0.0f) return this;
             this.dropChance = chance;
             return this;

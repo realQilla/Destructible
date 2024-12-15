@@ -1,7 +1,6 @@
 package net.qilla.destructible.util;
 
-import net.qilla.destructible.mining.item.ItemDrop;
-import org.bukkit.Sound;
+import net.qilla.destructible.mining.item.DDrop;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,7 +11,7 @@ public class ItemUtil {
 
     private static final Random random = new Random();
 
-    public static ItemStack[] rollItemDrops(final ItemDrop[] itemDrops) {
+    public static ItemStack[] rollItemDrops(final DDrop[] itemDrops) {
         if(itemDrops.length == 0) return new ItemStack[0];
         random.setSeed(System.currentTimeMillis());
 

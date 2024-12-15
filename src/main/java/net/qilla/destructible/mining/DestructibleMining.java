@@ -9,10 +9,11 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DataKey;
-import net.qilla.destructible.mining.block.DestructibleBlock;
-import net.qilla.destructible.mining.item.ItemRegistry;
-import net.qilla.destructible.mining.item.Tool;
-import net.qilla.destructible.mining.item.ToolType;
+import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.item.tool.DTool;
+import net.qilla.destructible.mining.item.tool.DToolType;
+import net.qilla.destructible.mining.item.tool.DTools;
 import net.qilla.destructible.mining.player.data.MiningData;
 import net.qilla.destructible.mining.player.data.PlayerData;
 import net.qilla.destructible.util.BlockUtil;
@@ -32,117 +33,124 @@ import java.util.Arrays;
 
 public final class DestructibleMining {
 
-    private final Destructible plugin = Destructible.getInstance();
-
     public void init(@NotNull final PlayerData playerData, @NotNull final ServerboundPlayerActionPacket actionPacket) {
         Player player = playerData.getPlayer();
         MiningData miningData = playerData.getMiningData();
-        Location location = BlockUtil.blockPosToLoc(actionPacket.getPos(), playerData.getPlayer().getWorld());
-        ItemStack item = player.getInventory().getItemInMainHand();
+        Location location = BlockUtil.blockPosToLoc(actionPacket.getPos(), player.getWorld());
 
-        Tool tool = ItemRegistry.getInstance().getTool(item.getPersistentDataContainer().get(DataKey.TOOL, PersistentDataType.STRING));
+        String toolData = player
+                .getInventory().getItemInMainHand()
+                .getPersistentDataContainer()
+                .get(DataKey.TOOL, PersistentDataType.STRING);
+        DTool dTool = DTools.DEFAULT;
 
-        if(miningData == null || !miningData.getLocation().equals(location)) {
-            playerData.setMiningData(new MiningData(location, actionPacket.getDirection(), tool));
+        if(toolData != null) {
+            dTool = Registries.TOOLS.get(toolData);
+        }
+
+        if(miningData == null || miningData.getLocation().hashCode() != (location.hashCode())) {
+            playerData.setMiningData(new MiningData(location, actionPacket.getDirection(), dTool));
         }
     }
 
-    public void tick(@NotNull final PlayerData playerData, @NotNull final ServerboundSwingPacket swingPacket) {
-        Player player = playerData.getPlayer();
+    public void tick(@NotNull final PlayerData playerData) {
         MiningData miningData = playerData.getMiningData();
 
         if(miningData == null || miningData.getDestructibleBlock() == null) return;
         if(miningData.getDestructibleBlock().getDurability() < 0) return;
 
-        ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-        ServerLevel level = serverPlayer.serverLevel();
-        Location location = miningData.getLocation();
-        BlockPos blockPos = BlockUtil.locToBlockPos(location);
-        DestructibleBlock destructibleBlock = miningData.getDestructibleBlock();
-        Tool tool = miningData.getTool();
+        Player player = playerData.getPlayer();
 
-        if(tool != null) {
-            if(destructibleBlock.getStrengthRequirement() > tool.getStrength()) return;
-            if(Arrays.stream(destructibleBlock.getProperTools()).noneMatch(properTool -> properTool.equals(tool.getToolType()) || properTool.equals(ToolType.ANY))) return;
-        } else {
-            if(destructibleBlock.getStrengthRequirement() != 0) return;
-            if(Arrays.stream(destructibleBlock.getProperTools()).noneMatch(properTools -> properTools.equals(ToolType.ANY))) return;
-        }
+        Bukkit.getScheduler().runTask(Destructible.getInstance(), () -> {
+            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+            ServerLevel level = serverPlayer.serverLevel();
+            Location location = miningData.getLocation();
+            BlockPos blockPos = BlockUtil.locToBlockPos(location);
+            DBlock dBlock = miningData.getDestructibleBlock();
+            DTool dTool = miningData.getDTool();
 
-        if(miningData.damage(tool == null ? 1 : tool.getEfficiency())) {
-            Vec3 midFace = BlockUtil.getMiddleFace(miningData.getDirection());
+            if(dBlock.getStrengthRequirement() > dTool.getStrength()) return;
+            if(Arrays.stream(dBlock.getProperTools()).noneMatch(properTool -> properTool.equals(dTool.getToolType()) || properTool.equals(DToolType.ALL)))
+                return;
 
-            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), BlockUtil.locToBlockPos(location), 10));
-            location.getWorld().playSound(location, destructibleBlock.getSound(), 1, 1);
-            location.getWorld().spawnParticle(Particle.BLOCK, location.clone().add(0.5, 0.5, 0.5), 50, 0.25, 0.25, 0.25, 0, destructibleBlock.getParticle().createBlockData());
-            location.getWorld().getBlockAt(location).setType(Material.COBBLESTONE);
+            if(miningData.damage(dTool.getEfficiency())) {
+                Vec3 midFace = BlockUtil.getMiddleFace(miningData.getDirection());
 
-            ItemStack[] items = ItemUtil.rollItemDrops(destructibleBlock.getItemDrops());
+                level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), BlockUtil.locToBlockPos(location), 10));
+                location.getWorld().playSound(location, dBlock.getSound(), 1, 1);
+                location.getWorld().spawnParticle(Particle.BLOCK, location.clone().add(0.5, 0.5, 0.5), 50, 0.25, 0.25, 0.25, 0, dBlock.getParticle().createBlockData());
+                location.getWorld().getBlockAt(location).setType(Material.COBBLESTONE);
 
-            Thread thread = new Thread(() -> {
-                for(ItemStack item : items) {
-                    Vec3 vec3 = miningData.getDirection().getUnitVec3().offsetRandom(RandomSource.create(), 1.2f);
-                    ItemEntity itemEntity = new ItemEntity(
-                            level,
-                            blockPos.getX() + 0.5 + midFace.x,
-                            blockPos.getY() + 0.5 + midFace.y, blockPos.getZ() + 0.5 + midFace.z,
-                            ((CraftItemStack) item).handle,
-                            vec3.x * 0.30,
-                            vec3.y * 0.30,
-                            vec3.z * 0.30
-                    );
-                    itemEntity.setNoGravity(true);
+                ItemStack[] items = ItemUtil.rollItemDrops(dBlock.getItemDrops());
 
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundAddEntityPacket(
-                                itemEntity.getId(),
-                                itemEntity.getUUID(),
-                                itemEntity.getX(),
-                                itemEntity.getY(),
-                                itemEntity.getZ(),
-                                0,
-                                0,
-                                itemEntity.getType(),
-                                0,
-                                itemEntity.getDeltaMovement(),
-                                0
-                        ));
-                        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityDataPacket(
-                                itemEntity.getId(),
-                                itemEntity.getEntityData().packAll()
-                        ));
+                Thread thread = new Thread(() -> {
+                    for(ItemStack item : items) {
+                        Vec3 vec3 = miningData.getDirection().getUnitVec3().offsetRandom(RandomSource.create(), 1.2f);
+                        ItemEntity itemEntity = new ItemEntity(
+                                level,
+                                blockPos.getX() + 0.5 + midFace.x,
+                                blockPos.getY() + 0.5 + midFace.y,
+                                blockPos.getZ() + 0.5 + midFace.z,
+                                ((CraftItemStack) item).handle,
+                                vec3.x * 0.3,
+                                vec3.y * 0.3,
+                                vec3.z * 0.3
+                        );
 
-                        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityMotionPacket(itemEntity.getId(), itemEntity.getDeltaMovement()));
+                        //itemEntity.setNoGravity(true);
 
-                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundTakeItemEntityPacket(
+                        Bukkit.getScheduler().runTask(Destructible.getInstance(), () -> {
+                            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundAddEntityPacket(
                                     itemEntity.getId(),
-                                    serverPlayer.getId(),
-                                    item.getAmount()
+                                    itemEntity.getUUID(),
+                                    itemEntity.getX(),
+                                    itemEntity.getY(),
+                                    itemEntity.getZ(),
+                                    0,
+                                    0,
+                                    itemEntity.getType(),
+                                    0,
+                                    itemEntity.getDeltaMovement(),
+                                    0
                             ));
 
-                        },4);
+                            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityDataPacket(
+                                    itemEntity.getId(),
+                                    itemEntity.getEntityData().packAll()
+                            ));
 
-                        ItemUtil.give(player, item);
-                    });
-                    try {
-                        Thread.sleep(333);
-                    } catch(InterruptedException e) {
-                        throw new RuntimeException(e);
+                            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundSetEntityMotionPacket(itemEntity.getId(), itemEntity.getDeltaMovement()));
+
+                            Bukkit.getScheduler().runTaskLater(Destructible.getInstance(), () -> {
+                                level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundTakeItemEntityPacket(
+                                        itemEntity.getId(),
+                                        serverPlayer.getId(),
+                                        item.getAmount()
+                                ));
+
+                            }, 4);
+
+                            ItemUtil.give(player, item);
+                        });
+                        try {
+                            Thread.sleep(333);
+                        } catch(InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        if(itemEntity.isAlive()) {
+                            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundRemoveEntitiesPacket(itemEntity.getId()));
+                        }
                     }
-                    if(itemEntity.isAlive()) {
-                        level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundRemoveEntitiesPacket(itemEntity.getId()));
-                    }
-                }
-                Thread.currentThread().interrupt();
-            });
+                    Thread.currentThread().interrupt();
+                });
 
-            thread.start();
+                thread.start();
 
-            miningData.updateBlock();
-        } else {
-            level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), blockPos, miningData.getIncrementProgress()));
-        }
+                miningData.updateBlock();
+            } else {
+                level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), blockPos, miningData.getIncrementProgress()));
+            }
+        });
     }
 
     public void stop(@NotNull final PlayerData playerData) {
@@ -157,7 +165,6 @@ public final class DestructibleMining {
         BlockPos blockPos = new BlockPos(location.getBlockX(), location.getBlockY(), location.getBlockZ());
 
         level.getChunkSource().broadcastAndSend(nmsPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), blockPos, 10));
-
 
         playerData.setMiningData(null);
     }

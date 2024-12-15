@@ -9,7 +9,7 @@ import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.mining.player.data.InstancePlayerData;
+import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.player.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -19,11 +19,9 @@ import org.bukkit.entity.Player;
 public final class PlayerPacketListener {
 
     private final DestructibleMining miningData;
-    private final InstancePlayerData instancePlayerData;
 
-    public PlayerPacketListener(final DestructibleMining miningData, final InstancePlayerData instancePlayerData) {
+    public PlayerPacketListener(final DestructibleMining miningData) {
         this.miningData = miningData;
-        this.instancePlayerData = instancePlayerData;
     }
 
     public void addListener(final Player player) {
@@ -32,15 +30,15 @@ public final class PlayerPacketListener {
             public void channelRead(ChannelHandlerContext context, Object packet) throws Exception {
                 if(player.getGameMode() == GameMode.SURVIVAL) {
                     if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
-                        final PlayerData playerData = instancePlayerData.getPlayerData(player);
+                        PlayerData playerData = Registries.PLAYER_DATA.get(player.getUniqueId());
 
                         switch(actionPacket.getAction()) {
                             case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> {
                                 miningData.init(playerData, actionPacket);
                             }
                             case ServerboundPlayerActionPacket.Action.DROP_ITEM,
-                                 ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS-> {
-                                //Temp
+                                 ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS -> {
+                                //Temp Fix
                                 miningData.stop(playerData);
                             }
                             default -> {
@@ -49,11 +47,9 @@ public final class PlayerPacketListener {
                         }
                     } else if(packet instanceof ServerboundSwingPacket swingPacket) {
                         if(!swingPacket.getHand().equals(InteractionHand.MAIN_HAND)) return;
-                        final PlayerData playerData = instancePlayerData.getPlayerData(player);
+                        PlayerData playerData = Registries.PLAYER_DATA.get(player.getUniqueId());
 
-                        Bukkit.getScheduler().runTask(Destructible.getInstance(), () -> {
-                            miningData.tick(playerData, swingPacket);
-                        });
+                            miningData.tick(playerData);
                     }
                 }
                 super.channelRead(context, packet);
