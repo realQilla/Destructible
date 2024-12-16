@@ -63,20 +63,20 @@ public final class DestructibleMining {
                 DTool dTool = mineData.updateTool();
 
                 if(dBlock.getStrengthRequirement() > dTool.getStrength()) return;
-                if(Arrays.stream(dBlock.getProperTools()).noneMatch(properTool -> properTool.equals(dTool.getToolType()) || properTool.equals(DToolType.ANY)))
-                    return;
+                if(Arrays.stream(dBlock.getProperTools()).noneMatch(properTool -> properTool.equals(dTool.getToolType()) || properTool.equals(DToolType.ANY))) return;
 
                 if(mineData.damage(dTool.getEfficiency())) {
-                    Vec3 midFace = BlockUtil.getMiddleFace(mineData.getDirection());
+
 
                     level.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(location.hashCode(), BlockUtil.locToBlockPos(location), 10));
                     location.getWorld().playSound(location, dBlock.getSound(), 1, 1);
                     location.getWorld().spawnParticle(Particle.BLOCK, location.clone().add(0.5, 0.5, 0.5), 50, 0.25, 0.25, 0.25, 0, dBlock.getParticle().createBlockData());
                     location.getWorld().getBlockAt(location).setType(Material.COBBLESTONE);
 
-                    ItemStack[] items = ItemUtil.rollItemDrops(dBlock.getItemDrops());
-
                     Thread thread = new Thread(() -> {
+                        Vec3 midFace = BlockUtil.getMiddleFace(mineData.getDirection());
+                        ItemStack[] items = ItemUtil.rollItemDrops(dBlock.getItemDrops());
+
                         for(ItemStack item : items) {
                             Vec3 vec3 = mineData.getDirection().getUnitVec3().offsetRandom(RandomSource.create(), 1.2f);
                             ItemEntity itemEntity = new ItemEntity(

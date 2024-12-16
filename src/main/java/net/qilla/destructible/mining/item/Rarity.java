@@ -8,7 +8,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 public enum Rarity {
     NONE(Component.empty(), NamedTextColor.WHITE),
     COMMON(MiniMessage.miniMessage().deserialize("<!italic><white><bold>COMMON"), NamedTextColor.WHITE),
-    UNUSUAL(MiniMessage.miniMessage().deserialize("<!italic><yellow><bold>UNUSUAL"), NamedTextColor.YELLOW),
+    UNIQUE(MiniMessage.miniMessage().deserialize("<!italic><yellow><bold>UNIQUE"), NamedTextColor.YELLOW),
     RARE(MiniMessage.miniMessage().deserialize("<!italic><blue><bold>RARE"), NamedTextColor.BLUE),
     LEGENDARY(MiniMessage.miniMessage().deserialize("<!italic><gold><bold>LEGENDARY"), NamedTextColor.GOLD),;
 

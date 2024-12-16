@@ -65,6 +65,7 @@ public class ToolCommand {
 
         item.editMeta(meta -> {
            meta.getPersistentDataContainer().set(DataKey.TOOL, PersistentDataType.STRING, dTool.getId());
+           meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
            meta.displayName(dTool.getDisplayName());
            meta.setEnchantmentGlintOverride(true);
 
