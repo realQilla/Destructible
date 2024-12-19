@@ -6,11 +6,13 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public final class DBlock {
     private final int strengthRequirement;
     private final float durability;
-    private final DToolType[] properTools;
-    private final DDrop[] itemDrops;
+    private final List<DToolType> properTools;
+    private final List<DDrop> itemDrops;
     private final Sound sound;
     private final Material particle;
 
@@ -31,15 +33,15 @@ public final class DBlock {
         return this.durability;
     }
 
-    public DToolType[] getProperTools() {
+    public List<DToolType> getProperTools() {
         return this.properTools;
     }
 
     public boolean hasProperTool() {
-        return this.properTools.length != 0;
+        return !this.properTools.isEmpty();
     }
 
-    public DDrop[] getItemDrops() {
+    public List<DDrop> getItemDrops() {
         return this.itemDrops;
     }
 
@@ -54,8 +56,8 @@ public final class DBlock {
     public static class Properties {
         private int strengthRequirement;
         private float durability;
-        private DToolType[] properTools;
-        private DDrop[] itemDrops;
+        private List<DToolType> properTools;
+        private List<DDrop> itemDrops;
         private Sound sound;
         private Material particle;
 
@@ -106,7 +108,7 @@ public final class DBlock {
          * @param tool
          * @return
          */
-        public DBlock.Properties properTools(DToolType[] tool) {
+        public DBlock.Properties properTools(List<DToolType> tool) {
             this.properTools = tool;
             return this;
         }
@@ -116,7 +118,7 @@ public final class DBlock {
          * @return
          */
         public DBlock.Properties noTools() {
-            this.properTools = new DToolType[0];
+            this.properTools = List.of();
             return this;
         }
 
@@ -125,7 +127,7 @@ public final class DBlock {
          * @param itemDrop
          * @return
          */
-        public DBlock.Properties itemDrops(DDrop[] itemDrop) {
+        public DBlock.Properties itemDrops(List<DDrop> itemDrop) {
             this.itemDrops = itemDrop;
             return this;
         }
@@ -135,7 +137,7 @@ public final class DBlock {
          * @return
          */
         public DBlock.Properties noDrops() {
-            this.itemDrops = new DDrop[0];
+            this.itemDrops = List.of();
             return this;
         }
 
@@ -162,8 +164,8 @@ public final class DBlock {
         private Properties() {
             this.strengthRequirement = -1;
             this.durability = -1;
-            this.properTools = new DToolType[0];
-            this.itemDrops = new DDrop[0];
+            this.properTools = List.of();
+            this.itemDrops = List.of();
             this.sound = Sound.BLOCK_STONE_BREAK;
             this.particle = Material.BEDROCK;
         }

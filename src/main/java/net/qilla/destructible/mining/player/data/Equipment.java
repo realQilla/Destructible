@@ -29,7 +29,7 @@ public class Equipment {
             this.chestplate = inventory.getChestplate();
             this.leggings = inventory.getLeggings();
             this.boots = inventory.getBoots();
-        }, 0, 10);
+        }, 0, 8);
     }
 
     @NotNull

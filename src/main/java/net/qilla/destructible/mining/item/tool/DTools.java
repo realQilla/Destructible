@@ -6,11 +6,26 @@ import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.Rarity;
 import org.bukkit.Material;
 
+import java.util.List;
 import java.util.function.Function;
 
 public final class DTools {
     public static final DTool DEFAULT = new DTool(DItem.Properties.of(),
             DTool.Properties.of()
+    );
+
+    public static final DTool MULTI_TOOL = register("multi_tool",
+            DItem.Properties.of()
+                    .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.LEGENDARY.getColor() + "><!italic>Multi Tool"))
+                    .material(Material.DIAMOND_SHOVEL)
+                    .rarity(Rarity.LEGENDARY)
+                    .stackSize(1)
+                    .noDurability(),
+            itemProperties -> new DTool(itemProperties,
+                    DTool.Properties.of()
+                            .dToolType(List.of(DToolType.PICKAXE, DToolType.AXE, DToolType.SHOVEL))
+                            .strength(10)
+                            .efficiency(1000))
     );
 
     public static final DTool WOODEN_PICKAXE = register("wooden_pickaxe",
@@ -22,7 +37,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.PICKAXE)
+                            .dToolType(List.of(DToolType.PICKAXE))
                             .strength(1)
                             .efficiency(1.5f))
     );
@@ -36,7 +51,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.PICKAXE)
+                            .dToolType(List.of(DToolType.PICKAXE))
                             .strength(2)
                             .efficiency(2.25f))
     );
@@ -50,7 +65,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.PICKAXE)
+                            .dToolType(List.of(DToolType.PICKAXE))
                             .strength(3)
                             .efficiency(4.0f))
     );
@@ -64,7 +79,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.PICKAXE)
+                            .dToolType(List.of(DToolType.PICKAXE))
                             .strength(4)
                             .efficiency(8.0f))
     );
@@ -78,7 +93,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.AXE)
+                            .dToolType(List.of(DToolType.AXE))
                             .strength(1)
                             .efficiency(1.5f))
     );
@@ -92,7 +107,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.AXE)
+                            .dToolType(List.of(DToolType.AXE))
                             .strength(2)
                             .efficiency(2.25f))
     );
@@ -106,7 +121,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.AXE)
+                            .dToolType(List.of(DToolType.AXE))
                             .strength(3)
                             .efficiency(4.0f))
     );
@@ -120,7 +135,7 @@ public final class DTools {
                     .noDurability(),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.AXE)
+                            .dToolType(List.of(DToolType.AXE))
                             .strength(4)
                             .efficiency(8.0f))
     );
@@ -134,7 +149,7 @@ public final class DTools {
                     .durability(1000),
             itemProperties -> new DTool(itemProperties,
                     DTool.Properties.of()
-                            .dToolType(DToolType.SHOVEL)
+                            .dToolType(List.of(DToolType.SHOVEL))
                             .strength(1)
                             .efficiency(1.5f))
     );

@@ -3,8 +3,10 @@ package net.qilla.destructible.mining.item.tool;
 import net.qilla.destructible.mining.item.DItem;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public final class DTool extends DItem {
-    private final DToolType dToolType;
+    private final List<DToolType> dToolType;
     private final int strength;
     private final float efficiency;
 
@@ -16,7 +18,7 @@ public final class DTool extends DItem {
     }
 
     @NotNull
-    public DToolType getToolType() {
+    public List<DToolType> getToolType() {
         return this.dToolType;
     }
 
@@ -29,7 +31,7 @@ public final class DTool extends DItem {
     }
 
     public static class Properties {
-        private DToolType dToolType;
+        private List<DToolType> dToolType;
         private int strength;
         private float efficiency;
 
@@ -44,7 +46,7 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public DTool.Properties dToolType(DToolType type) {
+        public DTool.Properties dToolType(List<DToolType> type) {
             this.dToolType = type;
             return this;
         }
@@ -74,7 +76,7 @@ public final class DTool extends DItem {
         }
 
         private Properties() {
-            this.dToolType = DToolType.ANY;
+            this.dToolType = List.of();
             this.strength = 0;
             this.efficiency = 1.0f;
         }

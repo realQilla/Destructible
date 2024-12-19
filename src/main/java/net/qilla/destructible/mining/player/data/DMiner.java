@@ -16,7 +16,6 @@ import net.qilla.destructible.mining.item.tool.DToolType;
 import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.ItemUtil;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -27,15 +26,17 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * Necessary player related data.
  */
 public final class DMiner {
 
-    private static final int ITEM_DELETE_DELAY = 8;
-    private static final int ITEM_MAGNET_DELAY = 4;
+    private static final int ITEM_DELETE_DELAY = 12;
+    private static final int ITEM_MAGNET_DELAY = 8;
+    private static final int ITEM_ALTERNATE_DELAY = 5;
+    private static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
 
     private final Destructible plugin;
     private final Player player;
@@ -43,7 +44,7 @@ public final class DMiner {
     private final ServerPlayer serverPlayer;
     private final ServerLevel serverLevel;
     private final Equipment equipment;
-    private DData dData = null;
+    private DData dData;
 
     public DMiner(@NotNull final Destructible plugin, @NotNull final Player player) {
         this.plugin = plugin;
@@ -76,81 +77,103 @@ public final class DMiner {
 
         Bukkit.getScheduler().runTask(plugin, () -> {
             if(this.dData.damage(dTool.getEfficiency())) {
-                this.destroyBlock();
+                this.destroyBlock(this.dData);
             } else {
                 this.serverLevel.getChunkSource().broadcastAndSend(serverPlayer, new ClientboundBlockDestructionPacket(this.dData.getBlockLoc().hashCode(), this.dData.getBlockPos(), this.dData.getBlockStage()));
             }
         });
     }
 
-    private void destroyBlock() {
-        Block block = this.dData.getBlockLoc().getBlock();
+    private void destroyBlock(final DData dData) {
+        Vec3 itemMidFace = DBlockUtil.getMidFaceItem(dData.getDirection());
+        Vec3 midFace = DBlockUtil.getMidFace(dData.getDirection());
+        float[] midOffset = DBlockUtil.getOffsetFace(dData.getDirection());
 
-        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundBlockDestructionPacket(this.dData.getBlockLoc().hashCode(), this.dData.getBlockPos(), 10));
-        this.dData.getWorld().playSound(this.dData.getBlockLoc(), this.dData.getDBlock().getSound(), 1, 1);
-        this.dData.getWorld().spawnParticle(Particle.BLOCK, this.dData.getBlockLoc().clone().add(0.5, 0.5, 0.5), 50, 0.25, 0.25, 0.25, 0, this.dData.getDBlock().getParticle().createBlockData());
-        block.setType(Material.COBBLESTONE);
+        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundBlockDestructionPacket(dData.getBlockLoc().hashCode(), dData.getBlockPos(), 10));
+        this.dData.getWorld().playSound(dData.getBlockLoc(), dData.getDBlock().getSound(), 1, 1);
+        this.dData.getWorld().spawnParticle(Particle.BLOCK,
+                new Location(dData.getWorld(),
+                        this.dData.getBlockPos().getX() + 0.5 + midFace.x,
+                        this.dData.getBlockPos().getY() + 0.5 + midFace.y,
+                        this.dData.getBlockPos().getZ() + 0.5 + midFace.z),
+                50, midOffset[0], midOffset[1], midOffset[2], 0,
+                dData.getDBlock().getParticle().createBlockData());
+        dData.getBlockLoc().getBlock().setType(Material.COBBLESTONE);
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            List<ItemStack> items = ItemUtil.rollItemDrops(dData.getDBlock().getItemDrops());
 
-        Vec3 midFace = DBlockUtil.getMiddleFace(this.dData.getDirection());
-        ItemStack[] items = ItemUtil.rollItemDrops(this.dData.getDBlock().getItemDrops());
+            for(ItemStack item : items) {
+                Vec3 faceVec = dData.getDirection().getUnitVec3();
+                ItemEntity itemEntity = createItemEntity(dData, item, itemMidFace, faceVec);
+                //itemEntity.setNoGravity(true);
+                itemVisual(itemEntity);
+                magnetVisual(itemEntity, item);
+                try {
+                    Thread.sleep(ITEM_ALTERNATE_DELAY * 50);
+                } catch(InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        this.damageTool(1);
+        dData.updateBlock();
+    }
 
-        for(ItemStack item : items) {
-            Vec3 vec3 = this.dData.getDirection().getUnitVec3().offsetRandom(RandomSource.create(), 1.2f);
-            ItemEntity itemEntity = new ItemEntity(
-                    this.serverLevel,
-                    this.dData.getBlockPos().getX() + 0.5 + midFace.x,
-                    this.dData.getBlockPos().getY() + 0.5 + midFace.y,
-                    this.dData.getBlockPos().getZ() + 0.5 + midFace.z,
-                    ((CraftItemStack) item).handle,
-                    vec3.x * 0.3,
-                    vec3.y * 0.3,
-                    vec3.z * 0.3
-            );
+    private ItemEntity createItemEntity(final DData dData, final ItemStack item, final Vec3 itemMidFace, final Vec3 faceVec) {
+        return new ItemEntity(
+                this.serverLevel,
+                dData.getBlockPos().getX() + 0.5 + itemMidFace.x,
+                dData.getBlockPos().getY() + 0.5 + itemMidFace.y,
+                dData.getBlockPos().getZ() + 0.5 + itemMidFace.z,
+                ((CraftItemStack) item).handle,
+                faceVec.offsetRandom(RANDOM, 1.2f).x * 0.3,
+                faceVec.y * 0.3,
+                faceVec.offsetRandom(RANDOM, 1.2f).z * 0.3
+        );
+    }
 
-            //itemEntity.setNoGravity(true);
+    private void magnetVisual(final ItemEntity itemEntity, final ItemStack item) {
+        Bukkit.getScheduler().runTaskLater(Destructible.getInstance(), () -> {
+            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundTakeItemEntityPacket(
+                    itemEntity.getId(),
+                    this.serverPlayer.getId(),
+                    item.getAmount()
+            ));
+            ItemUtil.give(this.player, item);
+        }, ITEM_MAGNET_DELAY);
 
-                this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundAddEntityPacket(
-                        itemEntity.getId(),
-                        itemEntity.getUUID(),
-                        itemEntity.getX(),
-                        itemEntity.getY(),
-                        itemEntity.getZ(),
-                        0,
-                        0,
-                        itemEntity.getType(),
-                        0,
-                        itemEntity.getDeltaMovement(),
-                        0
-                ));
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+            if(itemEntity.isAlive()) {
+                this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundRemoveEntitiesPacket(itemEntity.getId()));
+            }
+        }, ITEM_DELETE_DELAY);
+    }
 
-                this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundSetEntityDataPacket(
-                        itemEntity.getId(),
-                        itemEntity.getEntityData().packAll()
-                ));
+    private void itemVisual(ItemEntity itemEntity) {
+        Bukkit.getScheduler().runTask(this.plugin, () -> {
+            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundAddEntityPacket(
+                    itemEntity.getId(),
+                    itemEntity.getUUID(),
+                    itemEntity.getX(),
+                    itemEntity.getY(),
+                    itemEntity.getZ(),
+                    0,
+                    0,
+                    itemEntity.getType(),
+                    0,
+                    itemEntity.getDeltaMovement(),
+                    0
+            ));
 
-                this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundSetEntityMotionPacket(
-                        itemEntity.getId(),
-                        itemEntity.getDeltaMovement()));
+            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundSetEntityDataPacket(
+                    itemEntity.getId(),
+                    itemEntity.getEntityData().packAll()
+            ));
 
-                this.damageTool(1);
-                ItemUtil.give(this.player, item);
-                this.dData.updateBlock();
-
-                Bukkit.getScheduler().runTaskLater(Destructible.getInstance(), () -> {
-                    this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundTakeItemEntityPacket(
-                            itemEntity.getId(),
-                            this.serverPlayer.getId(),
-                            item.getAmount()
-                    ));
-
-                }, ITEM_MAGNET_DELAY);
-
-                Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-                    if(itemEntity.isAlive()) {
-                        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundRemoveEntitiesPacket(itemEntity.getId()));
-                    }
-                }, ITEM_DELETE_DELAY);
-        }
+            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundSetEntityMotionPacket(
+                    itemEntity.getId(),
+                    itemEntity.getDeltaMovement()));
+        });
     }
 
     public void stop() {
@@ -162,12 +185,12 @@ public final class DMiner {
 
     private boolean canMine(@NotNull final DBlock dBlock, @NotNull final DTool dTool) {
         if(dBlock.getStrengthRequirement() > dTool.getStrength() || isToolBroken()) return false;
-        if(Arrays.stream(dBlock.getProperTools()).noneMatch(properTool -> properTool.equals(dTool.getToolType()) || properTool.equals(DToolType.ANY))) return false;
-        return true;
+        return dBlock.getProperTools().stream().anyMatch(dToolType -> dToolType.equals(DToolType.ANY) || dTool.getToolType().contains(dToolType));
     }
 
     private void damageTool(int amount) {
         ItemStack tool = this.equipment.getHeldItem();
+        if(tool.isEmpty()) return;
         PersistentDataContainer pdc = tool.getItemMeta().getPersistentDataContainer();
         if(!pdc.has(DataKey.DURABILITY, PersistentDataType.INTEGER)) return;
         int durability = pdc.get(DataKey.DURABILITY, PersistentDataType.INTEGER) - amount;
@@ -193,6 +216,7 @@ public final class DMiner {
 
     public boolean isToolBroken() {
         ItemStack tool = this.equipment.getHeldItem();
+        if(tool.isEmpty()) return false;
         PersistentDataContainer pdc = tool.getItemMeta().getPersistentDataContainer();
         if(!pdc.has(DataKey.DURABILITY, PersistentDataType.INTEGER)) return false;
         return pdc.get(DataKey.DURABILITY, PersistentDataType.INTEGER) <= 0;
