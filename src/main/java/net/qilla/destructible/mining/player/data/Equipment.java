@@ -1,6 +1,7 @@
 package net.qilla.destructible.mining.player.data;
 
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.mining.player.DMiner;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;

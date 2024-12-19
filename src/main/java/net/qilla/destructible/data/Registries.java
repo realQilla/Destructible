@@ -3,7 +3,7 @@ package net.qilla.destructible.data;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DDrop;
 import net.qilla.destructible.mining.item.tool.DTool;
-import net.qilla.destructible.mining.player.data.DMiner;
+import net.qilla.destructible.mining.player.DMiner;
 import org.bukkit.Material;
 
 import java.util.UUID;

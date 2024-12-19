@@ -11,7 +11,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.player.data.DMiner;
+import net.qilla.destructible.mining.player.DMiner;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 

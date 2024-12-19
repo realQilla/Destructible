@@ -3,8 +3,6 @@ package net.qilla.destructible.mining.player;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.player.data.DMiner;
-import net.qilla.destructible.mining.player.data.Equipment;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

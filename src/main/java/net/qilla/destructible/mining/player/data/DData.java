@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.tool.DTool;
+import net.qilla.destructible.mining.player.DMiner;
 import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.DItemUtil;
 import org.bukkit.Location;

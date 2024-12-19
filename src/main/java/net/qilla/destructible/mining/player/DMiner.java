@@ -1,21 +1,20 @@
-package net.qilla.destructible.mining.player.data;
+package net.qilla.destructible.mining.player;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DataKey;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.item.tool.DToolType;
+import net.qilla.destructible.mining.player.data.DData;
+import net.qilla.destructible.mining.player.data.Equipment;
 import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.ItemUtil;
 import org.bukkit.*;
