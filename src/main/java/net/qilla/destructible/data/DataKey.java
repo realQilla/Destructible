@@ -3,7 +3,10 @@ package net.qilla.destructible.data;
 import net.qilla.destructible.Destructible;
 import org.bukkit.NamespacedKey;
 
-public class DataKey {
-    public static NamespacedKey TOOL = new NamespacedKey(Destructible.getInstance(), "tool");
-    public static NamespacedKey DURABILITY = new NamespacedKey(Destructible.getInstance(), "durability");
+public final class DataKey {
+    private static final Destructible PLUGIN = Destructible.getInstance();
+
+    public static final NamespacedKey DESTRUCTIBLE = new NamespacedKey(PLUGIN, "destructible");
+    public static final NamespacedKey TOOL = new NamespacedKey(PLUGIN, "tool");
+    public static final NamespacedKey DURABILITY = new NamespacedKey(PLUGIN, "durability");
 }

@@ -3,11 +3,15 @@ package net.qilla.destructible.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.block.DBlocks;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-public class BlockUtil {
+public final class DBlockUtil {
 
     public static Vec3 getMiddleFace(@NotNull final Direction dir) {
         Vec3 origin = dir.getUnitVec3();
@@ -26,7 +30,14 @@ public class BlockUtil {
         return new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 
-    public static Location blockPosToLoc(@NotNull BlockPos blockPos, World world) {
+    public static Location blockPosToLoc(@NotNull BlockPos blockPos, @NotNull World world) {
         return new Location(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
+    @NotNull
+    public static DBlock getDBlock(final Block block) {
+        DBlock dBlock = Registries.BLOCKS.get(block.getType());
+        if(dBlock != null) return dBlock;
+        return DBlocks.NONE;
     }
 }

@@ -3,7 +3,8 @@ package net.qilla.destructible.mining.player;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.player.data.PlayerData;
+import net.qilla.destructible.mining.player.data.DMiner;
+import net.qilla.destructible.mining.player.data.Equipment;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +34,8 @@ public class PlayerSetup implements Listener {
     }
 
     public void initPlayer(final Player player) {
-        Registries.PLAYER_DATA.register(player.getUniqueId(), new PlayerData(player));
+        DMiner dMiner = new DMiner(this.plugin, player);
+        Registries.PLAYER_DATA.register(player.getUniqueId(), dMiner);
         this.plugin.getPlayerPacketListener().addListener(player);
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);

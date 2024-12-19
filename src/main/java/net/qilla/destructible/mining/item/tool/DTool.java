@@ -3,7 +3,7 @@ package net.qilla.destructible.mining.item.tool;
 import net.qilla.destructible.mining.item.DItem;
 import org.jetbrains.annotations.NotNull;
 
-public class DTool extends DItem {
+public final class DTool extends DItem {
     private final DToolType dToolType;
     private final int strength;
     private final float efficiency;

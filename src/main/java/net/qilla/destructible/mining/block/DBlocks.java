@@ -7,7 +7,7 @@ import net.qilla.destructible.mining.item.tool.DToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
-public class DBlocks {
+public final class DBlocks {
 
     public static final DBlock NONE = new DBlock(DBlock.Properties.of()
             .noDrops()
@@ -17,7 +17,7 @@ public class DBlocks {
 
     public static final DBlock STONE = register(Material.STONE, new DBlock(DBlock.Properties.of()
             .strengthRequirement(0)
-            .durability(20)
+            .durability(150)
             .properTools(new DToolType[]{DToolType.PICKAXE})
             .itemDrops(DDrops.COBBLESTONE)
             .sound(Sound.BLOCK_STONE_BREAK)
@@ -26,7 +26,7 @@ public class DBlocks {
     public static final DBlock SAND = register(Material.SAND, new DBlock(DBlock.Properties.of()
             .strengthRequirement(0)
             .instaBreak()
-            .properTools(new DToolType[]{DToolType.ANY})
+            .properTools(new DToolType[]{DToolType.SHOVEL})
             .itemDrops(DDrops.SAND)
             .sound(Sound.BLOCK_SAND_BREAK)
             .particle(Material.SAND))
@@ -35,7 +35,7 @@ public class DBlocks {
     public static final DBlock RED_SAND = register(Material.RED_SAND, new DBlock(DBlock.Properties.of()
             .strengthRequirement(0)
             .instaBreak()
-            .properTools(new DToolType[]{DToolType.ANY})
+            .properTools(new DToolType[]{DToolType.SHOVEL})
             .itemDrops(DDrops.RED_SAND)
             .sound(Sound.BLOCK_SAND_BREAK)
             .particle(Material.RED_SAND))
@@ -44,7 +44,7 @@ public class DBlocks {
     public static final DBlock GRAVEL = register(Material.GRAVEL, new DBlock(DBlock.Properties.of()
             .strengthRequirement(1)
             .durability(20)
-            .properTools(new DToolType[]{DToolType.PICKAXE})
+            .properTools(new DToolType[]{DToolType.SHOVEL})
             .itemDrops(DDrops.GRAVEL)
             .sound(Sound.BLOCK_GRAVEL_BREAK)
             .particle(Material.GRAVEL))
@@ -61,7 +61,7 @@ public class DBlocks {
 
     public static final DBlock COBBLESTONE = register(Material.COBBLESTONE, new DBlock(DBlock.Properties.of()
             .strengthRequirement(1)
-            .durability(30)
+            .durability(120)
             .properTools(new DToolType[]{DToolType.PICKAXE})
             .itemDrops(DDrops.COBBLESTONE)
             .sound(Sound.BLOCK_STONE_BREAK)

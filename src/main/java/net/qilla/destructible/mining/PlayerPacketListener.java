@@ -7,42 +7,44 @@ import io.netty.channel.ChannelPipeline;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.InteractionHand;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.player.data.PlayerData;
-import org.bukkit.GameMode;
+import net.qilla.destructible.mining.player.data.DMiner;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public final class PlayerPacketListener {
+    private final Destructible plugin;
+
+    public PlayerPacketListener(final Destructible plugin) {
+        this.plugin = plugin;
+    }
+
     public void addListener(final Player player) {
         ChannelDuplexHandler handler = new ChannelDuplexHandler() {
             @Override
             public void channelRead(ChannelHandlerContext context, Object packet) throws Exception {
-                if(player.getGameMode() == GameMode.SURVIVAL) {
                     if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
-                        PlayerData playerData = Registries.PLAYER_DATA.get(player.getUniqueId());
+                        DMiner dMiner = Registries.PLAYER_DATA.get(player.getUniqueId());
 
                         switch(actionPacket.getAction()) {
                             case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> {
-                                DestructibleMining.init(playerData, actionPacket);
+                                dMiner.init(actionPacket);
                             }
                             case ServerboundPlayerActionPacket.Action.DROP_ITEM,
                                  ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS -> {
                                 //Temp Fix
-                                DestructibleMining.stop(playerData);
+                                dMiner.stop();
                             }
                             default -> {
-                                DestructibleMining.stop(playerData);
+                                dMiner.stop();
                             }
                         }
                     } else if(packet instanceof ServerboundSwingPacket swingPacket) {
-                        if(!swingPacket.getHand().equals(InteractionHand.MAIN_HAND)) return;
-                        PlayerData playerData = Registries.PLAYER_DATA.get(player.getUniqueId());
+                        DMiner dMiner = Registries.PLAYER_DATA.get(player.getUniqueId());
 
-                        DestructibleMining.tickBlock(playerData);
+                        dMiner.tickBlock(swingPacket);
                     }
-                }
                 super.channelRead(context, packet);
             }
         };

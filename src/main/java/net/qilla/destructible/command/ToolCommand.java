@@ -15,6 +15,7 @@ import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.util.ItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
@@ -65,7 +66,9 @@ public class ToolCommand {
 
         item.editMeta(meta -> {
            meta.getPersistentDataContainer().set(DataKey.TOOL, PersistentDataType.STRING, dTool.getId());
-           meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
+           if(dTool.getDurability() != -1) {
+               meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
+           }
            meta.displayName(dTool.getDisplayName());
            meta.setEnchantmentGlintOverride(true);
 
@@ -80,6 +83,12 @@ public class ToolCommand {
 
            meta.lore(lore);
         });
+
+        if(dTool.getDurability() != -1) {
+            Damageable damageable = (Damageable) item.getItemMeta();
+            damageable.setMaxDamage(dTool.getDurability());
+            item.setItemMeta(damageable);
+        }
 
         ItemUtil.give(player, item);
         return Command.SINGLE_SUCCESS;

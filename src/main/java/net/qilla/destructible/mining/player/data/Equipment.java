@@ -4,9 +4,10 @@ import net.qilla.destructible.Destructible;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.NotNull;
 
 public class Equipment {
-    private final PlayerData playerData;
+    private final DMiner dMiner;
     private ItemStack heldItem;
     private ItemStack offhandItem;
     private ItemStack helmet;
@@ -14,13 +15,13 @@ public class Equipment {
     private ItemStack leggings;
     private ItemStack boots;
 
-    public Equipment(PlayerData playerData) {
-        this.playerData = playerData;
+    public Equipment(DMiner dMiner) {
+        this.dMiner = dMiner;
         tick();
     }
 
     public void tick() {
-        PlayerInventory inventory = playerData.getPlayer().getInventory();
+        PlayerInventory inventory = dMiner.getPlayer().getInventory();
         Bukkit.getScheduler().runTaskTimer(Destructible.getInstance(), () -> {
             this.heldItem = inventory.getItemInMainHand();
             this.offhandItem = inventory.getItemInOffHand();
@@ -31,26 +32,32 @@ public class Equipment {
         }, 0, 10);
     }
 
+    @NotNull
     public ItemStack getHeldItem() {
         return heldItem;
     }
 
+    @NotNull
     public ItemStack getOffhandItem() {
         return offhandItem;
     }
 
+    @NotNull
     public ItemStack getHelmet() {
         return helmet;
     }
 
+    @NotNull
     public ItemStack getChestplate() {
         return chestplate;
     }
 
+    @NotNull
     public ItemStack getLeggings() {
         return leggings;
     }
 
+    @NotNull
     public ItemStack getBoots() {
         return boots;
     }

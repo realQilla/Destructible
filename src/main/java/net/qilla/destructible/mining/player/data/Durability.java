@@ -1,6 +1,6 @@
 package net.qilla.destructible.mining.player.data;
 
-public class Durability {
+public final class Durability {
     private final float total;
     private float current;
 

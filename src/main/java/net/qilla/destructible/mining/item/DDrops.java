@@ -3,7 +3,7 @@ package net.qilla.destructible.mining.item;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class DDrops {
+public final class DDrops {
 
     public static final DDrop[] SAND = new DDrop[]{
             new DDrop(DDrop.Properties.of()

@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
-public class Registry<K, V> {
+public final class Registry<K, V> {
     private final Map<K, V> registry;
     private final Set<BiConsumer<K, V>> listeners;
 

@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
-public class DBlock {
+public final class DBlock {
     private final int strengthRequirement;
     private final float durability;
     private final DToolType[] properTools;

@@ -5,7 +5,8 @@ public enum DToolType {
     PICKAXE,
     DRILL,
     AXE,
-    HATCHET;
+    HATCHET,
+    SHOVEL;
 
     @Override
     public String toString() {

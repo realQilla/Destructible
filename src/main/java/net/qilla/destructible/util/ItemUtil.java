@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.Random;
 
-public class ItemUtil {
+public final class ItemUtil {
 
     private static final Random random = new Random();
 

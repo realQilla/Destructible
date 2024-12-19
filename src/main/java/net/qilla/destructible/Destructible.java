@@ -25,7 +25,7 @@ public final class Destructible extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.playerPacketListener = new PlayerPacketListener();
+        this.playerPacketListener = new PlayerPacketListener(this);
 
         initListener();
         initCommand();
