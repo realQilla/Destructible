@@ -15,10 +15,12 @@ import org.jetbrains.annotations.NotNull;
  * Player data specifically related to the current block being mined.
  */
 public final class DData {
+    private final ServerboundPlayerActionPacket packet;
     private final DMiner dMiner;
     private final World world;
     private final BlockPos blockPos;
     private final Location blockLoc;
+    private final int posHashCode;
     private final Direction direction;
     private DBlock dBlock;
     private DTool dTool;
@@ -26,12 +28,16 @@ public final class DData {
     private int blockStage = 0;
 
     public DData(@NotNull final DMiner dMiner, @NotNull ServerboundPlayerActionPacket packet) {
+        this.packet = packet;
         this.dMiner = dMiner;
         this.world = dMiner.getPlayer().getWorld();
         this.blockPos = packet.getPos();
         this.blockLoc = DBlockUtil.blockPosToLoc(packet.getPos(), this.world);
+        this.posHashCode = this.blockPos.hashCode();
         this.direction = packet.getDirection();
-        updateBlock();
+
+        this.dBlock = DBlockUtil.getDBlock(this.world.getBlockAt(this.blockLoc));
+        this.blockDurability = new Durability(dBlock.getDurability());
         updateDTool();
     }
 
@@ -47,13 +53,9 @@ public final class DData {
         return this.blockDurability.damage(amount) <= 0;
     }
 
-    /**
-     * Updates the currently cached block.
-     */
-    public void updateBlock() {
-        DBlock dBlock = DBlockUtil.getDBlock(this.world.getBlockAt(this.blockLoc));
-        this.dBlock = dBlock;
-        this.blockDurability = new Durability(dBlock.getDurability());
+    @NotNull
+    public DData refresh() {
+        return new DData(this.dMiner, this.packet);
     }
 
     public DTool updateDTool() {
@@ -73,6 +75,10 @@ public final class DData {
     @NotNull
     public Location getBlockLoc() {
         return this.blockLoc;
+    }
+
+    public int getPosHashCode() {
+        return this.posHashCode;
     }
 
     @NotNull

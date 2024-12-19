@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Destructible extends JavaPlugin {
 
-    private final LifecycleEventManager<Plugin> lifecycleMan = this.getLifecycleManager();
+    private LifecycleEventManager<Plugin> lifecycleMan;
     private PlayerPacketListener playerPacketListener;
 
     static {
@@ -25,6 +25,7 @@ public final class Destructible extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.lifecycleMan = this.getLifecycleManager();
         this.playerPacketListener = new PlayerPacketListener(this);
 
         initListener();
