@@ -14,7 +14,7 @@ public final class DTools {
             DTool.Properties.of()
     );
 
-    public static final DTool MULTI_TOOL = register("multi_tool",
+    public static final DTool MULTI_TOOL = register("MULTI_TOOL",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.LEGENDARY.getColor() + "><!italic>Multi Tool"))
                     .material(Material.DIAMOND_SHOVEL)
@@ -28,7 +28,7 @@ public final class DTools {
                             .efficiency(1000))
     );
 
-    public static final DTool WOODEN_PICKAXE = register("wooden_pickaxe",
+    public static final DTool WOODEN_PICKAXE = register("WOODEN_PICKAXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.COMMON.getColor() + "><!italic>Wooden Pickaxe"))
                     .material(Material.WOODEN_PICKAXE)
@@ -42,7 +42,7 @@ public final class DTools {
                             .efficiency(1.5f))
     );
 
-    public static final DTool STONE_PICKAXE = register("stone_pickaxe",
+    public static final DTool STONE_PICKAXE = register("STONE_PICKAXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.UNIQUE.getColor() + "><!italic>Stone Pickaxe"))
                     .material(Material.STONE_PICKAXE)
@@ -56,7 +56,7 @@ public final class DTools {
                             .efficiency(2.25f))
     );
 
-    public static final DTool IRON_PICKAXE = register("iron_pickaxe",
+    public static final DTool IRON_PICKAXE = register("IRON_PICKAXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.RARE.getColor() + "><!italic>Iron Pickaxe"))
                     .material(Material.IRON_PICKAXE)
@@ -70,7 +70,7 @@ public final class DTools {
                             .efficiency(4.0f))
     );
 
-    public static final DTool DIAMOND_PICKAXE = register("diamond_pickaxe",
+    public static final DTool DIAMOND_PICKAXE = register("DIAMOND_PICKAXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.RARE.getColor() + "><!italic>Diamond Pickaxe"))
                     .material(Material.DIAMOND_PICKAXE)
@@ -84,7 +84,7 @@ public final class DTools {
                             .efficiency(8.0f))
     );
 
-    public static final DTool WOODEN_AXE = register("wooden_axe",
+    public static final DTool WOODEN_AXE = register("WOODEN_AXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.COMMON.getColor() + "><!italic>Wooden Axe"))
                     .material(Material.WOODEN_AXE)
@@ -98,7 +98,7 @@ public final class DTools {
                             .efficiency(1.5f))
     );
 
-    public static final DTool STONE_AXE = register("stone_axe",
+    public static final DTool STONE_AXE = register("STONE_AXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.UNIQUE.getColor() + "><!italic>Stone Axe"))
                     .material(Material.STONE_AXE)
@@ -112,7 +112,7 @@ public final class DTools {
                             .efficiency(2.25f))
     );
 
-    public static final DTool IRON_AXE = register("iron_axe",
+    public static final DTool IRON_AXE = register("IRON_AXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.RARE.getColor() + "><!italic>Iron Axe"))
                     .material(Material.IRON_AXE)
@@ -126,7 +126,7 @@ public final class DTools {
                             .efficiency(4.0f))
     );
 
-    public static final DTool DIAMOND_AXE = register("diamond_axe",
+    public static final DTool DIAMOND_AXE = register("DIAMOND_AXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.RARE.getColor() + "><!italic>Diamond Axe"))
                     .material(Material.DIAMOND_AXE)
@@ -140,7 +140,7 @@ public final class DTools {
                             .efficiency(8.0f))
     );
 
-    public static final DTool WOODEN_SHOVEL = register("wooden_shovel",
+    public static final DTool WOODEN_SHOVEL = register("WOODEN_SHOVEL",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.COMMON.getColor() + "><!italic>Wooden Axe"))
                     .material(Material.WOODEN_SHOVEL)
@@ -156,6 +156,6 @@ public final class DTools {
 
     private static DTool register(String id, DItem.Properties dItem, Function<DItem.Properties, DTool> factory) {
         DTool dTool = factory.apply(dItem.id(id));
-        return Registries.TOOLS.register(id, dTool);
+        return Registries.DTOOLS.put(id, dTool);
     }
 }

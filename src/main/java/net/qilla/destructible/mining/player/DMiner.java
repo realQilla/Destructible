@@ -1,6 +1,7 @@
 package net.qilla.destructible.mining.player;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -9,12 +10,16 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.data.ChunkCoord;
 import net.qilla.destructible.data.DataKey;
+import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.Registry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.item.tool.DToolType;
 import net.qilla.destructible.mining.player.data.DData;
 import net.qilla.destructible.mining.player.data.Equipment;
+import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.ItemUtil;
 import org.bukkit.*;
@@ -60,9 +65,17 @@ public final class DMiner {
     public void init(@NotNull final ServerboundPlayerActionPacket actionPacket) {
         if(this.player.getGameMode() != GameMode.SURVIVAL) return;
 
+        DBlock dBlock = getDBlock(actionPacket.getPos());
+
+        if(dBlock == null) return;
         if(this.dData == null || actionPacket.getPos().hashCode() != this.dData.getPosHashCode()) {
-            this.dData = new DData(this, actionPacket);
+            this.dData = new DData(this, actionPacket, dBlock);
         }
+    }
+
+    private DBlock getDBlock(final BlockPos blockPos) {
+        var registry = Registries.CACHED_DBLOCKS.computeIfPresent(new ChunkCoord(blockPos), (k, v) -> v);
+        return registry == null ? null : registry.computeIfPresent(CoordUtil.getPosInChunk(blockPos), (k, v) -> v);
     }
 
     public void tickBlock(@NotNull ServerboundSwingPacket swingPacket) {
@@ -92,15 +105,12 @@ public final class DMiner {
         dData.getWorld().spawnParticle(Particle.BLOCK,
                 new Location(dData.getWorld(),
                         dData.getBlockPos().getX() + 0.5 + midFace.x,
-                        dData.getBlockPos().getY() + 0.5 + midFace.y,
+                        dData.getBlockPos().getY() + 0.6 + midFace.y,
                         dData.getBlockPos().getZ() + 0.5 + midFace.z),
                 50, midOffset[0], midOffset[1], midOffset[2], 0,
                 dData.getDBlock().getParticle().createBlockData());
-        dData.getBlockLoc().getBlock().setType(Material.COBBLESTONE);
 
-        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundBlockUpdatePacket(dData.getBlockPos(), Blocks.DIRT.defaultBlockState()));
-
-        this.damageTool(dData,1);
+        this.damageTool(dData, 1);
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             List<ItemStack> items = ItemUtil.rollItemDrops(dData.getDBlock().getItemDrops());
             Vec3 faceVec = dData.getDirection().getUnitVec3();
@@ -117,9 +127,7 @@ public final class DMiner {
                 }
             }
         });
-        if(this.dData != null) {
-            this.dData = this.dData.refresh();
-        }
+        if(this.dData != null) this.dData = this.dData.refresh(getDBlock(this.dData.getBlockPos()));
     }
 
     private ItemEntity createItemEntity(final DData dData, final ItemStack item, final Vec3 itemMidFace, final Vec3 faceVec) {

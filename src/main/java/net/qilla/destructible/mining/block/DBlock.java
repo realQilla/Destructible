@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public final class DBlock {
+    private final String id;
+    private final Material material;
     private final int strengthRequirement;
     private final float durability;
     private final List<DToolType> properTools;
@@ -17,12 +19,24 @@ public final class DBlock {
     private final Material particle;
 
     public DBlock(DBlock.Properties properties) {
+        this.id = properties.id;
+        this.material = properties.material;
         this.strengthRequirement = properties.strengthRequirement;
         this.durability = properties.durability;
         this.properTools = properties.properTools;
         this.itemDrops = properties.itemDrops;
         this.sound = properties.sound;
         this.particle = properties.particle;
+    }
+
+    @NotNull
+    public String getId() {
+        return this.id;
+    }
+
+    @NotNull
+    public Material getMaterial() {
+        return this.material;
     }
 
     public int getStrengthRequirement() {
@@ -54,6 +68,8 @@ public final class DBlock {
     }
 
     public static class Properties {
+        private String id;
+        private Material material;
         private int strengthRequirement;
         private float durability;
         private List<DToolType> properTools;
@@ -63,6 +79,16 @@ public final class DBlock {
 
         public static DBlock.Properties of() {
             return new DBlock.Properties();
+        }
+
+        public DBlock.Properties id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public DBlock.Properties material(Material material) {
+            this.material = material;
+            return this;
         }
 
         /**
@@ -162,7 +188,8 @@ public final class DBlock {
         }
 
         private Properties() {
-            this.strengthRequirement = -1;
+            this.material = Material.BEDROCK;
+            this.strengthRequirement = 0;
             this.durability = -1;
             this.properTools = List.of();
             this.itemDrops = List.of();

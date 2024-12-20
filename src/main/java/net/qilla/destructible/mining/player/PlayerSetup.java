@@ -33,15 +33,15 @@ public class PlayerSetup implements Listener {
 
     public void initPlayer(final Player player) {
         DMiner dMiner = new DMiner(this.plugin, player);
-        Registries.PLAYER_DATA.register(player.getUniqueId(), dMiner);
-        this.plugin.getPlayerPacketListener().addListener(player);
+        Registries.DMINER_DATA.put(player.getUniqueId(), dMiner);
+        this.plugin.getPlayerPacketListener().addListener(player, dMiner);
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
         player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have been registered!"));
     }
 
     public void removePlayer(final Player player) {
-        Registries.PLAYER_DATA.unregister(player.getUniqueId());
+        Registries.DMINER_DATA.remove(player.getUniqueId());
         this.plugin.getPlayerPacketListener().removeListener(player);
     }
 }

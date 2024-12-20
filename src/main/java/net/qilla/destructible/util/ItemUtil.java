@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Random;
 
 public final class ItemUtil {
-
     private static final Random random = new Random();
 
     public static List<ItemStack> rollItemDrops(final List<DDrop> itemDrops) {

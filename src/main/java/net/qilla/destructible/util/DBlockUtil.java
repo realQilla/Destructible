@@ -54,9 +54,4 @@ public final class DBlockUtil {
     public static Location blockPosToLoc(@NotNull BlockPos blockPos, @NotNull World world) {
         return new Location(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
-
-    @NotNull
-    public static DBlock getDBlock(final Block block) {
-        return Registries.BLOCKS.getRegistry().getOrDefault(block.getType(), DBlocks.NONE);
-    }
 }

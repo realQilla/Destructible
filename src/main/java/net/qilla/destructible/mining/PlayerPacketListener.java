@@ -5,6 +5,8 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.PacketType;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -22,35 +24,23 @@ public final class PlayerPacketListener {
         this.plugin = plugin;
     }
 
-    public void addListener(final Player player) {
+    public void addListener(final Player player, final DMiner dMiner) {
         ChannelDuplexHandler handler = new ChannelDuplexHandler() {
             @Override
-            public void channelRead(ChannelHandlerContext context, Object packet) throws Exception {
-                if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
-                    DMiner dMiner = Registries.PLAYER_DATA.get(player.getUniqueId());
+            public void channelRead(ChannelHandlerContext context, Object object) throws Exception {
+                Packet<?> packet = (Packet<?>) object;
 
+                if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
                     switch(actionPacket.getAction()) {
-                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> {
-                            dMiner.init(actionPacket);
-                        }
+                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> dMiner.init(actionPacket);
                         case ServerboundPlayerActionPacket.Action.DROP_ITEM,
-                             ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS -> {
-                            //Temp Fix
-                            dMiner.stop();
-                        }
-                        default -> {
-                            dMiner.stop();
-                        }
+                             ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS -> dMiner.stop();
+                        default -> dMiner.stop();
                     }
                 } else if(packet instanceof ServerboundSwingPacket swingPacket) {
-                    if(swingPacket.getHand().equals(InteractionHand.MAIN_HAND)) {
-                        DMiner dMiner = Registries.PLAYER_DATA.get(player.getUniqueId());
-                        player.sendMessage(MiniMessage.miniMessage().deserialize("<blue>" + swingPacket + " <yellow>@ <green>" + System.currentTimeMillis()));
-
-                        dMiner.tickBlock(swingPacket);
-                    }
+                    dMiner.tickBlock(swingPacket);
                 }
-                super.channelRead(context, packet);
+                super.channelRead(context, object);
             }
         };
 

@@ -12,51 +12,40 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Player data specifically related to the current block being mined.
- */
 public final class DData {
     private final ServerboundPlayerActionPacket packet;
     private final DMiner dMiner;
     private final World world;
+    private DBlock dBlock;
     private final BlockPos blockPos;
     private final Location blockLoc;
     private final int posHashCode;
     private final Direction direction;
-    private DBlock dBlock;
     private DTool dTool;
     private Durability blockDurability;
     private int blockStage = 0;
 
-    public DData(@NotNull final DMiner dMiner, @NotNull ServerboundPlayerActionPacket packet) {
+    public DData(@NotNull final DMiner dMiner, @NotNull final ServerboundPlayerActionPacket packet, @NotNull DBlock dBlock) {
         this.packet = packet;
         this.dMiner = dMiner;
         this.world = dMiner.getPlayer().getWorld();
+        this.dBlock = dBlock;
         this.blockPos = packet.getPos();
         this.blockLoc = DBlockUtil.blockPosToLoc(packet.getPos(), this.world);
         this.posHashCode = this.blockPos.hashCode();
         this.direction = packet.getDirection();
-
-        this.dBlock = DBlockUtil.getDBlock(this.world.getBlockAt(this.blockLoc));
         this.blockDurability = new Durability(dBlock.getDurability());
         updateDTool();
     }
 
-    /**
-     * Damages the block by a specified amount
-     *
-     * @param amount
-     *
-     * @return Returns true when the block durability threshold has been passed.
-     */
     public boolean damage(float amount) {
         this.blockStage = Math.round(((blockDurability.getTotal() - blockDurability.getCurrent()) * 9 / blockDurability.getTotal()));
         return this.blockDurability.damage(amount) <= 0;
     }
 
     @NotNull
-    public DData refresh() {
-        return new DData(this.dMiner, this.packet);
+    public DData refresh(DBlock dBlock) {
+        return new DData(this.dMiner, this.packet, dBlock);
     }
 
     public DTool updateDTool() {
@@ -66,6 +55,11 @@ public final class DData {
     @NotNull
     public World getWorld() {
         return this.world;
+    }
+
+    @NotNull
+    public DBlock getDBlock() {
+        return this.dBlock;
     }
 
     @NotNull
@@ -85,11 +79,6 @@ public final class DData {
     @NotNull
     public Direction getDirection() {
         return this.direction;
-    }
-
-    @NotNull
-    public DBlock getDBlock() {
-        return this.dBlock;
     }
 
     @NotNull

@@ -4,7 +4,8 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.command.ToolCommand;
+import net.qilla.destructible.command.destructible.DestructibleCom;
+import net.qilla.destructible.mining.DListener;
 import net.qilla.destructible.mining.PlayerPacketListener;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTools;
@@ -34,12 +35,13 @@ public final class Destructible extends JavaPlugin {
 
     private void initListener() {
         getServer().getPluginManager().registerEvents(new PlayerSetup(this), this);
+        getServer().getPluginManager().registerEvents(new DListener(this), this);
     }
 
     private void initCommand() {
         this.lifecycleMan.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             Commands commands = event.registrar();
-            new ToolCommand(this, commands).register();
+            new DestructibleCom(this, commands).register();
         });
     }
 
