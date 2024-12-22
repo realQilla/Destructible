@@ -28,6 +28,16 @@ public final class DBlocks {
                     .particle(Material.STONE)
     );
 
+    public static final DBlock CACTUS = register("CACTUS",
+            DBlock::new, DBlock.Properties.of()
+                    .strengthRequirement(1)
+                    .durability(60)
+                    .properTools(List.of(DToolType.AXE))
+                    .itemDrops(List.of(DDrops.CACTUS))
+                    .sound(Sound.ENTITY_DOLPHIN_DEATH)
+                    .particle(Material.CACTUS)
+    );
+
     public static final DBlock SAND = register("SAND",
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(0)

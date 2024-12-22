@@ -28,6 +28,20 @@ public final class DTools {
                             .efficiency(1000))
     );
 
+    public static final DTool CHAIN_SAW = register("CHAIN_SAW",
+            DItem.Properties.of()
+                    .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.bidfjgdgdfgdfg.getColor() + "><!italic>Chainsaw"))
+                    .material(Material.LIGHTNING_ROD)
+                    .rarity(Rarity.bidfjgdgdfgdfg)
+                    .stackSize(1)
+                    .durability(4),
+            itemProperties -> new DTool(itemProperties,
+                    DTool.Properties.of()
+                            .dToolType(List.of(DToolType.AXE))
+                            .strength(2)
+                            .efficiency(0.3f))
+    );
+
     public static final DTool WOODEN_PICKAXE = register("WOODEN_PICKAXE",
             DItem.Properties.of()
                     .displayName(MiniMessage.miniMessage().deserialize("<" + Rarity.COMMON.getColor() + "><!italic>Wooden Pickaxe"))

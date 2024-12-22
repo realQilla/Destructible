@@ -7,14 +7,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.ChunkCoord;
+import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.DataKey;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.data.Registry;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.item.tool.DToolType;
 import net.qilla.destructible.mining.player.data.DData;
@@ -74,8 +73,10 @@ public final class DMiner {
     }
 
     private DBlock getDBlock(final BlockPos blockPos) {
-        var registry = Registries.CACHED_DBLOCKS.computeIfPresent(new ChunkCoord(blockPos), (k, v) -> v);
-        return registry == null ? null : registry.computeIfPresent(CoordUtil.getPosInChunk(blockPos), (k, v) -> v);
+        var chunkMap = Registries.DBLOCK_CACHE.computeIfPresent(new ChunkPos(blockPos), (k, v) -> v);
+        if(chunkMap == null) return DBlocks.NONE;
+        var blockId = chunkMap.computeIfPresent(CoordUtil.posToChunkInt(blockPos), (k, v) -> v);
+        return blockId == null ? DBlocks.NONE: Registries.DBLOCKS.get(blockId);
     }
 
     public void tickBlock(@NotNull ServerboundSwingPacket swingPacket) {

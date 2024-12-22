@@ -9,12 +9,13 @@ import java.util.UUID;
 
 public final class Registries {
 
-    public static final Registry<ChunkCoord, Registry<Integer, DBlock>> CACHED_DBLOCKS = new Registry<>();
+    public static final DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, String>> DBLOCK_CACHE = new DestructibleRegistry<>();
 
-    public static final Registry<UUID, DMiner> DMINER_DATA = new Registry<>();
-    public static final Registry<String, DBlock> DBLOCKS = new Registry<>();
-    public static final Registry<String, DDrop> DDROPS = new Registry<>();
-    public static final Registry<String, DTool> DTOOLS = new Registry<>();
+    public static final DestructibleRegistry<UUID, DMiner> DMINER_DATA = new DestructibleRegistry<>();
+    public static final DestructibleRegistry<String, DBlock> DBLOCKS = new DestructibleRegistry<>();
+    public static final DestructibleRegistry<String, DDrop> DDROPS = new DestructibleRegistry<>();
+    public static final DestructibleRegistry<String, DTool> DTOOLS = new DestructibleRegistry<>();
 
-    public static final Registry<UUID, DBlock> DBLOCK_EDITOR = new Registry<>();
+    public static final DestructibleRegistry<UUID, DBlock> DBLOCK_EDITOR = new DestructibleRegistry<>();
+    public static final DestructibleRegistry<UUID, DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>>> DBLOCK_VIEWER = new DestructibleRegistry<>();
 }

@@ -1,19 +1,14 @@
-package net.qilla.destructible.mining;
+package net.qilla.destructible.mining.player;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.PacketType;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.InteractionHand;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.player.DMiner;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 

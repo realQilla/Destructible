@@ -15,6 +15,18 @@ public final class DDrops {
             )
     };
 
+    public static final DDrop[] CACTUS = new DDrop[]{
+            new DDrop(DDrop.Properties.of()
+                    .itemStack(ItemStack.of(Material.GREEN_DYE))
+                    .dropChance(0.23f)
+            ),
+            new DDrop(DDrop.Properties.of()
+                    .itemStack(ItemStack.of(Material.DIAMOND))
+                    .amount(1, 3)
+                    .dropChance(0.03f)
+            )
+    };
+
     public static final DDrop[] RED_SAND = new DDrop[]{
             new DDrop(DDrop.Properties.of()
                     .itemStack(ItemStack.of(Material.RED_SAND))

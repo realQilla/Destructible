@@ -6,6 +6,7 @@ import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.player.DMiner;
+import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.DItemUtil;
 import org.bukkit.Location;
@@ -31,7 +32,7 @@ public final class DData {
         this.world = dMiner.getPlayer().getWorld();
         this.dBlock = dBlock;
         this.blockPos = packet.getPos();
-        this.blockLoc = DBlockUtil.blockPosToLoc(packet.getPos(), this.world);
+        this.blockLoc = CoordUtil.blockPosToLoc(packet.getPos(), this.world);
         this.posHashCode = this.blockPos.hashCode();
         this.direction = packet.getDirection();
         this.blockDurability = new Durability(dBlock.getDurability());
