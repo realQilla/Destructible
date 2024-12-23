@@ -6,11 +6,11 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.destructible.DestructibleCom;
 import net.qilla.destructible.mining.DBlockCache;
+import net.qilla.destructible.mining.GeneralListener;
 import net.qilla.destructible.mining.player.DListener;
 import net.qilla.destructible.mining.player.PlayerPacketListener;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTools;
-import net.qilla.destructible.mining.player.PlayerSetup;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,8 +38,8 @@ public final class Destructible extends JavaPlugin {
     }
 
     private void initListener() {
-        getServer().getPluginManager().registerEvents(new PlayerSetup(this), this);
         getServer().getPluginManager().registerEvents(new DListener(this), this);
+        getServer().getPluginManager().registerEvents(new GeneralListener(this), this);
     }
 
     private void initCommand() {

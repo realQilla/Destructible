@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("java")
-    id("io.papermc.paperweight.userdev") version "1.7.7"
     id("com.gradleup.shadow") version "8.3.5"
+    id("io.papermc.paperweight.userdev") version "1.7.7"
 }
 
 group = "net.qilla"
@@ -21,6 +21,7 @@ dependencies {
     paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-api:4.17.0")
 }
+
 
 tasks {
     build {

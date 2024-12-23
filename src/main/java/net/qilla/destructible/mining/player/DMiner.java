@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.ChunkPos;
@@ -62,8 +63,7 @@ public final class DMiner {
     }
 
     public void init(@NotNull final ServerboundPlayerActionPacket actionPacket) {
-        if(this.player.getGameMode() != GameMode.SURVIVAL) return;
-
+        if(player.getGameMode() == GameMode.CREATIVE) return;
         DBlock dBlock = getDBlock(actionPacket.getPos());
 
         if(dBlock == null) return;
@@ -89,7 +89,7 @@ public final class DMiner {
         DData dData = this.dData;
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if(dData.damage(dTool.getEfficiency())) this.destroyBlock(dData);
+            if(dData.damage(dTool.getEfficiency()) || this.player.getGameMode() == GameMode.CREATIVE) this.destroyBlock(dData);
             else this.serverLevel.getChunkSource().broadcastAndSend(serverPlayer,
                     new ClientboundBlockDestructionPacket(dData.getPosHashCode(), dData.getBlockPos(), dData.getBlockStage()));
         });

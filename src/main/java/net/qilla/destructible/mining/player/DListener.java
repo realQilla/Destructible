@@ -7,10 +7,7 @@ import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.block.Blocks;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
@@ -19,7 +16,9 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.EntityUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -28,6 +27,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class DListener implements Listener {
 
@@ -45,32 +46,29 @@ public class DListener implements Listener {
         if(!Registries.DBLOCK_EDITOR.containsKey(player.getUniqueId())) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
-            ServerLevel serverLevel = serverPlayer.serverLevel();
-            DBlock dBlock = Registries.DBLOCK_EDITOR.get(player.getUniqueId());
-            ChunkPos chunkPos = new ChunkPos(block.getLocation());
-            int chunkInt = CoordUtil.posToChunkInt(block.getLocation());
+                    ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+                    ServerLevel serverLevel = serverPlayer.serverLevel();
+                    DBlock dBlock = Registries.DBLOCK_EDITOR.get(player.getUniqueId());
+                    ChunkPos chunkPos = new ChunkPos(block.getLocation());
+                    int chunkInt = CoordUtil.posToChunkInt(block.getLocation());
 
-            Registries.DBLOCK_CACHE.computeIfAbsent(chunkPos, k -> new DestructibleRegistry<>()).put(chunkInt, dBlock.getId());
+                    Registries.DBLOCK_CACHE.computeIfAbsent(chunkPos, k -> new DestructibleRegistry<>()).put(chunkInt, dBlock.getId());
 
-            DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>> viewerMap = Registries.DBLOCK_VIEWER.get(player.getUniqueId());
+                    BlockPos blockPos = CoordUtil.locToBlockPos(block.getLocation());
+                    Entity entity = EntityUtil.getHighlight(serverLevel);
 
-            if(viewerMap != null) {
-                BlockPos blockPos = CoordUtil.locToBlockPos(block.getLocation());
-                Entity entity = EntityUtil.getHighlight(serverLevel);
-
-                viewerMap.computeIfAbsent(chunkPos, v -> new DestructibleRegistry<>()).computeIfAbsent(chunkInt, v2 -> entity.getId());
-                player.sendMessage("Entity added to map: " + entity.getId() + ": " + viewerMap.size());
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, entity.getId(), blockPos));
-                    serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
-                });
-            }
-            Bukkit.getScheduler().runTask(this.plugin, () -> {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + dBlock.getId() + " has been registered!"));
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
-            });
-        });
+                    Registries.DBLOCK_HIGHLIGHT.get(player.getUniqueId())
+                            .computeIfAbsent(chunkPos, k2 -> new DestructibleRegistry<>()).computeIfAbsent(chunkInt, v2 -> entity.getId());
+                    Bukkit.getScheduler().runTask(this.plugin, () -> {
+                        serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, entity.getId(), blockPos));
+                        serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
+                    });
+                    Bukkit.getScheduler().runTask(this.plugin, () -> {
+                        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + dBlock.getId() + " has been registered!"));
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
+                    });
+                }
+        );
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -78,7 +76,10 @@ public class DListener implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        if(!Registries.DBLOCK_EDITOR.containsKey(player.getUniqueId())) return;
+        if(!player.isOp() || player.getGameMode() != GameMode.CREATIVE) {
+            event.setCancelled(true);
+            return;
+        }
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             ChunkPos chunkPos = new ChunkPos(block.getLocation());
             int chunkInt = CoordUtil.posToChunkInt(block.getLocation());
@@ -94,18 +95,47 @@ public class DListener implements Listener {
                 if(v.isEmpty()) return null;
                 else return v;
             });
-            Registries.DBLOCK_VIEWER.computeIfPresent(player.getUniqueId(), (k, v) -> {
-                v.computeIfPresent(chunkPos, (k2, v2) -> {
-                    v2.computeIfPresent(chunkInt, (k3, v3) -> {
-                        Bukkit.getScheduler().runTask(this.plugin, () -> {
-                            ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(v3));
+            Registries.DBLOCK_HIGHLIGHT.get(player.getUniqueId())
+                    .computeIfPresent(chunkPos, (k2, v2) -> {
+                        v2.computeIfPresent(chunkInt, (k3, v3) -> {
+                            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                                ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(v3));
+                            });
+                            return null;
                         });
-                        return null;
+                        if(v2.isEmpty()) return null;
+                        else return v2;
                     });
-                    return null;
-                });
-                return v;
-            });
         });
+    }
+
+    @EventHandler
+    private void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
+        initPlayer(player);
+        if(player.isOp()) Registries.DBLOCK_HIGHLIGHT.remove(player.getUniqueId());
+    }
+
+    @EventHandler
+    private void onPlayerLeave(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+
+        removePlayer(player);
+        if(player.isOp()) Registries.DBLOCK_HIGHLIGHT.remove(player.getUniqueId());
+    }
+
+    public void initPlayer(final Player player) {
+        DMiner dMiner = new DMiner(this.plugin, player);
+        Registries.DMINER_DATA.put(player.getUniqueId(), dMiner);
+        this.plugin.getPlayerPacketListener().addListener(player, dMiner);
+
+        player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have been registered!"));
+    }
+
+    public void removePlayer(final Player player) {
+        Registries.DMINER_DATA.remove(player.getUniqueId());
+        this.plugin.getPlayerPacketListener().removeListener(player);
     }
 }

@@ -5,6 +5,7 @@ import net.qilla.destructible.mining.item.DDrop;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.player.DMiner;
 
+import java.util.List;
 import java.util.UUID;
 
 public final class Registries {
@@ -17,5 +18,5 @@ public final class Registries {
     public static final DestructibleRegistry<String, DTool> DTOOLS = new DestructibleRegistry<>();
 
     public static final DestructibleRegistry<UUID, DBlock> DBLOCK_EDITOR = new DestructibleRegistry<>();
-    public static final DestructibleRegistry<UUID, DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>>> DBLOCK_VIEWER = new DestructibleRegistry<>();
+    public static final DestructibleRegistry<UUID, DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>>> DBLOCK_HIGHLIGHT = new DestructibleRegistry<>();
 }
