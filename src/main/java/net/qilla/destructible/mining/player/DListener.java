@@ -69,7 +69,7 @@ public class DListener implements Listener {
                 });
             });
             Bukkit.getScheduler().runTask(this.plugin, () -> {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + editorSettings.getDblock().getId() + " has been registered!"));
+                player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold>" + editorSettings.getDblock().getId() + "</gold> has been cached!"));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
             });
         });
@@ -92,7 +92,7 @@ public class DListener implements Listener {
             Registries.DBLOCK_CACHE.computeIfPresent(chunkPos, (k, v) -> {
                 v.computeIfPresent(chunkInt, (k2, v2) -> {
                     Bukkit.getScheduler().runTask(this.plugin, () -> {
-                        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + v2 + " been unregistered!"));
+                        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold>" + v2 + "</gold> been removed from the cache!"));
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.40f, 1.0f);
                     });
                     return null;
@@ -135,7 +135,6 @@ public class DListener implements Listener {
         this.plugin.getPlayerPacketListener().addListener(player, dMiner);
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have been registered!"));
     }
 
     public void removePlayer(final Player player) {

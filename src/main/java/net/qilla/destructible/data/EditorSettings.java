@@ -9,6 +9,7 @@ public class EditorSettings {
     private DBlock dblock;
     private boolean recursive;
     private final DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>> blockHighlight = new DestructibleRegistry<>();
+    private boolean lockHighlight;
     private boolean highlight = false;
 
     public EditorSettings(final Player player) {
@@ -34,6 +35,10 @@ public class EditorSettings {
         return blockHighlight;
     }
 
+    public boolean isHighlightLocked() {
+        return lockHighlight;
+    }
+
     public boolean isHighlight() {
         return highlight;
     }
@@ -41,6 +46,10 @@ public class EditorSettings {
     public void setDblock(DBlock dblock, boolean recursive) {
         this.dblock = dblock;
         this.recursive = recursive;
+    }
+
+    public void setLockHighlight(boolean lock) {
+        this.lockHighlight = lock;
     }
 
     public void setHighlight(boolean highlight) {
