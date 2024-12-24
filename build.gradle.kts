@@ -2,8 +2,8 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("java")
-    id("com.gradleup.shadow") version "8.3.5"
-    id("io.papermc.paperweight.userdev") version "1.7.7"
+    id("com.gradleup.shadow") version "9.0.0-beta4"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.8"
 }
 
 group = "net.qilla"
@@ -18,7 +18,7 @@ repositories {
 configurations.create("shade")
 
 dependencies {
-    paperweight.paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-api:4.17.0")
 }
 
@@ -35,7 +35,7 @@ tasks {
 
     withType<ShadowJar> {
         configurations = listOf(project.configurations.getByName("shade"))
-        destinationDirectory.set(file("C:\\Users\\Richard\\Development\\Servers\\1.21.3\\plugins"))
+        destinationDirectory.set(file("C:\\Users\\Richard\\Development\\Servers\\1.21.4\\plugins"))
     }
 }
 

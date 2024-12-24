@@ -1,10 +1,13 @@
 package net.qilla.destructible.data;
 
+import com.mojang.datafixers.util.Pair;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DDrop;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.player.DMiner;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,5 +21,5 @@ public final class Registries {
     public static final DestructibleRegistry<String, DTool> DTOOLS = new DestructibleRegistry<>();
 
     public static final DestructibleRegistry<UUID, DBlock> DBLOCK_EDITOR = new DestructibleRegistry<>();
-    public static final DestructibleRegistry<UUID, DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>>> DBLOCK_HIGHLIGHT = new DestructibleRegistry<>();
+    public static final DestructibleRegistry<UUID, Pair<Player, DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>>>> DBLOCK_HIGHLIGHT = new DestructibleRegistry<>();
 }

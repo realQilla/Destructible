@@ -17,9 +17,11 @@ import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.EntityUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -55,18 +57,20 @@ public class DListener implements Listener {
                     Registries.DBLOCK_CACHE.computeIfAbsent(chunkPos, k -> new DestructibleRegistry<>()).put(chunkInt, dBlock.getId());
 
                     BlockPos blockPos = CoordUtil.locToBlockPos(block.getLocation());
-                    Entity entity = EntityUtil.getHighlight(serverLevel);
+                    CraftEntity entity = EntityUtil.getHighlight(serverLevel);
 
-                    Registries.DBLOCK_HIGHLIGHT.get(player.getUniqueId())
-                            .computeIfAbsent(chunkPos, k2 -> new DestructibleRegistry<>()).computeIfAbsent(chunkInt, v2 -> entity.getId());
-                    Bukkit.getScheduler().runTask(this.plugin, () -> {
-                        serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, entity.getId(), blockPos));
-                        serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
+                    Registries.DBLOCK_HIGHLIGHT.forEach((k, v) -> {
+                        v.getSecond().computeIfAbsent(chunkPos, k2 -> new DestructibleRegistry<>()).computeIfAbsent(chunkInt, v2 -> entity.getEntityId());
+                        Bukkit.getScheduler().runTask(this.plugin, () -> {
+                            ((CraftPlayer) v.getFirst()).getHandle().connection.send(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
+                            ((CraftPlayer) v.getFirst()).getHandle().connection.send(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
+                        });
                     });
                     Bukkit.getScheduler().runTask(this.plugin, () -> {
                         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>" + dBlock.getId() + " has been registered!"));
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
                     });
+
                 }
         );
     }
@@ -95,17 +99,19 @@ public class DListener implements Listener {
                 if(v.isEmpty()) return null;
                 else return v;
             });
-            Registries.DBLOCK_HIGHLIGHT.get(player.getUniqueId())
-                    .computeIfPresent(chunkPos, (k2, v2) -> {
-                        v2.computeIfPresent(chunkInt, (k3, v3) -> {
-                            Bukkit.getScheduler().runTask(this.plugin, () -> {
-                                ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(v3));
-                            });
-                            return null;
+
+            Registries.DBLOCK_HIGHLIGHT.forEach((k, v) -> {
+                v.getSecond().computeIfPresent(chunkPos, (k2, v2) -> {
+                    v2.computeIfPresent(chunkInt, (k3, v3) -> {
+                        Bukkit.getScheduler().runTask(this.plugin, () -> {
+                            ((CraftPlayer) v.getFirst()).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(v3));
                         });
-                        if(v2.isEmpty()) return null;
-                        else return v2;
+                        return null;
                     });
+                    if(v2.isEmpty()) return null;
+                    else return v2;
+                });
+            });
         });
     }
 
@@ -114,7 +120,6 @@ public class DListener implements Listener {
         Player player = event.getPlayer();
 
         initPlayer(player);
-        if(player.isOp()) Registries.DBLOCK_HIGHLIGHT.remove(player.getUniqueId());
     }
 
     @EventHandler

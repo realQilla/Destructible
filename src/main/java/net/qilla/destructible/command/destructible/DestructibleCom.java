@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.datafixers.util.Pair;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
@@ -25,6 +26,7 @@ import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.EntityUtil;
 import net.qilla.destructible.util.ItemUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -132,9 +134,18 @@ public class DestructibleCom {
         Player player = (Player) context.getSource().getSender();
 
         if(Registries.DBLOCK_EDITOR.containsKey(player.getUniqueId())) {
-            Registries.DBLOCK_HIGHLIGHT.computeIfPresent(player.getUniqueId(), (k, v) -> {
-                v.forEach((k2, v2) -> v2.forEach((k3, v3) -> ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(v3))));
-                return null;
+            Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+                Registries.DBLOCK_HIGHLIGHT.computeIfPresent(player.getUniqueId(), (k, v) -> {
+                    v.getSecond().forEach((k2, v2) -> {
+                        v2.forEach((k3, v3) -> ((CraftPlayer) player).getHandle().connection.send(new ClientboundRemoveEntitiesPacket(v3)));
+                        try {
+                            Thread.sleep(50);
+                        } catch(InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    return null;
+                });
             });
             Registries.DBLOCK_EDITOR.remove(player.getUniqueId());
             player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You are no longer modifying Destructible blocks in the world space!"));
@@ -154,7 +165,8 @@ public class DestructibleCom {
         }
 
         Registries.DBLOCK_EDITOR.put(player.getUniqueId(), dBlock);
-        Registries.DBLOCK_HIGHLIGHT.computeIfAbsent(player.getUniqueId(), k -> new DestructibleRegistry<>());
+        Registries.DBLOCK_HIGHLIGHT.computeIfAbsent(player.getUniqueId(), v -> new Pair<>(player, new DestructibleRegistry<>()));
+
         player.sendMessage(MiniMessage.miniMessage().deserialize(
                 "<yellow>You are now modifying Destructible blocks in the world space!\n" +
                 "<green>Any placed blocks will be registered as " + dBlock.getId() + "."));
@@ -165,13 +177,8 @@ public class DestructibleCom {
         Player player = (Player) context.getSource().getSender();
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
-
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>> viewMap = Registries.DBLOCK_HIGHLIGHT.get(player.getUniqueId());
-
-            if(viewMap == null) {
-                DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>> viewerMap = new DestructibleRegistry<>();
-
+            if(!Registries.DBLOCK_HIGHLIGHT.containsKey(player.getUniqueId())) {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
                     player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You are now viewing Destructible Blocks in the world space."));
@@ -179,13 +186,16 @@ public class DestructibleCom {
                 Registries.DBLOCK_CACHE.forEach((k, v) -> {
                     v.forEach((k2, v2) -> {
                         BlockPos blockPos = CoordUtil.chunkIntToPos(k2, k);
-                        Entity entity = EntityUtil.getHighlight(serverPlayer.serverLevel());
+                        CraftEntity entity = EntityUtil.getHighlight(serverPlayer.serverLevel());
 
                         Bukkit.getScheduler().runTask(this.plugin, () -> {
-                            serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, 0, blockPos));
-                            serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
+                            serverPlayer.connection.send(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
+                            serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
                         });
-                        viewerMap.computeIfAbsent(k, v3 -> new DestructibleRegistry<>()).computeIfAbsent(k2, v4 -> entity.getId());
+                        Registries.DBLOCK_HIGHLIGHT.computeIfAbsent(player.getUniqueId(), v3 ->
+                                new Pair<>(player, new DestructibleRegistry<>())).getSecond().computeIfAbsent(k, v3 ->
+                                new DestructibleRegistry<>()).computeIfAbsent(k2, v4 ->
+                                entity.getEntityId());
                     });
                     try {
                         Thread.sleep(50);
@@ -193,13 +203,12 @@ public class DestructibleCom {
                         throw new RuntimeException(e);
                     }
                 });
-                Registries.DBLOCK_HIGHLIGHT.put(player.getUniqueId(), viewerMap);
             } else {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     serverPlayer.connection.send(new ClientboundRemoveMobEffectPacket(serverPlayer.getId(), MobEffects.NIGHT_VISION));
                     player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You are no longer viewing Destructible Blocks in the world space."));
                 });
-                viewMap.forEach((k, v) -> {
+                Registries.DBLOCK_HIGHLIGHT.get(player.getUniqueId()).getSecond().forEach((k, v) -> {
                     v.forEach((k2, v2) -> {
                         serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(v2));
                     });
@@ -213,7 +222,7 @@ public class DestructibleCom {
             }
         });
         return Command.SINGLE_SUCCESS;
-    }
+        }
 
     private int save(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
@@ -228,7 +237,7 @@ public class DestructibleCom {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
 
         Registries.DBLOCK_CACHE.clear();
-        Registries.DBLOCK_HIGHLIGHT.forEach((k, v) -> v.forEach((k2, v2) -> v2.forEach((k3, v3) -> serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(v3)))));
+        Registries.DBLOCK_HIGHLIGHT.forEach((k, v) -> v.getSecond().forEach((k2, v2) -> v2.forEach((k3, v3) -> serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(v3)))));
         Registries.DBLOCK_HIGHLIGHT.clear();
         player.sendMessage(MiniMessage.miniMessage().deserialize(
                 "<yellow>All cached Destructible blocks have been <red><bold>DELETED</red>!" +
