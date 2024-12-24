@@ -1,4 +1,4 @@
-Destrucible
+Destructible
 ===========
 A simple mining plugin that allows server administrators to implement custom blocks, tools, and more!
 
