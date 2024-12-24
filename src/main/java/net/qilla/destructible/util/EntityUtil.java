@@ -3,6 +3,7 @@ package net.qilla.destructible.util;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftBlockDisplay;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -15,11 +16,13 @@ public class EntityUtil {
     public static CraftEntity getHighlight(ServerLevel serverLevel) {
         CraftBlockDisplay entity = new CraftBlockDisplay(serverLevel.getCraftServer(), new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, serverLevel));
         entity.setGlowing(true);
-        entity.setBlock(Material.CONDUIT.createBlockData());
+        entity.setGlowColorOverride(Color.SILVER);
+        entity.setInvisible(true);
+        entity.setBlock(Material.LIGHT_GRAY_CONCRETE.createBlockData());
         entity.setTransformation(new Transformation(
-                new Vector3f(-0.75f, -0.75f, -0.75f),
+                new Vector3f(0.05f, 0.05f, 0.05f),
                 new Quaternionf(),
-                new Vector3f(2.5f, 2.5f, 2.5f),
+                new Vector3f(0.90f, 0.90f, 0.90f),
                 new Quaternionf()
         ));
         return entity;
