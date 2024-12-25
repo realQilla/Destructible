@@ -2,9 +2,9 @@ package net.qilla.destructible.command.destructible;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.datafixers.util.Pair;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
@@ -14,7 +14,6 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.block.DBlock;
@@ -38,7 +37,7 @@ public class DestructibleCom {
     private static final String command = "destructible";
     private static final List<String> alias = List.of("dest", "d");
     private static final String[] toolArgs = {"tools", "type"};
-    private static final String[] blockArgs = {"blocks", "modify", "type", "view", "save", "clear"};
+    private static final String[] blockArgs = {"blocks", "modify", "type", "recursive", "view", "save", "clear", "info"};
 
     public DestructibleCom(final Destructible plugin, final Commands commands) {
         this.plugin = plugin;
@@ -75,13 +74,17 @@ public class DestructibleCom {
                                             return builder.buildFuture();
                                         })
                                         .executes(this::blockModify)
+                                        .then(Commands.argument(blockArgs[3], BoolArgumentType.bool())
+                                                .executes(this::blockModifyRec))
                                 ).executes(this::endBlockModify))
-                        .then(Commands.literal(blockArgs[3])
-                                .executes(this::blockView))
                         .then(Commands.literal(blockArgs[4])
-                                .executes(this::save))
+                                .executes(this::blockView))
                         .then(Commands.literal(blockArgs[5])
-                                .executes(this::reset))
+                                .executes(this::save))
+                        .then(Commands.literal(blockArgs[6])
+                                .executes(this::clear))
+                        .then(Commands.literal(blockArgs[7])
+                                .executes(this::info))
                 )
                 .build(), alias);
     }
@@ -163,6 +166,7 @@ public class DestructibleCom {
     private int blockModify(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
         String blockStr = context.getArgument(blockArgs[2], String.class);
+
         DBlock dBlock = Registries.DBLOCKS.get(blockStr);
         if(dBlock == null) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>An invalid Destructible block was specified."));
@@ -173,6 +177,24 @@ public class DestructibleCom {
 
         player.sendMessage(MiniMessage.miniMessage().deserialize(
                 "<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getId() + "</gold>."));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int blockModifyRec(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+        String blockStr = context.getArgument(blockArgs[2], String.class);
+        boolean recursive = context.getArgument(blockArgs[3], Boolean.class);
+
+        DBlock dBlock = Registries.DBLOCKS.get(blockStr);
+        if(dBlock == null) {
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>An invalid Destructible block was specified."));
+            return 0;
+        }
+
+        Registries.DBLOCK_EDITOR.computeIfAbsent(player.getUniqueId(), v -> new EditorSettings(player)).setDblock(dBlock, recursive);
+
+        player.sendMessage(MiniMessage.miniMessage().deserialize(
+                "<yellow>You have enabled Destructible <red><bold>RECURSIVE</red> build mode, all adjacent blocks will be recursively set to <gold>" + dBlock.getId() + "</gold>."));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -203,54 +225,53 @@ public class DestructibleCom {
                 editorSettings.setLockHighlight(false);
             }
 
-            Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                if(!editorSettings.isHighlight()) {
-                    editorSettings.setLockHighlight(true);
-                    editorSettings.setHighlight(true);
-                    Bukkit.getScheduler().runTask(this.plugin, () -> {
-                        serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
-                        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You can now see all Destructible blocks."));
-                    });
-                    Registries.DBLOCK_CACHE.forEach((k, v) -> {
-                        v.forEach((k2, v2) -> {
-                            BlockPos blockPos = CoordUtil.chunkIntToPos(k2, k);
-                            CraftEntity entity = EntityUtil.getHighlight(serverPlayer.serverLevel());
+            if(!editorSettings.isHighlight()) {
+                editorSettings.setLockHighlight(true);
+                editorSettings.setHighlight(true);
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
+                    player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You can now see all Destructible blocks."));
+                });
+                Registries.DBLOCK_CACHE.forEach((k, v) -> {
+                    v.forEach((k2, v2) -> {
+                        BlockPos blockPos = CoordUtil.chunkIntToPos(k2, k);
+                        CraftEntity entity = EntityUtil.getHighlight(serverPlayer.serverLevel());
 
-                            Bukkit.getScheduler().runTask(this.plugin, () -> {
-                                serverPlayer.connection.send(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
-                                serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
-                            });
-                            editorSettings.getBlockHighlight()
-                                    .computeIfAbsent(k, v3 -> new DestructibleRegistry<>())
-                                    .computeIfAbsent(k2, v4 -> entity.getEntityId());
+                        Bukkit.getScheduler().runTask(this.plugin, () -> {
+                            serverPlayer.connection.send(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
+                            serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
                         });
-                        try {
-                            Thread.sleep(25);
-                        } catch(InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
+                        editorSettings.getBlockHighlight()
+                                .computeIfAbsent(k, v3 -> new DestructibleRegistry<>())
+                                .computeIfAbsent(k2, v4 -> entity.getEntityId());
                     });
-                    editorSettings.setLockHighlight(false);
-                } else {
-                    editorSettings.setLockHighlight(true);
-                    editorSettings.setHighlight(false);
-                    Bukkit.getScheduler().runTask(this.plugin, () -> {
-                        serverPlayer.connection.send(new ClientboundRemoveMobEffectPacket(serverPlayer.getId(), MobEffects.NIGHT_VISION));
-                        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You can no longer see Destructible blocks."));
-                    });
-                    editorSettings.getBlockHighlight().forEach((k, v) -> {
-                        v.forEach((k2, v2) -> Bukkit.getScheduler().runTask(this.plugin, () ->
-                                serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(v2))));
-                        try {
-                            Thread.sleep(25);
-                        } catch(InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-                    editorSettings.getBlockHighlight().clear();
-                    editorSettings.setLockHighlight(false);
-                }
-            });
+                    try {
+                        Thread.sleep(25);
+                    } catch(InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                editorSettings.setLockHighlight(false);
+            } else {
+                editorSettings.setLockHighlight(true);
+                editorSettings.setHighlight(false);
+
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    serverPlayer.connection.send(new ClientboundRemoveMobEffectPacket(serverPlayer.getId(), MobEffects.NIGHT_VISION));
+                    player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You can no longer see Destructible blocks."));
+                });
+                editorSettings.getBlockHighlight().forEach((k, v) -> {
+                    v.forEach((k2, v2) -> Bukkit.getScheduler().runTask(this.plugin, () ->
+                            serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(v2))));
+                    try {
+                        Thread.sleep(25);
+                    } catch(InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                editorSettings.getBlockHighlight().clear();
+                editorSettings.setLockHighlight(false);
+            }
         });
         return Command.SINGLE_SUCCESS;
     }
@@ -263,7 +284,7 @@ public class DestructibleCom {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int reset(CommandContext<CommandSourceStack> context) {
+    private int clear(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         EditorSettings editorSettings = Registries.DBLOCK_EDITOR.computeIfAbsent(player.getUniqueId(), v -> new EditorSettings(player));
@@ -294,6 +315,13 @@ public class DestructibleCom {
         });
         player.sendMessage(MiniMessage.miniMessage().deserialize(
                 "<yellow>All cached Destructible blocks have been <red><bold>CLEARED</red>!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int info(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>There are currently <gold>" + Registries.DBLOCK_CACHE.values().stream().mapToInt(Map::size).sum() + "</gold> Destructible blocks spread across <gold>" + Registries.DBLOCK_CACHE.size() + "</gold> chunks."));
         return Command.SINGLE_SUCCESS;
     }
 }
