@@ -12,7 +12,7 @@ public final class DItemUtil {
     @NotNull
     public static DTool getDTool(final ItemStack item) {
         if(item.hasItemMeta()) {
-            DTool dTool = Registries.DTOOLS.get(item.getItemMeta().getPersistentDataContainer().get(DataKey.TOOL, PersistentDataType.STRING));
+            DTool dTool = Registries.DESTRUCTIBLE_TOOLS.get(item.getItemMeta().getPersistentDataContainer().get(DataKey.TOOL, PersistentDataType.STRING));
             if(dTool != null) return dTool;
         }
         return DTools.DEFAULT;

@@ -36,7 +36,7 @@ public class DBlockCache {
     }
 
     public void save() {
-        String jsonString = this.gson.toJson(Registries.DBLOCK_CACHE);
+        String jsonString = this.gson.toJson(Registries.DESTRUCTIBLE_BLOCKS_CACHE);
 
         try {
             BufferedWriter bufferedWriter = Files.newWriter(this.file, StandardCharsets.UTF_8);
@@ -53,7 +53,7 @@ public class DBlockCache {
             DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, String>> registry = this.gson.fromJson(bufferedReader, type);
             bufferedReader.close();
 
-            Registries.DBLOCK_CACHE.putAll(registry);
+            Registries.DESTRUCTIBLE_BLOCKS_CACHE.putAll(registry);
         } catch(IOException exception) {
             LOGGER.severe("There was a problem loading the dblock cache!" + exception);
         }

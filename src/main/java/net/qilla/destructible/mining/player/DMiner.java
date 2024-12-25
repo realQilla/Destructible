@@ -7,18 +7,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.DataKey;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.item.tool.DToolType;
-import net.qilla.destructible.mining.player.data.DData;
-import net.qilla.destructible.mining.player.data.Equipment;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.ItemUtil;
@@ -73,23 +68,22 @@ public final class DMiner {
     }
 
     private DBlock getDBlock(final BlockPos blockPos) {
-        var chunkMap = Registries.DBLOCK_CACHE.computeIfPresent(new ChunkPos(blockPos), (k, v) -> v);
+        var chunkMap = Registries.DESTRUCTIBLE_BLOCKS_CACHE.computeIfPresent(new ChunkPos(blockPos), (k, v) -> v);
         if(chunkMap == null) return DBlocks.NONE;
-        var blockId = chunkMap.computeIfPresent(CoordUtil.posToChunkInt(blockPos), (k, v) -> v);
-        return blockId == null ? DBlocks.NONE: Registries.DBLOCKS.get(blockId);
+        var blockId = chunkMap.computeIfPresent(CoordUtil.posToChunkLocalPos(blockPos), (k, v) -> v);
+        return blockId == null ? DBlocks.NONE: Registries.DESTRUCTIBLE_BLOCKS.get(blockId);
     }
 
-    public void tickBlock(@NotNull ServerboundSwingPacket swingPacket) {
+    public void tickBlock(ServerboundSwingPacket swingPacket) {
         if(this.dData == null || this.dData.getDBlock().getDurability() < 0) return;
 
-        DBlock dBlock = this.dData.getDBlock();
-        DTool dTool = this.dData.updateDTool();
+        this.dData.updateDTool();
 
-        if(!canMine(dBlock, dTool)) return;
+        if(!canMine(dData)) return;
         DData dData = this.dData;
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if(dData.damage(dTool.getEfficiency()) || this.player.getGameMode() == GameMode.CREATIVE) this.destroyBlock(dData);
+            if(dData.damage(dData.getDTool().getEfficiency()) || this.player.getGameMode() == GameMode.CREATIVE) this.destroyBlock(dData);
             else this.serverLevel.getChunkSource().broadcastAndSend(serverPlayer,
                     new ClientboundBlockDestructionPacket(dData.getPosHashCode(), dData.getBlockPos(), dData.getBlockStage()));
         });
@@ -111,6 +105,9 @@ public final class DMiner {
                 50, midOffset[0], midOffset[1], midOffset[2], 0,
                 dData.getDBlock().getParticle().createBlockData());
 
+        Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k ->
+                new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k ->
+                new DBlockData(this.player)).mined(player, dData.getDBlock().getMsCooldown());
         this.damageTool(dData, 1);
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             List<ItemStack> items = ItemUtil.rollItemDrops(dData.getDBlock().getItemDrops());
@@ -202,9 +199,12 @@ public final class DMiner {
         this.dData = null;
     }
 
-    private boolean canMine(@NotNull final DBlock dBlock, @NotNull final DTool dTool) {
-        if(dBlock.getStrengthRequirement() > dTool.getStrength() || isToolBroken()) return false;
-        return dBlock.getProperTools().stream().anyMatch(dToolType -> dToolType.equals(DToolType.ANY) || dTool.getToolType().contains(dToolType));
+    private boolean canMine(@NotNull final DData dData) {
+        if(dData.getDBlock().getStrength() > dData.getDTool().getStrength() || isToolBroken()) return false;
+        if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k ->
+                new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k ->
+                new DBlockData(this.player)).isOnCooldown()) return false;
+        return dData.getDBlock().getProperTools().stream().anyMatch(dToolType -> dToolType.equals(DToolType.ANY) || dData.getDTool().getToolType().contains(dToolType));
     }
 
     private void damageTool(final DData dData, int amount) {

@@ -8,11 +8,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public final class DBlock {
+public class DBlock {
     private final String id;
     private final Material material;
-    private final int strengthRequirement;
+    private final int strength;
     private final float durability;
+    private final int msCooldown;
     private final List<DToolType> properTools;
     private final List<DDrop> itemDrops;
     private final Sound sound;
@@ -21,8 +22,9 @@ public final class DBlock {
     public DBlock(DBlock.Properties properties) {
         this.id = properties.id;
         this.material = properties.material;
-        this.strengthRequirement = properties.strengthRequirement;
+        this.strength = properties.strengthRequirement;
         this.durability = properties.durability;
+        this.msCooldown = properties.msCooldown;
         this.properTools = properties.properTools;
         this.itemDrops = properties.itemDrops;
         this.sound = properties.sound;
@@ -39,14 +41,19 @@ public final class DBlock {
         return this.material;
     }
 
-    public int getStrengthRequirement() {
-        return this.strengthRequirement;
+    public int getStrength() {
+        return this.strength;
     }
 
     public float getDurability() {
         return this.durability;
     }
 
+    public int getMsCooldown() {
+        return this.msCooldown;
+    }
+
+    @NotNull
     public List<DToolType> getProperTools() {
         return this.properTools;
     }
@@ -55,14 +62,17 @@ public final class DBlock {
         return !this.properTools.isEmpty();
     }
 
+    @NotNull
     public List<DDrop> getItemDrops() {
         return this.itemDrops;
     }
 
+    @NotNull
     public Sound getSound() {
         return this.sound;
     }
 
+    @NotNull
     public Material getParticle() {
         return this.particle;
     }
@@ -72,6 +82,7 @@ public final class DBlock {
         private Material material;
         private int strengthRequirement;
         private float durability;
+        private int msCooldown;
         private List<DToolType> properTools;
         private List<DDrop> itemDrops;
         private Sound sound;
@@ -81,12 +92,12 @@ public final class DBlock {
             return new DBlock.Properties();
         }
 
-        public DBlock.Properties id(String id) {
+        public DBlock.Properties id(@NotNull String id) {
             this.id = id;
             return this;
         }
 
-        public DBlock.Properties material(Material material) {
+        public DBlock.Properties material(@NotNull Material material) {
             this.material = material;
             return this;
         }
@@ -108,6 +119,16 @@ public final class DBlock {
          */
         public DBlock.Properties durability(int durability) {
             this.durability = Math.max(1, durability);
+            return this;
+        }
+
+        /**
+         * Milliseconds cooldown the block will have after being destroyed
+         * @param msCooldown
+         * @return
+         */
+        public DBlock.Properties msCooldown(int msCooldown) {
+            this.msCooldown = Math.max(100, msCooldown);
             return this;
         }
 
@@ -134,7 +155,7 @@ public final class DBlock {
          * @param tool
          * @return
          */
-        public DBlock.Properties properTools(List<DToolType> tool) {
+        public DBlock.Properties properTools(@NotNull List<DToolType> tool) {
             this.properTools = tool;
             return this;
         }
@@ -153,7 +174,7 @@ public final class DBlock {
          * @param itemDrop
          * @return
          */
-        public DBlock.Properties itemDrops(List<DDrop> itemDrop) {
+        public DBlock.Properties itemDrops(@NotNull List<DDrop> itemDrop) {
             this.itemDrops = itemDrop;
             return this;
         }
@@ -191,6 +212,7 @@ public final class DBlock {
             this.material = Material.BEDROCK;
             this.strengthRequirement = 0;
             this.durability = -1;
+            this.msCooldown = 100;
             this.properTools = List.of();
             this.itemDrops = List.of();
             this.sound = Sound.BLOCK_STONE_BREAK;

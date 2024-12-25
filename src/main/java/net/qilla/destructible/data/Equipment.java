@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining.player.data;
+package net.qilla.destructible.data;
 
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.mining.player.DMiner;

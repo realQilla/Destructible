@@ -8,15 +8,15 @@ import org.jetbrains.annotations.NotNull;
 
 public final class CoordUtil {
 
-    public static int posToChunkInt(int x, int y, int z) {
+    public static int posToChunkLocalPos(int x, int y, int z) {
         return ((x & 15) << 8) | ((z & 15) << 4) | (y & 15);
     }
 
-    public static int posToChunkInt(final Location loc) {
+    public static int posToChunkLocalPos(final Location loc) {
         return ((loc.getBlockX() & 15) << 8) | ((loc.getBlockZ() & 15) << 4) | (loc.getBlockY() & 15);
     }
 
-    public static int posToChunkInt(final BlockPos blockPos) {
+    public static int posToChunkLocalPos(final BlockPos blockPos) {
         return ((blockPos.getX() & 15) << 8) | ((blockPos.getZ() & 15) << 4) | (blockPos.getY() & 15);
     }
 

@@ -22,6 +22,7 @@ public final class DBlocks {
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(0)
                     .durability(150)
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.PICKAXE))
                     .itemDrops(List.of(DDrops.COBBLESTONE))
                     .sound(Sound.BLOCK_STONE_BREAK)
@@ -32,6 +33,7 @@ public final class DBlocks {
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(1)
                     .durability(60)
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.AXE))
                     .itemDrops(List.of(DDrops.CACTUS))
                     .sound(Sound.ENTITY_DOLPHIN_DEATH)
@@ -42,6 +44,7 @@ public final class DBlocks {
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(0)
                     .instaBreak()
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.SHOVEL))
                     .itemDrops(List.of(DDrops.SAND))
                     .sound(Sound.BLOCK_SAND_BREAK)
@@ -52,6 +55,7 @@ public final class DBlocks {
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(0)
                     .instaBreak()
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.SHOVEL))
                     .itemDrops(List.of(DDrops.RED_SAND))
                     .sound(Sound.BLOCK_SAND_BREAK)
@@ -62,6 +66,7 @@ public final class DBlocks {
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(1)
                     .durability(20)
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.SHOVEL))
                     .itemDrops(List.of(DDrops.GRAVEL))
                     .sound(Sound.BLOCK_GRAVEL_BREAK)
@@ -71,7 +76,8 @@ public final class DBlocks {
     public static final DBlock HAY_BLOCK = register("HAY_BLOCK",
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(0)
-                    .neverBreak()
+                    .durability(40)
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.ANY))
                     .noDrops()
                     .sound(Sound.BLOCK_GRASS_BREAK)
@@ -82,6 +88,7 @@ public final class DBlocks {
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(1)
                     .durability(120)
+                    .msCooldown(5000)
                     .properTools(List.of(DToolType.PICKAXE))
                     .itemDrops(List.of(DDrops.COBBLESTONE))
                     .sound(Sound.BLOCK_STONE_BREAK)
@@ -92,6 +99,7 @@ public final class DBlocks {
             DBlock::new, DBlock.Properties.of()
                     .strengthRequirement(0)
                     .durability(40)
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.ANY))
                     .itemDrops(List.of(DDrops.OAK_PLANK))
                     .sound(Sound.BLOCK_WOOD_BREAK)
@@ -103,6 +111,7 @@ public final class DBlocks {
             DBlock.Properties.of()
                     .strengthRequirement(1)
                     .durability(80)
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.AXE))
                     .itemDrops(List.of(DDrops.OAK_LOG))
                     .sound(Sound.BLOCK_WOOD_BREAK)
@@ -114,6 +123,7 @@ public final class DBlocks {
             DBlock.Properties.of()
                     .strengthRequirement(3)
                     .durability(100)
+                    .msCooldown(1000)
                     .properTools(List.of(DToolType.PICKAXE))
                     .noDrops()
                     .sound(Sound.BLOCK_STONE_BREAK)
@@ -121,6 +131,6 @@ public final class DBlocks {
     );
 
     private static DBlock register(final String id, final Function<DBlock.Properties, DBlock> factory, DBlock.Properties properties) {
-        return Registries.DBLOCKS.put(id, factory.apply(properties.id(id)));
+        return Registries.DESTRUCTIBLE_BLOCKS.put(id, factory.apply(properties.id(id)));
     }
 }

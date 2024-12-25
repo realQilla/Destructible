@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining.player.data;
+package net.qilla.destructible.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7,7 +7,6 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.mining.player.DMiner;
 import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.DItemUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -17,13 +16,15 @@ public final class DData {
     private final ServerboundPlayerActionPacket packet;
     private final DMiner dMiner;
     private final World world;
-    private DBlock dBlock;
+    private final DBlock dBlock;
     private final BlockPos blockPos;
+    private final ChunkPos chunkPos;
+    private final int chunkInt;
     private final Location blockLoc;
     private final int posHashCode;
     private final Direction direction;
     private DTool dTool;
-    private Durability blockDurability;
+    private final Durability blockDurability;
     private int blockStage = 0;
 
     public DData(@NotNull final DMiner dMiner, @NotNull final ServerboundPlayerActionPacket packet, @NotNull DBlock dBlock) {
@@ -32,6 +33,8 @@ public final class DData {
         this.world = dMiner.getPlayer().getWorld();
         this.dBlock = dBlock;
         this.blockPos = packet.getPos();
+        this.chunkPos = new ChunkPos(this.blockPos);
+        this.chunkInt = CoordUtil.posToChunkLocalPos(this.blockPos);
         this.blockLoc = CoordUtil.blockPosToLoc(packet.getPos(), this.world);
         this.posHashCode = this.blockPos.hashCode();
         this.direction = packet.getDirection();
@@ -66,6 +69,15 @@ public final class DData {
     @NotNull
     public BlockPos getBlockPos() {
         return this.blockPos;
+    }
+
+    @NotNull
+    public ChunkPos getChunkPos() {
+        return this.chunkPos;
+    }
+
+    public int getChunkInt() {
+        return this.chunkInt;
     }
 
     @NotNull

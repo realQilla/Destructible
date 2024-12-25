@@ -170,6 +170,6 @@ public final class DTools {
 
     private static DTool register(String id, DItem.Properties dItem, Function<DItem.Properties, DTool> factory) {
         DTool dTool = factory.apply(dItem.id(id));
-        return Registries.DTOOLS.put(id, dTool);
+        return Registries.DESTRUCTIBLE_TOOLS.put(id, dTool);
     }
 }
