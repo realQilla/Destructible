@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
@@ -17,7 +19,11 @@ import net.qilla.destructible.mining.item.tool.DToolType;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.DBlockUtil;
 import net.qilla.destructible.util.ItemUtil;
+import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.block.CraftBlockState;
+import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
@@ -108,13 +114,30 @@ public final class DMiner {
         Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k ->
                 new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k ->
                 new DBlockData(this.player)).mined(player, dData.getDBlock().getMsCooldown());
+
+        BlockState blockState = ((CraftBlockState) dData.getBlockLoc().getBlock().getState()).getHandle();
+        serverLevel.getChunkSource().broadcastAndSend(serverPlayer,
+                new ClientboundBlockUpdatePacket(dData.getBlockPos(), Blocks.DEAD_BUBBLE_CORAL_BLOCK.defaultBlockState()));
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+            serverLevel.getChunkSource().broadcastAndSend(serverPlayer,
+                    new ClientboundBlockUpdatePacket(dData.getBlockPos(), blockState));
+            dData.getWorld().spawnParticle(Particle.BLOCK,
+                    new Location(dData.getWorld(),
+                            dData.getBlockPos().getX() + 0.5,
+                            dData.getBlockPos().getY() + 0.5,
+                            dData.getBlockPos().getZ() + 0.5),
+                    50, 0.5, 0.5, 0.5, 0,
+                    dData.getDBlock().getParticle().createBlockData());
+            dData.getBlockLoc().getWorld().playSound(dData.getBlockLoc(), Sound.ENTITY_CHICKEN_EGG, 0.5f, (float) RandomUtil.between(0.5f, 1.5f));
+        }, dData.getDBlock().getMsCooldown() / 50);
+
         this.damageTool(dData, 1);
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             List<ItemStack> items = ItemUtil.rollItemDrops(dData.getDBlock().getItemDrops());
             Vec3 faceVec = dData.getDirection().getUnitVec3();
 
             for(ItemStack item : items) {
-                ItemEntity itemEntity = createItemEntity(dData, item, itemMidFace, faceVec);
+                ItemEntity itemEntity = createItemEntity(dData.getBlockPos(), item, itemMidFace, faceVec);
 
                 itemPopVisual(itemEntity);
                 magnetVisual(itemEntity, item);
@@ -128,12 +151,12 @@ public final class DMiner {
         if(this.dData != null) this.dData = this.dData.refresh(getDBlock(this.dData.getBlockPos()));
     }
 
-    private ItemEntity createItemEntity(final DData dData, final ItemStack item, final Vec3 itemMidFace, final Vec3 faceVec) {
+    private ItemEntity createItemEntity(final BlockPos blockPos, final ItemStack item, final Vec3 itemMidFace, final Vec3 faceVec) {
         return new ItemEntity(
                 this.serverLevel,
-                dData.getBlockPos().getX() + 0.5 + itemMidFace.x,
-                dData.getBlockPos().getY() + 0.5 + itemMidFace.y,
-                dData.getBlockPos().getZ() + 0.5 + itemMidFace.z,
+                blockPos.getX() + 0.5 + itemMidFace.x,
+                blockPos.getY() + 0.5 + itemMidFace.y,
+                blockPos.getZ() + 0.5 + itemMidFace.z,
                 ((CraftItemStack) item).handle,
                 faceVec.offsetRandom(RANDOM, 1.2f).x * 0.3,
                 faceVec.y * 0.3,

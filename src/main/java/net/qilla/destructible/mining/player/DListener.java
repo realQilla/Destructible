@@ -14,6 +14,7 @@ import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.data.DestructibleRegistry;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.EntityUtil;
+import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -53,25 +54,26 @@ public class DListener implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             if(!DBlockEditor.isRecursive()) {
 
-                this.blockLogic(blockPos, player, DBlockEditor);
+                this.saveDBlock(blockPos, player, DBlockEditor);
                 player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold>" + DBlockEditor.getDblock().getId() + "</gold> has been cached!"));
                 player.playSound(player, Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
             } else {
-                Set<BlockPos> recursiveSet = getRecursiveSet(blockPos, location.getWorld(), event.getBlock().getType(), DBlockEditor.getRecursionSize());
-                final int originalSize = recursiveSet.size();
-                final AtomicInteger currentSize = new AtomicInteger(recursiveSet.size());
+                Set<BlockPos> recursiveBlocks = getRecursiveBlocks(blockPos, location.getWorld(), event.getBlock().getType(), DBlockEditor.getRecursionSize());
+                final int originalSize = recursiveBlocks.size();
+                final AtomicInteger currentSize = new AtomicInteger(recursiveBlocks.size());
                 BukkitTask task = Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
-                    player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Recursive operation <gold>" + (int) (((originalSize - currentSize.get()) / (double) originalSize) * 100) + "%</gold> completed"));
+                    player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Recursive operation <gold>" + FormatUtil.numberPercentage(originalSize, currentSize.get()) + "</gold> completed"));
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.10f, 2f);
                 },0 , 40);
                 DBlockEditor.setLockHighlight(true);
 
-                for(BlockPos curBlockPos : recursiveSet) {
-                    this.blockLogic(curBlockPos, player, DBlockEditor);
+                for(BlockPos curBlockPos : recursiveBlocks) {
+                    this.saveDBlock(curBlockPos, player, DBlockEditor);
                     currentSize.decrementAndGet();
                 }
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <red><bold>RECURSIVE</red> operation completed, <gold>" + recursiveSet.size() + "</gold> block(s) cached as <gold>" + DBlockEditor.getDblock().getId() + "</gold>!"));
+                    player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <red><bold>RECURSIVE</red> operation completed, <gold>" + FormatUtil.numberChar(recursiveBlocks.size(), false) + "</gold> block(s) cached as <gold>" + DBlockEditor.getDblock().getId() + "</gold>!"));
+                    player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Recursive operation <gold>" + FormatUtil.numberPercentage(originalSize, currentSize.get()) + "</gold> completed"));
                     player.playSound(player, Sound.ENTITY_PLAYER_BURP, 1.0f, 0.0f);
                     DBlockEditor.setLockHighlight(false);
                 });
@@ -80,11 +82,11 @@ public class DListener implements Listener {
         });
     }
 
-    private Set<BlockPos> getRecursiveSet(BlockPos blockPos, World world, Material material, int recursionSize) {
+    private Set<BlockPos> getRecursiveBlocks(BlockPos origin, World world, Material originMaterial, int recursionSize) {
         Set<BlockPos> posList = new HashSet<>();
         Queue<BlockPos> recursivePos = new LinkedList<>();
-        recursivePos.add(blockPos);
-        posList.add(blockPos);
+        recursivePos.add(origin);
+        posList.add(origin);
 
         while(!recursivePos.isEmpty() && posList.size() < recursionSize) {
             BlockPos currentPos = recursivePos.poll();
@@ -100,20 +102,20 @@ public class DListener implements Listener {
             for(BlockPos newPos : directions) {
                 if(posList.contains(newPos)) continue;
                 Block block = world.getBlockAt(newPos.getX(), newPos.getY(), newPos.getZ());
-                if(!block.getType().equals(material)) continue;
+                if(!block.getType().equals(originMaterial)) continue;
                 posList.add(newPos);
                 recursivePos.add(newPos);
             }
         }
         return posList.stream()
                 .sorted(Comparator.comparingInt(pos ->
-                        Math.max(Math.max(Math.abs(pos.getX() - blockPos.getX()),
-                                        Math.abs(pos.getY() - blockPos.getY())),
-                                Math.abs(pos.getZ() - blockPos.getZ()))))
+                        Math.max(Math.max(Math.abs(pos.getX() - origin.getX()),
+                                        Math.abs(pos.getY() - origin.getY())),
+                                Math.abs(pos.getZ() - origin.getZ()))))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private void blockLogic(BlockPos blockPos, Player player, DBlockEditor DBlockEditor) {
+    private void saveDBlock(BlockPos blockPos, Player player, DBlockEditor DBlockEditor) {
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         ServerLevel serverLevel = serverPlayer.serverLevel();
         ChunkPos chunkPos = new ChunkPos(blockPos);
@@ -127,7 +129,10 @@ public class DListener implements Listener {
         } catch(InterruptedException e) {
             throw new RuntimeException(e);
         }
+        this.createHighlight(serverLevel, blockPos, chunkPos, chunkInt);
+    }
 
+    private void createHighlight(ServerLevel serverLevel, BlockPos blockPos, ChunkPos chunkPos, int chunkInt) {
         CraftEntity entity = EntityUtil.getHighlight(serverLevel);
         Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach((k, v) -> {
             if(!v.isHighlight()) return;

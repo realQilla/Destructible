@@ -21,6 +21,7 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.EntityUtil;
+import net.qilla.destructible.util.FormatUtil;
 import net.qilla.destructible.util.ItemUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftEntity;
@@ -37,8 +38,17 @@ public class DestructibleCom {
     private final Commands commands;
     private static final String command = "destructible";
     private static final List<String> alias = List.of("dest", "d");
-    private static final String[] toolArgs = {"tools", "type"};
-    private static final String[] blockArgs = {"blocks", "modify", "type", "recursive", "view", "save", "clear", "info", "size"};
+    private static final String TOOLS = "tools";
+    private static final String BLOCKS = "blocks";
+    private static final String TOOL_TYPE = "type";
+    private static final String BLOCK_MODIFY = "modify";
+    private static final String BLOCK_TYPE = "type";
+    private static final String BLOCK_RECURSIVE = "recursive";
+    private static final String BLOCK_VIEW = "view";
+    private static final String BLOCK_SAVE = "save";
+    private static final String BLOCK_CLEAR = "clear";
+    private static final String BLOCK_INFO = "info";
+    private static final String BLOCK_RECURSIVE_SIZE = "size";
 
     public DestructibleCom(final Destructible plugin, final Commands commands) {
         this.plugin = plugin;
@@ -49,8 +59,8 @@ public class DestructibleCom {
         this.commands.register(Commands
                 .literal(command)
                 .requires(source -> source.getSender() instanceof Player player && player.isOp())
-                .then(Commands.literal(toolArgs[0])
-                        .then(Commands.argument(toolArgs[1], StringArgumentType.word())
+                .then(Commands.literal(TOOLS)
+                        .then(Commands.argument(TOOL_TYPE, StringArgumentType.word())
                                 .suggests((context, builder) -> {
                                     String argument = builder.getRemaining();
                                     for(String id : Registries.DESTRUCTIBLE_TOOLS.keySet()) {
@@ -62,9 +72,9 @@ public class DestructibleCom {
                                 })
                                 .executes(this::tool))
                 )
-                .then(Commands.literal(blockArgs[0])
-                        .then(Commands.literal(blockArgs[1])
-                                .then(Commands.argument(blockArgs[2], StringArgumentType.word())
+                .then(Commands.literal(BLOCKS)
+                        .then(Commands.literal(BLOCK_MODIFY)
+                                .then(Commands.argument(BLOCK_TYPE, StringArgumentType.word())
                                         .suggests((context, builder) -> {
                                             String argument = builder.getRemaining();
                                             for(String id : Registries.DESTRUCTIBLE_BLOCKS.keySet()) {
@@ -75,18 +85,18 @@ public class DestructibleCom {
                                             return builder.buildFuture();
                                         })
                                         .executes(this::blockModify)
-                                        .then(Commands.argument(blockArgs[3], BoolArgumentType.bool())
+                                        .then(Commands.argument(BLOCK_RECURSIVE, BoolArgumentType.bool())
                                                 .executes(this::blockModifyRec))
-                                        .then(Commands.argument(blockArgs[8], IntegerArgumentType.integer(1, 65792))
+                                        .then(Commands.argument(BLOCK_RECURSIVE_SIZE, IntegerArgumentType.integer(1, 65792))
                                                 .executes(this::blockModifyRecSize))
                                 ).executes(this::endBlockModify))
-                        .then(Commands.literal(blockArgs[4])
+                        .then(Commands.literal(BLOCK_VIEW)
                                 .executes(this::blockView))
-                        .then(Commands.literal(blockArgs[5])
+                        .then(Commands.literal(BLOCK_SAVE)
                                 .executes(this::save))
-                        .then(Commands.literal(blockArgs[6])
+                        .then(Commands.literal(BLOCK_CLEAR)
                                 .executes(this::clear))
-                        .then(Commands.literal(blockArgs[7])
+                        .then(Commands.literal(BLOCK_INFO)
                                 .executes(this::info))
                 )
                 .build(), alias);
@@ -94,7 +104,7 @@ public class DestructibleCom {
 
     private int tool(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
-        String toolStr = context.getArgument(toolArgs[1], String.class);
+        String toolStr = context.getArgument(TOOL_TYPE, String.class);
         DTool dTool = Registries.DESTRUCTIBLE_TOOLS.get(toolStr);
         if(dTool == null) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>An invalid Destructible tool was specified."));
@@ -168,7 +178,7 @@ public class DestructibleCom {
 
     private int blockModify(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
-        String blockStr = context.getArgument(blockArgs[2], String.class);
+        String blockStr = context.getArgument(BLOCK_TYPE, String.class);
 
         DBlock dBlock = Registries.DESTRUCTIBLE_BLOCKS.get(blockStr);
         if(dBlock == null) {
@@ -186,8 +196,8 @@ public class DestructibleCom {
 
     private int blockModifyRec(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
-        String blockStr = context.getArgument(blockArgs[2], String.class);
-        boolean recursive = context.getArgument(blockArgs[3], Boolean.class);
+        String blockStr = context.getArgument(BLOCK_TYPE, String.class);
+        boolean recursive = context.getArgument(BLOCK_RECURSIVE, Boolean.class);
         int recursionSize = 4096;
 
         DBlock dBlock = Registries.DESTRUCTIBLE_BLOCKS.get(blockStr);
@@ -206,8 +216,8 @@ public class DestructibleCom {
 
     private int blockModifyRecSize(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
-        String blockStr = context.getArgument(blockArgs[2], String.class);
-        int recursionSize = context.getArgument(blockArgs[8], Integer.class);
+        String blockStr = context.getArgument(BLOCK_TYPE, String.class);
+        int recursionSize = context.getArgument(BLOCK_RECURSIVE_SIZE, Integer.class);
 
         DBlock dBlock = Registries.DESTRUCTIBLE_BLOCKS.get(blockStr);
         if(dBlock == null) {
@@ -346,7 +356,7 @@ public class DestructibleCom {
     private int info(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>There are currently <gold>" + Registries.DESTRUCTIBLE_BLOCKS_CACHE.values().stream().mapToInt(Map::size).sum() + "</gold> Destructible blocks spread across <gold>" + Registries.DESTRUCTIBLE_BLOCKS_CACHE.size() + "</gold> chunks."));
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>There are currently <gold>" + FormatUtil.numberComma(Registries.DESTRUCTIBLE_BLOCKS_CACHE.values().stream().mapToInt(Map::size).sum()) + "</gold> Destructible blocks spread across <gold>" + FormatUtil.numberComma(Registries.DESTRUCTIBLE_BLOCKS_CACHE.size()) + "</gold> chunks."));
         return Command.SINGLE_SUCCESS;
     }
 }
