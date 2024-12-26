@@ -6,12 +6,11 @@ import org.bukkit.entity.Player;
 public class DBlockData {
     private int minedAmount;
     private long cooldownUntil;
-    private Player lastPlayer;
+    private Player lastPlayer = null;
 
-    public DBlockData(Player player) {
-        this.minedAmount = 1;
+    public DBlockData() {
+        this.minedAmount = 0;
         this.cooldownUntil = 0;
-        this.lastPlayer = player;
     }
 
     public int getMinedAmount() {

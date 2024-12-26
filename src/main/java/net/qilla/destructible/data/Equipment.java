@@ -26,12 +26,12 @@ public class Equipment {
         PlayerInventory inventory = player.getInventory();
         Bukkit.getScheduler().runTaskTimer(Destructible.getInstance(), () -> {
             this.heldItem = inventory.getItemInMainHand();
-            this.offhandItem = inventory.getItemInOffHand();
-            this.helmet = inventory.getHelmet();
-            this.chestplate = inventory.getChestplate();
-            this.leggings = inventory.getLeggings();
-            this.boots = inventory.getBoots();
-        }, 0, 8);
+            //this.offhandItem = inventory.getItemInOffHand();
+           // this.helmet = inventory.getHelmet();
+            //this.chestplate = inventory.getChestplate();
+            //this.leggings = inventory.getLeggings();
+            //this.boots = inventory.getBoots();
+        }, 0, 5);
     }
 
     @NotNull

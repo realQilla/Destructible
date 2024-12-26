@@ -1,70 +1,48 @@
 package net.qilla.destructible.data;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTool;
-import net.qilla.destructible.mining.player.DMiner;
+import net.qilla.destructible.mining.item.tool.DTools;
 import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.DItemUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public final class DData {
-    private final ServerboundPlayerActionPacket packet;
-    private final DMiner dMiner;
-    private final World world;
-    private final DBlock dBlock;
+
+    private final Location location;
     private final BlockPos blockPos;
     private final ChunkPos chunkPos;
     private final int chunkInt;
-    private final Location blockLoc;
-    private final int posHashCode;
     private final Direction direction;
-    private DTool dTool;
-    private final Durability blockDurability;
-    private int blockStage = 0;
+    private volatile DBlock dBlock;
+    private volatile AtomicDouble totalDurability;
+    private volatile AtomicDouble currentDurability;
+    private final AtomicInteger crackLevel;
+    private volatile DTool dTool;
 
-    public DData(@NotNull final DMiner dMiner, @NotNull final ServerboundPlayerActionPacket packet, @NotNull DBlock dBlock) {
-        this.packet = packet;
-        this.dMiner = dMiner;
-        this.world = dMiner.getPlayer().getWorld();
-        this.dBlock = dBlock;
-        this.blockPos = packet.getPos();
-        this.chunkPos = new ChunkPos(this.blockPos);
-        this.chunkInt = CoordUtil.posToChunkLocalPos(this.blockPos);
-        this.blockLoc = CoordUtil.blockPosToLoc(packet.getPos(), this.world);
-        this.posHashCode = this.blockPos.hashCode();
-        this.direction = packet.getDirection();
-        this.blockDurability = new Durability(dBlock.getDurability());
-        updateDTool();
-    }
-
-    public boolean damage(float amount) {
-        this.blockStage = Math.round(((blockDurability.getTotal() - blockDurability.getCurrent()) * 9 / blockDurability.getTotal()));
-        return this.blockDurability.damage(amount) <= 0;
+    public DData(@NotNull final World world, @NotNull final BlockPos blockPos, @NotNull final ChunkPos chunkPos, final int chunkInt, @NotNull final Direction direction) {
+        this.location = CoordUtil.blockPosToLoc(blockPos, world);
+        this.blockPos = blockPos;
+        this.chunkPos = chunkPos;
+        this.chunkInt = chunkInt;
+        this.direction = direction;
+        this.dBlock = DBlocks.NONE;
+        this.totalDurability = new AtomicDouble(dBlock.getDurability());
+        this.currentDurability = new AtomicDouble(totalDurability.get());
+        this.crackLevel = new AtomicInteger(0);
+        this.dTool = DTools.DEFAULT;
     }
 
     @NotNull
-    public DData refresh(DBlock dBlock) {
-        return new DData(this.dMiner, this.packet, dBlock);
-    }
-
-    @NotNull
-    public DTool updateDTool() {
-        return this.dTool = DItemUtil.getDTool(this.dMiner.getEquipment().getHeldItem());
-    }
-
-    @NotNull
-    public World getWorld() {
-        return this.world;
-    }
-
-    @NotNull
-    public DBlock getDBlock() {
-        return this.dBlock;
+    public Location getLocation() {
+        return this.location;
     }
 
     @NotNull
@@ -82,17 +60,29 @@ public final class DData {
     }
 
     @NotNull
-    public Location getBlockLoc() {
-        return this.blockLoc;
-    }
-
-    public int getPosHashCode() {
-        return this.posHashCode;
+    public Direction getDirection() {
+        return this.direction;
     }
 
     @NotNull
-    public Direction getDirection() {
-        return this.direction;
+    public DBlock getDBlock() {
+        return this.dBlock;
+    }
+
+    public float getTotalDurability() {
+        return this.totalDurability.floatValue();
+    }
+
+    public float getCurrentDurability() {
+        return this.currentDurability.floatValue();
+    }
+
+    public boolean isBroken() {
+        return this.currentDurability.floatValue() <= 0;
+    }
+
+    public int getCrackLevel() {
+        return crackLevel.get();
     }
 
     @NotNull
@@ -100,11 +90,19 @@ public final class DData {
         return this.dTool;
     }
 
-    public Durability getDurabilityTotal() {
-        return this.blockDurability;
+    public void setDBlock(final DBlock dBlock) {
+        this.dBlock = dBlock;
+        this.totalDurability.set(dBlock.getDurability());
+        this.currentDurability.set(dBlock.getDurability());
+        this.crackLevel.set(0);
     }
 
-    public int getBlockStage() {
-        return blockStage;
+    public void damageBlock(float amount) {
+        this.currentDurability.addAndGet(-amount);
+        this.crackLevel.set(Math.round(((totalDurability.floatValue() - currentDurability.floatValue()) * 9 / totalDurability.floatValue())));
+    }
+
+    public void setDTool(final DTool dTool) {
+        this.dTool = dTool;
     }
 }

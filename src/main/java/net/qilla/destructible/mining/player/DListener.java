@@ -8,10 +8,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.DBlockEditor;
-import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.data.DestructibleRegistry;
+import net.qilla.destructible.data.*;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.EntityUtil;
 import net.qilla.destructible.util.FormatUtil;
@@ -65,7 +62,7 @@ public class DListener implements Listener {
                 BukkitTask task = Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
                     player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Recursive operation <gold>" + FormatUtil.numberPercentage(originalSize, currentSize.get()) + "</gold> completed"));
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.10f, 2f);
-                },0 , 40);
+                }, 0, 40);
                 DBlockEditor.setLockHighlight(true);
 
                 for(BlockPos curBlockPos : recursiveBlocks) {
@@ -200,7 +197,7 @@ public class DListener implements Listener {
     }
 
     public void initPlayer(final Player player) {
-        DMiner dMiner = new DMiner(this.plugin, player);
+        DMiner dMiner = new DMiner(this.plugin, player, new Equipment(player));
         Registries.DESTRUCTIBLE_MINERS_DATA.put(player.getUniqueId(), dMiner);
         this.plugin.getPlayerPacketListener().addListener(player, dMiner);
 

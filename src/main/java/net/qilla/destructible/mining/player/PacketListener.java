@@ -3,7 +3,6 @@ package net.qilla.destructible.mining.player;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
@@ -47,13 +46,12 @@ public final class PacketListener {
                     BlockPos blockPos = usePacket.getHitResult().getBlockPos();
                     ChunkPos chunkPos = new ChunkPos(blockPos);
                     int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
-                    if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, (v) ->
+                    if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, v ->
                             new DestructibleRegistry<>()).computeIfAbsent(chunkInt, v ->
-                            new DBlockData(player)).isOnCooldown()) {
+                            new DBlockData()).isOnCooldown()) {
                         return;
                     }
                 }
-
                 super.channelRead(context, object);
             }
         };
