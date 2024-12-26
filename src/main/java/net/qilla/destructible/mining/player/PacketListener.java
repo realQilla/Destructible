@@ -4,18 +4,26 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
+import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.data.ChunkPos;
+import net.qilla.destructible.data.DBlockData;
+import net.qilla.destructible.data.DestructibleRegistry;
+import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.util.CoordUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public final class PlayerPacketListener {
+public final class PacketListener {
     private final Destructible plugin;
 
-    public PlayerPacketListener(final Destructible plugin) {
+    public PacketListener(final Destructible plugin) {
         this.plugin = plugin;
     }
 
@@ -35,14 +43,25 @@ public final class PlayerPacketListener {
                 } else if(packet instanceof ServerboundSwingPacket swingPacket) {
                     dMiner.tickBlock(swingPacket);
                 }
+                if(packet instanceof ServerboundUseItemOnPacket usePacket) {
+                    BlockPos blockPos = usePacket.getHitResult().getBlockPos();
+                    ChunkPos chunkPos = new ChunkPos(blockPos);
+                    int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
+                    if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, (v) ->
+                            new DestructibleRegistry<>()).computeIfAbsent(chunkInt, v ->
+                            new DBlockData(player)).isOnCooldown()) {
+                        return;
+                    }
+                }
+
                 super.channelRead(context, object);
             }
         };
 
         ServerGamePacketListenerImpl playerCon = ((CraftPlayer) player).getHandle().connection;
-        ChannelPipeline pipeline = playerCon.connection.channel.pipeline();
+        Channel channel = playerCon.connection.channel;
 
-        pipeline.addBefore("packet_handler", player.getName(), handler);
+        channel.pipeline().addBefore("packet_handler", player.getName(), handler);
     }
 
     public void removeListener(final Player player) {

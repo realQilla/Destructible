@@ -52,6 +52,7 @@ public final class DData {
         return new DData(this.dMiner, this.packet, dBlock);
     }
 
+    @NotNull
     public DTool updateDTool() {
         return this.dTool = DItemUtil.getDTool(this.dMiner.getEquipment().getHeldItem());
     }

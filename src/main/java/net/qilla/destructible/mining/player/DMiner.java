@@ -60,7 +60,7 @@ public final class DMiner {
         this.location = player.getLocation();
         this.serverPlayer = ((CraftPlayer) player).getHandle();
         this.serverLevel = serverPlayer.serverLevel();
-        this.equipment = new Equipment(this);
+        this.equipment = new Equipment(this.player);
     }
 
     public void init(@NotNull final ServerboundPlayerActionPacket actionPacket) {
@@ -82,14 +82,13 @@ public final class DMiner {
 
     public void tickBlock(ServerboundSwingPacket swingPacket) {
         if(this.dData == null || this.dData.getDBlock().getDurability() < 0) return;
-
-        this.dData.updateDTool();
-
-        if(!canMine(dData)) return;
         DData dData = this.dData;
 
+        dData.updateDTool();
+        if(!canMine(dData)) return;
+
         Bukkit.getScheduler().runTask(plugin, () -> {
-            if(dData.damage(dData.getDTool().getEfficiency()) || this.player.getGameMode() == GameMode.CREATIVE) this.destroyBlock(dData);
+            if(dData.damage(dData.getDTool().getEfficiency())) this.destroyBlock(dData);
             else this.serverLevel.getChunkSource().broadcastAndSend(serverPlayer,
                     new ClientboundBlockDestructionPacket(dData.getPosHashCode(), dData.getBlockPos(), dData.getBlockStage()));
         });
@@ -102,7 +101,7 @@ public final class DMiner {
 
         this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
                 new ClientboundBlockDestructionPacket(dData.getPosHashCode(), dData.getBlockPos(), 10));
-        dData.getWorld().playSound(dData.getBlockLoc(), dData.getDBlock().getSound(), 1, 1);
+        dData.getWorld().playSound(dData.getBlockLoc(), dData.getDBlock().getSound(), 1, (float) RandomUtil.between(0.75, 1.25));
         dData.getWorld().spawnParticle(Particle.BLOCK,
                 new Location(dData.getWorld(),
                         dData.getBlockPos().getX() + 0.5 + midFace.x,
@@ -126,9 +125,9 @@ public final class DMiner {
                             dData.getBlockPos().getX() + 0.5,
                             dData.getBlockPos().getY() + 0.5,
                             dData.getBlockPos().getZ() + 0.5),
-                    50, 0.5, 0.5, 0.5, 0,
+                    50, 0.30, 0.30, 0.30, 0,
                     dData.getDBlock().getParticle().createBlockData());
-            dData.getBlockLoc().getWorld().playSound(dData.getBlockLoc(), Sound.ENTITY_CHICKEN_EGG, 0.5f, (float) RandomUtil.between(0.5f, 1.5f));
+            dData.getBlockLoc().getWorld().playSound(dData.getBlockLoc(), Sound.ENTITY_CHICKEN_EGG, 0.25f, (float) RandomUtil.between(0.75, 1.50));
         }, dData.getDBlock().getMsCooldown() / 50);
 
         this.damageTool(dData, 1);

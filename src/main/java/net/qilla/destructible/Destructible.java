@@ -8,7 +8,7 @@ import net.qilla.destructible.command.destructible.DestructibleCom;
 import net.qilla.destructible.mining.DBlockCache;
 import net.qilla.destructible.mining.GeneralListener;
 import net.qilla.destructible.mining.player.DListener;
-import net.qilla.destructible.mining.player.PlayerPacketListener;
+import net.qilla.destructible.mining.player.PacketListener;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTools;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Destructible extends JavaPlugin {
 
     private LifecycleEventManager<Plugin> lifecycleMan;
-    private PlayerPacketListener playerPacketListener;
+    private PacketListener packetListener;
     private DBlockCache dBlockCache;
 
     static {
@@ -29,7 +29,7 @@ public final class Destructible extends JavaPlugin {
     @Override
     public void onEnable() {
         this.lifecycleMan = this.getLifecycleManager();
-        this.playerPacketListener = new PlayerPacketListener(this);
+        this.packetListener = new PacketListener(this);
         this.dBlockCache = new DBlockCache(this);
 
         initListener();
@@ -54,8 +54,8 @@ public final class Destructible extends JavaPlugin {
         Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Server Reloaded.")));
     }
 
-    public PlayerPacketListener getPlayerPacketListener() {
-        return this.playerPacketListener;
+    public PacketListener getPlayerPacketListener() {
+        return this.packetListener;
     }
 
     public DBlockCache getdBlockCache() {

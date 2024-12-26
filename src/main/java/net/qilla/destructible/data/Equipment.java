@@ -3,12 +3,13 @@ package net.qilla.destructible.data;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.mining.player.DMiner;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 public class Equipment {
-    private final DMiner dMiner;
+    private final Player player;
     private ItemStack heldItem;
     private ItemStack offhandItem;
     private ItemStack helmet;
@@ -16,13 +17,13 @@ public class Equipment {
     private ItemStack leggings;
     private ItemStack boots;
 
-    public Equipment(DMiner dMiner) {
-        this.dMiner = dMiner;
+    public Equipment(final Player player) {
+        this.player = player;
         tick();
     }
 
     public void tick() {
-        PlayerInventory inventory = dMiner.getPlayer().getInventory();
+        PlayerInventory inventory = player.getInventory();
         Bukkit.getScheduler().runTaskTimer(Destructible.getInstance(), () -> {
             this.heldItem = inventory.getItemInMainHand();
             this.offhandItem = inventory.getItemInOffHand();
