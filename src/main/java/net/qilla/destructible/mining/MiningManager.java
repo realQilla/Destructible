@@ -35,7 +35,13 @@ public class MiningManager {
 
         DTool dTool = this.toolManager.getDTool();
 
-        if(!this.toolManager.canMine(dTool, this.dData)) return;
+        if(this.toolManager.onCoolDown(this.dData)) return;
+        if(!this.toolManager.canMine(dTool, this.dData)) {
+            this.blockMiner.nonMineable(this.dData);
+            return;
+        } else {
+            this.blockMiner.isMineable(this.dData);
+        }
         this.blockMiner.tickBlock(this.dData, dTool, toolManager);
     }
 

@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 public final class DBlockUtil {
 
-    public static Vec3 getMidFace(@NotNull final Direction dir) {
+    public static Vec3 getCenterFaceParticle(@NotNull final Direction dir) {
         Vec3 origin = dir.getUnitVec3();
-        double offset = 0.5;
+        double offset = 0.65;
         return switch(dir) {
             case UP -> new Vec3(origin.x, offset, origin.z);
             case DOWN -> new Vec3(origin.x, -offset, origin.z);
@@ -19,7 +19,7 @@ public final class DBlockUtil {
         };
     }
 
-    public static Vec3 getMidFaceItem(@NotNull final Direction dir) {
+    public static Vec3 getFaceCenterItem(@NotNull final Direction dir) {
         Vec3 origin = dir.getUnitVec3();
         double offset = 0.65;
         return switch(dir) {
@@ -32,7 +32,7 @@ public final class DBlockUtil {
         };
     }
 
-    public static float[] getOffsetFace(@NotNull final Direction dir) {
+    public static float[] getFlatOffsetParticles(@NotNull final Direction dir) {
         return switch(dir) {
             case UP, DOWN -> new float[] {0.25f, 0.05f, 0.25f};
             case EAST, WEST -> new float[] {0.05f, 0.25f, 0.25f};

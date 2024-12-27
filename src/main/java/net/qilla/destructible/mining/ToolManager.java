@@ -38,11 +38,14 @@ public class ToolManager {
     }
 
     public boolean canMine(@NotNull DTool dTool, @NotNull DData dData) {
-        if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k ->
-                new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k ->
-                new DBlockData()).isOnCooldown()) return false;
         if(dData.getDBlock().getStrength() > dTool.getStrength() || isToolBroken()) return false;
         return dData.getDBlock().getProperTools().stream().anyMatch(dToolType -> dToolType.equals(DToolType.ANY) || dTool.getToolType().contains(dToolType));
+    }
+
+    public boolean onCoolDown(@NotNull DData dData) {
+        return Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k ->
+                new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k ->
+                new DBlockData()).isOnCooldown();
     }
 
     public void damageTool(@NotNull DTool dTool, int amount) {

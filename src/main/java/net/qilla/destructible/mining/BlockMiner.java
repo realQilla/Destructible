@@ -5,6 +5,7 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,6 +16,7 @@ import net.qilla.destructible.data.DestructibleRegistry;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.item.tool.DTool;
 import net.qilla.destructible.util.DBlockUtil;
+import net.qilla.destructible.util.EntityUtil;
 import net.qilla.destructible.util.ItemUtil;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Bukkit;
@@ -24,6 +26,7 @@ import org.bukkit.Sound;
 import org.bukkit.craftbukkit.block.CraftBlockState;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -54,10 +57,30 @@ public class BlockMiner {
             this.destroyBlock(dData);
             toolManager.damageTool(dTool, 1);
         } else {
-            serverLevel.getChunkSource().broadcastAndSend(
+            this.serverLevel.getChunkSource().broadcastAndSend(
                     serverPlayer, new ClientboundBlockDestructionPacket(
                             dData.getBlockPos().hashCode(), dData.getBlockPos(), dData.getCrackLevel()));
         }
+    }
+
+    public void nonMineable(@NotNull DData dData) {
+        Entity entity = EntityUtil.getErrorHighlight(serverLevel).getHandle();
+
+        this.serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, 0, dData.getBlockPos()));
+        this.serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+            this.serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(entity.getId()));
+        }, 3);
+    }
+
+    public void isMineable(@NotNull DData dData) {
+        Entity entity = EntityUtil.getValidHighlight(serverLevel).getHandle();
+
+        this.serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, 0, dData.getBlockPos()));
+        this.serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+            this.serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(entity.getId()));
+        }, 3);
     }
 
     public void endProgress(@NotNull DData dData) {
@@ -66,11 +89,14 @@ public class BlockMiner {
     }
 
     private void destroyBlock(@NotNull DData dData) {
-        Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k -> new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k -> new DBlockData()).mined(this.player, dData.getDBlock().getMsCooldown());
+        int msCooldown = RandomUtil.offset(dData.getDBlock().getMsCooldown(), 2000);
+        Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k ->
+                new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k ->
+                new DBlockData()).mined(this.player, msCooldown);
         Bukkit.getScheduler().runTask(this.plugin, () -> {
             BlockState blockState = ((CraftBlockState) dData.getLocation().getBlock().getState()).getHandle();
-            Vec3 midFace = DBlockUtil.getMidFace(dData.getDirection());
-            float[] midOffset = DBlockUtil.getOffsetFace(dData.getDirection());
+            Vec3 midFace = DBlockUtil.getCenterFaceParticle(dData.getDirection());
+            float[] midOffset = DBlockUtil.getFlatOffsetParticles(dData.getDirection());
 
             this.serverLevel.getChunkSource().broadcastAndSend(
                     this.serverPlayer, new ClientboundBlockDestructionPacket(dData.getBlockPos().hashCode(), dData.getBlockPos(), 10));
@@ -78,7 +104,7 @@ public class BlockMiner {
             dData.getLocation().getWorld().spawnParticle(Particle.BLOCK,
                     new Location(dData.getLocation().getWorld(),
                             dData.getBlockPos().getX() + 0.5 + midFace.x,
-                            dData.getBlockPos().getY() + 0.6 + midFace.y,
+                            dData.getBlockPos().getY() + 0.5 + midFace.y,
                             dData.getBlockPos().getZ() + 0.5 + midFace.z),
                     50, midOffset[0], midOffset[1], midOffset[2], 0,
                     dData.getDBlock().getParticle().createBlockData());
@@ -91,16 +117,16 @@ public class BlockMiner {
                 dData.getLocation().getWorld().playSound(dData.getLocation(), Sound.ENTITY_CHICKEN_EGG, 0.25f, (float) RandomUtil.between(0.75, 1.50));
                 dData.getLocation().getWorld().spawnParticle(Particle.BLOCK,
                         dData.getLocation().toCenterLocation(),
-                        50, 0.30, 0.30, 0.30, 0,
+                        50, 0.35, 0.35, 0.35, 0,
                         dData.getDBlock().getParticle().createBlockData());
-            }, RandomUtil.offset(dData.getDBlock().getMsCooldown(), 2000) / 50);
+            }, msCooldown / 50);
         });
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             List<ItemStack> items = ItemUtil.rollItemDrops(dData.getDBlock().getItemDrops());
             Vec3 faceVec = dData.getDirection().getUnitVec3();
 
-            Vec3 itemMidFace = DBlockUtil.getMidFaceItem(dData.getDirection());
+            Vec3 itemMidFace = DBlockUtil.getFaceCenterItem(dData.getDirection());
 
             BlockPos blockPos = dData.getBlockPos();
             for(ItemStack item : items) {
