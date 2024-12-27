@@ -1,7 +1,6 @@
 package net.qilla.destructible.data;
 
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.mining.player.DMiner;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,7 +26,7 @@ public class Equipment {
         Bukkit.getScheduler().runTaskTimer(Destructible.getInstance(), () -> {
             this.heldItem = inventory.getItemInMainHand();
             //this.offhandItem = inventory.getItemInOffHand();
-           // this.helmet = inventory.getHelmet();
+            //this.helmet = inventory.getHelmet();
             //this.chestplate = inventory.getChestplate();
             //this.leggings = inventory.getLeggings();
             //this.boots = inventory.getBoots();

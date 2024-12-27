@@ -1,12 +1,11 @@
-package net.qilla.destructible.data;
+package net.qilla.destructible.mining;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
-import net.qilla.destructible.mining.item.tool.DTool;
-import net.qilla.destructible.mining.item.tool.DTools;
 import net.qilla.destructible.util.CoordUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -22,10 +21,9 @@ public final class DData {
     private final int chunkInt;
     private final Direction direction;
     private volatile DBlock dBlock;
-    private volatile AtomicDouble totalDurability;
-    private volatile AtomicDouble currentDurability;
+    private final AtomicDouble totalDurability;
+    private final AtomicDouble currentDurability;
     private final AtomicInteger crackLevel;
-    private volatile DTool dTool;
 
     public DData(@NotNull final World world, @NotNull final BlockPos blockPos, @NotNull final ChunkPos chunkPos, final int chunkInt, @NotNull final Direction direction) {
         this.location = CoordUtil.blockPosToLoc(blockPos, world);
@@ -37,7 +35,6 @@ public final class DData {
         this.totalDurability = new AtomicDouble(dBlock.getDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());
         this.crackLevel = new AtomicInteger(0);
-        this.dTool = DTools.DEFAULT;
     }
 
     @NotNull
@@ -77,17 +74,12 @@ public final class DData {
         return this.currentDurability.floatValue();
     }
 
-    public boolean isBroken() {
+    public boolean isDestroyed() {
         return this.currentDurability.floatValue() <= 0;
     }
 
     public int getCrackLevel() {
         return crackLevel.get();
-    }
-
-    @NotNull
-    public DTool getDTool() {
-        return this.dTool;
     }
 
     public void setDBlock(final DBlock dBlock) {
@@ -100,9 +92,5 @@ public final class DData {
     public void damageBlock(float amount) {
         this.currentDurability.addAndGet(-amount);
         this.crackLevel.set(Math.round(((totalDurability.floatValue() - currentDurability.floatValue()) * 9 / totalDurability.floatValue())));
-    }
-
-    public void setDTool(final DTool dTool) {
-        this.dTool = dTool;
     }
 }

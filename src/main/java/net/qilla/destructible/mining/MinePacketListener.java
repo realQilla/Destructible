@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining.player;
+package net.qilla.destructible.mining;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -15,18 +15,17 @@ import net.qilla.destructible.data.DBlockData;
 import net.qilla.destructible.data.DestructibleRegistry;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.util.CoordUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public final class PacketListener {
+public final class MinePacketListener {
     private final Destructible plugin;
 
-    public PacketListener(final Destructible plugin) {
+    public MinePacketListener(final Destructible plugin) {
         this.plugin = plugin;
     }
 
-    public void addListener(final Player player, final DMiner dMiner) {
+    public void addListener(final Player player, final MiningCore miningCore) {
         ChannelDuplexHandler handler = new ChannelDuplexHandler() {
             @Override
             public void channelRead(ChannelHandlerContext context, Object object) throws Exception {
@@ -34,13 +33,13 @@ public final class PacketListener {
 
                 if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
                     switch(actionPacket.getAction()) {
-                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> dMiner.init(actionPacket);
+                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> miningCore.init(actionPacket.getPos(), actionPacket.getDirection());
                         case ServerboundPlayerActionPacket.Action.DROP_ITEM,
-                             ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS -> dMiner.stop();
-                        default -> dMiner.stop();
+                             ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS -> miningCore.stop();
+                        default -> miningCore.stop();
                     }
                 } else if(packet instanceof ServerboundSwingPacket swingPacket) {
-                    dMiner.tickBlock(swingPacket);
+                    miningCore.tickBlock(swingPacket.getHand());
                 }
                 if(packet instanceof ServerboundUseItemOnPacket usePacket) {
                     BlockPos blockPos = usePacket.getHitResult().getBlockPos();

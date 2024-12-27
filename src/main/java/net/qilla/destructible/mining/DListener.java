@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining.player;
+package net.qilla.destructible.mining;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
@@ -23,7 +23,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -197,9 +196,9 @@ public class DListener implements Listener {
     }
 
     public void initPlayer(final Player player) {
-        DMiner dMiner = new DMiner(this.plugin, player, new Equipment(player));
-        Registries.DESTRUCTIBLE_MINERS_DATA.put(player.getUniqueId(), dMiner);
-        this.plugin.getPlayerPacketListener().addListener(player, dMiner);
+        MiningCore miningCore = new MiningCore(this.plugin, player, new Equipment(player));
+        Registries.DESTRUCTIBLE_MINERS_DATA.put(player.getUniqueId(), miningCore);
+        this.plugin.getPlayerPacketListener().addListener(player, miningCore);
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
     }

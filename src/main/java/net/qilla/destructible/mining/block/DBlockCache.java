@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining;
+package net.qilla.destructible.mining.block;
 
 import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;

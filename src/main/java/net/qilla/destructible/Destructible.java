@@ -5,10 +5,10 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.destructible.DestructibleCom;
-import net.qilla.destructible.mining.DBlockCache;
+import net.qilla.destructible.mining.block.DBlockCache;
 import net.qilla.destructible.mining.GeneralListener;
-import net.qilla.destructible.mining.player.DListener;
-import net.qilla.destructible.mining.player.PacketListener;
+import net.qilla.destructible.mining.DListener;
+import net.qilla.destructible.mining.MinePacketListener;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.mining.item.tool.DTools;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class Destructible extends JavaPlugin {
 
     private LifecycleEventManager<Plugin> lifecycleMan;
-    private PacketListener packetListener;
+    private MinePacketListener packetListener;
     private DBlockCache dBlockCache;
 
     static {
@@ -29,7 +29,7 @@ public final class Destructible extends JavaPlugin {
     @Override
     public void onEnable() {
         this.lifecycleMan = this.getLifecycleManager();
-        this.packetListener = new PacketListener(this);
+        this.packetListener = new MinePacketListener(this);
         this.dBlockCache = new DBlockCache(this);
 
         initListener();
@@ -54,7 +54,7 @@ public final class Destructible extends JavaPlugin {
         Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Server Reloaded.")));
     }
 
-    public PacketListener getPlayerPacketListener() {
+    public MinePacketListener getPlayerPacketListener() {
         return this.packetListener;
     }
 

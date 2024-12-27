@@ -5,7 +5,6 @@ import java.text.Format;
 
 public class FormatUtil {
 
-
     private static final char[] SUFFIXES = {'k', 'm', 'b', 't', 'q'};
 
     public static String numberChar(double number, boolean capitalize) {

@@ -128,7 +128,7 @@ public class DBlock {
          * @return
          */
         public DBlock.Properties msCooldown(int msCooldown) {
-            this.msCooldown = Math.max(100, msCooldown);
+            this.msCooldown = Math.max(1000, msCooldown);
             return this;
         }
 
@@ -212,7 +212,7 @@ public class DBlock {
             this.material = Material.BEDROCK;
             this.strengthRequirement = 0;
             this.durability = -1;
-            this.msCooldown = 100;
+            this.msCooldown = 1000;
             this.properTools = List.of();
             this.itemDrops = List.of();
             this.sound = Sound.BLOCK_STONE_BREAK;
