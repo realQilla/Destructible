@@ -1,0 +1,32 @@
+[
+  {
+    "displayName": "<!italic><gray>Sand",
+    "id": "SAND",
+    "lore": [
+      "<gray>Sand or something, idk"
+    ],
+    "material": "sand",
+    "rarity": "COMMON",
+    "stackSize": 64
+  },
+  {
+    "displayName": "<!italic><gray>Cobblestone",
+    "id": "COBBLESTONE",
+    "lore": [
+      "<gray>It's a stone, Luigi! You didn't make it!"
+    ],
+    "material": "cobblestone",
+    "rarity": "COMMON",
+    "stackSize": 64
+  },
+  {
+    "displayName": "<!italic><white>Stone",
+    "id": "STONE",
+    "lore": [
+      "<gray>Mining away!"
+    ],
+    "material": "stone",
+    "rarity": "COMMON",
+    "stackSize": 64
+  }
+]

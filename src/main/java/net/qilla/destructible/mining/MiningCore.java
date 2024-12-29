@@ -15,13 +15,11 @@ public final class MiningCore {
 
     private final Destructible plugin;
     private final Player player;
-    private final Equipment equipment;
     private final MiningManager miningManager;
 
     public MiningCore(@NotNull Destructible plugin, @NotNull Player player, @NotNull Equipment equipment) {
         this.plugin = plugin;
         this.player = player;
-        this.equipment = equipment;
         this.miningManager = new MiningManager(new BlockMiner(plugin, player), new ToolManager(player, equipment));
     }
 

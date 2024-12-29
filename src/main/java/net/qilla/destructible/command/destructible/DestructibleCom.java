@@ -1,6 +1,5 @@
 package net.qilla.destructible.command.destructible;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -8,7 +7,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.*;
@@ -18,18 +16,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.mining.item.tool.DTool;
-import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.EntityUtil;
-import net.qilla.destructible.util.FormatUtil;
-import net.qilla.destructible.util.ItemUtil;
+import net.qilla.destructible.mining.item.DTool;
+import net.qilla.destructible.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
@@ -40,15 +32,22 @@ public class DestructibleCom {
     private static final List<String> alias = List.of("dest", "d");
     private static final String TOOLS = "tools";
     private static final String BLOCKS = "blocks";
+    private static final String CONFIG = "config";
     private static final String TOOL_TYPE = "type";
     private static final String BLOCK_MODIFY = "modify";
     private static final String BLOCK_TYPE = "type";
     private static final String BLOCK_RECURSIVE = "recursive";
     private static final String BLOCK_VIEW = "view";
-    private static final String BLOCK_SAVE = "save";
-    private static final String BLOCK_CLEAR = "clear";
     private static final String BLOCK_INFO = "info";
     private static final String BLOCK_RECURSIVE_SIZE = "size";
+    private static final String CONFIG_CUSTOM_ITEMS = "custom_items";
+    private static final String CONFIG_CUSTOM_BLOCKS = "custom_blocks";
+    private static final String CONFIG_CUSTOM_TOOLS = "custom_tools";
+    private static final String CONFIG_BLOCK_CACHE = "loaded_cached_custom_blocks";
+    private static final String CONFIG_SAVE = "save";
+    private static final String CONFIG_CLEAR = "clear";
+    private static final String CONFIG_LOAD = "load";
+
 
     public DestructibleCom(final Destructible plugin, final Commands commands) {
         this.plugin = plugin;
@@ -92,13 +91,26 @@ public class DestructibleCom {
                                 ).executes(this::endBlockModify))
                         .then(Commands.literal(BLOCK_VIEW)
                                 .executes(this::blockView))
-                        .then(Commands.literal(BLOCK_SAVE)
-                                .executes(this::save))
-                        .then(Commands.literal(BLOCK_CLEAR)
-                                .executes(this::clear))
                         .then(Commands.literal(BLOCK_INFO)
                                 .executes(this::info))
                 )
+                        .then(Commands.literal(CONFIG)
+                                .then(Commands.literal(CONFIG_CUSTOM_ITEMS)
+                                        .then(Commands.literal(CONFIG_LOAD)
+                                                .executes(this::loadCustomItems))
+                                        .then(Commands.literal(CONFIG_CLEAR)
+                                                .executes(this::clearCustomItems)))
+                                .then(Commands.literal(CONFIG_CUSTOM_BLOCKS)
+                                        .then(Commands.literal(CONFIG_LOAD)
+                                                .executes(this::loadCustomBlocks))
+                                        .then(Commands.literal(CONFIG_CLEAR)
+                                                .executes(this::clearCustomBlocks)))
+                                .then(Commands.literal(CONFIG_BLOCK_CACHE)
+                                        .then(Commands.literal(CONFIG_SAVE)
+                                                .executes(this::saveBlockCache))
+                                        .then(Commands.literal(CONFIG_CLEAR)
+                                                .executes(this::clearBlockCache)))
+                        )
                 .build(), alias);
     }
 
@@ -111,35 +123,7 @@ public class DestructibleCom {
             return 0;
         }
 
-        ItemStack item = ItemStack.of(dTool.getMaterial());
-
-        item.editMeta(meta -> {
-            meta.getPersistentDataContainer().set(DataKey.TOOL, PersistentDataType.STRING, dTool.getId());
-            if(dTool.getDurability() != -1) {
-                meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
-            }
-            meta.displayName(dTool.getDisplayName());
-            meta.setEnchantmentGlintOverride(true);
-
-            meta.setAttributeModifiers(ArrayListMultimap.create());
-
-            List<Component> lore = List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency: " + dTool.getEfficiency()),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Strength: " + dTool.getStrength()),
-                    MiniMessage.miniMessage().deserialize(""),
-                    dTool.getRarity().getFormatted()
-            );
-
-            meta.lore(lore);
-        });
-
-        if(dTool.getDurability() != -1) {
-            Damageable damageable = (Damageable) item.getItemMeta();
-            damageable.setMaxDamage(dTool.getDurability());
-            item.setItemMeta(damageable);
-        }
-
-        ItemUtil.give(player, item);
+        ItemUtil.give(player, DItemsUtil.getTool(dTool));
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have been received Destructible tool: <gold>" + dTool.getId() + "</gold>."));
         return Command.SINGLE_SUCCESS;
     }
@@ -311,15 +295,15 @@ public class DestructibleCom {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int save(CommandContext<CommandSourceStack> context) {
+    private int saveBlockCache(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        this.plugin.getdBlockCache().save();
+        this.plugin.getLoadedBlocksFile().save();
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All cached Destructible blocks changes have been <green><bold>SAVED</green>!"));
         return Command.SINGLE_SUCCESS;
     }
 
-    private int clear(CommandContext<CommandSourceStack> context) {
+    private int clearBlockCache(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
         ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
         DBlockEditor DBlockEditor = Registries.DESTRUCTIBLE_BLOCK_EDITORS.computeIfAbsent(player.getUniqueId(), v -> new DBlockEditor(player));
@@ -348,8 +332,39 @@ public class DestructibleCom {
             Registries.DESTRUCTIBLE_BLOCK_EDITORS.clear();
             DBlockEditor.setLockHighlight(false);
         });
-        player.sendMessage(MiniMessage.miniMessage().deserialize(
-                "<yellow>All cached Destructible blocks have been <red><bold>CLEARED</red>!"));
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All cached Destructible blocks have been <red><bold>CLEARED</red>!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int loadCustomItems(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomItemsFile().save();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible items have been <green><bold>RE-LOADED</green> from config!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int clearCustomItems(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomItemsFile().reset();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible items have been <red><bold>CLEARED</red>!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int loadCustomBlocks(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomBlocksFile().save();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible blocks have been <green><bold>RE-LOADED</green> from config!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int clearCustomBlocks(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomBlocksFile().reset();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible blocks have been <red><bold>CLEARED</red>!"));
         return Command.SINGLE_SUCCESS;
     }
 

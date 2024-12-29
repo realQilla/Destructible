@@ -10,13 +10,16 @@ public class DBlockEditor {
     private boolean recursive;
     private int recursionSize;
     private final DestructibleRegistry<ChunkPos, DestructibleRegistry<Integer, Integer>> blockHighlight = new DestructibleRegistry<>();
+    private boolean highlight;
     private boolean lockHighlight;
-    private boolean highlight = true;
 
     public DBlockEditor(final Player player) {
         this.player = player;
         this.dblock = null;
         this.recursive = false;;
+        this.recursionSize = 0;
+        this.highlight = false;
+        this.lockHighlight = false;
     }
 
     public Player getPlayer() {

@@ -4,6 +4,9 @@ import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.qilla.destructible.data.ChunkPos;
+import net.qilla.destructible.data.BlockMemory;
+import net.qilla.destructible.data.DestructibleRegistry;
+import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.util.CoordUtil;
@@ -13,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class DData {
+public final class BlockInstance {
 
     private final Location location;
     private final BlockPos blockPos;
@@ -21,17 +24,21 @@ public final class DData {
     private final int chunkInt;
     private final Direction direction;
     private volatile DBlock dBlock;
+    private final BlockMemory blockMemory;
     private final AtomicDouble totalDurability;
     private final AtomicDouble currentDurability;
     private final AtomicInteger crackLevel;
 
-    public DData(@NotNull final World world, @NotNull final BlockPos blockPos, @NotNull final ChunkPos chunkPos, final int chunkInt, @NotNull final Direction direction) {
+    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, @NotNull ChunkPos chunkPos, int chunkInt, @NotNull Direction direction) {
         this.location = CoordUtil.blockPosToLoc(blockPos, world);
         this.blockPos = blockPos;
         this.chunkPos = chunkPos;
         this.chunkInt = chunkInt;
         this.direction = direction;
         this.dBlock = DBlocks.NONE;
+        this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
+                new DestructibleRegistry<>()).computeIfAbsent(chunkInt, k ->
+                new BlockMemory());
         this.totalDurability = new AtomicDouble(dBlock.getDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());
         this.crackLevel = new AtomicInteger(0);
@@ -64,6 +71,11 @@ public final class DData {
     @NotNull
     public DBlock getDBlock() {
         return this.dBlock;
+    }
+
+    @NotNull
+    public BlockMemory getDBlockData() {
+        return this.blockMemory;
     }
 
     public float getTotalDurability() {

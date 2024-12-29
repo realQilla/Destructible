@@ -1,6 +1,5 @@
-package net.qilla.destructible.mining.item.tool;
+package net.qilla.destructible.mining.item;
 
-import net.qilla.destructible.mining.item.DItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -9,12 +8,14 @@ public final class DTool extends DItem {
     private final List<DToolType> dToolType;
     private final int strength;
     private final float efficiency;
+    private final int durability;
 
     public DTool(DItem.Properties itemProperties, DTool.Properties toolProperties) {
         super(itemProperties);
         this.dToolType = toolProperties.dToolType;
         this.strength = toolProperties.strength;
         this.efficiency = toolProperties.efficiency;
+        this.durability = toolProperties.durability;
     }
 
     @NotNull
@@ -30,12 +31,17 @@ public final class DTool extends DItem {
         return this.efficiency;
     }
 
+    public int getDurability() {
+        return this.durability;
+    }
+
     public static class Properties {
         private List<DToolType> dToolType;
         private int strength;
         private float efficiency;
+        private int durability;
 
-        public static DTool.Properties of() {
+        public static Properties of() {
             return new DTool.Properties();
         }
 
@@ -46,7 +52,7 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public DTool.Properties dToolType(List<DToolType> type) {
+        public Properties dToolType(List<DToolType> type) {
             this.dToolType = type;
             return this;
         }
@@ -58,7 +64,7 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public DTool.Properties strength(int amount) {
+        public Properties strength(int amount) {
             this.strength = Math.max(0, amount);
             return this;
         }
@@ -70,8 +76,18 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public DTool.Properties efficiency(float amount) {
+        public Properties efficiency(float amount) {
             this.efficiency = Math.max(0, amount);
+            return this;
+        }
+
+        public Properties durability(int amount) {
+            this.durability = Math.max(1, amount);
+            return this;
+        }
+
+        public Properties noDurability() {
+            this.durability = -1;
             return this;
         }
 
@@ -79,6 +95,7 @@ public final class DTool extends DItem {
             this.dToolType = List.of();
             this.strength = 0;
             this.efficiency = 1.0f;
+            this.durability = -1;
         }
     }
 }

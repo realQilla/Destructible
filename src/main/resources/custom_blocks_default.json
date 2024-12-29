@@ -1,0 +1,62 @@
+[
+  {
+    "durability": 0.0,
+    "id": "SAND",
+    "itemDrops": [
+      {
+        "dItem": "SAND",
+        "dropChance": 1.0,
+        "maxAmount": 1,
+        "minAmount": 1
+      }
+    ],
+    "material": "sand",
+    "msCooldown": 5000,
+    "particle": "sand",
+    "properTools": [
+      "SHOVEL"
+    ],
+    "sound": "block.sand.break",
+    "strength": 0
+  },
+  {
+    "durability": 40.0,
+    "id": "STONE",
+    "itemDrops": [
+      {
+        "dItem": "STONE",
+        "dropChance": 1.0,
+        "maxAmount": 1,
+        "minAmount": 1
+      }
+    ],
+    "material": "stone",
+    "msCooldown": 5000,
+    "particle": "stone",
+    "properTools": [
+      "PICKAXE"
+    ],
+    "sound": "block.stone.break",
+    "strength": 1
+  },
+  {
+    "durability": 60.0,
+    "id": "COBBLESTONE",
+    "itemDrops": [
+      {
+        "dItem": "COBBLESTONE",
+        "dropChance": 1.0,
+        "maxAmount": 1,
+        "minAmount": 1
+      }
+    ],
+    "material": "cobblestone",
+    "msCooldown": 5000,
+    "particle": "cobblestone",
+    "properTools": [
+      "PICKAXE"
+    ],
+    "sound": "block.stone.break",
+    "strength": 1
+  }
+]

@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining.item.tool;
+package net.qilla.destructible.mining.item;
 
 public enum DToolType {
     ANY,

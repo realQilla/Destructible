@@ -1,11 +1,12 @@
 package net.qilla.destructible.mining.block;
 
-public class DNode extends DBlock{
+public class DNode extends DBlock {
 
     private final int minOre;
     private final int maxOre;
-    public DNode(DBlock.Properties dBlockProperties, DNode.Properties properties) {
-        super(dBlockProperties);
+
+    public DNode(DBlock.Properties dBlockBlockProperties, DNode.Properties properties) {
+        super(dBlockBlockProperties);
         this.minOre = properties.minOre;
         this.maxOre = properties.maxOre;
     }

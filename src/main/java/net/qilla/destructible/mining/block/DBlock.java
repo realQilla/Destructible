@@ -1,7 +1,7 @@
 package net.qilla.destructible.mining.block;
 
 import net.qilla.destructible.mining.item.DDrop;
-import net.qilla.destructible.mining.item.tool.DToolType;
+import net.qilla.destructible.mining.item.DToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ public class DBlock {
     private final Sound sound;
     private final Material particle;
 
-    public DBlock(DBlock.Properties properties) {
+    public DBlock(Properties properties) {
         this.id = properties.id;
         this.material = properties.material;
         this.strength = properties.strengthRequirement;
@@ -88,128 +88,146 @@ public class DBlock {
         private Sound sound;
         private Material particle;
 
-        public static DBlock.Properties of() {
-            return new DBlock.Properties();
+        public static Properties of() {
+            return new Properties();
         }
 
-        public DBlock.Properties id(@NotNull String id) {
+        public Properties id(@NotNull String id) {
             this.id = id;
             return this;
         }
 
-        public DBlock.Properties material(@NotNull Material material) {
+        public Properties material(@NotNull Material material) {
             this.material = material;
             return this;
         }
 
         /**
          * Tool strength requirement to destroy block
+         *
          * @param strength
+         *
          * @return
          */
-        public DBlock.Properties strengthRequirement(int strength) {
+        public Properties strengthRequirement(int strength) {
             this.strengthRequirement = strength;
             return this;
         }
 
         /**
          * Ticks taken to destroy block, base damage efficiency is 1
+         *
          * @param durability
+         *
          * @return
          */
-        public DBlock.Properties durability(int durability) {
+        public Properties durability(int durability) {
             this.durability = Math.max(1, durability);
             return this;
         }
 
         /**
          * Milliseconds cooldown the block will have after being destroyed
+         *
          * @param msCooldown
+         *
          * @return
          */
-        public DBlock.Properties msCooldown(int msCooldown) {
+        public Properties msCooldown(int msCooldown) {
             this.msCooldown = Math.max(1000, msCooldown);
             return this;
         }
 
         /**
          * Flags block to be instantly broken
+         *
          * @return
          */
-        public DBlock.Properties instaBreak() {
+        public Properties instaBreak() {
             this.durability = 0;
             return this;
         }
 
         /**
          * Flags block to never break
+         *
          * @return
          */
-        public DBlock.Properties neverBreak() {
+        public Properties neverBreak() {
             this.durability = -1;
             return this;
         }
 
         /**
          * Array of tools that can destroy this block
+         *
          * @param tool
+         *
          * @return
          */
-        public DBlock.Properties properTools(@NotNull List<DToolType> tool) {
+        public Properties properTools(@NotNull List<DToolType> tool) {
             this.properTools = tool;
             return this;
         }
 
         /**
          * Flags that block has no tools to destroy it(becomes unbreakable)
+         *
          * @return
          */
-        public DBlock.Properties noTools() {
+        public Properties noTools() {
             this.properTools = List.of();
             return this;
         }
 
         /**
          * Array of ItemDrop objects that will drop when block is destroyed
-         * @param itemDrop
+         *
+         * @param itemDrops
+         *
          * @return
          */
-        public DBlock.Properties itemDrops(@NotNull List<DDrop> itemDrop) {
-            this.itemDrops = itemDrop;
+        public Properties itemDrops(@NotNull List<DDrop> itemDrops) {
+            this.itemDrops = itemDrops;
             return this;
         }
 
         /**
          * Flags block to have no drops
+         *
          * @return
          */
-        public DBlock.Properties noDrops() {
+        public Properties noDrops() {
             this.itemDrops = List.of();
             return this;
         }
 
         /**
          * Sound played when block is destroyed
+         *
          * @param sound
+         *
          * @return
          */
-        public DBlock.Properties sound(@NotNull Sound sound) {
+        public Properties sound(@NotNull Sound sound) {
             this.sound = sound;
             return this;
         }
 
         /**
          * Block particle played when block is destroyed
+         *
          * @param particle
+         *
          * @return
          */
-        public DBlock.Properties particle(@NotNull Material particle) {
+        public Properties particle(@NotNull Material particle) {
             this.particle = particle;
             return this;
         }
 
         private Properties() {
-            this.material = Material.BEDROCK;
+            this.material = Material.AIR;
             this.strengthRequirement = 0;
             this.durability = -1;
             this.msCooldown = 1000;
@@ -218,4 +236,5 @@ public class DBlock {
             this.sound = Sound.BLOCK_STONE_BREAK;
             this.particle = Material.BEDROCK;
         }
-    }}
+    }
+}

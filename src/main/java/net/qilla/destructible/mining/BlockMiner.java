@@ -5,18 +5,13 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DBlockData;
-import net.qilla.destructible.data.DestructibleRegistry;
-import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.item.tool.DTool;
+import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.util.DBlockUtil;
-import net.qilla.destructible.util.EntityUtil;
 import net.qilla.destructible.util.ItemUtil;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Bukkit;
@@ -26,7 +21,6 @@ import org.bukkit.Sound;
 import org.bukkit.craftbukkit.block.CraftBlockState;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -51,91 +45,71 @@ public class BlockMiner {
         this.serverLevel = serverPlayer.serverLevel();
     }
 
-    public void tickBlock(@NotNull DData dData, @NotNull DTool dTool, @NotNull ToolManager toolManager) {
-        dData.damageBlock(dTool.getEfficiency());
-        if(dData.isDestroyed()) {
-            this.destroyBlock(dData);
+    public void tickBlock(@NotNull BlockInstance blockInstance, @NotNull DTool dTool, @NotNull ToolManager toolManager) {
+        blockInstance.damageBlock(dTool.getEfficiency());
+
+        if(blockInstance.isDestroyed()) {
+            blockInstance.getDBlockData().setLocked(true);
+            this.destroyBlock(blockInstance);
             toolManager.damageTool(dTool, 1);
         } else {
             this.serverLevel.getChunkSource().broadcastAndSend(
                     serverPlayer, new ClientboundBlockDestructionPacket(
-                            dData.getBlockPos().hashCode(), dData.getBlockPos(), dData.getCrackLevel()));
+                            blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), blockInstance.getCrackLevel()));
         }
     }
 
-    public void nonMineable(@NotNull DData dData) {
-        Entity entity = EntityUtil.getErrorHighlight(serverLevel).getHandle();
-
-        this.serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, 0, dData.getBlockPos()));
-        this.serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-            this.serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(entity.getId()));
-        }, 3);
-    }
-
-    public void isMineable(@NotNull DData dData) {
-        Entity entity = EntityUtil.getValidHighlight(serverLevel).getHandle();
-
-        this.serverPlayer.connection.send(new ClientboundAddEntityPacket(entity, 0, dData.getBlockPos()));
-        this.serverPlayer.connection.send(new ClientboundSetEntityDataPacket(entity.getId(), entity.getEntityData().packAll()));
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-            this.serverPlayer.connection.send(new ClientboundRemoveEntitiesPacket(entity.getId()));
-        }, 3);
-    }
-
-    public void endProgress(@NotNull DData dData) {
+    public void endProgress(@NotNull BlockInstance blockInstance) {
         this.serverLevel.getChunkSource().broadcastAndSend(serverPlayer,
-                new ClientboundBlockDestructionPacket(dData.getBlockPos().hashCode(), dData.getBlockPos(), 10));
+                new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
     }
 
-    private void destroyBlock(@NotNull DData dData) {
-        int msCooldown = RandomUtil.offset(dData.getDBlock().getMsCooldown(), 2000);
-        Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(dData.getChunkPos(), k ->
-                new DestructibleRegistry<>()).computeIfAbsent(dData.getChunkInt(), k ->
-                new DBlockData()).mined(this.player, msCooldown);
+    private void destroyBlock(@NotNull BlockInstance blockInstance) {
         Bukkit.getScheduler().runTask(this.plugin, () -> {
-            BlockState blockState = ((CraftBlockState) dData.getLocation().getBlock().getState()).getHandle();
-            Vec3 midFace = DBlockUtil.getCenterFaceParticle(dData.getDirection());
-            float[] midOffset = DBlockUtil.getFlatOffsetParticles(dData.getDirection());
+            int msCooldown = RandomUtil.offset(blockInstance.getDBlock().getMsCooldown(), 2000);
+            BlockState blockState = ((CraftBlockState) blockInstance.getLocation().getBlock().getState()).getHandle();
+            Vec3 midFace = DBlockUtil.getCenterFaceParticle(blockInstance.getDirection());
+            float[] midOffset = DBlockUtil.getFlatOffsetParticles(blockInstance.getDirection());
 
             this.serverLevel.getChunkSource().broadcastAndSend(
-                    this.serverPlayer, new ClientboundBlockDestructionPacket(dData.getBlockPos().hashCode(), dData.getBlockPos(), 10));
-            dData.getLocation().getWorld().playSound(dData.getLocation(), dData.getDBlock().getSound(), 1, (float) RandomUtil.between(0.75, 1.25));
-            dData.getLocation().getWorld().spawnParticle(Particle.BLOCK,
-                    new Location(dData.getLocation().getWorld(),
-                            dData.getBlockPos().getX() + 0.5 + midFace.x,
-                            dData.getBlockPos().getY() + 0.5 + midFace.y,
-                            dData.getBlockPos().getZ() + 0.5 + midFace.z),
+                    this.serverPlayer, new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
+            blockInstance.getLocation().getWorld().playSound(blockInstance.getLocation(), blockInstance.getDBlock().getSound(), 1, (float) RandomUtil.between(0.75, 1.25));
+            blockInstance.getLocation().getWorld().spawnParticle(Particle.BLOCK,
+                    new Location(blockInstance.getLocation().getWorld(),
+                            blockInstance.getBlockPos().getX() + 0.5 + midFace.x,
+                            blockInstance.getBlockPos().getY() + 0.5 + midFace.y,
+                            blockInstance.getBlockPos().getZ() + 0.5 + midFace.z),
                     50, midOffset[0], midOffset[1], midOffset[2], 0,
-                    dData.getDBlock().getParticle().createBlockData());
+                    blockInstance.getDBlock().getParticle().createBlockData());
 
-            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundBlockUpdatePacket(dData.getBlockPos(), Blocks.DEAD_BUBBLE_CORAL_BLOCK.defaultBlockState()));
+            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundBlockUpdatePacket(blockInstance.getBlockPos(), Blocks.DEAD_BUBBLE_CORAL_BLOCK.defaultBlockState()));
+            blockInstance.getDBlockData().setLocked(false);
+            blockInstance.getDBlockData().mined(this.player, msCooldown);
 
             Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
                 serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
-                        new ClientboundBlockUpdatePacket(dData.getBlockPos(), blockState));
-                dData.getLocation().getWorld().playSound(dData.getLocation(), Sound.ENTITY_CHICKEN_EGG, 0.25f, (float) RandomUtil.between(0.75, 1.50));
-                dData.getLocation().getWorld().spawnParticle(Particle.BLOCK,
-                        dData.getLocation().toCenterLocation(),
+                        new ClientboundBlockUpdatePacket(blockInstance.getBlockPos(), blockState));
+                blockInstance.getLocation().getWorld().playSound(blockInstance.getLocation(), Sound.ENTITY_CHICKEN_EGG, 0.25f, (float) RandomUtil.between(0.75, 1.50));
+                blockInstance.getLocation().getWorld().spawnParticle(Particle.BLOCK,
+                        blockInstance.getLocation().toCenterLocation(),
                         50, 0.35, 0.35, 0.35, 0,
-                        dData.getDBlock().getParticle().createBlockData());
+                        blockInstance.getDBlock().getParticle().createBlockData());
             }, msCooldown / 50);
         });
-
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            List<ItemStack> items = ItemUtil.rollItemDrops(dData.getDBlock().getItemDrops());
-            Vec3 faceVec = dData.getDirection().getUnitVec3();
+            List<ItemStack> items = ItemUtil.rollItemDrops(blockInstance.getDBlock().getItemDrops());
+            Vec3 faceVec = blockInstance.getDirection().getUnitVec3();
 
-            Vec3 itemMidFace = DBlockUtil.getFaceCenterItem(dData.getDirection());
+            Vec3 itemMidFace = DBlockUtil.getFaceCenterItem(blockInstance.getDirection());
 
-            BlockPos blockPos = dData.getBlockPos();
+            BlockPos blockPos = blockInstance.getBlockPos();
             for(ItemStack item : items) {
                 ItemEntity itemEntity = new ItemEntity(
                         this.serverLevel,
                         blockPos.getX() + 0.5 + itemMidFace.x,
                         blockPos.getY() + 0.5 + itemMidFace.y,
                         blockPos.getZ() + 0.5 + itemMidFace.z,
-                        ((CraftItemStack) item).handle,
+                        CraftItemStack.asCraftCopy(item).handle,
                         faceVec.offsetRandom(RANDOM, 1.2f).x * 0.3,
                         faceVec.y * 0.3,
                         faceVec.offsetRandom(RANDOM, 1.2f).z * 0.3);

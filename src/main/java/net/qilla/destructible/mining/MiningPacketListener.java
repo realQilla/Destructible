@@ -11,17 +11,17 @@ import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.DBlockData;
+import net.qilla.destructible.data.BlockMemory;
 import net.qilla.destructible.data.DestructibleRegistry;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.util.CoordUtil;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public final class MinePacketListener {
+public final class MiningPacketListener {
     private final Destructible plugin;
 
-    public MinePacketListener(final Destructible plugin) {
+    public MiningPacketListener(final Destructible plugin) {
         this.plugin = plugin;
     }
 
@@ -47,7 +47,7 @@ public final class MinePacketListener {
                     int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
                     if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, v ->
                             new DestructibleRegistry<>()).computeIfAbsent(chunkInt, v ->
-                            new DBlockData()).isOnCooldown()) {
+                            new BlockMemory()).isOnCooldown()) {
                         return;
                     }
                 }

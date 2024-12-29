@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining;
+package net.qilla.destructible;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
@@ -7,8 +7,8 @@ import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
+import net.qilla.destructible.mining.MiningCore;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.EntityUtil;
 import net.qilla.destructible.util.FormatUtil;
@@ -23,6 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -31,11 +32,11 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class DListener implements Listener {
+public class PluginListener implements Listener {
 
     private final Destructible plugin;
 
-    public DListener(Destructible plugin) {
+    public PluginListener(Destructible plugin) {
         this.plugin = plugin;
     }
 
@@ -206,5 +207,10 @@ public class DListener implements Listener {
     public void removePlayer(final Player player) {
         Registries.DESTRUCTIBLE_MINERS_DATA.remove(player.getUniqueId());
         this.plugin.getPlayerPacketListener().removeListener(player);
+    }
+
+    @EventHandler
+    private void onDurabilityChange(PlayerItemDamageEvent event) {
+        event.setCancelled(true);
     }
 }

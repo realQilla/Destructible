@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Random;
 
 public final class ItemUtil {
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     public static List<ItemStack> rollItemDrops(final List<DDrop> itemDrops) {
         if(itemDrops.isEmpty()) return List.of();
-        random.setSeed(System.currentTimeMillis());
+        RANDOM.setSeed(System.currentTimeMillis());
 
-        return itemDrops.stream().filter(itemDrop -> random.nextFloat() <= itemDrop.getDropChance())
-                .map(itemDrop -> {
-                    int amount = random.nextInt(itemDrop.getMaxAmount() - itemDrop.getMinAmount() + 1) + itemDrop.getMinAmount();
-                    ItemStack item = itemDrop.getItemStack();
+        return itemDrops.stream().filter(drop -> RANDOM.nextFloat() <= drop.getDropChance())
+                .map(drop -> {
+                    int amount = RANDOM.nextInt(drop.getMaxAmount() - drop.getMinAmount() + 1) + drop.getMinAmount();
+                    ItemStack item = DItemsUtil.getItem(drop.getDItem());
                     item.setAmount(amount);
                     return item;
                 })

@@ -1,7 +1,9 @@
 package net.qilla.destructible.mining.item;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -13,16 +15,14 @@ public class DItem {
     private final List<Component> lore;
     private final int stackSize;
     private final Rarity rarity;
-    private final int durability;
 
-    public DItem(DItem.Properties properties) {
-        this.id = properties.id;
-        this.material = properties.material;
-        this.displayName = properties.displayName;
-        this.lore = properties.lore;
-        this.stackSize = properties.stackSize;
-        this.rarity = properties.rarity;
-        this.durability = properties.durability;
+    public DItem(@NotNull DItem.Properties Properties) {
+        this.id = Properties.id;
+        this.material = Properties.material;
+        this.displayName = Properties.displayName;
+        this.lore = Properties.lore;
+        this.stackSize = Properties.stackSize;
+        this.rarity = Properties.rarity;
     }
 
     public String getId() {
@@ -49,10 +49,6 @@ public class DItem {
         return this.rarity;
     }
 
-    public int getDurability() {
-        return this.durability;
-    }
-
     public static class Properties {
         @Nullable
         private String id;
@@ -61,58 +57,57 @@ public class DItem {
         private List<Component> lore;
         private int stackSize;
         private Rarity rarity;
-        private int durability;
 
-        public static DItem.Properties of() {
-            return new DItem.Properties();
+        public static Properties of() {
+            return new Properties();
         }
 
-        public DItem.Properties id(String id) {
+        public Properties id(@NotNull String id) {
             this.id = id;
             return this;
         }
 
-        public DItem.Properties material(Material material) {
+        public Properties material(@NotNull Material material) {
             this.material = material;
             return this;
         }
 
-        public DItem.Properties displayName(Component name) {
+        public Properties displayName(@NotNull Component name) {
             this.displayName = name;
             return this;
         }
 
-        public DItem.Properties lore(List<Component> lore) {
+        public Properties defaultDisplayName() {
+            this.displayName = MiniMessage.miniMessage().deserialize("<!italic><white>" + this.material.name());
+            return this;
+        }
+
+        public Properties lore(@NotNull List<Component> lore) {
             this.lore = lore;
             return this;
         }
 
-        public DItem.Properties stackSize(int amount) {
+        public Properties noLore() {
+            this.lore = List.of();
+            return this;
+        }
+
+        public Properties stackSize(int amount) {
             this.stackSize = Math.max(1, Math.min(99, amount));
             return this;
         }
 
-        public DItem.Properties rarity(Rarity rarity) {
+        public Properties rarity(@NotNull Rarity rarity) {
             this.rarity = rarity;
             return this;
         }
 
-        public DItem.Properties durability(int amount) {
-            this.durability = Math.max(1, amount);
-            return this;
-        }
-
-        public DItem.Properties noDurability() {
-            this.durability = -1;
-            return this;
-        }
-
-        protected Properties() {
-            this.displayName = Component.empty();
+        private Properties() {
+            this.material = Material.AIR;
+            this.displayName = Component.text(material.name());
             this.lore = List.of();
             this.stackSize = 1;
             this.rarity = Rarity.NONE;
-            this.durability = -1;
         }
 
     }
