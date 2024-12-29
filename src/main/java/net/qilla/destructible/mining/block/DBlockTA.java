@@ -3,7 +3,6 @@ package net.qilla.destructible.mining.block;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.item.DDrop;
 import net.qilla.destructible.mining.item.DToolType;
 import org.bukkit.NamespacedKey;
@@ -26,7 +25,7 @@ public class DBlockTA extends TypeAdapter<DBlock> {
         out.name("properTools");
         out.beginArray();
         for(DToolType tool : value.getProperTools()) {
-            out.value(tool.name());
+            out.value(tool.toString());
         }
         out.endArray();
         out.name("itemDrops");
@@ -47,24 +46,24 @@ public class DBlockTA extends TypeAdapter<DBlock> {
 
     @Override
     public DBlock read(JsonReader in) throws IOException {
-        DBlock.Properties properties = DBlock.Properties.of();
+        DBlock.Builder builder = new DBlock.Builder();
         in.beginObject();
         while(in.hasNext()) {
             switch(in.nextName()) {
                 case "id":
-                    properties.id(in.nextString());
+                    builder.id(in.nextString());
                     break;
                 case "material":
-                    properties.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
+                    builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
                 case "strength":
-                    properties.strengthRequirement(in.nextInt());
+                    builder.strengthRequirement(in.nextInt());
                     break;
                 case "durability":
-                    properties.durability(in.nextInt());
+                    builder.durability(in.nextInt());
                     break;
                 case "msCooldown":
-                    properties.msCooldown(in.nextInt());
+                    builder.msCooldown(in.nextInt());
                     break;
                 case "properTools":
                     List<DToolType> tools = new ArrayList<>();
@@ -73,46 +72,46 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                         tools.add(DToolType.valueOf(in.nextString()));
                     }
                     in.endArray();
-                    properties.properTools(tools);
+                    builder.properTools(tools);
                     break;
                 case "itemDrops":
                     List<DDrop> dDrops = new ArrayList<>();
                     in.beginArray();
                     while(in.hasNext()) {
                         in.beginObject();
-                        DDrop.Properties dropProperties = DDrop.Properties.of();
+                        DDrop.Builder dropBuilder = new DDrop.Builder();
                         while(in.hasNext()) {
                             switch(in.nextName()) {
                                 case "dItem":
-                                    dropProperties.dItem(in.nextString());
+                                    dropBuilder.dItem(in.nextString());
                                     break;
                                 case "minAmount":
-                                    dropProperties.minAmount(in.nextInt());
+                                    dropBuilder.minAmount(in.nextInt());
                                     break;
                                 case "maxAmount":
-                                    dropProperties.maxAmount(in.nextInt());
+                                    dropBuilder.maxAmount(in.nextInt());
                                     break;
                                 case "dropChance":
-                                    dropProperties.dropChance(in.nextDouble());
+                                    dropBuilder.dropChance(in.nextDouble());
                                     break;
                             }
                         }
-                        dDrops.add(DDrop.of(dropProperties));
+                        dDrops.add(dropBuilder.build());
                         in.endObject();
-                        properties.itemDrops(dDrops);
+                        builder.itemDrops(dDrops);
                     }
                     in.endArray();
                     break;
                 case "sound":
-                    properties.sound(Registry.SOUNDS.get(NamespacedKey.fromString(in.nextString())));
+                    builder.sound(Registry.SOUNDS.get(NamespacedKey.fromString(in.nextString())));
                     break;
                 case "particle":
-                    properties.particle(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
+                    builder.particle(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
             }
         }
         in.endObject();
-        return new DBlock(properties);
+        return builder.build();
     }
 
 }

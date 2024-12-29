@@ -35,7 +35,7 @@ public final class BlockInstance {
         this.chunkPos = chunkPos;
         this.chunkInt = chunkInt;
         this.direction = direction;
-        this.dBlock = DBlocks.NONE;
+        this.dBlock = DBlocks.DEFAULT;
         this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
                 new DestructibleRegistry<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());

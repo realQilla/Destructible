@@ -11,7 +11,6 @@ import net.qilla.destructible.mining.block.DBlockTA;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemTA;
 import org.bukkit.Bukkit;
-
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
@@ -52,6 +51,7 @@ public class CustomBlocksFile extends DestructibleFile {
     public void load() {
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
             List<DBlock> dBlockList = this.gson.fromJson(bufferedReader, type);
+            Registries.DESTRUCTIBLE_BLOCKS.clear();
             for(DBlock dBlock : dBlockList) Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
         } catch(IOException exception) {
             super.reset();

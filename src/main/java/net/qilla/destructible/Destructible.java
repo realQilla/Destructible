@@ -7,6 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.destructible.DestructibleCom;
 import net.qilla.destructible.files.CustomBlocksFile;
 import net.qilla.destructible.files.CustomItemsFile;
+import net.qilla.destructible.files.CustomToolsFile;
 import net.qilla.destructible.files.LoadedCachedCustomBlocksFile;
 import net.qilla.destructible.mining.MiningPacketListener;
 import net.qilla.destructible.mining.block.DBlocks;
@@ -14,15 +15,26 @@ import net.qilla.destructible.mining.item.DItems;
 import net.qilla.destructible.mining.item.DTools;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.logging.Logger;
 
 public final class Destructible extends JavaPlugin {
 
     private LifecycleEventManager<Plugin> lifecycleMan;
     private MiningPacketListener packetListener;
     private CustomItemsFile customItemsFile;
+    private CustomToolsFile customToolsFile;
     private CustomBlocksFile customBlocksFile;
     private LoadedCachedCustomBlocksFile loadedCachedCustomBlocksFile;
+
+    static {
+        new DItems();
+        new DTools();
+        new DBlocks();
+    }
 
     @Override
     public void onEnable() {
@@ -30,6 +42,7 @@ public final class Destructible extends JavaPlugin {
 
         this.packetListener = new MiningPacketListener(this);
         this.customItemsFile = new CustomItemsFile();
+        this.customToolsFile = new CustomToolsFile();
         this.customBlocksFile = new CustomBlocksFile();
         this.loadedCachedCustomBlocksFile = new LoadedCachedCustomBlocksFile();
 
@@ -61,9 +74,9 @@ public final class Destructible extends JavaPlugin {
         return this.customItemsFile;
     }
 
-    //public CustomDropsFile getCustomDropsFile() {
-    //    return this.customDropsFile;
-    //}
+    public CustomToolsFile getCustomToolsFile() {
+        return this.customToolsFile;
+    }
 
     public CustomBlocksFile getCustomBlocksFile() {
         return this.customBlocksFile;
@@ -80,5 +93,10 @@ public final class Destructible extends JavaPlugin {
 
     public static Destructible getInstance() {
         return getPlugin(Destructible.class);
+    }
+
+    @NotNull
+    public static Logger getPluginLogger() {
+        return PluginLogger.getLogger("Destructible");
     }
 }

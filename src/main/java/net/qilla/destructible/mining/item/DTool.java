@@ -4,18 +4,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public final class DTool extends DItem {
+public class DTool extends DItem {
     private final List<DToolType> dToolType;
     private final int strength;
-    private final float efficiency;
+    private final double efficiency;
     private final int durability;
 
-    public DTool(DItem.Properties itemProperties, DTool.Properties toolProperties) {
-        super(itemProperties);
-        this.dToolType = toolProperties.dToolType;
-        this.strength = toolProperties.strength;
-        this.efficiency = toolProperties.efficiency;
-        this.durability = toolProperties.durability;
+    protected DTool(Builder toolBuilder) {
+        super(toolBuilder.dItemBuilder);
+        this.dToolType = toolBuilder.dToolType;
+        this.strength = toolBuilder.strength;
+        this.efficiency = toolBuilder.efficiency;
+        this.durability = toolBuilder.durability;
     }
 
     @NotNull
@@ -27,7 +27,7 @@ public final class DTool extends DItem {
         return this.strength;
     }
 
-    public float getEfficiency() {
+    public double getEfficiency() {
         return this.efficiency;
     }
 
@@ -35,14 +35,23 @@ public final class DTool extends DItem {
         return this.durability;
     }
 
-    public static class Properties {
+    public static class Builder extends DItem.Builder {
+        private DItem.Builder dItemBuilder;
         private List<DToolType> dToolType;
         private int strength;
-        private float efficiency;
+        private double efficiency;
         private int durability;
 
-        public static Properties of() {
-            return new DTool.Properties();
+        public Builder() {
+            this.dToolType = List.of();
+            this.strength = 0;
+            this.efficiency = 1.0f;
+            this.durability = -1;
+        }
+
+        public Builder dItem(DItem.Builder dItemBuilder) {
+            this.dItemBuilder = dItemBuilder;
+            return this;
         }
 
         /**
@@ -52,7 +61,7 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public Properties dToolType(List<DToolType> type) {
+        public Builder dToolType(List<DToolType> type) {
             this.dToolType = type;
             return this;
         }
@@ -64,7 +73,7 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public Properties strength(int amount) {
+        public Builder strength(int amount) {
             this.strength = Math.max(0, amount);
             return this;
         }
@@ -76,26 +85,23 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public Properties efficiency(float amount) {
-            this.efficiency = Math.max(0, amount);
+        public Builder efficiency(double amount) {
+            this.efficiency = Math.max(1, amount);
             return this;
         }
 
-        public Properties durability(int amount) {
+        public Builder durability(int amount) {
             this.durability = Math.max(1, amount);
             return this;
         }
 
-        public Properties noDurability() {
+        public Builder noDurability() {
             this.durability = -1;
             return this;
         }
 
-        private Properties() {
-            this.dToolType = List.of();
-            this.strength = 0;
-            this.efficiency = 1.0f;
-            this.durability = -1;
+        public DTool build() {
+            return new DTool(this);
         }
     }
 }

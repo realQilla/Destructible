@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -16,13 +15,13 @@ public class DItem {
     private final int stackSize;
     private final Rarity rarity;
 
-    public DItem(@NotNull DItem.Properties Properties) {
-        this.id = Properties.id;
-        this.material = Properties.material;
-        this.displayName = Properties.displayName;
-        this.lore = Properties.lore;
-        this.stackSize = Properties.stackSize;
-        this.rarity = Properties.rarity;
+    protected DItem(@NotNull DItem.Builder Builder) {
+        this.id = Builder.id;
+        this.material = Builder.material;
+        this.displayName = Builder.displayName;
+        this.lore = Builder.lore;
+        this.stackSize = Builder.stackSize;
+        this.rarity = Builder.rarity;
     }
 
     public String getId() {
@@ -49,8 +48,7 @@ public class DItem {
         return this.rarity;
     }
 
-    public static class Properties {
-        @Nullable
+    public static class Builder {
         private String id;
         private Material material;
         private Component displayName;
@@ -58,51 +56,7 @@ public class DItem {
         private int stackSize;
         private Rarity rarity;
 
-        public static Properties of() {
-            return new Properties();
-        }
-
-        public Properties id(@NotNull String id) {
-            this.id = id;
-            return this;
-        }
-
-        public Properties material(@NotNull Material material) {
-            this.material = material;
-            return this;
-        }
-
-        public Properties displayName(@NotNull Component name) {
-            this.displayName = name;
-            return this;
-        }
-
-        public Properties defaultDisplayName() {
-            this.displayName = MiniMessage.miniMessage().deserialize("<!italic><white>" + this.material.name());
-            return this;
-        }
-
-        public Properties lore(@NotNull List<Component> lore) {
-            this.lore = lore;
-            return this;
-        }
-
-        public Properties noLore() {
-            this.lore = List.of();
-            return this;
-        }
-
-        public Properties stackSize(int amount) {
-            this.stackSize = Math.max(1, Math.min(99, amount));
-            return this;
-        }
-
-        public Properties rarity(@NotNull Rarity rarity) {
-            this.rarity = rarity;
-            return this;
-        }
-
-        private Properties() {
+        public Builder() {
             this.material = Material.AIR;
             this.displayName = Component.text(material.name());
             this.lore = List.of();
@@ -110,5 +64,48 @@ public class DItem {
             this.rarity = Rarity.NONE;
         }
 
+        public Builder id(@NotNull String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder material(@NotNull Material material) {
+            this.material = material;
+            return this;
+        }
+
+        public Builder displayName(@NotNull Component name) {
+            this.displayName = name;
+            return this;
+        }
+
+        public Builder defaultDisplayName() {
+            this.displayName = MiniMessage.miniMessage().deserialize("<!italic><white>" + this.id);
+            return this;
+        }
+
+        public Builder lore(@NotNull List<Component> lore) {
+            this.lore = lore;
+            return this;
+        }
+
+        public Builder noLore() {
+            this.lore = List.of();
+            return this;
+        }
+
+        public Builder stackSize(int amount) {
+            this.stackSize = Math.max(1, Math.min(99, amount));
+            return this;
+        }
+
+        public Builder rarity(@NotNull Rarity rarity) {
+            this.rarity = rarity;
+            return this;
+        }
+
+        public DItem build() {
+            return new DItem(this);
+        }
     }
 }

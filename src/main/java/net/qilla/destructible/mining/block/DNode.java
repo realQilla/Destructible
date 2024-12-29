@@ -5,8 +5,8 @@ public class DNode extends DBlock {
     private final int minOre;
     private final int maxOre;
 
-    public DNode(DBlock.Properties dBlockBlockProperties, DNode.Properties properties) {
-        super(dBlockBlockProperties);
+    public DNode(Builder dBlockBlockBuilder, DNode.Properties properties) {
+        super(dBlockBlockBuilder);
         this.minOre = properties.minOre;
         this.maxOre = properties.maxOre;
     }

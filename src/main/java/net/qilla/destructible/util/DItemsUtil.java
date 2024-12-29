@@ -37,10 +37,11 @@ public class DItemsUtil {
             meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
         });
 
-        Damageable damageable = (Damageable) itemStack.getItemMeta();
-        if(dTool.getDurability() == -1) damageable.resetDamage();
-        else damageable.setMaxDamage(dTool.getDurability());
-        itemStack.setItemMeta(damageable);
+        if(itemStack instanceof Damageable damageable) {
+            if(dTool.getDurability() == -1) damageable.resetDamage();
+            else damageable.setMaxDamage(dTool.getDurability());
+            itemStack.setItemMeta(damageable);
+        }
 
         return itemStack;
     }
@@ -53,11 +54,15 @@ public class DItemsUtil {
     }
 
     private static List<Component> getToolLore(DTool dTool) {
-        return List.of(
-                MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + dTool.getEfficiency()),
-                MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + dTool.getStrength()),
-                Component.empty(),
-                dTool.getRarity().getComponent()
+        List<Component> lore = new ArrayList<>(dTool.getLore());
+        lore.addAll(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + dTool.getEfficiency()),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + dTool.getStrength()),
+                        Component.empty(),
+                        dTool.getRarity().getComponent()
+                )
         );
+        return lore;
     }
 }

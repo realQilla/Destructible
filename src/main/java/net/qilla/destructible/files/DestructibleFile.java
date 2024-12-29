@@ -1,6 +1,5 @@
 package net.qilla.destructible.files;
 
-import net.qilla.destructible.Destructible;
 import org.bukkit.Bukkit;
 import java.io.*;
 import java.net.*;

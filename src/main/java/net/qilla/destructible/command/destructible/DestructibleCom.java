@@ -99,12 +99,17 @@ public class DestructibleCom {
                                         .then(Commands.literal(CONFIG_LOAD)
                                                 .executes(this::loadCustomItems))
                                         .then(Commands.literal(CONFIG_CLEAR)
-                                                .executes(this::clearCustomItems)))
+                                                .executes(this::resetCustomItems)))
+                                .then(Commands.literal(CONFIG_CUSTOM_TOOLS)
+                                        .then(Commands.literal(CONFIG_LOAD)
+                                                .executes(this::loadCustomTools))
+                                        .then(Commands.literal(CONFIG_CLEAR)
+                                                .executes(this::resetCustomTools)))
                                 .then(Commands.literal(CONFIG_CUSTOM_BLOCKS)
                                         .then(Commands.literal(CONFIG_LOAD)
                                                 .executes(this::loadCustomBlocks))
                                         .then(Commands.literal(CONFIG_CLEAR)
-                                                .executes(this::clearCustomBlocks)))
+                                                .executes(this::resetCustomBlocks)))
                                 .then(Commands.literal(CONFIG_BLOCK_CACHE)
                                         .then(Commands.literal(CONFIG_SAVE)
                                                 .executes(this::saveBlockCache))
@@ -339,12 +344,12 @@ public class DestructibleCom {
     private int loadCustomItems(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        this.plugin.getCustomItemsFile().save();
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible items have been <green><bold>RE-LOADED</green> from config!"));
+        this.plugin.getCustomItemsFile().load();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible item changes have been <green><bold>LOADED</green> from config!"));
         return Command.SINGLE_SUCCESS;
     }
 
-    private int clearCustomItems(CommandContext<CommandSourceStack> context) {
+    private int resetCustomItems(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
         this.plugin.getCustomItemsFile().reset();
@@ -352,15 +357,32 @@ public class DestructibleCom {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int loadCustomBlocks(CommandContext<CommandSourceStack> context) {
+    private int loadCustomTools(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        this.plugin.getCustomBlocksFile().save();
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible blocks have been <green><bold>RE-LOADED</green> from config!"));
+        this.plugin.getCustomToolsFile().load();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible item changes have been <green><bold>LOADED</green> from config!"));
         return Command.SINGLE_SUCCESS;
     }
 
-    private int clearCustomBlocks(CommandContext<CommandSourceStack> context) {
+    private int resetCustomTools(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomToolsFile().reset();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible items have been <red><bold>CLEARED</red>!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+
+    private int loadCustomBlocks(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomBlocksFile().load();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block changes have been <green><bold>LOADED</green> from config!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int resetCustomBlocks(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
         this.plugin.getCustomBlocksFile().reset();

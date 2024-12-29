@@ -7,17 +7,15 @@ import java.util.function.Function;
 
 public final class DItems {
 
-    public static final DItem DEFAULT = new DItem(
-            DItem.Properties.of()
-                    .id("DEFAULT")
-                    .material(Material.AIR)
-                    .defaultDisplayName()
-                    .noLore()
-                    .stackSize(1)
-                    .rarity(Rarity.NONE)
-    );
+    public static final DItem DEFAULT = new DItem.Builder()
+            .material(Material.AIR)
+            .defaultDisplayName()
+            .noLore()
+            .stackSize(1)
+            .rarity(Rarity.NONE)
+            .build();
 
-    private static DItem register(@NotNull String id, @NotNull Function<DItem.Properties, DItem> factory, @NotNull DItem.Properties properties) {
-        return Registries.DESTRUCTIBLE_ITEMS.put(id, factory.apply(properties.id(id)));
+    private static DItem register(@NotNull String id, @NotNull Function<DItem.Builder, DItem> factory, @NotNull DItem.Builder builder) {
+        return Registries.DESTRUCTIBLE_ITEMS.put(id, factory.apply(builder.id(id)));
     }
 }

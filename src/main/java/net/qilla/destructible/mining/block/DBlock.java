@@ -19,16 +19,16 @@ public class DBlock {
     private final Sound sound;
     private final Material particle;
 
-    public DBlock(Properties properties) {
-        this.id = properties.id;
-        this.material = properties.material;
-        this.strength = properties.strengthRequirement;
-        this.durability = properties.durability;
-        this.msCooldown = properties.msCooldown;
-        this.properTools = properties.properTools;
-        this.itemDrops = properties.itemDrops;
-        this.sound = properties.sound;
-        this.particle = properties.particle;
+    public DBlock(Builder builder) {
+        this.id = builder.id;
+        this.material = builder.material;
+        this.strength = builder.strengthRequirement;
+        this.durability = builder.durability;
+        this.msCooldown = builder.msCooldown;
+        this.properTools = builder.properTools;
+        this.itemDrops = builder.itemDrops;
+        this.sound = builder.sound;
+        this.particle = builder.particle;
     }
 
     @NotNull
@@ -77,7 +77,7 @@ public class DBlock {
         return this.particle;
     }
 
-    public static class Properties {
+    public static class Builder {
         private String id;
         private Material material;
         private int strengthRequirement;
@@ -88,16 +88,23 @@ public class DBlock {
         private Sound sound;
         private Material particle;
 
-        public static Properties of() {
-            return new Properties();
+        public Builder() {
+            this.material = Material.AIR;
+            this.strengthRequirement = 0;
+            this.durability = -1;
+            this.msCooldown = 1000;
+            this.properTools = List.of();
+            this.itemDrops = List.of();
+            this.sound = Sound.BLOCK_STONE_BREAK;
+            this.particle = Material.BEDROCK;
         }
 
-        public Properties id(@NotNull String id) {
+        public Builder id(@NotNull String id) {
             this.id = id;
             return this;
         }
 
-        public Properties material(@NotNull Material material) {
+        public Builder material(@NotNull Material material) {
             this.material = material;
             return this;
         }
@@ -109,7 +116,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties strengthRequirement(int strength) {
+        public Builder strengthRequirement(int strength) {
             this.strengthRequirement = strength;
             return this;
         }
@@ -121,7 +128,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties durability(int durability) {
+        public Builder durability(int durability) {
             this.durability = Math.max(1, durability);
             return this;
         }
@@ -133,7 +140,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties msCooldown(int msCooldown) {
+        public Builder msCooldown(int msCooldown) {
             this.msCooldown = Math.max(1000, msCooldown);
             return this;
         }
@@ -143,7 +150,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties instaBreak() {
+        public Builder instaBreak() {
             this.durability = 0;
             return this;
         }
@@ -153,7 +160,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties neverBreak() {
+        public Builder neverBreak() {
             this.durability = -1;
             return this;
         }
@@ -165,7 +172,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties properTools(@NotNull List<DToolType> tool) {
+        public Builder properTools(@NotNull List<DToolType> tool) {
             this.properTools = tool;
             return this;
         }
@@ -175,7 +182,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties noTools() {
+        public Builder noTools() {
             this.properTools = List.of();
             return this;
         }
@@ -187,7 +194,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties itemDrops(@NotNull List<DDrop> itemDrops) {
+        public Builder itemDrops(@NotNull List<DDrop> itemDrops) {
             this.itemDrops = itemDrops;
             return this;
         }
@@ -197,7 +204,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties noDrops() {
+        public Builder noDrops() {
             this.itemDrops = List.of();
             return this;
         }
@@ -209,7 +216,7 @@ public class DBlock {
          *
          * @return
          */
-        public Properties sound(@NotNull Sound sound) {
+        public Builder sound(@NotNull Sound sound) {
             this.sound = sound;
             return this;
         }
@@ -221,20 +228,13 @@ public class DBlock {
          *
          * @return
          */
-        public Properties particle(@NotNull Material particle) {
+        public Builder particle(@NotNull Material particle) {
             this.particle = particle;
             return this;
         }
 
-        private Properties() {
-            this.material = Material.AIR;
-            this.strengthRequirement = 0;
-            this.durability = -1;
-            this.msCooldown = 1000;
-            this.properTools = List.of();
-            this.itemDrops = List.of();
-            this.sound = Sound.BLOCK_STONE_BREAK;
-            this.particle = Material.BEDROCK;
+        public DBlock build() {
+            return new DBlock(this);
         }
     }
 }

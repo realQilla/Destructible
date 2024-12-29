@@ -6,8 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.DItemTA;
+import net.qilla.destructible.mining.item.DTool;
+import net.qilla.destructible.mining.item.DToolTA;
 import org.bukkit.Bukkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,24 +19,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class CustomItemsFile extends DestructibleFile {
+public class CustomToolsFile extends DestructibleFile {
 
-    private final static String DEFAULT_RESOURCE = "custom_items_default.json";
-    private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "custom_items.json");
+    private final static String DEFAULT_RESOURCE = "custom_tools_default.json";
+    private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "custom_tools.json");
     private final Type type;
     private final Gson gson;
 
-    public CustomItemsFile() {
+    public CustomToolsFile() {
         super(DEFAULT_RESOURCE, FILE_PATH);
-        this.type = new TypeToken<List<DItem>>() {}.getType();
+        this.type = new TypeToken<List<DTool>>() {}.getType();
         this.gson = new GsonBuilder()
-                .registerTypeAdapter(DItem.class, new DItemTA())
+                .registerTypeAdapter(DTool.class, new DToolTA())
                 .create();
     }
 
     @Override
     public void save() {
-        List<DItem> dBlockList = Registries.DESTRUCTIBLE_ITEMS.values().stream().toList();
+        List<DTool> dBlockList = Registries.DESTRUCTIBLE_TOOLS.values().stream().toList();
 
         String jsonString = this.gson.toJson(dBlockList, type);
 
@@ -50,9 +50,9 @@ public class CustomItemsFile extends DestructibleFile {
     @Override
     public void load() {
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
-            List<DItem> dBlockList = this.gson.fromJson(bufferedReader, type);
-            Registries.DESTRUCTIBLE_ITEMS.clear();
-            for(DItem dItem : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
+            List<DTool> dBlockList = this.gson.fromJson(bufferedReader, type);
+            Registries.DESTRUCTIBLE_TOOLS.clear();
+            for(DTool dTool : dBlockList) Registries.DESTRUCTIBLE_TOOLS.put(dTool.getId(), dTool);
         } catch(IOException exception) {
             super.reset();
         }

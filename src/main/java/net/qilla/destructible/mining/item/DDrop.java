@@ -1,24 +1,23 @@
 package net.qilla.destructible.mining.item;
 
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
 import org.jetbrains.annotations.NotNull;
+import java.util.logging.Logger;
 
 public class DDrop {
 
+    private static final Logger LOGGER = Destructible.getPluginLogger();
     private final DItem dItem;
     private final int minAmount;
     private final int maxAmount;
     private final double dropChance;
 
-    public DDrop(@NotNull Properties properties) {
-        this.dItem = properties.dItem;
-        this.minAmount = properties.minAmount;
-        this.maxAmount = properties.maxAmount;
-        this.dropChance = properties.dropChance;
-    }
-
-    public static DDrop of(@NotNull Properties properties) {
-        return new DDrop(properties);
+    protected DDrop(@NotNull Builder builder) {
+        this.dItem = builder.dItem;
+        this.minAmount = builder.minAmount;
+        this.maxAmount = builder.maxAmount;
+        this.dropChance = builder.dropChance;
     }
 
     public @NotNull DItem getDItem() {
@@ -37,58 +36,69 @@ public class DDrop {
         return this.dropChance;
     }
 
-    public static class Properties {
+    public static class Builder {
         private DItem dItem;
         private int minAmount;
         private int maxAmount;
         private double dropChance;
 
-        public static Properties of() {
-            return new Properties();
+        public Builder() {
+            this.dItem = DItems.DEFAULT;
+            this.minAmount = 1;
+            this.maxAmount = 1;
+            this.dropChance = 1.0f;
         }
 
-        public Properties dItem(@NotNull String id) {
-            if(!Registries.DESTRUCTIBLE_ITEMS.containsKey(id)) {
-                throw new IllegalArgumentException("Unknown destructible item id: " + id);
-            }
+        public Builder dItem(@NotNull String id) {
             this.dItem = Registries.DESTRUCTIBLE_ITEMS.get(id);
             return this;
         }
 
-        public Properties amount(int minAmount, int maxAmount) {
-            if(minAmount < 1) minAmount = 1;
-            if(minAmount > maxAmount) minAmount = maxAmount;
+        public Builder amount(int minAmount, int maxAmount) {
             this.minAmount = minAmount;
             this.maxAmount = maxAmount;
             return this;
         }
 
-        public Properties amount(int amount) {
+        public Builder amount(int amount) {
             this.minAmount = amount;
             this.maxAmount = amount;
             return this;
         }
 
-        public Properties minAmount(int amount) {
+        public Builder minAmount(int amount) {
             this.minAmount = amount;
             return this;
         }
 
-        public Properties maxAmount(int amount) {
+        public Builder maxAmount(int amount) {
             this.maxAmount = amount;
             return this;
         }
 
-        public Properties dropChance(double chance) {
+        public Builder dropChance(double chance) {
+            if(chance < 0.0 || chance > 1.0) {
+                LOGGER.warning("Drop chance values for item drop: " + dItem.getId() + " should not be under 0.0 or above 1.1");
+                chance = 1.0;
+            }
             this.dropChance = chance;
             return this;
         }
 
-        private Properties() {
-            this.dItem = DItems.DEFAULT;
-            this.minAmount = 1;
-            this.maxAmount = 1;
-            this.dropChance = 1.0f;
+        public DDrop build() {
+            if(maxAmount < 1) {
+                LOGGER.warning("Maximum amount for item drop: " + dItem.getId() + " is less than 1, setting to 1");
+                maxAmount = 1;
+            }
+            if(minAmount < 1) {
+                LOGGER.warning("Minimum amount for item drop: " + dItem.getId() + " is less than 1, setting to 1");
+                minAmount = 1;
+            }
+            if(minAmount > maxAmount) {
+                LOGGER.warning("Minimum amount for item drop: " + dItem.getId() + " is greater than maximum amount, setting minimum to maximum amount");
+                minAmount = maxAmount;
+            }
+            return new DDrop(this);
         }
     }
 }

@@ -10,7 +10,6 @@ import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.DestructibleRegistry;
 import net.qilla.destructible.data.Registries;
 import org.bukkit.Bukkit;
-
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;

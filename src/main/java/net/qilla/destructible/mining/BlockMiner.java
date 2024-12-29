@@ -46,7 +46,7 @@ public class BlockMiner {
     }
 
     public void tickBlock(@NotNull BlockInstance blockInstance, @NotNull DTool dTool, @NotNull ToolManager toolManager) {
-        blockInstance.damageBlock(dTool.getEfficiency());
+        blockInstance.damageBlock((float) dTool.getEfficiency());
 
         if(blockInstance.isDestroyed()) {
             blockInstance.getDBlockData().setLocked(true);
