@@ -30,24 +30,24 @@ public class DestructibleCom {
 
     private static final String COMMAND = "destructible";
     private static final List<String> ALIAS = List.of("dest", "d");
-    private static final String ITEMS = "items";
-    private static final String BLOCKS = "blocks";
+    private static final String ITEMS = "item";
+    private static final String BLOCKS = "block";
     private static final String CONFIG = "config";
-    private static final String TYPE = "Type";
-    private static final String ALL = "ALL";
+    private static final String TYPE = "type";
+    private static final String ALL = "all";
     private static final String BLOCK_MODIFY = "modify";
     private static final String BLOCK_RECURSIVE = "recursive";
     private static final String BLOCK_VIEW = "view";
     private static final String BLOCK_INFO = "info";
-    private static final String BLOCK_RECURSIVE_SIZE = "Size";
+    private static final String BLOCK_RECURSIVE_SIZE = "size";
     private static final String CONFIG_ITEMS = "DESTRUCTIBLE_ITEMS";
     private static final String CONFIG_TOOLS = "DESTRUCTIBLE_TOOLS";
     private static final String CONFIG_BLOCKS = "DESTRUCTIBLE_BLOCKS";
     private static final String CONFIG_LOADED_BLOCKS = "LOADED_DESTRUCTIBLE_BLOCKS";
-    private static final String CONFIG_SAVE = "SAVE";
-    private static final String CONFIG_CLEAR = "CLEAR";
-    private static final String CONFIG_RESET = "RESET";
-    private static final String CONFIG_LOAD = "LOAD";
+    private static final String CONFIG_SAVE = "save";
+    private static final String CONFIG_CLEAR = "clear";
+    private static final String CONFIG_RESET = "reset";
+    private static final String CONFIG_LOAD = "load";
 
     private final Destructible plugin;
     private final Commands commands;
@@ -161,6 +161,7 @@ public class DestructibleCom {
                 dPlayer.removeDBlockEdit();
                 Registries.DESTRUCTIBLE_BLOCK_EDITORS.remove(dPlayer);
             });
+            dPlayer.getHandle().connection.send(new ClientboundRemoveMobEffectPacket(dPlayer.getHandle().getId(), MobEffects.NIGHT_VISION));
             player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You are no longer in Destructible modification mode!"));
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You are not currently in Destructible modification mode!"));
@@ -194,11 +195,11 @@ public class DestructibleCom {
         dPlayer.getDBlockEdit().getBlockHighlight().addVisibleBlock(dBlock.getId());
         Registries.DESTRUCTIBLE_BLOCK_EDITORS.add(dPlayer);
 
+        dPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(dPlayer.getHandle().getId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
         String message = recursive
                 ? "<yellow>You have enabled Destructible <red><bold>RECURSIVE</red> build mode, <gold>" + size + "</gold> adjacent blocks will be recursively set to <gold>" + dBlock.getId() + "</gold>."
                 : "<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getId() + "</gold>.";
         player.sendMessage(MiniMessage.miniMessage().deserialize(message));
-
         return Command.SINGLE_SUCCESS;
     }
 
@@ -218,14 +219,12 @@ public class DestructibleCom {
 
             if(!blockHighlight.isBlockVisible(blockStr)) {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    dPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(dPlayer.getHandle().getId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
                     player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + blockStr + "</gold> is now <green><bold>VISIBLE</green>."));
                 });
                 blockHighlight.addVisibleBlock(blockStr);
                 blockHighlight.createHighlights(blockStr);
             } else {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    dPlayer.getHandle().connection.send(new ClientboundRemoveMobEffectPacket(dPlayer.getHandle().getId(), MobEffects.NIGHT_VISION));
                     player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + blockStr + "</gold> is now <red><bold>INVISIBLE</red>."));
                 });
                 blockHighlight.removeVisibleBlock(blockStr);

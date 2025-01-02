@@ -7,6 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.DestructibleCom;
 import net.qilla.destructible.command.OverflowCom;
 import net.qilla.destructible.files.*;
+import net.qilla.destructible.gui.GUIListener;
 import net.qilla.destructible.mining.MiningPacketListener;
 import net.qilla.destructible.mining.PluginListener;
 import org.bukkit.Bukkit;
@@ -50,6 +51,7 @@ public final class Destructible extends JavaPlugin {
 
     private void initListener() {
         getServer().getPluginManager().registerEvents(new PluginListener(this), this);
+        getServer().getPluginManager().registerEvents(new GUIListener(this), this);
     }
 
     private void initCommand() {

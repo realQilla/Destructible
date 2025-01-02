@@ -3,6 +3,7 @@ package net.qilla.destructible.typeadapters;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.mining.item.Rarity;
@@ -24,7 +25,7 @@ public class DToolTA extends TypeAdapter<DTool> {
         out.name("material").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
         out.name("displayName").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
         out.name("lore").beginArray();
-        for (Component component : value.getLore()) {
+        for (Component component : value.getLore().lines()) {
             out.value(MiniMessage.miniMessage().serialize(component));
         }
         out.endArray();
@@ -44,34 +45,34 @@ public class DToolTA extends TypeAdapter<DTool> {
 
     @Override
     public DTool read(JsonReader in) throws IOException {
-        DItem.Builder itemBuilder = new DItem.Builder();
+        DItem.Builder builder = new DItem.Builder();
         DTool.Builder toolBuilder = new DTool.Builder();
         in.beginObject();
         while (in.hasNext()) {
             switch (in.nextName()) {
                 case "id":
-                    itemBuilder.id(in.nextString());
+                    builder.id(in.nextString());
                     break;
                 case "material":
-                    itemBuilder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
+                    builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
                 case "displayName":
-                    itemBuilder.displayName(MiniMessage.miniMessage().deserialize(in.nextString()));
+                    builder.displayName(MiniMessage.miniMessage().deserialize(in.nextString()));
                     break;
                 case "lore":
-                    List<Component> lore = new ArrayList<>();
+                    ItemLore.Builder lore = ItemLore.lore();
                     in.beginArray();
                     while (in.hasNext()) {
-                        lore.add(MiniMessage.miniMessage().deserialize(in.nextString()));
+                        lore.addLine(MiniMessage.miniMessage().deserialize(in.nextString()));
                     }
-                    itemBuilder.lore(lore);
+                    builder.lore(lore.build());
                     in.endArray();
                     break;
                 case "stackSize":
-                    itemBuilder.stackSize(in.nextInt());
+                    builder.stackSize(in.nextInt());
                     break;
                 case "rarity":
-                    itemBuilder.rarity(Rarity.valueOf(in.nextString()));
+                    builder.rarity(Rarity.valueOf(in.nextString()));
                     break;
                 case "toolType":
                     List<ToolType> toolTypes = new ArrayList<>();
@@ -93,7 +94,7 @@ public class DToolTA extends TypeAdapter<DTool> {
                     break;
             }
         }
-        toolBuilder.dItem(itemBuilder);
+        toolBuilder.dItem(builder);
         in.endObject();
         return toolBuilder.build();
     }

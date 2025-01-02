@@ -1,7 +1,9 @@
 package net.qilla.destructible.player;
 
 public enum Cooldown {
-    DEFAULT(1000);
+    DEFAULT(1000),
+    OPEN_MENU(500),
+    MENU_CLICK(333);
 
     final long cooldown;
 
@@ -9,7 +11,7 @@ public enum Cooldown {
         this.cooldown = ms;
     }
 
-    public long getCooldown() {
+    public long getMs() {
         return this.cooldown;
     }
 }

@@ -14,14 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public final class DItemStack extends ItemStack {
+public final class DItemStack {
 
     private final DItem dItem;
+    private int amount;
 
     private DItemStack(DItem dItem, int amount) {
-        super(ItemStack.of(dItem.getMaterial(), amount));
         this.dItem = dItem;
-        create();
+        this.amount = amount;
     }
 
     @NotNull
@@ -48,57 +48,53 @@ public final class DItemStack extends ItemStack {
         return of(Registries.DESTRUCTIBLE_ITEMS.get(id));
     }
 
-    public static boolean isDItem(ItemStack itemStack) {
-        if(itemStack == null) return false;
-        String id = itemStack.getItemMeta().getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
-        return id != null && Registries.DESTRUCTIBLE_ITEMS.containsKey(id);
-    }
-
     @Nullable
     public static DItem getDItem(ItemStack itemStack) {
         Preconditions.checkArgument(itemStack != null, "ItemStack is not a DItem");
-        String id = itemStack.getItemMeta().getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
+        String id = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
         if(id == null) return null;
         return Registries.DESTRUCTIBLE_ITEMS.get(id);
     }
 
-    private void create() {
-        this.editMeta(meta -> {
-            meta.getPersistentDataContainer().set(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING, dItem.getId());
-        });
-
-        this.unsetData(DataComponentTypes.ATTRIBUTE_MODIFIERS);
-        this.setData(DataComponentTypes.ITEM_NAME, dItem.getDisplayName());
-        this.setData(DataComponentTypes.LORE, createLore());
-        this.setData(DataComponentTypes.MAX_STACK_SIZE, dItem.getStackSize());
-
-        if(this.dItem instanceof DTool dTool) {
-            if(dTool.getDurability() != -1)
-                this.editMeta(meta -> {
-                    meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
-                });
-            this.setData(DataComponentTypes.MAX_DAMAGE, dTool.getDurability());
-        }
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
-    @NotNull
-    private ItemLore createLore() {
-        ItemLore.Builder lore = ItemLore.lore();
-        lore.addLines(dItem.getLore());
+    public int getAmount() {
+        return this.amount;
+    }
 
-        if(this.dItem instanceof DTool dTool) {
+    public ItemStack getItemStack() {
+            ItemStack itemStack = ItemStack.of(this.dItem.getMaterial(), this.amount);
+            itemStack.editMeta(meta -> {
+                meta.getPersistentDataContainer().set(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING, dItem.getId());
+            });
+
+            ItemLore.Builder lore = ItemLore.lore();
+            lore.addLines(dItem.getLore().lines());
+
+            if(this.dItem instanceof DTool dTool) {
+                if(dTool.getDurability() != -1) {
+                    itemStack.editMeta(meta -> {
+                        meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
+                    });
+                    itemStack.setData(DataComponentTypes.MAX_DAMAGE, dTool.getDurability());
+                }
+                lore.addLines(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + dTool.getEfficiency()),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + dTool.getStrength())
+                ));
+            }
             lore.addLines(List.of(
                     Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + dTool.getEfficiency()),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + dTool.getStrength())
+                    dItem.getRarity().getComponent()
             ));
-        }
-
-        lore.addLines(List.of(
-                Component.empty(),
-                dItem.getRarity().getComponent()
-        ));
-        return lore.build();
+            itemStack.unsetData(DataComponentTypes.ATTRIBUTE_MODIFIERS);
+            itemStack.setData(DataComponentTypes.ITEM_NAME, dItem.getDisplayName());
+            itemStack.setData(DataComponentTypes.LORE, lore);
+            itemStack.setData(DataComponentTypes.MAX_STACK_SIZE, dItem.getStackSize());
+        return itemStack;
     }
 
     @NotNull
@@ -108,7 +104,7 @@ public final class DItemStack extends ItemStack {
 
     @Override
     public @NotNull DItemStack clone() {
-        return of(this.dItem, this.getAmount());
+        return of(this.dItem, this.amount);
     }
 
     @Override

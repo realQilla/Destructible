@@ -10,7 +10,6 @@ import net.qilla.destructible.mining.logic.MiningManager;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,11 +40,10 @@ public class DPlayer extends CraftPlayer {
         return preExisting + empty;
     }
 
-    public void give(@NotNull ItemStack itemStack) {
-        if(itemStack.isEmpty()) return;
-
+    public void give(@NotNull DItemStack dItemStack) {
+        ItemStack itemStack = dItemStack.getItemStack();
         int space = getSpace(itemStack);
-        if(space >= itemStack.getAmount()) {
+        if(space >= dItemStack.getAmount()) {
             getInventory().addItem(itemStack);
             return;
         }
@@ -53,11 +51,11 @@ public class DPlayer extends CraftPlayer {
         ItemStack splitItem = itemStack.clone();
         splitItem.setAmount(space);
         this.getInventory().addItem(splitItem);
-        itemStack.setAmount(itemStack.getAmount() - space);
-        if(itemStack.getAmount() <= 0) return;
+        int remaining = itemStack.getAmount() - space;
+        if(remaining <= 0) return;
+        dItemStack.setAmount(remaining);
         Overflow overflow = Registries.DESTRUCTIBLE_PLAYERS.get(this.getUniqueId()).getOverflow();
-        DItemStack dItemStack = DItemStack.of(itemStack);
-        overflow.put(OverflowItem.of(dItemStack));
+        overflow.put(dItemStack);
 
         this.getWorld().playSound(this.getLocation(), Sound.ENTITY_HORSE_SADDLE, 0.25f, 1);
 
@@ -85,22 +83,28 @@ public class DPlayer extends CraftPlayer {
     }
 
     public Overflow getOverflow() {
-        if(this.overflow == null) this.overflow = new Overflow();
+        if(this.overflow == null) this.overflow = new Overflow(this);
         return this.overflow;
     }
 
     public long getCooldown(Cooldown cooldown) {
         if(cooldowns == null) cooldowns = new EnumMap<>(Cooldown.class);
-
         return this.cooldowns.computeIfAbsent(cooldown, c -> 0L);
     }
 
     public boolean hasCooldown(Cooldown cooldown) {
+        if(this.cooldowns == null) this.cooldowns = new EnumMap<>(Cooldown.class);
         return this.cooldowns.computeIfAbsent(cooldown, c -> 0L) > System.currentTimeMillis();
     }
 
     public void setCooldown(Cooldown cooldown, long ms) {
+        if(this.cooldowns == null) this.cooldowns = new EnumMap<>(Cooldown.class);
         this.cooldowns.put(cooldown, System.currentTimeMillis() + ms);
+    }
+
+    public void setCooldown(Cooldown cooldown) {
+        if(this.cooldowns == null) this.cooldowns = new EnumMap<>(Cooldown.class);
+        this.cooldowns.put(cooldown, System.currentTimeMillis() + cooldown.getMs());
     }
 
     @NotNull

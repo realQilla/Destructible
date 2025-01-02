@@ -24,6 +24,7 @@ public class ToolManager {
     public boolean isToolBroken() {
         ItemStack itemStack = this.dPlayer.getEquipment().getItemInMainHand();
         if(itemStack.isEmpty()) return false;
+        if(!itemStack.getPersistentDataContainer().has(DataKey.DURABILITY, PersistentDataType.INTEGER)) return false;
         return itemStack.getPersistentDataContainer().get(DataKey.DURABILITY, PersistentDataType.INTEGER) == -1;
     }
 

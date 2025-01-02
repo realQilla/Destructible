@@ -11,12 +11,12 @@ public final class DTool extends DItem {
     private final double efficiency;
     private final int durability;
 
-    private DTool(Builder toolBuilder) {
-        super(toolBuilder.dItemBuilder);
-        this.toolType = toolBuilder.toolType;
-        this.strength = toolBuilder.strength;
-        this.efficiency = toolBuilder.efficiency;
-        this.durability = toolBuilder.durability;
+    private DTool(Builder builder) {
+        super(builder.dItemBuilder);
+        this.toolType = builder.toolType;
+        this.strength = builder.strength;
+        this.efficiency = builder.efficiency;
+        this.durability = builder.durability;
     }
 
     @NotNull
@@ -94,7 +94,7 @@ public final class DTool extends DItem {
         }
 
         public Builder durability(int amount) {
-            this.durability = Math.max(1, amount);
+            this.durability = Math.max(-1, amount);
             return this;
         }
 

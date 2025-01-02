@@ -1,8 +1,10 @@
 package net.qilla.destructible.mining.item;
 
 import com.google.common.base.Preconditions;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,17 +14,17 @@ public class DItem {
     private final String id;
     private final Material material;
     private final Component displayName;
-    private final List<Component> lore;
+    private final ItemLore lore;
     private final int stackSize;
     private final Rarity rarity;
 
-    protected DItem(@NotNull DItem.Builder Builder) {
-        this.id = Builder.id;
-        this.material = Builder.material;
-        this.displayName = Builder.displayName;
-        this.lore = Builder.lore;
-        this.stackSize = Builder.stackSize;
-        this.rarity = Builder.rarity;
+    protected DItem(@NotNull Builder builder) {
+        this.id = builder.id;
+        this.material = builder.material;
+        this.displayName = builder.displayName;
+        this.lore = builder.lore;
+        this.stackSize = builder.stackSize;
+        this.rarity = builder.rarity;
     }
 
     public String getId() {
@@ -37,7 +39,7 @@ public class DItem {
         return this.displayName;
     }
 
-    public List<Component> getLore() {
+    public ItemLore getLore() {
         return this.lore;
     }
 
@@ -53,14 +55,14 @@ public class DItem {
         private String id;
         private Material material;
         private Component displayName;
-        private List<Component> lore;
+        private ItemLore lore;
         private int stackSize;
         private Rarity rarity;
 
         public Builder() {
             this.material = Material.AIR;
             this.displayName = Component.text(material.name());
-            this.lore = List.of();
+            this.lore = ItemLore.lore().build();
             this.stackSize = 1;
             this.rarity = Rarity.NONE;
         }
@@ -88,14 +90,14 @@ public class DItem {
             return this;
         }
 
-        public Builder lore(List<Component> lore) {
+        public Builder lore(ItemLore lore) {
             Preconditions.checkArgument(lore != null, "Lore cannot be null");
             this.lore = lore;
             return this;
         }
 
         public Builder noLore() {
-            this.lore = List.of();
+            this.lore = ItemLore.lore().build();
             return this;
         }
 

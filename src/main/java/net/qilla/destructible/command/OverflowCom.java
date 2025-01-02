@@ -6,9 +6,13 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.gui.DestructibleGUI;
+import net.qilla.destructible.gui.OverflowGUI;
+import net.qilla.destructible.player.Cooldown;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
 import net.qilla.destructible.data.Registries;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import java.util.List;
 
@@ -30,10 +34,26 @@ public class OverflowCom {
     public void register() {
         this.commands.register(Commands.literal(COMMAND)
                 .requires(source -> source.getSender() instanceof Player)
+                .executes(this::openGUI)
                 .then(Commands.literal(COLLECT)
                         .executes(this::collect))
                 .then(Commands.literal(CLEAR)
                         .executes(this::clear)).build(), ALIAS);
+    }
+
+    private int openGUI(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+
+        if(dPlayer.hasCooldown(Cooldown.OPEN_MENU)) {
+            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Please wait a bit before accessing this menu."));
+            return 0;
+        }
+        dPlayer.setCooldown(Cooldown.OPEN_MENU);
+
+        DestructibleGUI gui = new OverflowGUI(dPlayer);
+        gui.open();
+        return Command.SINGLE_SUCCESS;
     }
 
     private int clear(CommandContext<CommandSourceStack> context) {
@@ -47,6 +67,7 @@ public class OverflowCom {
         }
 
         overflow.clear();
+        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.5f, 0.0f);
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Your overflow stash has been <red><bold>CLEARED<red>."));
         return Command.SINGLE_SUCCESS;
     }
@@ -68,8 +89,9 @@ public class OverflowCom {
         }
 
         dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have successfully claimed: "));
-        overflow.take(dPlayer).forEach(item -> dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+" + item.getAmount() + " ")
+        overflow.take().forEach(item -> dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+" + item.getAmount() + " ")
                 .append(item.getDItem().getDisplayName())));
+        dPlayer.playSound(dPlayer.getLocation(), Sound.ENTITY_HORSE_SADDLE, 1.0f, 1.0f);
         return Command.SINGLE_SUCCESS;
     }
 }

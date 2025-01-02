@@ -107,7 +107,7 @@ public class BlockMiner {
                         blockPos.getX() + 0.5 + itemMidFace.x,
                         blockPos.getY() + 0.5 + itemMidFace.y,
                         blockPos.getZ() + 0.5 + itemMidFace.z,
-                        CraftItemStack.asCraftCopy(dItemStack).handle,
+                        CraftItemStack.asCraftCopy(dItemStack.getItemStack()).handle,
                         faceVec.offsetRandom(RANDOM, 1.2f).x * 0.3,
                         faceVec.y * 0.3,
                         faceVec.offsetRandom(RANDOM, 1.2f).z * 0.3);

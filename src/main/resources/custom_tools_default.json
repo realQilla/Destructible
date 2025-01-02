@@ -110,5 +110,40 @@
     "toolType": [
       "PICKAXE"
     ]
+  },
+  {
+    "displayName": "<!italic><blue>Hair Brush",
+    "durability": 1,
+    "efficiency": 1000.0,
+    "id": "HAIR_BRUSH",
+    "lore": [
+      "<!italic><dark_gray>Magic hairbrush",
+      "<!italic><dark_gray>but be careful, it's brittle!"
+    ],
+    "material": "brush",
+    "rarity": "UNIQUE",
+    "stackSize": 1,
+    "strength": 1,
+    "toolType": [
+      "PICKAXE"
+    ]
+  },
+  {
+    "displayName": "<!italic><light_purple>Infinity Tool",
+    "durability": -1,
+    "efficiency": 1000.0,
+    "id": "INFINITY_TOOL",
+    "lore": [
+      "<!italic><dark_gray>An infinite tool"
+    ],
+    "material": "mace",
+    "rarity": "LEGENDARY",
+    "stackSize": 1,
+    "strength": 1,
+    "toolType": [
+      "PICKAXE",
+      "AXE",
+      "SHOVEL"
+    ]
   }
 ]

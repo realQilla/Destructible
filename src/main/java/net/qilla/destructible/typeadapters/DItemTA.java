@@ -3,6 +3,7 @@ package net.qilla.destructible.typeadapters;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.mining.item.Rarity;
@@ -22,7 +23,7 @@ public class DItemTA extends TypeAdapter<DItem> {
         out.name("material").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
         out.name("displayName").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
         out.name("lore").beginArray();
-        for (Component component : value.getLore()) {
+        for (Component component : value.getLore().lines()) {
             out.value(MiniMessage.miniMessage().serialize(component));
         }
         out.endArray();
@@ -47,12 +48,12 @@ public class DItemTA extends TypeAdapter<DItem> {
                     builder.displayName(MiniMessage.miniMessage().deserialize(in.nextString()));
                     break;
                 case "lore":
-                    List<Component> lore = new ArrayList<>();
+                    ItemLore.Builder lore = ItemLore.lore();
                     in.beginArray();
                     while (in.hasNext()) {
-                        lore.add(MiniMessage.miniMessage().deserialize(in.nextString()));
+                        lore.addLine(MiniMessage.miniMessage().deserialize(in.nextString()));
                     }
-                    builder.lore(lore);
+                    builder.lore(lore.build());
                     in.endArray();
                     break;
                 case "stackSize":
