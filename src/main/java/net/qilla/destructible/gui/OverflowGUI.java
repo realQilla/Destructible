@@ -20,7 +20,7 @@ import java.util.List;
 
 public class OverflowGUI extends DestructibleGUI {
     private static final GUISize SIZE = GUISize.SIX;
-    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Overflow Items");
+    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Overflow");
 
     private static final List<Integer> overflowedSlots = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -32,14 +32,29 @@ public class OverflowGUI extends DestructibleGUI {
     private final Slot menuItem = Slot.builder(slot -> slot
                     .index(4)
                     .material(Material.BROWN_BUNDLE)
-                    .displayName(MiniMessage.miniMessage().deserialize("<gold>Overflowed Items"))
+                    .displayName(MiniMessage.miniMessage().deserialize("<gold>Overflowing Items"))
+                    .lore(ItemLore.lore()
+                            .addLines(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to claim any item that wasn't "),
+                                    MiniMessage.miniMessage().deserialize("<!italic><gray>able to fit in your inventory")))
+                            .build())
             )
             .build();
+
+    private final Slot backItem = Slot.builder(slot -> slot
+            .index(53)
+            .material(Material.BARRIER)
+            .displayName(MiniMessage.miniMessage().deserialize("<red>Return"))
+            .lore(ItemLore.lore().addLines(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to return to your"),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>previously opened menu"))).build())
+            .clickAction(action -> super.close())
+    ).build();
 
     public OverflowGUI(DPlayer dPlayer) {
         super(dPlayer, SIZE, TITLE);
         slotHolder.registerSlot(menuItem);
+        slotHolder.registerSlot(backItem);
         setSlot(menuItem);
+        setSlot(backItem);
         initOverflowItems();
     }
 
@@ -54,8 +69,9 @@ public class OverflowGUI extends DestructibleGUI {
                                 .material(itemStack.getType())
                                 .amount(item.getAmount())
                                 .displayName(item.getDItem().getDisplayName().append(MiniMessage.miniMessage().deserialize("<white> x" + item.getAmount())))
-                                .lore(ItemLore.lore()
+                                .lore(ItemLore.lore().addLine(MiniMessage.miniMessage().deserialize("<!italic><gold><bold>STASHED<gold>"))
                                         .addLines(item.getDItem().getLore().lines())
+                                        .addLines(List.of(Component.empty(),item.getDItem().getRarity().getComponent()))
                                         .build()))
                         .clickAction(action -> giveOverflow(item))
                         .build();
@@ -84,10 +100,12 @@ public class OverflowGUI extends DestructibleGUI {
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
+        dPlayer.playSound(dPlayer.getLocation(), Sound.ITEM_BUNDLE_INSERT, 0.5f, 1f);
     }
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        dPlayer.playSound(dPlayer.getLocation(), Sound.ITEM_BUNDLE_DROP_CONTENTS, 0.5f, 1f);
     }
 
     @Override

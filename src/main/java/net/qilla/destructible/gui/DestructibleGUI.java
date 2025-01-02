@@ -42,6 +42,10 @@ public abstract class DestructibleGUI implements InventoryHolder {
         this.dPlayer.openInventory(this.inventory);
     }
 
+    public void close() {
+        this.dPlayer.closeInventory();
+    }
+
     public abstract void onOpen(InventoryOpenEvent event);
 
     public abstract void onClose(InventoryCloseEvent event);
