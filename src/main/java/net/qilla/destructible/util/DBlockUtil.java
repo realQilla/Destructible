@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
 import org.jetbrains.annotations.NotNull;
@@ -15,10 +16,9 @@ public final class DBlockUtil {
         ChunkPos chunkPos = new ChunkPos(blockPos);
         int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
 
-        var loadedBlocks = Registries.LOADED_DESTRUCTIBLE_BLOCKS.computeIfPresent(chunkPos, (k, v) -> v);
-        if(loadedBlocks == null) return DBlocks.DEFAULT;
-        String blockString = loadedBlocks.computeIfPresent(chunkInt, (k2, v2) -> v2);
-        return Registries.DESTRUCTIBLE_BLOCKS.getOrDefault(blockString, DBlocks.DEFAULT);
+        RegistryMap<Integer, String> chunkIntMap = Registries.LOADED_DESTRUCTIBLE_BLOCKS.computeIfPresent(chunkPos, (k, v) -> v);
+        if(chunkIntMap == null || !chunkIntMap.containsKey(chunkInt)) return DBlocks.DEFAULT;
+        return Registries.DESTRUCTIBLE_BLOCKS.getOrDefault(chunkIntMap.get(chunkInt), DBlocks.DEFAULT);
     }
 
     public static DBlock getDBlock(@NotNull ChunkPos chunkPos, int chunkInt) {

@@ -1,5 +1,6 @@
 package net.qilla.destructible.mining.item;
 
+import com.google.common.base.Preconditions;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
 import org.jetbrains.annotations.NotNull;
@@ -50,54 +51,44 @@ public class DDrop {
         }
 
         public Builder dItem(@NotNull String id) {
+            Preconditions.checkArgument(Registries.DESTRUCTIBLE_ITEMS.containsKey(id), "DItem ID: " + id + " does not exist");
             this.dItem = Registries.DESTRUCTIBLE_ITEMS.get(id);
             return this;
         }
 
         public Builder amount(int minAmount, int maxAmount) {
+            Preconditions.checkArgument(minAmount > 0, "Minimum amount must be greater than 0");
             this.minAmount = minAmount;
             this.maxAmount = maxAmount;
             return this;
         }
 
         public Builder amount(int amount) {
+            Preconditions.checkArgument(amount > 0, "Amount must be greater than 0");
             this.minAmount = amount;
             this.maxAmount = amount;
             return this;
         }
 
         public Builder minAmount(int amount) {
+            Preconditions.checkArgument(amount > 0, "Minimum amount must be greater than 0");
             this.minAmount = amount;
             return this;
         }
 
         public Builder maxAmount(int amount) {
+            Preconditions.checkArgument(amount > 0, "Maximum amount must be greater than 0");
             this.maxAmount = amount;
             return this;
         }
 
         public Builder dropChance(double chance) {
-            if(chance < 0.0 || chance > 1.0) {
-                LOGGER.warning("Drop chance values for item drop: " + dItem.getId() + " should not be under 0.0 or above 1.1");
-                chance = 1.0;
-            }
+            Preconditions.checkArgument(chance >= 0.0 && chance <= 1.0, "Drop chance must be between 0.0 and 1.0");
             this.dropChance = chance;
             return this;
         }
 
         public DDrop build() {
-            if(maxAmount < 1) {
-                LOGGER.warning("Maximum amount for item drop: " + dItem.getId() + " is less than 1, setting to 1");
-                maxAmount = 1;
-            }
-            if(minAmount < 1) {
-                LOGGER.warning("Minimum amount for item drop: " + dItem.getId() + " is less than 1, setting to 1");
-                minAmount = 1;
-            }
-            if(minAmount > maxAmount) {
-                LOGGER.warning("Minimum amount for item drop: " + dItem.getId() + " is greater than maximum amount, setting minimum to maximum amount");
-                minAmount = maxAmount;
-            }
             return new DDrop(this);
         }
     }

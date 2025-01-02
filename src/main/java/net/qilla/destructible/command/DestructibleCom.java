@@ -18,7 +18,6 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.BlockHighlight;
-import net.qilla.destructible.player.DBlockEdit;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.*;
 import org.bukkit.Bukkit;
@@ -130,7 +129,7 @@ public class DestructibleCom {
                                         .executes(this::resetCustomBlocks)))
                         .then(Commands.literal(CONFIG_LOADED_BLOCKS)
                                 .then(Commands.literal(CONFIG_SAVE)
-                                        .executes(this::saveeLoadedBlocks))
+                                        .executes(this::saveLoadedBlocks))
                                 .then(Commands.literal(CONFIG_CLEAR)
                                         .executes(this::clearLoadedBlocks)))
                 )
@@ -154,16 +153,17 @@ public class DestructibleCom {
 
     private int endBlockModify(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
-        DBlockEdit dBlockEdit = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()).getDBlockEdit();
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
-        if(dBlockEdit.getDblock() != null) {
+        if(dPlayer.hasDBlockEdit()) {
             Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                dBlockEdit.getBlockHighlight().removeAllHighlights();
+                dPlayer.getDBlockEdit().getBlockHighlight().removeAllHighlights();
+                dPlayer.removeDBlockEdit();
+                Registries.DESTRUCTIBLE_BLOCK_EDITORS.remove(dPlayer);
             });
-            Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()).removeDBlockEdit();
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You are no longer in Destructible build mode!"));
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You are no longer in Destructible modification mode!"));
         } else {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You are not currently in Destructible build mode!"));
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You are not currently in Destructible modification mode!"));
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -189,8 +189,10 @@ public class DestructibleCom {
             return 0;
         }
 
-        DBlockEdit dBlockEdit = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()).getDBlockEdit();
-        dBlockEdit.setDblock(dBlock, recursive, size);
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+        dPlayer.getDBlockEdit().setDblock(dBlock, recursive, size);
+        dPlayer.getDBlockEdit().getBlockHighlight().addVisibleBlock(dBlock.getId());
+        Registries.DESTRUCTIBLE_BLOCK_EDITORS.add(dPlayer);
 
         String message = recursive
                 ? "<yellow>You have enabled Destructible <red><bold>RECURSIVE</red> build mode, <gold>" + size + "</gold> adjacent blocks will be recursively set to <gold>" + dBlock.getId() + "</gold>."
@@ -214,7 +216,7 @@ public class DestructibleCom {
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             blockHighlight.removeHighlights(blockStr);
 
-            if(!blockHighlight.isVisibleBlock(blockStr)) {
+            if(!blockHighlight.isBlockVisible(blockStr)) {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     dPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(dPlayer.getHandle().getId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
                     player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + blockStr + "</gold> is now <green><bold>VISIBLE</green>."));
@@ -261,7 +263,7 @@ public class DestructibleCom {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int saveeLoadedBlocks(CommandContext<CommandSourceStack> context) {
+    private int saveLoadedBlocks(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
         this.plugin.getLoadedBlocksFile().save();

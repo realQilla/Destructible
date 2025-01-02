@@ -28,8 +28,10 @@ public class BlockHighlight {
         this.serverLevel = dPlayer.getHandle().serverLevel();
     }
 
-    public boolean isVisibleBlock(@NotNull String blockId) {
-        if(this.visibleBlocks == null) return false;
+    public boolean isBlockVisible(@NotNull String blockId) {
+        if(this.visibleBlocks == null) {
+            return false;
+        }
         return this.visibleBlocks.contains(blockId);
     }
 
@@ -59,7 +61,7 @@ public class BlockHighlight {
     }
 
     public void createHighlight(@NotNull BlockPos blockPos, @NotNull String blockId) {
-        if(!this.isVisibleBlock(blockId)) return;
+        if(!this.isBlockVisible(blockId)) return;
 
         ChunkPos chunkPos = new ChunkPos(blockPos);
         int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
@@ -89,7 +91,7 @@ public class BlockHighlight {
     }
 
     public void createHighlights(@NotNull String blockId) {
-        if(!this.isVisibleBlock(blockId)) return;
+        if(!this.isBlockVisible(blockId)) return;
 
         var loadedBlocksGrouped = Registries.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED;
 

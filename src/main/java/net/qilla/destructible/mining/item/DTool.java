@@ -1,5 +1,6 @@
 package net.qilla.destructible.mining.item;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public final class DTool extends DItem {
         }
 
         public Builder dItem(DItem.Builder dItemBuilder) {
+            Preconditions.checkArgument(dItemBuilder != null, "DItem builder cannot be null");
             this.dItemBuilder = dItemBuilder;
             return this;
         }
@@ -62,6 +64,7 @@ public final class DTool extends DItem {
          * @return
          */
         public Builder dToolType(List<ToolType> type) {
+            Preconditions.checkArgument(type != null, "Tool type cannot be null");
             this.toolType = type;
             return this;
         }
@@ -86,7 +89,7 @@ public final class DTool extends DItem {
          * @return
          */
         public Builder efficiency(double amount) {
-            this.efficiency = Math.max(1, amount);
+            this.efficiency = Math.max(0, amount);
             return this;
         }
 

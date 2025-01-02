@@ -1,5 +1,6 @@
 package net.qilla.destructible.mining.item;
 
+import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
@@ -64,17 +65,20 @@ public class DItem {
             this.rarity = Rarity.NONE;
         }
 
-        public Builder id(@NotNull String id) {
+        public Builder id(String id) {
+            Preconditions.checkArgument(id != null, "ID cannot be null");
             this.id = id;
             return this;
         }
 
-        public Builder material(@NotNull Material material) {
+        public Builder material(Material material) {
+            Preconditions.checkArgument(material != null, "Material cannot be null");
             this.material = material;
             return this;
         }
 
-        public Builder displayName(@NotNull Component name) {
+        public Builder displayName(Component name) {
+            Preconditions.checkArgument(name != null, "Name cannot be null");
             this.displayName = name;
             return this;
         }
@@ -84,7 +88,8 @@ public class DItem {
             return this;
         }
 
-        public Builder lore(@NotNull List<Component> lore) {
+        public Builder lore(List<Component> lore) {
+            Preconditions.checkArgument(lore != null, "Lore cannot be null");
             this.lore = lore;
             return this;
         }
@@ -99,7 +104,8 @@ public class DItem {
             return this;
         }
 
-        public Builder rarity(@NotNull Rarity rarity) {
+        public Builder rarity(Rarity rarity) {
+            Preconditions.checkArgument(rarity != null, "Rarity cannot be null");
             this.rarity = rarity;
             return this;
         }

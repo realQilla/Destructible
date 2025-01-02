@@ -63,11 +63,13 @@ public class PluginListener implements Listener {
 
             if(!dBlockEdit.isRecursive()) {
                 dBlockEdit.loadBlock(blockPos, dBlockEdit.getDblock().getId());
-                Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer2 -> {
-                    dPlayer2.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlockEdit.getDblock().getId());
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer2 -> {
+                        dPlayer2.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlockEdit.getDblock().getId());
+                    });
+                    player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + dBlockEdit.getDblock().getId() + "</gold> has been <green><bold>LOADED</green>!"));
+                    player.playSound(player, Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
                 });
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + dBlockEdit.getDblock().getId() + "</gold> has been <green><bold>LOADED</green>!"));
-                player.playSound(player, Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
             } else {
                 Set<BlockPos> recursiveBlocks = getRecursiveBlocks(blockPos, location.getWorld(), event.getBlock().getType(), dBlockEdit.getRecursionSize());
                 int originalSize = recursiveBlocks.size();
@@ -141,10 +143,11 @@ public class PluginListener implements Listener {
             event.setCancelled(true);
             return;
         }
+
         BlockPos blockPos = CoordUtil.locToBlockPos(event.getBlock().getLocation());
         DBlock dBlock = DBlockUtil.getDBlock(blockPos);
 
-        if(dBlock == DBlocks.DEFAULT) return;
+        if(dBlock.equals(DBlocks.DEFAULT)) return;
 
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
@@ -153,10 +156,9 @@ public class PluginListener implements Listener {
             dPlayer2.getDBlockEdit().getBlockHighlight().removeHighlight(blockPos);
         });
 
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + dBlock.getId() + "</gold> has been <red><bold>UNLOADED</red>!"));
-            player.playSound(player, Sound.ENTITY_PLAYER_BURP, 0.40f, 1.0f);
-        });
+
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + dBlock.getId() + "</gold> has been <red><bold>UNLOADED</red>!"));
+        player.playSound(player, Sound.ENTITY_PLAYER_BURP, 0.40f, 1.0f);
     }
 
     @EventHandler

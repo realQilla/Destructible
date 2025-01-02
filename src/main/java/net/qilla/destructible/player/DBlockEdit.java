@@ -6,7 +6,6 @@ import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.util.CoordUtil;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -23,11 +22,6 @@ public class DBlockEdit {
         this.dblock = null;
         this.recursive = false;;
         this.recursionSize = 0;
-    }
-
-    @NotNull
-    public Player getdPlayer() {
-        return dPlayer;
     }
 
     @NotNull
