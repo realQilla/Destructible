@@ -4,9 +4,9 @@ import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.BlockMemory;
-import net.qilla.destructible.data.DestructibleRegistry;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.RegistryMap;
+import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.util.CoordUtil;
@@ -37,7 +37,7 @@ public final class BlockInstance {
         this.direction = direction;
         this.dBlock = DBlocks.DEFAULT;
         this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
-                new DestructibleRegistry<>()).computeIfAbsent(chunkInt, k ->
+                new RegistryMap<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());
         this.totalDurability = new AtomicDouble(dBlock.getDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());
@@ -101,7 +101,7 @@ public final class BlockInstance {
         this.crackLevel.set(0);
     }
 
-    public void damageBlock(float amount) {
+    public void damageBlock(double amount) {
         this.currentDurability.addAndGet(-amount);
         this.crackLevel.set(Math.round(((totalDurability.floatValue() - currentDurability.floatValue()) * 9 / totalDurability.floatValue())));
     }

@@ -1,10 +1,12 @@
-package net.qilla.destructible.mining.item;
+package net.qilla.destructible.typeadapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.mining.item.Rarity;
+import net.qilla.destructible.mining.item.DItem;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 

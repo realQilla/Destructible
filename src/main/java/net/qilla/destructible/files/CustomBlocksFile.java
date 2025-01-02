@@ -3,13 +3,14 @@ package net.qilla.destructible.files;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.mining.block.DBlockTA;
+import net.qilla.destructible.typeadapters.DBlockTA;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.DItemTA;
+import net.qilla.destructible.typeadapters.DItemTA;
 import org.bukkit.Bukkit;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -53,7 +54,7 @@ public class CustomBlocksFile extends DestructibleFile {
             List<DBlock> dBlockList = this.gson.fromJson(bufferedReader, type);
             Registries.DESTRUCTIBLE_BLOCKS.clear();
             for(DBlock dBlock : dBlockList) Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
-        } catch(IOException exception) {
+        } catch(IOException | JsonSyntaxException exception) {
             super.reset();
         }
     }

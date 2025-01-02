@@ -1,7 +1,7 @@
 package net.qilla.destructible.mining.block;
 
 import net.qilla.destructible.mining.item.DDrop;
-import net.qilla.destructible.mining.item.DToolType;
+import net.qilla.destructible.mining.item.ToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ public class DBlock {
     private final int strength;
     private final float durability;
     private final int msCooldown;
-    private final List<DToolType> properTools;
+    private final List<ToolType> properTools;
     private final List<DDrop> itemDrops;
     private final Sound sound;
     private final Material particle;
@@ -54,7 +54,7 @@ public class DBlock {
     }
 
     @NotNull
-    public List<DToolType> getProperTools() {
+    public List<ToolType> getProperTools() {
         return this.properTools;
     }
 
@@ -83,7 +83,7 @@ public class DBlock {
         private int strengthRequirement;
         private float durability;
         private int msCooldown;
-        private List<DToolType> properTools;
+        private List<ToolType> properTools;
         private List<DDrop> itemDrops;
         private Sound sound;
         private Material particle;
@@ -172,7 +172,7 @@ public class DBlock {
          *
          * @return
          */
-        public Builder properTools(@NotNull List<DToolType> tool) {
+        public Builder properTools(@NotNull List<ToolType> tool) {
             this.properTools = tool;
             return this;
         }

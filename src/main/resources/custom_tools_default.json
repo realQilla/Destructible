@@ -1,1 +1,114 @@
-[]
+[
+  {
+    "displayName": "<!italic><white>Wooden Pickaxe",
+    "durability": 128,
+    "efficiency": 1.0,
+    "id": "WOODEN_PICKAXE",
+    "lore": [
+      "<!italic><dark_gray>A simple wooden pickaxe"
+    ],
+    "material": "wooden_pickaxe",
+    "rarity": "COMMON",
+    "stackSize": 1,
+    "strength": 1,
+    "toolType": [
+      "PICKAXE"
+    ]
+  },
+  {
+    "displayName": "<!italic><yellow>Stone Pickaxe",
+    "durability": 512,
+    "efficiency": 2.0,
+    "id": "STONE_PICKAXE",
+    "lore": [
+      "<!italic><dark_gray>Hardened pickaxe made of stone"
+    ],
+    "material": "stone_pickaxe",
+    "rarity": "UNIQUE",
+    "stackSize": 1,
+    "strength": 2,
+    "toolType": [
+      "PICKAXE"
+    ]
+  },
+  {
+    "displayName": "<!italic><yellow>Wooden Axe",
+    "durability": 128,
+    "efficiency": 1.0,
+    "id": "WOODEN_AXE",
+    "lore": [
+      "<!italic><dark_gray>A simple wooden axe"
+    ],
+    "material": "wooden_axe",
+    "rarity": "COMMON",
+    "stackSize": 1,
+    "strength": 1,
+    "toolType": [
+      "AXE"
+    ]
+  },
+  {
+    "displayName": "<!italic><blue>Iron Axe",
+    "durability": 2048,
+    "efficiency": 3.0,
+    "id": "IRON_AXE",
+    "lore": [
+      "<!italic><dark_gray>Powerful axe made of solid metal<gray>"
+    ],
+    "material": "iron_axe",
+    "rarity": "RARE",
+    "stackSize": 1,
+    "strength": 3,
+    "toolType": [
+      "AXE"
+    ]
+  },
+  {
+    "displayName": "<!italic><gold>Diamond Shovel",
+    "durability": 8192,
+    "efficiency": 5.0,
+    "id": "DIAMOND_SHOVEL",
+    "lore": [
+      "<!italic><dark_gray>Legendary shovel made of diamond"
+    ],
+    "material": "diamond_shovel",
+    "rarity": "LEGENDARY",
+    "stackSize": 1,
+    "strength": 4,
+    "toolType": [
+      "SHOVEL"
+    ]
+  },
+  {
+    "displayName": "<!italic><blue>Iron Hatchet",
+    "durability": 2048,
+    "efficiency": 3.0,
+    "id": "IRON_HATCHET",
+    "lore": [
+      "<!italic><dark_gray>Powerful hatchet made of solid metal"
+    ],
+    "material": "iron_hoe",
+    "rarity": "RARE",
+    "stackSize": 1,
+    "strength": 3,
+    "toolType": [
+      "HATCHET"
+    ]
+  },
+  {
+    "displayName": "<!italic><blue>Twig Pickaxe",
+    "durability": 3,
+    "efficiency": 1.0,
+    "id": "TWIG_PICKAXE",
+    "lore": [
+      "<!italic><dark_gray>Useless wooden twig"
+    ],
+    "material": "stick",
+    "rarity": "COMMON",
+    "stackSize": 1,
+    "strength": 1,
+    "toolType": [
+      "PICKAXE"
+    ]
+  }
+]

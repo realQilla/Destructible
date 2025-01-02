@@ -3,7 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 plugins {
     id("java")
     id("com.gradleup.shadow") version "9.0.0-beta4"
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.8"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.10"
 }
 
 group = "net.qilla"

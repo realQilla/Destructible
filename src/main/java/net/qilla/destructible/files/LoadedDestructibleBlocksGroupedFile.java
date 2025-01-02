@@ -6,11 +6,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.DTool;
-import net.qilla.destructible.typeadapters.DItemTA;
+import net.qilla.destructible.data.RegistryMap;
 import org.bukkit.Bukkit;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,43 +19,39 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Set;
 
-public class CustomItemsFile extends DestructibleFile {
+public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
 
-    private final static String DEFAULT_RESOURCE = "custom_items_default.json";
-    private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "custom_items.json");
-    private final Type type;
+    private final static String DEFAULT_RESOURCE = "loaded_destructible_blocks_grouped_default.json";
+    private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "localdb" + File.separator + "loaded_destructible_blocks_grouped.json");
     private final Gson gson;
+    private final Type type;
 
-    public CustomItemsFile() {
+    public LoadedDestructibleBlocksGroupedFile() {
         super(DEFAULT_RESOURCE, FILE_PATH);
-        this.type = new TypeToken<List<DItem>>() {}.getType();
         this.gson = new GsonBuilder()
-                .registerTypeAdapter(DItem.class, new DItemTA())
+                .enableComplexMapKeySerialization()
                 .create();
+        this.type = new TypeToken<RegistryMap<String, RegistryMap<ChunkPos, Set<Integer>>>>() {}.getType();
     }
 
     @Override
     public void save() {
-        List<DItem> dBlockList = Registries.DESTRUCTIBLE_ITEMS.values().stream()
-                .filter(item -> !(item instanceof DTool)).toList();
-
-        String jsonString = this.gson.toJson(dBlockList, type);
+        String jsonString = this.gson.toJson(Registries.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED);
 
         try(BufferedWriter bufferedWriter = Files.newWriter(super.newFile, StandardCharsets.UTF_8)) {
             bufferedWriter.write(jsonString);
         } catch(IOException exception) {
-            Bukkit.getLogger().severe("There was a problem saving custom items!" + exception);
+            Bukkit.getLogger().severe("There was a problem saving Destructible loaded blocks(GROUPED)!\n" + exception);
         }
     }
 
     @Override
     public void load() {
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
-            List<DItem> dBlockList = this.gson.fromJson(bufferedReader, type);
-            Registries.DESTRUCTIBLE_ITEMS.clear();
-            for(DItem dItem : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
+            RegistryMap<String, RegistryMap<ChunkPos, Set<Integer>>> registry = this.gson.fromJson(bufferedReader, type);
+            Registries.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED.putAll(registry);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
         }

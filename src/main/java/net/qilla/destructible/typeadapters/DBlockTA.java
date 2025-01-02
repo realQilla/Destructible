@@ -1,10 +1,11 @@
-package net.qilla.destructible.mining.block;
+package net.qilla.destructible.typeadapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DDrop;
-import net.qilla.destructible.mining.item.DToolType;
+import net.qilla.destructible.mining.item.ToolType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 
@@ -24,7 +25,7 @@ public class DBlockTA extends TypeAdapter<DBlock> {
         out.name("msCooldown").value(value.getMsCooldown());
         out.name("properTools");
         out.beginArray();
-        for(DToolType tool : value.getProperTools()) {
+        for(ToolType tool : value.getProperTools()) {
             out.value(tool.toString());
         }
         out.endArray();
@@ -66,10 +67,10 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                     builder.msCooldown(in.nextInt());
                     break;
                 case "properTools":
-                    List<DToolType> tools = new ArrayList<>();
+                    List<ToolType> tools = new ArrayList<>();
                     in.beginArray();
                     while(in.hasNext()) {
-                        tools.add(DToolType.valueOf(in.nextString()));
+                        tools.add(ToolType.valueOf(in.nextString()));
                     }
                     in.endArray();
                     builder.properTools(tools);

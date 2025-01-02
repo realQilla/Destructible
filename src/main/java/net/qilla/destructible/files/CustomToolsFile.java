@@ -2,12 +2,11 @@ package net.qilla.destructible.files;
 
 import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.item.DTool;
-import net.qilla.destructible.mining.item.DToolTA;
+import net.qilla.destructible.typeadapters.DToolTA;
 import org.bukkit.Bukkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -36,7 +35,10 @@ public class CustomToolsFile extends DestructibleFile {
 
     @Override
     public void save() {
-        List<DTool> dBlockList = Registries.DESTRUCTIBLE_TOOLS.values().stream().toList();
+        List<DTool> dBlockList = Registries.DESTRUCTIBLE_ITEMS.values().stream()
+                .filter(item -> item instanceof DTool)
+                .map(item -> (DTool) item)
+                .toList();
 
         String jsonString = this.gson.toJson(dBlockList, type);
 
@@ -51,9 +53,8 @@ public class CustomToolsFile extends DestructibleFile {
     public void load() {
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
             List<DTool> dBlockList = this.gson.fromJson(bufferedReader, type);
-            Registries.DESTRUCTIBLE_TOOLS.clear();
-            for(DTool dTool : dBlockList) Registries.DESTRUCTIBLE_TOOLS.put(dTool.getId(), dTool);
-        } catch(IOException exception) {
+            for(DTool dTool : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dTool.getId(), dTool);
+        } catch(IOException | JsonSyntaxException exception) {
             super.reset();
         }
     }

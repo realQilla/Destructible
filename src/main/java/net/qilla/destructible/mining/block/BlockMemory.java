@@ -1,4 +1,4 @@
-package net.qilla.destructible.data;
+package net.qilla.destructible.mining.block;
 
 import net.minecraft.Util;
 import org.bukkit.entity.Player;

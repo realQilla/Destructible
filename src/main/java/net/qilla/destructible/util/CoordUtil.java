@@ -20,7 +20,7 @@ public final class CoordUtil {
         return ((blockPos.getX() & 15) << 8) | ((blockPos.getZ() & 15) << 4) | (blockPos.getY() & 15);
     }
 
-    public static BlockPos chunkIntToPos(int chunkInt, ChunkPos chunkPos) {
+    public static BlockPos chunkIntToPos(ChunkPos chunkPos, int chunkInt) {
         int x = (chunkInt >> 8) & 15;
         int z = (chunkInt >> 4) & 15;
         int y = chunkInt & 15;

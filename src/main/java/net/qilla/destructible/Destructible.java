@@ -4,15 +4,11 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.command.destructible.DestructibleCom;
-import net.qilla.destructible.files.CustomBlocksFile;
-import net.qilla.destructible.files.CustomItemsFile;
-import net.qilla.destructible.files.CustomToolsFile;
-import net.qilla.destructible.files.LoadedCachedCustomBlocksFile;
+import net.qilla.destructible.command.DestructibleCom;
+import net.qilla.destructible.command.OverflowCom;
+import net.qilla.destructible.files.*;
 import net.qilla.destructible.mining.MiningPacketListener;
-import net.qilla.destructible.mining.block.DBlocks;
-import net.qilla.destructible.mining.item.DItems;
-import net.qilla.destructible.mining.item.DTools;
+import net.qilla.destructible.mining.PluginListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
@@ -28,27 +24,25 @@ public final class Destructible extends JavaPlugin {
     private CustomItemsFile customItemsFile;
     private CustomToolsFile customToolsFile;
     private CustomBlocksFile customBlocksFile;
-    private LoadedCachedCustomBlocksFile loadedCachedCustomBlocksFile;
-
-    static {
-        new DItems();
-        new DTools();
-        new DBlocks();
-    }
+    private LoadedDestructibleBlocksFile loadedDestructibleBlocksFile;
+    private LoadedDestructibleBlocksGroupedFile loadedDestructibleBlocksGroupedFile;
 
     @Override
     public void onEnable() {
         this.lifecycleMan = this.getLifecycleManager();
 
-        this.packetListener = new MiningPacketListener(this);
+        this.packetListener = new MiningPacketListener();
         this.customItemsFile = new CustomItemsFile();
         this.customToolsFile = new CustomToolsFile();
         this.customBlocksFile = new CustomBlocksFile();
-        this.loadedCachedCustomBlocksFile = new LoadedCachedCustomBlocksFile();
+        this.loadedDestructibleBlocksFile = new LoadedDestructibleBlocksFile();
+        this.loadedDestructibleBlocksGroupedFile = new LoadedDestructibleBlocksGroupedFile();
 
         this.customItemsFile.load();
+        this.customToolsFile.load();
         this.customBlocksFile.load();
-        this.loadedCachedCustomBlocksFile.load();
+        this.loadedDestructibleBlocksFile.load();
+        this.loadedDestructibleBlocksGroupedFile.load();
 
         initListener();
         initCommand();
@@ -62,6 +56,7 @@ public final class Destructible extends JavaPlugin {
         this.lifecycleMan.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             Commands commands = event.registrar();
             new DestructibleCom(this, commands).register();
+            new OverflowCom(this, commands).register();
         });
     }
 
@@ -83,8 +78,11 @@ public final class Destructible extends JavaPlugin {
     }
 
 
-    public LoadedCachedCustomBlocksFile getLoadedBlocksFile() {
-        return this.loadedCachedCustomBlocksFile;
+    public LoadedDestructibleBlocksFile getLoadedBlocksFile() {
+        return this.loadedDestructibleBlocksFile;
+    }
+    public LoadedDestructibleBlocksGroupedFile getLoadedBlocksGroupedFile() {
+        return this.loadedDestructibleBlocksGroupedFile;
     }
 
     public MiningPacketListener getPlayerPacketListener() {

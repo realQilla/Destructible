@@ -26,34 +26,4 @@ public class EntityUtil {
         ));
         return entity;
     }
-
-    public static CraftEntity getErrorHighlight(ServerLevel serverLevel) {
-        CraftBlockDisplay entity = new CraftBlockDisplay(serverLevel.getCraftServer(), new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, serverLevel));
-        entity.setInvisible(true);
-        entity.setGlowing(true);
-        entity.setGlowColorOverride(Color.MAROON);
-        entity.setBlock(Material.RED_SHULKER_BOX.createBlockData());
-        entity.setTransformation(new Transformation(
-                new Vector3f(0f, 0f, 0f),
-                new Quaternionf(),
-                new Vector3f(1f, 1f, 1f),
-                new Quaternionf()
-        ));
-        return entity;
-    }
-
-    public static CraftEntity getValidHighlight(ServerLevel serverLevel) {
-        CraftBlockDisplay entity = new CraftBlockDisplay(serverLevel.getCraftServer(), new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, serverLevel));
-        entity.setInvisible(true);
-        entity.setGlowing(true);
-        entity.setGlowColorOverride(Color.WHITE);
-        entity.setBlock(Material.WHITE_SHULKER_BOX.createBlockData());
-        entity.setTransformation(new Transformation(
-                new Vector3f(0f, 0f, 0f),
-                new Quaternionf(),
-                new Vector3f(1f, 1f, 1f),
-                new Quaternionf()
-        ));
-        return entity;
-    }
 }

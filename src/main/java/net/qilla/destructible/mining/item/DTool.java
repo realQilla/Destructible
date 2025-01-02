@@ -4,23 +4,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DTool extends DItem {
-    private final List<DToolType> dToolType;
+public final class DTool extends DItem {
+    private final List<ToolType> toolType;
     private final int strength;
     private final double efficiency;
     private final int durability;
 
-    protected DTool(Builder toolBuilder) {
+    private DTool(Builder toolBuilder) {
         super(toolBuilder.dItemBuilder);
-        this.dToolType = toolBuilder.dToolType;
+        this.toolType = toolBuilder.toolType;
         this.strength = toolBuilder.strength;
         this.efficiency = toolBuilder.efficiency;
         this.durability = toolBuilder.durability;
     }
 
     @NotNull
-    public List<DToolType> getToolType() {
-        return this.dToolType;
+    public List<ToolType> getToolType() {
+        return this.toolType;
     }
 
     public int getStrength() {
@@ -37,13 +37,13 @@ public class DTool extends DItem {
 
     public static class Builder extends DItem.Builder {
         private DItem.Builder dItemBuilder;
-        private List<DToolType> dToolType;
+        private List<ToolType> toolType;
         private int strength;
         private double efficiency;
         private int durability;
 
         public Builder() {
-            this.dToolType = List.of();
+            this.toolType = List.of();
             this.strength = 0;
             this.efficiency = 1.0f;
             this.durability = -1;
@@ -61,8 +61,8 @@ public class DTool extends DItem {
          *
          * @return
          */
-        public Builder dToolType(List<DToolType> type) {
-            this.dToolType = type;
+        public Builder dToolType(List<ToolType> type) {
+            this.toolType = type;
             return this;
         }
 

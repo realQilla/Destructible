@@ -1,10 +1,14 @@
-package net.qilla.destructible.mining.item;
+package net.qilla.destructible.typeadapters;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.mining.item.Rarity;
+import net.qilla.destructible.mining.item.DItem;
+import net.qilla.destructible.mining.item.DTool;
+import net.qilla.destructible.mining.item.ToolType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 
@@ -28,7 +32,7 @@ public class DToolTA extends TypeAdapter<DTool> {
         out.name("rarity").value(value.getRarity().name());
         out.name("toolType");
         out.beginArray();
-        for (DToolType toolType : value.getToolType()) {
+        for (ToolType toolType : value.getToolType()) {
             out.value(toolType.toString());
         }
         out.endArray();
@@ -70,10 +74,10 @@ public class DToolTA extends TypeAdapter<DTool> {
                     itemBuilder.rarity(Rarity.valueOf(in.nextString()));
                     break;
                 case "toolType":
-                    List<DToolType> toolTypes = new ArrayList<>();
+                    List<ToolType> toolTypes = new ArrayList<>();
                     in.beginArray();
                     while (in.hasNext()) {
-                        toolTypes.add(DToolType.valueOf(in.nextString()));
+                        toolTypes.add(ToolType.valueOf(in.nextString()));
                     }
                     toolBuilder.dToolType(toolTypes);
                     in.endArray();

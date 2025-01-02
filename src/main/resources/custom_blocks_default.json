@@ -58,5 +58,47 @@
     ],
     "sound": "block.stone.break",
     "strength": 1
+  },
+  {
+    "durability": 100.0,
+    "id": "OAK_LOG",
+    "itemDrops": [
+      {
+        "dItem": "OAK_LOG",
+        "dropChance": 1.0,
+        "maxAmount": 1,
+        "minAmount": 1
+      }
+    ],
+    "material": "oak_log",
+    "msCooldown": 5000,
+    "particle": "oak_log",
+    "properTools": [
+      "AXE",
+      "HATCHET"
+    ],
+    "sound": "block.wood.break",
+    "strength": 1
+  },
+  {
+    "durability": 20.0,
+    "id": "OAK_PLANKS",
+    "itemDrops": [
+      {
+        "dItem": "OAK_PLANKS",
+        "dropChance": 1.0,
+        "maxAmount": 1,
+        "minAmount": 1
+      }
+    ],
+    "material": "oak_planks",
+    "msCooldown": 5000,
+    "particle": "oak_planks",
+    "properTools": [
+      "AXE",
+      "HATCHET"
+    ],
+    "sound": "block.wood.break",
+    "strength": 0
   }
 ]
