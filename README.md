@@ -9,7 +9,7 @@ are either hardcoded, unimplemented, untested, or prototyped.
 
 Supported Minecraft Versions:
 ```
-  1.20 (Only the latest version until ready to be released.)
+  1.21.4 (Only the latest version until ready to be released.)
 ```
 
 - Contact `@qilla` on Discord for questions or assistance.

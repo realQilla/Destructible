@@ -185,7 +185,7 @@ public class DestructibleCom {
         Player player = (Player) context.getSource().getSender();
         String blockStr = context.getArgument(TYPE, String.class);
         DBlock dBlock = Registries.DESTRUCTIBLE_BLOCKS.get(blockStr);
-        if (dBlock == null) {
+        if(dBlock == null) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>An invalid Destructible block was specified."));
             return 0;
         }
