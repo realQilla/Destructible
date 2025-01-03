@@ -10,25 +10,25 @@ import java.util.List;
 
 public class DBlock {
     private final String id;
-    private final Material material;
-    private final int strength;
-    private final float durability;
-    private final int msCooldown;
-    private final List<ToolType> properTools;
+    private final Material blockMaterial;
+    private final int blockStrength;
+    private final int blockDurability;
+    private final long blockCooldown;
+    private final List<ToolType> correctTools;
     private final List<DDrop> itemDrops;
-    private final Sound sound;
-    private final Material particle;
+    private final Sound breakSound;
+    private final Material breakParticle;
 
     public DBlock(Builder builder) {
         this.id = builder.id;
-        this.material = builder.material;
-        this.strength = builder.strengthRequirement;
-        this.durability = builder.durability;
-        this.msCooldown = builder.msCooldown;
-        this.properTools = builder.properTools;
+        this.blockMaterial = builder.blockMaterial;
+        this.blockStrength = builder.blockStrength;
+        this.blockDurability = builder.blockDurability;
+        this.blockCooldown = builder.blockCooldown;
+        this.correctTools = builder.correctTools;
         this.itemDrops = builder.itemDrops;
-        this.sound = builder.sound;
-        this.particle = builder.particle;
+        this.breakSound = builder.breakSound;
+        this.breakParticle = builder.breakParticle;
     }
 
     @NotNull
@@ -37,29 +37,29 @@ public class DBlock {
     }
 
     @NotNull
-    public Material getMaterial() {
-        return this.material;
+    public Material getBlockMaterial() {
+        return this.blockMaterial;
     }
 
-    public int getStrength() {
-        return this.strength;
+    public int getBlockStrength() {
+        return this.blockStrength;
     }
 
-    public float getDurability() {
-        return this.durability;
+    public int getBlockDurability() {
+        return this.blockDurability;
     }
 
-    public int getMsCooldown() {
-        return this.msCooldown;
+    public long getBlockCooldown() {
+        return this.blockCooldown;
     }
 
     @NotNull
-    public List<ToolType> getProperTools() {
-        return this.properTools;
+    public List<ToolType> getCorrectTools() {
+        return this.correctTools;
     }
 
     public boolean hasProperTool() {
-        return !this.properTools.isEmpty();
+        return !this.correctTools.isEmpty();
     }
 
     @NotNull
@@ -68,35 +68,35 @@ public class DBlock {
     }
 
     @NotNull
-    public Sound getSound() {
-        return this.sound;
+    public Sound getBreakSound() {
+        return this.breakSound;
     }
 
     @NotNull
-    public Material getParticle() {
-        return this.particle;
+    public Material getBreakParticle() {
+        return this.breakParticle;
     }
 
     public static class Builder {
         private String id;
-        private Material material;
-        private int strengthRequirement;
-        private float durability;
-        private int msCooldown;
-        private List<ToolType> properTools;
+        private Material blockMaterial;
+        private int blockStrength;
+        private int blockDurability;
+        private long blockCooldown;
+        private List<ToolType> correctTools;
         private List<DDrop> itemDrops;
-        private Sound sound;
-        private Material particle;
+        private Sound breakSound;
+        private Material breakParticle;
 
         public Builder() {
-            this.material = Material.AIR;
-            this.strengthRequirement = 0;
-            this.durability = -1;
-            this.msCooldown = 1000;
-            this.properTools = List.of();
+            this.blockMaterial = Material.AIR;
+            this.blockStrength = 0;
+            this.blockDurability = -1;
+            this.blockCooldown = 1000;
+            this.correctTools = List.of();
             this.itemDrops = List.of();
-            this.sound = Sound.BLOCK_STONE_BREAK;
-            this.particle = Material.BEDROCK;
+            this.breakSound = Sound.BLOCK_STONE_BREAK;
+            this.breakParticle = Material.BEDROCK;
         }
 
         public Builder id(@NotNull String id) {
@@ -104,8 +104,8 @@ public class DBlock {
             return this;
         }
 
-        public Builder material(@NotNull Material material) {
-            this.material = material;
+        public Builder blockMaterial(@NotNull Material material) {
+            this.blockMaterial = material;
             return this;
         }
 
@@ -116,8 +116,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder strengthRequirement(int strength) {
-            this.strengthRequirement = strength;
+        public Builder blockStrength(int strength) {
+            this.blockStrength = strength;
             return this;
         }
 
@@ -128,20 +128,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder durability(int durability) {
-            this.durability = Math.max(1, durability);
-            return this;
-        }
-
-        /**
-         * Milliseconds cooldown the block will have after being destroyed
-         *
-         * @param msCooldown
-         *
-         * @return
-         */
-        public Builder msCooldown(int msCooldown) {
-            this.msCooldown = Math.max(1000, msCooldown);
+        public Builder blockDurability(int durability) {
+            this.blockDurability = Math.max(0, durability);
             return this;
         }
 
@@ -150,8 +138,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder instaBreak() {
-            this.durability = 0;
+        public Builder noBlockDurability() {
+            this.blockDurability = 0;
             return this;
         }
 
@@ -160,20 +148,32 @@ public class DBlock {
          *
          * @return
          */
-        public Builder neverBreak() {
-            this.durability = -1;
+        public Builder infiniteDurability() {
+            this.blockDurability = -1;
+            return this;
+        }
+
+        /**
+         * Milliseconds cooldown the block will have after being destroyed
+         *
+         * @param msValue
+         *
+         * @return
+         */
+        public Builder blockCooldown(long msValue) {
+            this.blockCooldown = Math.max(1000, msValue);
             return this;
         }
 
         /**
          * Array of tools that can destroy this block
          *
-         * @param tool
+         * @param toolTypes
          *
          * @return
          */
-        public Builder properTools(@NotNull List<ToolType> tool) {
-            this.properTools = tool;
+        public Builder correctTools(@NotNull List<ToolType> toolTypes) {
+            this.correctTools = toolTypes;
             return this;
         }
 
@@ -182,8 +182,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder noTools() {
-            this.properTools = List.of();
+        public Builder noCorrectTools() {
+            this.correctTools = List.of();
             return this;
         }
 
@@ -204,7 +204,7 @@ public class DBlock {
          *
          * @return
          */
-        public Builder noDrops() {
+        public Builder noItemDrops() {
             this.itemDrops = List.of();
             return this;
         }
@@ -216,8 +216,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder sound(@NotNull Sound sound) {
-            this.sound = sound;
+        public Builder breakSound(@NotNull Sound sound) {
+            this.breakSound = sound;
             return this;
         }
 
@@ -228,8 +228,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder particle(@NotNull Material particle) {
-            this.particle = particle;
+        public Builder breakParticle(@NotNull Material particle) {
+            this.breakParticle = particle;
             return this;
         }
 

@@ -39,7 +39,7 @@ public final class BlockInstance {
         this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
                 new RegistryMap<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());
-        this.totalDurability = new AtomicDouble(dBlock.getDurability());
+        this.totalDurability = new AtomicDouble(dBlock.getBlockDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());
         this.crackLevel = new AtomicInteger(0);
     }
@@ -96,8 +96,8 @@ public final class BlockInstance {
 
     public void setDBlock(final DBlock dBlock) {
         this.dBlock = dBlock;
-        this.totalDurability.set(dBlock.getDurability());
-        this.currentDurability.set(dBlock.getDurability());
+        this.totalDurability.set(dBlock.getBlockDurability());
+        this.currentDurability.set(dBlock.getBlockDurability());
         this.crackLevel.set(0);
     }
 

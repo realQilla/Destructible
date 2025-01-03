@@ -4,10 +4,10 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.command.DestructibleCom;
-import net.qilla.destructible.command.OverflowCom;
+import net.qilla.destructible.command.DestructibleCommand;
+import net.qilla.destructible.command.OverflowCommand;
 import net.qilla.destructible.files.*;
-import net.qilla.destructible.gui.GUIListener;
+import net.qilla.destructible.gui.MenuListener;
 import net.qilla.destructible.mining.MiningPacketListener;
 import net.qilla.destructible.mining.PluginListener;
 import org.bukkit.Bukkit;
@@ -51,14 +51,14 @@ public final class Destructible extends JavaPlugin {
 
     private void initListener() {
         getServer().getPluginManager().registerEvents(new PluginListener(this), this);
-        getServer().getPluginManager().registerEvents(new GUIListener(this), this);
+        getServer().getPluginManager().registerEvents(new MenuListener(this), this);
     }
 
     private void initCommand() {
         this.lifecycleMan.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             Commands commands = event.registrar();
-            new DestructibleCom(this, commands).register();
-            new OverflowCom(this, commands).register();
+            new DestructibleCommand(this, commands).register();
+            new OverflowCommand(this, commands).register();
         });
     }
 

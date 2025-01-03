@@ -9,20 +9,20 @@ import java.util.logging.Logger;
 public class DDrop {
 
     private static final Logger LOGGER = Destructible.getPluginLogger();
-    private final DItem dItem;
+    private final DItem item;
     private final int minAmount;
     private final int maxAmount;
-    private final double dropChance;
+    private final double chance;
 
     protected DDrop(@NotNull Builder builder) {
-        this.dItem = builder.dItem;
+        this.item = builder.item;
         this.minAmount = builder.minAmount;
         this.maxAmount = builder.maxAmount;
-        this.dropChance = builder.dropChance;
+        this.chance = builder.chance;
     }
 
     public @NotNull DItem getDItem() {
-        return this.dItem;
+        return this.item;
     }
 
     public int getMinAmount() {
@@ -33,26 +33,26 @@ public class DDrop {
         return this.maxAmount;
     }
 
-    public double getDropChance() {
-        return this.dropChance;
+    public double getChance() {
+        return this.chance;
     }
 
     public static class Builder {
-        private DItem dItem;
+        private DItem item;
         private int minAmount;
         private int maxAmount;
-        private double dropChance;
+        private double chance;
 
         public Builder() {
-            this.dItem = DItems.DEFAULT;
+            this.item = DItems.DEFAULT;
             this.minAmount = 1;
             this.maxAmount = 1;
-            this.dropChance = 1.0f;
+            this.chance = 1.0f;
         }
 
         public Builder dItem(@NotNull String id) {
             Preconditions.checkArgument(Registries.DESTRUCTIBLE_ITEMS.containsKey(id), "DItem ID: " + id + " does not exist");
-            this.dItem = Registries.DESTRUCTIBLE_ITEMS.get(id);
+            this.item = Registries.DESTRUCTIBLE_ITEMS.get(id);
             return this;
         }
 
@@ -82,9 +82,9 @@ public class DDrop {
             return this;
         }
 
-        public Builder dropChance(double chance) {
+        public Builder chance(double chance) {
             Preconditions.checkArgument(chance >= 0.0 && chance <= 1.0, "Drop chance must be between 0.0 and 1.0");
-            this.dropChance = chance;
+            this.chance = chance;
             return this;
         }
 

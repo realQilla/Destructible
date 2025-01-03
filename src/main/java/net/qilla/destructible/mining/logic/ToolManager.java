@@ -31,8 +31,8 @@ public class ToolManager {
     public boolean canMine(@NotNull DTool dTool, @NotNull BlockInstance blockInstance) {
         if(blockInstance.getDBlockData().isLocked() ||
                 blockInstance.getDBlockData().isOnCooldown() ||
-                blockInstance.getDBlock().getStrength() > dTool.getStrength()) return false;
-        return blockInstance.getDBlock().getProperTools().stream().anyMatch(dToolType -> dToolType.equals(ToolType.HAND) || dTool.getToolType().contains(dToolType));
+                blockInstance.getDBlock().getBlockStrength() > dTool.getToolStrength()) return false;
+        return blockInstance.getDBlock().getCorrectTools().stream().anyMatch(dToolType -> dToolType.equals(ToolType.HAND) || dTool.getToolType().contains(dToolType));
     }
 
     public void damageTool(@NotNull DTool dTool, int amount) {
@@ -45,13 +45,13 @@ public class ToolManager {
                 itemStack.editMeta(meta -> {
                     meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, durability);
                 });
-                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getDurability() - durability);
+                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getToolDurability() - durability);
             } else if(durability == 0) {
                 itemStack.editMeta(meta -> {
                     meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, -1);
                 });
 
-                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getDurability());
+                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getToolDurability());
                 this.dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Your currently active tool has broken!"));
                 this.dPlayer.getWorld().playSound(this.dPlayer.getLocation(), Sound.ENTITY_ITEM_BREAK, 0.2f, 1);
             }

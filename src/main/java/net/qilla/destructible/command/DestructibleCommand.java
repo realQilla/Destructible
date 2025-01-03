@@ -14,10 +14,14 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
+import net.qilla.destructible.gui.BlockMenu;
+import net.qilla.destructible.gui.DestructibleMenu;
+import net.qilla.destructible.gui.ItemMenu;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.BlockHighlight;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.*;
 import org.bukkit.Bukkit;
@@ -26,12 +30,12 @@ import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class DestructibleCom {
+public class DestructibleCommand {
 
     private static final String COMMAND = "destructible";
     private static final List<String> ALIAS = List.of("dest", "d");
-    private static final String ITEMS = "item";
-    private static final String BLOCKS = "block";
+    private static final String ITEM = "item";
+    private static final String BLOCK = "block";
     private static final String CONFIG = "config";
     private static final String TYPE = "type";
     private static final String ALL = "all";
@@ -53,7 +57,7 @@ public class DestructibleCom {
     private final Commands commands;
 
 
-    public DestructibleCom(final Destructible plugin, final Commands commands) {
+    public DestructibleCommand(final Destructible plugin, final Commands commands) {
         this.plugin = plugin;
         this.commands = commands;
     }
@@ -62,7 +66,8 @@ public class DestructibleCom {
         this.commands.register(Commands
                 .literal(COMMAND)
                 .requires(source -> source.getSender() instanceof Player player && player.isOp())
-                .then(Commands.literal(ITEMS)
+                .then(Commands.literal(ITEM)
+                        .executes(this::itemMenu)
                         .then(Commands.argument(TYPE, StringArgumentType.word())
                                 .suggests((context, builder) -> {
                                     String argument = builder.getRemaining();
@@ -75,7 +80,8 @@ public class DestructibleCom {
                                 })
                                 .executes(this::item))
                 )
-                .then(Commands.literal(BLOCKS)
+                .then(Commands.literal(BLOCK)
+                        .executes(this::blockMenu)
                         .then(Commands.literal(BLOCK_MODIFY)
                                 .then(Commands.argument(TYPE, StringArgumentType.word())
                                         .suggests((context, builder) -> {
@@ -117,11 +123,6 @@ public class DestructibleCom {
                                         .executes(this::loadCustomItems))
                                 .then(Commands.literal(CONFIG_RESET)
                                         .executes(this::resetCustomItems)))
-                        .then(Commands.literal(CONFIG_TOOLS)
-                                .then(Commands.literal(CONFIG_LOAD)
-                                        .executes(this::loadCustomTools))
-                                .then(Commands.literal(CONFIG_RESET)
-                                        .executes(this::resetCustomTools)))
                         .then(Commands.literal(CONFIG_BLOCKS)
                                 .then(Commands.literal(CONFIG_LOAD)
                                         .executes(this::loadCustomBlocks))
@@ -146,8 +147,38 @@ public class DestructibleCom {
             return 0;
         }
 
-        dPlayer.give(DItemStack.of(dTool));
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have received the tool: ").append(dTool.getDisplayName()).append(MiniMessage.miniMessage().deserialize("<green>.")));
+        dPlayer.give(DItemStack.of(dTool, 1));
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(dTool.getDisplayName()).append(MiniMessage.miniMessage().deserialize("<green>!")));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int itemMenu(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+
+        if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
+            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Please wait a bit before accessing this menu."));
+            return 0;
+        }
+        dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
+
+        DestructibleMenu gui = new ItemMenu(dPlayer);
+        gui.openInventory();
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int blockMenu(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+
+        if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
+            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Please wait a bit before accessing this menu."));
+            return 0;
+        }
+        dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
+
+        DestructibleMenu gui = new BlockMenu(dPlayer);
+        gui.openInventory();
         return Command.SINGLE_SUCCESS;
     }
 
@@ -287,6 +318,7 @@ public class DestructibleCom {
         Player player = (Player) context.getSource().getSender();
 
         this.plugin.getCustomItemsFile().load();
+        this.plugin.getCustomToolsFile().load();
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible item changes have been <green><bold>LOADED</green> from config!"));
         return Command.SINGLE_SUCCESS;
     }
@@ -295,26 +327,10 @@ public class DestructibleCom {
         Player player = (Player) context.getSource().getSender();
 
         this.plugin.getCustomItemsFile().reset();
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible items have been <red><bold>CLEARED</red>!"));
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private int loadCustomTools(CommandContext<CommandSourceStack> context) {
-        Player player = (Player) context.getSource().getSender();
-
-        this.plugin.getCustomToolsFile().load();
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible item changes have been <green><bold>LOADED</green> from config!"));
-        return Command.SINGLE_SUCCESS;
-    }
-
-    private int resetCustomTools(CommandContext<CommandSourceStack> context) {
-        Player player = (Player) context.getSource().getSender();
-
         this.plugin.getCustomToolsFile().reset();
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible items have been <red><bold>CLEARED</red>!"));
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible items have been <red><bold>RESET</red>!"));
         return Command.SINGLE_SUCCESS;
     }
-
 
     private int loadCustomBlocks(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();

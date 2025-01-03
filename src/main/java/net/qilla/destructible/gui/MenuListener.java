@@ -9,12 +9,11 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 
-public class GUIListener implements Listener {
+public class MenuListener implements Listener {
 
     private final Destructible plugin;
 
-    public GUIListener(Destructible plugin) {
-        super();
+    public MenuListener(Destructible plugin) {
         this.plugin = plugin;
     }
 
@@ -22,19 +21,18 @@ public class GUIListener implements Listener {
     private void onInventoryInteract(InventoryInteractEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
 
-        if(holder instanceof DestructibleGUI gui) {
+        if(holder instanceof DestructibleMenu menu) {
             event.setCancelled(true);
-            gui.onClick(event);
+            menu.onInteract(event);
         }
     }
 
     @EventHandler
     private void onInventoryClick(InventoryClickEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
-
-        if(holder instanceof DestructibleGUI gui) {
+        if(holder instanceof DestructibleMenu menu) {
             event.setCancelled(true);
-            gui.handleClick(event);
+            menu.handleClick(event);
         }
     }
 
@@ -42,8 +40,8 @@ public class GUIListener implements Listener {
     private void onInventoryOpen(InventoryOpenEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
 
-        if(holder instanceof DestructibleGUI gui) {
-            gui.onOpen(event);
+        if(holder instanceof DestructibleMenu menu) {
+            menu.onOpen(event);
         }
     }
 
@@ -51,8 +49,8 @@ public class GUIListener implements Listener {
     private void onInventoryClose(InventoryCloseEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
 
-        if(holder instanceof DestructibleGUI gui) {
-            gui.onClose(event);
+        if(holder instanceof DestructibleMenu menu) {
+            menu.onClose(event);
         }
     }
 }

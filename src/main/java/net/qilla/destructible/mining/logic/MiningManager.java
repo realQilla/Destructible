@@ -36,7 +36,7 @@ public class MiningManager {
     }
 
     public void tickBlock(@NotNull InteractionHand interactionHand) {
-        if(this.blockInstance == null || this.blockInstance.getDBlock().getDurability() < 0 || !interactionHand.equals(InteractionHand.MAIN_HAND))
+        if(this.blockInstance == null || this.blockInstance.getDBlock().getBlockDurability() < 0 || !interactionHand.equals(InteractionHand.MAIN_HAND))
             return;
 
         DItem dItem = DItemStack.getDItem(this.dPlayer.getEquipment().getItemInMainHand());

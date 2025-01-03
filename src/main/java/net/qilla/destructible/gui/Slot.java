@@ -2,15 +2,11 @@ package net.qilla.destructible.gui;
 
 import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.CustomModelData;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.DataKey;
-import net.qilla.destructible.data.Registries;
-import org.bukkit.Color;
 import org.bukkit.Material;
-import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -32,8 +28,12 @@ public final class Slot {
         this.itemStack.setData(DataComponentTypes.ITEM_MODEL, builder.material.getKey());
         this.itemStack.setData(DataComponentTypes.MAX_STACK_SIZE, builder.amount);
         this.itemStack.setAmount(builder.amount);
-        this.itemStack.setData(DataComponentTypes.ITEM_NAME, builder.displayName);
-        this.itemStack.setData(DataComponentTypes.LORE, builder.lore);
+        if(builder.hideTooltip) {
+            this.itemStack.setData(DataComponentTypes.HIDE_TOOLTIP);
+        } else {
+            this.itemStack.setData(DataComponentTypes.ITEM_NAME, builder.displayName);
+            this.itemStack.setData(DataComponentTypes.LORE, builder.lore);
+        }
     }
 
     public int getIndex() {
@@ -65,6 +65,7 @@ public final class Slot {
         private Material material;
         private int amount;
         private Component displayName;
+        private boolean hideTooltip;
         private ItemLore lore;
 
         private Builder() {
@@ -101,6 +102,11 @@ public final class Slot {
         public Builder displayName(Component displayName) {
             Preconditions.checkArgument(displayName != null, "Display name cannot be null");
             this.displayName = displayName;
+            return this;
+        }
+
+        public Builder showTooltip(boolean showTooltip) {
+            this.hideTooltip = showTooltip;
             return this;
         }
 

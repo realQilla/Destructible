@@ -21,25 +21,25 @@ public class DToolTA extends TypeAdapter<DTool> {
     @Override
     public void write(JsonWriter out, DTool value) throws IOException {
         out.beginObject();
-        out.name("id").value(value.getId());
-        out.name("material").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
-        out.name("displayName").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
-        out.name("lore").beginArray();
+        out.name("ID").value(value.getId());
+        out.name("ITEM_MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
+        out.name("ITEM_NAME").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
+        out.name("ITEM_LORE").beginArray();
         for (Component component : value.getLore().lines()) {
             out.value(MiniMessage.miniMessage().serialize(component));
         }
         out.endArray();
-        out.name("stackSize").value(value.getStackSize());
-        out.name("rarity").value(value.getRarity().name());
-        out.name("toolType");
+        out.name("ITEM_STACK_SIZE").value(value.getStackSize());
+        out.name("ITEM_RARITY").value(value.getRarity().name());
+        out.name("TOOL_TYPE");
         out.beginArray();
         for (ToolType toolType : value.getToolType()) {
             out.value(toolType.toString());
         }
         out.endArray();
-        out.name("strength").value(value.getStrength());
-        out.name("efficiency").value(value.getEfficiency());
-        out.name("durability").value(value.getDurability());
+        out.name("TOOL_STRENGTH").value(value.getToolStrength());
+        out.name("BREAKING_EFFICIENCY").value(value.getBreakingEfficiency());
+        out.name("TOOL_DURABILITY").value(value.getToolDurability());
         out.endObject();
     }
 
@@ -50,16 +50,16 @@ public class DToolTA extends TypeAdapter<DTool> {
         in.beginObject();
         while (in.hasNext()) {
             switch (in.nextName()) {
-                case "id":
+                case "ID":
                     builder.id(in.nextString());
                     break;
-                case "material":
+                case "ITEM_MATERIAL":
                     builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
-                case "displayName":
+                case "ITEM_NAME":
                     builder.displayName(MiniMessage.miniMessage().deserialize(in.nextString()));
                     break;
-                case "lore":
+                case "ITEM_LORE":
                     ItemLore.Builder lore = ItemLore.lore();
                     in.beginArray();
                     while (in.hasNext()) {
@@ -68,33 +68,33 @@ public class DToolTA extends TypeAdapter<DTool> {
                     builder.lore(lore.build());
                     in.endArray();
                     break;
-                case "stackSize":
+                case "ITEM_STACK_SIZE":
                     builder.stackSize(in.nextInt());
                     break;
-                case "rarity":
+                case "ITEM_RARITY":
                     builder.rarity(Rarity.valueOf(in.nextString()));
                     break;
-                case "toolType":
+                case "TOOL_TYPE":
                     List<ToolType> toolTypes = new ArrayList<>();
                     in.beginArray();
                     while (in.hasNext()) {
                         toolTypes.add(ToolType.valueOf(in.nextString()));
                     }
-                    toolBuilder.dToolType(toolTypes);
+                    toolBuilder.toolType(toolTypes);
                     in.endArray();
                     break;
-                case "strength":
-                    toolBuilder.strength(in.nextInt());
+                case "TOOL_STRENGTH":
+                    toolBuilder.toolStrength(in.nextInt());
                     break;
-                case "efficiency":
-                    toolBuilder.efficiency(in.nextDouble());
+                case "BREAKING_EFFICIENCY":
+                    toolBuilder.toolEfficiency(in.nextInt());
                     break;
-                case "durability":
-                    toolBuilder.durability(in.nextInt());
+                case "TOOL_DURABILITY":
+                    toolBuilder.toolDurability(in.nextInt());
                     break;
             }
         }
-        toolBuilder.dItem(builder);
+        toolBuilder.item(builder);
         in.endObject();
         return toolBuilder.build();
     }

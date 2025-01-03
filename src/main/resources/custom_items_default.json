@@ -1,114 +1,62 @@
 [
   {
-    "displayName": "<!italic><white>Wooden Pickaxe",
-    "durability": 128,
-    "efficiency": 1.0,
-    "id": "WOODEN_PICKAXE",
-    "lore": [
-      "<!italic><dark_gray>A simple wooden pickaxe"
+    "ID": "ITEM_COBBLESTONE",
+    "ITEM_MATERIAL": "cobblestone",
+    "ITEM_NAME": "<!italic><white>Cobblestone",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>Old roughed up cobblestone"
     ],
-    "material": "wooden_pickaxe",
-    "rarity": "COMMON",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
-      "PICKAXE"
-    ]
+    "ITEM_STACK_SIZE": 96,
+    "ITEM_RARITY": "COMMON"
   },
   {
-    "displayName": "<!italic><yellow>Stone Pickaxe",
-    "durability": 512,
-    "efficiency": 2.0,
-    "id": "STONE_PICKAXE",
-    "lore": [
-      "<!italic><dark_gray>Hardened pickaxe made of stone"
+    "ID": "ITEM_GRAVEL",
+    "ITEM_MATERIAL": "gravel",
+    "ITEM_NAME": "<!italic><white>Gravel",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>Small pieces of gravel"
     ],
-    "material": "stone_pickaxe",
-    "rarity": "UNIQUE",
-    "stackSize": 1,
-    "strength": 2,
-    "toolType": [
-      "PICKAXE"
-    ]
+    "ITEM_STACK_SIZE": 48,
+    "ITEM_RARITY": "COMMON"
   },
   {
-    "displayName": "<!italic><yellow>Wooden Axe",
-    "durability": 128,
-    "efficiency": 1.0,
-    "id": "WOODEN_AXE",
-    "lore": [
-      "<!italic><dark_gray>A simple wooden axe"
+    "ID": "ITEM_DIRT",
+    "ITEM_MATERIAL": "dirt",
+    "ITEM_NAME": "<!italic><white>Dirt",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A small pile of dirt"
     ],
-    "material": "wooden_axe",
-    "rarity": "COMMON",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
-      "AXE"
-    ]
+    "ITEM_STACK_SIZE": 64,
+    "ITEM_RARITY": "COMMON"
   },
   {
-    "displayName": "<!italic><blue>Iron Axe",
-    "durability": 2048,
-    "efficiency": 3.0,
-    "id": "IRON_AXE",
-    "lore": [
-      "<!italic><dark_gray>Powerful axe made of solid metal<gray>"
+    "ID": "ITEM_SAND",
+    "ITEM_MATERIAL": "sand",
+    "ITEM_NAME": "<!italic><white>Sand",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A small pile of sand"
     ],
-    "material": "iron_axe",
-    "rarity": "RARE",
-    "stackSize": 1,
-    "strength": 3,
-    "toolType": [
-      "AXE"
-    ]
+    "ITEM_STACK_SIZE": 64,
+    "ITEM_RARITY": "COMMON"
   },
   {
-    "displayName": "<!italic><gold>Diamond Shovel",
-    "durability": 8192,
-    "efficiency": 5.0,
-    "id": "DIAMOND_SHOVEL",
-    "lore": [
-      "<!italic><dark_gray>Legendary shovel made of diamond"
+    "ID": "ITEM_OAK_LOG",
+    "ITEM_MATERIAL": "oak_log",
+    "ITEM_NAME": "<!italic><white>Oak Log",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A chunk of oak straight from the tree"
     ],
-    "material": "diamond_shovel",
-    "rarity": "LEGENDARY",
-    "stackSize": 1,
-    "strength": 4,
-    "toolType": [
-      "SHOVEL"
-    ]
+    "ITEM_STACK_SIZE": 64,
+    "ITEM_RARITY": "COMMON"
   },
   {
-    "displayName": "<!italic><blue>Iron Hatchet",
-    "durability": 2048,
-    "efficiency": 3.0,
-    "id": "IRON_HATCHET",
-    "lore": [
-      "<!italic><dark_gray>Powerful hatchet made of solid metal"
+    "ID": "ITEM_IRON_CHUNK",
+    "ITEM_MATERIAL": "raw_iron",
+    "ITEM_NAME": "<!italic><white>Iron Chunk",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A heavy chunk of iron"
     ],
-    "material": "iron_hoe",
-    "rarity": "RARE",
-    "stackSize": 1,
-    "strength": 3,
-    "toolType": [
-      "HATCHET"
-    ]
-  },
-  {
-    "displayName": "<!italic><blue>Twig Pickaxe",
-    "durability": 3,
-    "efficiency": 1.0,
-    "id": "TWIG_PICKAXE",
-    "lore": [
-      "<!italic><dark_gray>Useless wooden twig"
-    ],
-    "material": "stick",
-    "rarity": "COMMON",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
-      "PICKAXE"
-    ]
+    "ITEM_STACK_SIZE": 96,
+    "ITEM_RARITY": "UNIQUE"
   }
 ]

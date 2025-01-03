@@ -4,12 +4,14 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.gui.DestructibleMenu;
 import net.qilla.destructible.mining.item.DDrop;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.logic.MiningManager;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +23,9 @@ public class DPlayer extends CraftPlayer {
     private static final Destructible PLUGIN = Destructible.getInstance();
     private Overflow overflow;
     private MiningManager minerData;
-    private EnumMap<Cooldown, Long> cooldowns;
     private DBlockEdit dBlockEdit;
+    private Cooldown cooldown;
+    private MenuData menuData;
 
     public DPlayer(CraftServer server, ServerPlayer entity) {
         super(server, entity);
@@ -67,12 +70,10 @@ public class DPlayer extends CraftPlayer {
     public List<DItemStack> rollItemDrops(List<DDrop> itemDrops) {
         if(itemDrops.isEmpty()) return List.of();
 
-        return itemDrops.stream().filter(drop -> RANDOM.nextFloat() <= drop.getDropChance())
+        return itemDrops.stream().filter(drop -> RANDOM.nextFloat() <= drop.getChance())
                 .map(drop -> {
                     int amount = RANDOM.nextInt(drop.getMaxAmount() - drop.getMinAmount() + 1) + drop.getMinAmount();
-                    DItemStack dItemStack = DItemStack.of(drop.getDItem());
-                    dItemStack.setAmount(amount);
-                    return dItemStack;
+                    return DItemStack.of(drop.getDItem(), amount);
                 })
                 .toList();
     }
@@ -87,26 +88,6 @@ public class DPlayer extends CraftPlayer {
         return this.overflow;
     }
 
-    public long getCooldown(Cooldown cooldown) {
-        if(cooldowns == null) cooldowns = new EnumMap<>(Cooldown.class);
-        return this.cooldowns.computeIfAbsent(cooldown, c -> 0L);
-    }
-
-    public boolean hasCooldown(Cooldown cooldown) {
-        if(this.cooldowns == null) this.cooldowns = new EnumMap<>(Cooldown.class);
-        return this.cooldowns.computeIfAbsent(cooldown, c -> 0L) > System.currentTimeMillis();
-    }
-
-    public void setCooldown(Cooldown cooldown, long ms) {
-        if(this.cooldowns == null) this.cooldowns = new EnumMap<>(Cooldown.class);
-        this.cooldowns.put(cooldown, System.currentTimeMillis() + ms);
-    }
-
-    public void setCooldown(Cooldown cooldown) {
-        if(this.cooldowns == null) this.cooldowns = new EnumMap<>(Cooldown.class);
-        this.cooldowns.put(cooldown, System.currentTimeMillis() + cooldown.getMs());
-    }
-
     @NotNull
     public DBlockEdit getDBlockEdit() {
         if(this.dBlockEdit == null) this.dBlockEdit = new DBlockEdit(this);
@@ -119,6 +100,16 @@ public class DPlayer extends CraftPlayer {
 
     public void removeDBlockEdit() {
         this.dBlockEdit = null;
+    }
+
+    public Cooldown getCooldown() {
+        if(this.cooldown == null) this.cooldown = new Cooldown();
+        return this.cooldown;
+    }
+
+    public MenuData getMenuData() {
+        if(this.menuData == null) this.menuData = new MenuData();
+        return this.menuData;
     }
 
     public Destructible getPlugin() {

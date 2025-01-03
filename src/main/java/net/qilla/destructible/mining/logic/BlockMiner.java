@@ -43,7 +43,7 @@ public class BlockMiner {
     }
 
     public void tickBlock(@NotNull BlockInstance blockInstance, @NotNull DTool dTool, @NotNull ToolManager toolManager) {
-        blockInstance.damageBlock(dTool.getEfficiency());
+        blockInstance.damageBlock(dTool.getBreakingEfficiency());
 
         if(blockInstance.isDestroyed()) {
             blockInstance.getDBlockData().setLocked(true);
@@ -63,21 +63,21 @@ public class BlockMiner {
 
     private void destroyBlock(@NotNull BlockInstance blockInstance) {
         Bukkit.getScheduler().runTask(this.dPlayer.getPlugin(), () -> {
-            int msCooldown = RandomUtil.offset(blockInstance.getDBlock().getMsCooldown(), 2000);
+            long msCooldown = RandomUtil.offset(blockInstance.getDBlock().getBlockCooldown(), 2000);
             BlockState blockState = ((CraftBlockState) blockInstance.getLocation().getBlock().getState()).getHandle();
             Vec3 midFace = DBlockUtil.getCenterFaceParticle(blockInstance.getDirection());
             float[] midOffset = DBlockUtil.getFlatOffsetParticles(blockInstance.getDirection());
 
             this.serverLevel.getChunkSource().broadcastAndSend(
                     this.serverPlayer, new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
-            blockInstance.getLocation().getWorld().playSound(blockInstance.getLocation(), blockInstance.getDBlock().getSound(), 1, (float) RandomUtil.between(0.75, 1.25));
+            blockInstance.getLocation().getWorld().playSound(blockInstance.getLocation(), blockInstance.getDBlock().getBreakSound(), 1, (float) RandomUtil.between(0.75, 1.25));
             blockInstance.getLocation().getWorld().spawnParticle(Particle.BLOCK,
                     new Location(blockInstance.getLocation().getWorld(),
                             blockInstance.getBlockPos().getX() + 0.5 + midFace.x,
                             blockInstance.getBlockPos().getY() + 0.5 + midFace.y,
                             blockInstance.getBlockPos().getZ() + 0.5 + midFace.z),
                     50, midOffset[0], midOffset[1], midOffset[2], 0,
-                    blockInstance.getDBlock().getParticle().createBlockData());
+                    blockInstance.getDBlock().getBreakParticle().createBlockData());
 
             this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundBlockUpdatePacket(blockInstance.getBlockPos(), Blocks.DEAD_BUBBLE_CORAL_BLOCK.defaultBlockState()));
             blockInstance.getDBlockData().setLocked(false);
@@ -90,7 +90,7 @@ public class BlockMiner {
                 blockInstance.getLocation().getWorld().spawnParticle(Particle.BLOCK,
                         blockInstance.getLocation().toCenterLocation(),
                         50, 0.35, 0.35, 0.35, 0,
-                        blockInstance.getDBlock().getParticle().createBlockData());
+                        blockInstance.getDBlock().getBreakParticle().createBlockData());
             }, msCooldown / 50);
         });
 

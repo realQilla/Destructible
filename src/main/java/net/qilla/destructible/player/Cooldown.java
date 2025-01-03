@@ -1,17 +1,27 @@
 package net.qilla.destructible.player;
 
-public enum Cooldown {
-    DEFAULT(1000),
-    OPEN_MENU(500),
-    MENU_CLICK(333);
+import java.util.EnumMap;
 
-    final long cooldown;
+public class Cooldown {
+    private final EnumMap<CooldownType, Long> cooldowns;
 
-    Cooldown(long ms) {
-        this.cooldown = ms;
+    public Cooldown() {
+        this.cooldowns = new EnumMap<>(CooldownType.class);
     }
 
-    public long getMs() {
-        return this.cooldown;
+    public long get(CooldownType cooldownType) {
+        return cooldowns.computeIfAbsent(cooldownType, c -> 0L);
+    }
+
+    public boolean has(CooldownType cooldownType) {
+        return cooldowns.computeIfAbsent(cooldownType, c -> 0L) > System.currentTimeMillis();
+    }
+
+    public void set(CooldownType cooldownType, long ms) {
+        cooldowns.put(cooldownType, System.currentTimeMillis() + ms);
+    }
+
+    public void set(CooldownType cooldownType) {
+        cooldowns.put(cooldownType, System.currentTimeMillis() + cooldownType.getMs());
     }
 }

@@ -10,7 +10,15 @@ public class RandomUtil {
         return Math.random() * (max - min) + min;
     }
 
-    public static int offset(int value, int offset) {
+    public static float between(float min, float max) {
+        return (float) (Math.random() * (max - min) + min);
+    }
+
+    public static long between(long min, long max) {
+        return (long) (Math.random() * (max - min + 1) + min);
+    }
+
+    public static long offset(long value, long offset) {
         return between(value - offset, value + offset);
     }
 }

@@ -13,8 +13,8 @@ public final class SlotHolder {
         slotHolder.put(slot.getIndex(), slot);
     }
 
-    public void unregisterSlot(Slot slot) {
-        slotHolder.remove(slot.getIndex());
+    public void unregisterSlot(int index) {
+        slotHolder.remove(index);
     }
 
     public Slot getSlot(int index) {

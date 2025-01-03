@@ -19,16 +19,16 @@ public class DItemTA extends TypeAdapter<DItem> {
     @Override
     public void write(JsonWriter out, DItem value) throws IOException {
         out.beginObject();
-        out.name("id").value(value.getId());
-        out.name("material").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
-        out.name("displayName").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
-        out.name("lore").beginArray();
+        out.name("ID").value(value.getId());
+        out.name("ITEM_MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
+        out.name("ITEM_NAME").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
+        out.name("ITEM_LORE").beginArray();
         for (Component component : value.getLore().lines()) {
             out.value(MiniMessage.miniMessage().serialize(component));
         }
         out.endArray();
-        out.name("stackSize").value(value.getStackSize());
-        out.name("rarity").value(value.getRarity().toString());
+        out.name("ITEM_STACK_SIZE").value(value.getStackSize());
+        out.name("ITEM_RARITY").value(value.getRarity().toString());
         out.endObject();
     }
 
@@ -38,16 +38,16 @@ public class DItemTA extends TypeAdapter<DItem> {
         in.beginObject();
         while (in.hasNext()) {
             switch (in.nextName()) {
-                case "id":
+                case "ID":
                     builder.id(in.nextString());
                     break;
-                case "material":
+                case "ITEM_MATERIAL":
                     builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
-                case "displayName":
+                case "ITEM_NAME":
                     builder.displayName(MiniMessage.miniMessage().deserialize(in.nextString()));
                     break;
-                case "lore":
+                case "ITEM_LORE":
                     ItemLore.Builder lore = ItemLore.lore();
                     in.beginArray();
                     while (in.hasNext()) {
@@ -56,10 +56,10 @@ public class DItemTA extends TypeAdapter<DItem> {
                     builder.lore(lore.build());
                     in.endArray();
                     break;
-                case "stackSize":
+                case "ITEM_STACK_SIZE":
                     builder.stackSize(in.nextInt());
                     break;
-                case "rarity":
+                case "ITEM_RARITY":
                     builder.rarity(Rarity.valueOf(in.nextString()));
                     break;
             }

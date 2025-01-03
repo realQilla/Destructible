@@ -1,104 +1,108 @@
 [
   {
-    "durability": 0.0,
-    "id": "SAND",
-    "itemDrops": [
-      {
-        "dItem": "SAND",
-        "dropChance": 1.0,
-        "maxAmount": 1,
-        "minAmount": 1
-      }
+    "ID": "BLOCK_COBBLESTONE",
+    "BLOCK_MATERIAL": "cobblestone",
+    "BLOCK_STRENGTH": 1,
+    "BLOCK_DURABILITY": 50,
+    "BLOCK_COOLDOWN": 20000,
+    "CORRECT_TOOLS": [
+      "PICKAXE"
     ],
-    "material": "sand",
-    "msCooldown": 5000,
-    "particle": "sand",
-    "properTools": [
+    "BREAK_SOUND": "block.stone.break",
+    "BREAK_PARTICLE": "cobblestone",
+    "ITEM_DROPS": [
+      {
+        "DESTRUCTIBLE_ITEM": "ITEM_COBBLESTONE",
+        "MIN_AMOUNT": 1,
+        "MAX_AMOUNT": 1,
+        "CHANCE": 1.0
+      },
+      {
+        "DESTRUCTIBLE_ITEM": "ITEM_GRAVEL",
+        "MIN_AMOUNT": 1,
+        "MAX_AMOUNT": 1,
+        "CHANCE": 0.05
+      }
+    ]
+  },
+  {
+    "ID": "BLOCK_DIRT",
+    "BLOCK_MATERIAL": "dirt",
+    "BLOCK_STRENGTH": 0,
+    "BLOCK_DURABILITY": 30,
+    "BLOCK_COOLDOWN": 15000,
+    "CORRECT_TOOLS": [
       "SHOVEL"
     ],
-    "sound": "block.sand.break",
-    "strength": 0
+    "BREAK_SOUND": "block.gravel.break",
+    "BREAK_PARTICLE": "dirt",
+    "ITEM_DROPS": [
+      {
+        "DESTRUCTIBLE_ITEM": "ITEM_DIRT",
+        "MIN_AMOUNT": 1,
+        "MAX_AMOUNT": 1,
+        "CHANCE": 1.0
+      }
+    ]
   },
   {
-    "durability": 40.0,
-    "id": "STONE",
-    "itemDrops": [
-      {
-        "dItem": "STONE",
-        "dropChance": 1.0,
-        "maxAmount": 1,
-        "minAmount": 1
-      }
+    "ID": "BLOCK_SAND",
+    "BLOCK_MATERIAL": "sand",
+    "BLOCK_STRENGTH": 0,
+    "BLOCK_DURABILITY": 20,
+    "BLOCK_COOLDOWN": 15000,
+    "CORRECT_TOOLS": [
+      "SHOVEL"
     ],
-    "material": "stone",
-    "msCooldown": 5000,
-    "particle": "stone",
-    "properTools": [
+    "BREAK_SOUND": "block.sand.break",
+    "BREAK_PARTICLE": "sand",
+    "ITEM_DROPS": [
+      {
+        "DESTRUCTIBLE_ITEM": "ITEM_SAND",
+        "MIN_AMOUNT": 1,
+        "MAX_AMOUNT": 1,
+        "CHANCE": 1.0
+      }
+    ]
+  },
+  {
+    "ID": "BLOCK_OAK_LOG",
+    "BLOCK_MATERIAL": "oak_log",
+    "BLOCK_STRENGTH": 2,
+    "BLOCK_DURABILITY": 80,
+    "BLOCK_COOLDOWN": 30000,
+    "CORRECT_TOOLS": [
+      "AXE"
+    ],
+    "BREAK_SOUND": "block.wood.break",
+    "BREAK_PARTICLE": "oak_log",
+    "ITEM_DROPS": [
+      {
+        "DESTRUCTIBLE_ITEM": "ITEM_OAK_LOG",
+        "MIN_AMOUNT": 1,
+        "MAX_AMOUNT": 1,
+        "CHANCE": 1.0
+      }
+    ]
+  },
+  {
+    "ID": "BLOCK_IRON_ORE",
+    "BLOCK_MATERIAL": "iron_ore",
+    "BLOCK_STRENGTH": 3,
+    "BLOCK_DURABILITY": 120.0,
+    "BLOCK_COOLDOWN": 40000,
+    "CORRECT_TOOLS": [
       "PICKAXE"
     ],
-    "sound": "block.stone.break",
-    "strength": 1
-  },
-  {
-    "durability": 60.0,
-    "id": "COBBLESTONE",
-    "itemDrops": [
+    "BREAK_SOUND": "block.stone.break",
+    "BREAK_PARTICLE": "iron_ore",
+    "ITEM_DROPS": [
       {
-        "dItem": "COBBLESTONE",
-        "dropChance": 1.0,
-        "maxAmount": 1,
-        "minAmount": 1
+        "DESTRUCTIBLE_ITEM": "ITEM_IRON_CHUNK",
+        "MIN_AMOUNT": 1,
+        "MAX_AMOUNT": 1,
+        "CHANCE": 1.0
       }
-    ],
-    "material": "cobblestone",
-    "msCooldown": 5000,
-    "particle": "cobblestone",
-    "properTools": [
-      "PICKAXE"
-    ],
-    "sound": "block.stone.break",
-    "strength": 1
-  },
-  {
-    "durability": 100.0,
-    "id": "OAK_LOG",
-    "itemDrops": [
-      {
-        "dItem": "OAK_LOG",
-        "dropChance": 1.0,
-        "maxAmount": 1,
-        "minAmount": 1
-      }
-    ],
-    "material": "oak_log",
-    "msCooldown": 5000,
-    "particle": "oak_log",
-    "properTools": [
-      "AXE",
-      "HATCHET"
-    ],
-    "sound": "block.wood.break",
-    "strength": 1
-  },
-  {
-    "durability": 20.0,
-    "id": "OAK_PLANKS",
-    "itemDrops": [
-      {
-        "dItem": "OAK_PLANKS",
-        "dropChance": 1.0,
-        "maxAmount": 1,
-        "minAmount": 1
-      }
-    ],
-    "material": "oak_planks",
-    "msCooldown": 5000,
-    "particle": "oak_planks",
-    "properTools": [
-      "AXE",
-      "HATCHET"
-    ],
-    "sound": "block.wood.break",
-    "strength": 0
+    ]
   }
 ]

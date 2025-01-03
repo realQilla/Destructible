@@ -9,17 +9,17 @@ import java.util.function.Function;
 
 public final class DTools {
     public static final DTool DEFAULT = new DTool.Builder()
-            .dItem(new DItem.Builder()
+            .item(new DItem.Builder()
                     .id("DEFAULT")
                     .material(Material.AIR)
                     .defaultDisplayName()
                     .noLore()
                     .stackSize(1)
                     .rarity(Rarity.NONE))
-            .dToolType(List.of(ToolType.HAND))
-            .strength(0)
-            .efficiency(0)
-            .noDurability()
+            .toolType(List.of(ToolType.HAND))
+            .toolStrength(0)
+            .toolEfficiency(0)
+            .noToolDurability()
             .build();
 
     private static DItem register(@NotNull String id, @NotNull Function<DTool.Builder, @NotNull DTool> factory, DTool.Builder builder) {

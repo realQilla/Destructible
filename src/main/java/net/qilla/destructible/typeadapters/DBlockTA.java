@@ -18,30 +18,30 @@ public class DBlockTA extends TypeAdapter<DBlock> {
     @Override
     public void write(JsonWriter out, DBlock value) throws IOException {
         out.beginObject();
-        out.name("id").value(value.getId());
-        out.name("material").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
-        out.name("strength").value(value.getStrength());
-        out.name("durability").value(value.getDurability());
-        out.name("msCooldown").value(value.getMsCooldown());
-        out.name("properTools");
+        out.name("ID").value(value.getId());
+        out.name("BLOCK_MATERIAL").value(Registry.MATERIAL.getKey(value.getBlockMaterial()).value());
+        out.name("BLOCK_STRENGTH").value(value.getBlockStrength());
+        out.name("BLOCK_DURABILITY").value(value.getBlockDurability());
+        out.name("BLOCK_COOLDOWN").value(value.getBlockCooldown());
+        out.name("CORRECT_TOOLS");
         out.beginArray();
-        for(ToolType tool : value.getProperTools()) {
+        for(ToolType tool : value.getCorrectTools()) {
             out.value(tool.toString());
         }
         out.endArray();
-        out.name("itemDrops");
+        out.name("BREAK_SOUND").value(Registry.SOUNDS.getKey(value.getBreakSound()).value());
+        out.name("BREAK_PARTICLE").value(Registry.MATERIAL.getKey(value.getBreakParticle()).value());
+        out.name("ITEM_DROPS");
         out.beginArray();
         for(DDrop drop : value.getItemDrops()) {
             out.beginObject();
-            out.name("dItem").value(drop.getDItem().getId());
-            out.name("minAmount").value(drop.getMinAmount());
-            out.name("maxAmount").value(drop.getMaxAmount());
-            out.name("dropChance").value(drop.getDropChance());
+            out.name("DESTRUCTIBLE_ITEM").value(drop.getDItem().getId());
+            out.name("MIN_AMOUNT").value(drop.getMinAmount());
+            out.name("MAX_AMOUNT").value(drop.getMaxAmount());
+            out.name("CHANCE").value(drop.getChance());
             out.endObject();
         }
         out.endArray();
-        out.name("sound").value(Registry.SOUNDS.getKey(value.getSound()).value());
-        out.name("particle").value(Registry.MATERIAL.getKey(value.getParticle()).value());
         out.endObject();
     }
 
@@ -51,31 +51,37 @@ public class DBlockTA extends TypeAdapter<DBlock> {
         in.beginObject();
         while(in.hasNext()) {
             switch(in.nextName()) {
-                case "id":
+                case "ID":
                     builder.id(in.nextString());
                     break;
-                case "material":
-                    builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
+                case "BLOCK_MATERIAL":
+                    builder.blockMaterial(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
-                case "strength":
-                    builder.strengthRequirement(in.nextInt());
+                case "BLOCK_STRENGTH":
+                    builder.blockStrength(in.nextInt());
                     break;
-                case "durability":
-                    builder.durability(in.nextInt());
+                case "BLOCK_DURABILITY":
+                    builder.blockDurability(in.nextInt());
                     break;
-                case "msCooldown":
-                    builder.msCooldown(in.nextInt());
+                case "BLOCK_COOLDOWN":
+                    builder.blockCooldown(in.nextLong());
                     break;
-                case "properTools":
+                case "CORRECT_TOOLS":
                     List<ToolType> tools = new ArrayList<>();
                     in.beginArray();
                     while(in.hasNext()) {
                         tools.add(ToolType.valueOf(in.nextString()));
                     }
                     in.endArray();
-                    builder.properTools(tools);
+                    builder.correctTools(tools);
                     break;
-                case "itemDrops":
+                case "BREAK_SOUND":
+                    builder.breakSound(Registry.SOUNDS.get(NamespacedKey.fromString(in.nextString())));
+                    break;
+                case "BREAK_PARTICLE":
+                    builder.breakParticle(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
+                    break;
+                case "ITEM_DROPS":
                     List<DDrop> dDrops = new ArrayList<>();
                     in.beginArray();
                     while(in.hasNext()) {
@@ -83,17 +89,17 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                         DDrop.Builder dropBuilder = new DDrop.Builder();
                         while(in.hasNext()) {
                             switch(in.nextName()) {
-                                case "dItem":
+                                case "DESTRUCTIBLE_ITEM":
                                     dropBuilder.dItem(in.nextString());
                                     break;
-                                case "minAmount":
+                                case "MIN_AMOUNT":
                                     dropBuilder.minAmount(in.nextInt());
                                     break;
-                                case "maxAmount":
+                                case "MAX_AMOUNT":
                                     dropBuilder.maxAmount(in.nextInt());
                                     break;
-                                case "dropChance":
-                                    dropBuilder.dropChance(in.nextDouble());
+                                case "CHANCE":
+                                    dropBuilder.chance(in.nextDouble());
                                     break;
                             }
                         }
@@ -102,12 +108,6 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                         builder.itemDrops(dDrops);
                     }
                     in.endArray();
-                    break;
-                case "sound":
-                    builder.sound(Registry.SOUNDS.get(NamespacedKey.fromString(in.nextString())));
-                    break;
-                case "particle":
-                    builder.particle(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
             }
         }

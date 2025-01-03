@@ -10,14 +10,14 @@ import java.util.function.Function;
 public final class DBlocks {
 
     public static final DBlock DEFAULT = new DBlock.Builder()
-            .material(Material.STONE)
-            .strengthRequirement(0)
-            .neverBreak()
-            .msCooldown(0)
-            .noTools()
-            .noDrops()
-            .sound(Sound.BLOCK_STEM_BREAK)
-            .particle(Material.BEDROCK).build();
+            .blockMaterial(Material.STONE)
+            .blockStrength(0)
+            .infiniteDurability()
+            .blockCooldown(0)
+            .noCorrectTools()
+            .noItemDrops()
+            .breakSound(Sound.BLOCK_STEM_BREAK)
+            .breakParticle(Material.BEDROCK).build();
 
     private static DBlock register(String id, Function<DBlock.Builder, DBlock> factory, DBlock.Builder builder) {
         return Registries.DESTRUCTIBLE_BLOCKS.put(id, factory.apply(builder.id(id)));

@@ -1,149 +1,85 @@
 [
   {
-    "displayName": "<!italic><white>Wooden Pickaxe",
-    "durability": 128,
-    "efficiency": 1.0,
-    "id": "WOODEN_PICKAXE",
-    "lore": [
-      "<!italic><dark_gray>A simple wooden pickaxe"
+    "ID": "TOOL_WOODEN_PICKAXE",
+    "ITEM_MATERIAL": "wooden_pickaxe",
+    "ITEM_NAME": "<!italic><white>Wooden Pickaxe",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A simple pickaxe made of wood"
     ],
-    "material": "wooden_pickaxe",
-    "rarity": "COMMON",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
+    "ITEM_STACK_SIZE": 1,
+    "ITEM_RARITY": "COMMON",
+    "TOOL_TYPE": [
       "PICKAXE"
-    ]
+    ],
+    "TOOL_STRENGTH": 1,
+    "BREAKING_EFFICIENCY": 1,
+    "TOOL_DURABILITY": 128
   },
   {
-    "displayName": "<!italic><yellow>Stone Pickaxe",
-    "durability": 512,
-    "efficiency": 2.0,
-    "id": "STONE_PICKAXE",
-    "lore": [
-      "<!italic><dark_gray>Hardened pickaxe made of stone"
+    "ID": "TOOL_WOODEN_AXE",
+    "ITEM_MATERIAL": "wooden_axe",
+    "ITEM_NAME": "<!italic><white>Wooden Axe",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A simple axe made of wood"
     ],
-    "material": "stone_pickaxe",
-    "rarity": "UNIQUE",
-    "stackSize": 1,
-    "strength": 2,
-    "toolType": [
-      "PICKAXE"
-    ]
-  },
-  {
-    "displayName": "<!italic><yellow>Wooden Axe",
-    "durability": 128,
-    "efficiency": 1.0,
-    "id": "WOODEN_AXE",
-    "lore": [
-      "<!italic><dark_gray>A simple wooden axe"
-    ],
-    "material": "wooden_axe",
-    "rarity": "COMMON",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
+    "ITEM_STACK_SIZE": 1,
+    "ITEM_RARITY": "COMMON",
+    "TOOL_TYPE": [
       "AXE"
-    ]
+    ],
+    "TOOL_STRENGTH": 2,
+    "BREAKING_EFFICIENCY": 1,
+    "TOOL_DURABILITY": 128
   },
   {
-    "displayName": "<!italic><blue>Iron Axe",
-    "durability": 2048,
-    "efficiency": 3.0,
-    "id": "IRON_AXE",
-    "lore": [
-      "<!italic><dark_gray>Powerful axe made of solid metal<gray>"
+    "ID": "TOOL_WOODEN_HATCHET",
+    "ITEM_MATERIAL": "wooden_axe",
+    "ITEM_NAME": "<!italic><white>Wooden Hatchet",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A simple hatchet made of wood"
     ],
-    "material": "iron_axe",
-    "rarity": "RARE",
-    "stackSize": 1,
-    "strength": 3,
-    "toolType": [
+    "ITEM_STACK_SIZE": 1,
+    "ITEM_RARITY": "COMMON",
+    "TOOL_TYPE": [
+      "HATCHET",
       "AXE"
-    ]
+    ],
+    "TOOL_STRENGTH": 1,
+    "BREAKING_EFFICIENCY": 2,
+    "TOOL_DURABILITY": 128
   },
   {
-    "displayName": "<!italic><gold>Diamond Shovel",
-    "durability": 8192,
-    "efficiency": 5.0,
-    "id": "DIAMOND_SHOVEL",
-    "lore": [
-      "<!italic><dark_gray>Legendary shovel made of diamond"
+    "ID": "TOOL_WOODEN_SHOVEL",
+    "ITEM_MATERIAL": "wooden_shovel",
+    "ITEM_NAME": "<!italic><white>Wooden Shovel",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>A simple shovel made of wood"
     ],
-    "material": "diamond_shovel",
-    "rarity": "LEGENDARY",
-    "stackSize": 1,
-    "strength": 4,
-    "toolType": [
+    "ITEM_STACK_SIZE": 1,
+    "ITEM_RARITY": "COMMON",
+    "TOOL_TYPE": [
       "SHOVEL"
-    ]
+    ],
+    "TOOL_STRENGTH": 1,
+    "BREAKING_EFFICIENCY": 1,
+    "TOOL_DURABILITY": 128
   },
   {
-    "displayName": "<!italic><blue>Iron Hatchet",
-    "durability": 2048,
-    "efficiency": 3.0,
-    "id": "IRON_HATCHET",
-    "lore": [
-      "<!italic><dark_gray>Powerful hatchet made of solid metal"
+    "ID": "TOOL_WOODEN_MULTI_TOOL",
+    "ITEM_MATERIAL": "trident",
+    "ITEM_NAME": "<!italic><yellow>Wooden Multi-Tool",
+    "ITEM_LORE": [
+      "<!italic><dark_gray>An all-in-one tool mode of the finest wood around"
     ],
-    "material": "iron_hoe",
-    "rarity": "RARE",
-    "stackSize": 1,
-    "strength": 3,
-    "toolType": [
-      "HATCHET"
-    ]
-  },
-  {
-    "displayName": "<!italic><blue>Twig Pickaxe",
-    "durability": 3,
-    "efficiency": 1.0,
-    "id": "TWIG_PICKAXE",
-    "lore": [
-      "<!italic><dark_gray>Useless wooden twig"
-    ],
-    "material": "stick",
-    "rarity": "COMMON",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
-      "PICKAXE"
-    ]
-  },
-  {
-    "displayName": "<!italic><blue>Hair Brush",
-    "durability": 1,
-    "efficiency": 1000.0,
-    "id": "HAIR_BRUSH",
-    "lore": [
-      "<!italic><dark_gray>Magic hairbrush",
-      "<!italic><dark_gray>but be careful, it's brittle!"
-    ],
-    "material": "brush",
-    "rarity": "UNIQUE",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
-      "PICKAXE"
-    ]
-  },
-  {
-    "displayName": "<!italic><light_purple>Infinity Tool",
-    "durability": -1,
-    "efficiency": 1000.0,
-    "id": "INFINITY_TOOL",
-    "lore": [
-      "<!italic><dark_gray>An infinite tool"
-    ],
-    "material": "mace",
-    "rarity": "LEGENDARY",
-    "stackSize": 1,
-    "strength": 1,
-    "toolType": [
+    "ITEM_STACK_SIZE": 1,
+    "ITEM_RARITY": "UNIQUE",
+    "TOOL_TYPE": [
       "PICKAXE",
       "AXE",
       "SHOVEL"
-    ]
+    ],
+    "TOOL_STRENGTH": 1,
+    "BREAKING_EFFICIENCY": 2,
+    "TOOL_DURABILITY": 256
   }
 ]

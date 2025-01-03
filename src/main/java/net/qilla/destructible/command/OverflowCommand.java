@@ -6,9 +6,9 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.gui.DestructibleGUI;
-import net.qilla.destructible.gui.OverflowGUI;
-import net.qilla.destructible.player.Cooldown;
+import net.qilla.destructible.gui.DestructibleMenu;
+import net.qilla.destructible.gui.OverflowMenu;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
 import net.qilla.destructible.data.Registries;
@@ -16,7 +16,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import java.util.List;
 
-public class OverflowCom {
+public class OverflowCommand {
 
     private static final String COMMAND = "overflow";
     private static final List<String> ALIAS = List.of("o", "stash");
@@ -26,7 +26,7 @@ public class OverflowCom {
     private final Destructible plugin;
     private final Commands commands;
 
-    public OverflowCom(Destructible plugin, Commands commands) {
+    public OverflowCommand(Destructible plugin, Commands commands) {
         this.plugin = plugin;
         this.commands = commands;
     }
@@ -45,14 +45,14 @@ public class OverflowCom {
         Player player = (Player) context.getSource().getSender();
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
-        if(dPlayer.hasCooldown(Cooldown.OPEN_MENU)) {
+        if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
             dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Please wait a bit before accessing this menu."));
             return 0;
         }
-        dPlayer.setCooldown(Cooldown.OPEN_MENU);
+        dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
 
-        DestructibleGUI gui = new OverflowGUI(dPlayer);
-        gui.open();
+        DestructibleMenu gui = new OverflowMenu(dPlayer);
+        gui.openInventory();
         return Command.SINGLE_SUCCESS;
     }
 
