@@ -22,7 +22,7 @@ public class ToolManager {
     }
 
     public boolean isToolBroken() {
-        ItemStack itemStack = this.dPlayer.getEquipment().getItemInMainHand();
+        ItemStack itemStack = dPlayer.getCraftPlayer().getEquipment().getItemInMainHand();
         if(itemStack.isEmpty()) return false;
         if(!itemStack.getPersistentDataContainer().has(DataKey.DURABILITY, PersistentDataType.INTEGER)) return false;
         return itemStack.getPersistentDataContainer().get(DataKey.DURABILITY, PersistentDataType.INTEGER) == -1;
@@ -36,11 +36,11 @@ public class ToolManager {
     }
 
     public void damageTool(@NotNull DTool dTool, int amount) {
-        ItemStack itemStack = this.dPlayer.getEquipment().getItemInMainHand();
+        ItemStack itemStack = dPlayer.getCraftPlayer().getEquipment().getItemInMainHand();
         if(!itemStack.getPersistentDataContainer().has(DataKey.DURABILITY, PersistentDataType.INTEGER)) return;
         int durability = itemStack.getPersistentDataContainer().get(DataKey.DURABILITY, PersistentDataType.INTEGER) - amount;
 
-        Bukkit.getScheduler().runTask(this.dPlayer.getPlugin(), () -> {
+        Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
             if(durability > 0) {
                 itemStack.editMeta(meta -> {
                     meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, durability);
@@ -52,8 +52,8 @@ public class ToolManager {
                 });
 
                 itemStack.setData(DataComponentTypes.DAMAGE, dTool.getToolDurability());
-                this.dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Your currently active tool has broken!"));
-                this.dPlayer.getWorld().playSound(this.dPlayer.getLocation(), Sound.ENTITY_ITEM_BREAK, 0.2f, 1);
+                dPlayer.sendMessage("<red>Your currently active tool has broken!");
+                dPlayer.getCraftPlayer().getWorld().playSound(dPlayer.getCraftPlayer().getLocation(), Sound.ENTITY_ITEM_BREAK, 0.2f, 1);
             }
         });
     }

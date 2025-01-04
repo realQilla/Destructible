@@ -46,7 +46,7 @@ public class OverflowCommand {
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
         if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Please wait a bit before accessing this menu."));
+            dPlayer.sendMessage("<red>Please wait a bit before accessing this menu.");
             return 0;
         }
         dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
@@ -59,14 +59,14 @@ public class OverflowCommand {
     private int clear(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        Overflow overflow = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()).getOverflow();
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
-        if(overflow.isEmpty()) {
+        if(dPlayer.getOverflow().isEmpty()) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Your overflow stash is already empty."));
             return 0;
         }
 
-        overflow.clear();
+        dPlayer.getOverflow().clear();
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.5f, 0.0f);
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Your overflow stash has been <red><bold>CLEARED<red>."));
         return Command.SINGLE_SUCCESS;
@@ -79,19 +79,19 @@ public class OverflowCommand {
         Overflow overflow = dPlayer.getOverflow();
 
         if(overflow.isEmpty()) {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Your overflow stash is empty!"));
+            dPlayer.sendMessage("<red>Your overflow stash is empty!");
             return 0;
         }
 
-        if(dPlayer.getInventory().firstEmpty() == -1) {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Your inventory is full!"));
+        if(dPlayer.getCraftPlayer().getInventory().firstEmpty() == -1) {
+            dPlayer.sendMessage("<red>Your inventory is full!");
             return 0;
         }
 
-        dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have successfully claimed: "));
-        overflow.take().forEach(item -> dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+" + item.getAmount() + " ")
+        dPlayer.sendMessage("<yellow>You have successfully claimed: ");
+        overflow.take().forEach(item -> dPlayer.getCraftPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+" + item.getAmount() + " ")
                 .append(item.getDItem().getDisplayName())));
-        dPlayer.playSound(dPlayer.getLocation(), Sound.ENTITY_HORSE_SADDLE, 1.0f, 1.0f);
+        dPlayer.getCraftPlayer().playSound(dPlayer.getCraftPlayer().getLocation(), Sound.ENTITY_HORSE_SADDLE, 1.0f, 1.0f);
         return Command.SINGLE_SUCCESS;
     }
 }

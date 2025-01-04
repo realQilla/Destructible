@@ -1,5 +1,6 @@
 package net.qilla.destructible.mining;
 
+import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,10 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 public final class MiningPacketListener {
 
-    public MiningPacketListener() {
-    }
-
-    public void addListener(@NotNull Player player, @NotNull DPlayer dPlayer) {
+    public void addListener(DPlayer dPlayer) {
+        Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
         ChannelDuplexHandler handler = new ChannelDuplexHandler() {
             @Override
             public void channelRead(ChannelHandlerContext context, Object object) throws Exception {
@@ -34,9 +33,8 @@ public final class MiningPacketListener {
 
                 if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
                     switch(actionPacket.getAction()) {
-                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK -> miningManager.init(actionPacket.getPos(), actionPacket.getDirection());
-                        case ServerboundPlayerActionPacket.Action.DROP_ITEM,
-                             ServerboundPlayerActionPacket.Action.DROP_ALL_ITEMS -> miningManager.stop();
+                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK ->
+                                miningManager.init(actionPacket.getPos(), actionPacket.getDirection());
                         default -> miningManager.stop();
                     }
                 } else if(packet instanceof ServerboundSwingPacket swingPacket) {
@@ -56,19 +54,20 @@ public final class MiningPacketListener {
             }
         };
 
-        ServerGamePacketListenerImpl playerCon = ((CraftPlayer) player).getHandle().connection;
+        ServerGamePacketListenerImpl playerCon = dPlayer.getServerPlayer().connection;
         Channel channel = playerCon.connection.channel;
 
-        channel.pipeline().addBefore("packet_handler", player.getName(), handler);
+        channel.pipeline().addBefore("packet_handler", dPlayer.getCraftPlayer().getUniqueId().toString(), handler);
     }
 
-    public void removeListener(@NotNull Player player) {
-        ServerGamePacketListenerImpl playerCon = ((CraftPlayer) player).getHandle().connection;
+    public void removeListener(@NotNull DPlayer dPlayer) {
+        ServerGamePacketListenerImpl playerCon = dPlayer.getServerPlayer().connection;
         Channel channel = playerCon.connection.channel;
 
         channel.eventLoop().submit(() -> {
-            channel.pipeline().remove(player.getName());
+            channel.pipeline().remove(dPlayer.getCraftPlayer().getUniqueId().toString());
             return null;
         });
+
     }
 }

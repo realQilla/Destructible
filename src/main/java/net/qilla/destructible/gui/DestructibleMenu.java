@@ -44,15 +44,15 @@ public abstract class DestructibleMenu implements InventoryHolder {
 
     public void openInventory() {
         dPlayer.getMenuData().addMenu(this);
-        dPlayer.openInventory(this.inventory);
+        dPlayer.getCraftPlayer().openInventory(this.inventory);
     }
 
     private void reopenInventory() {
-        dPlayer.openInventory(this.inventory);
+        dPlayer.getCraftPlayer().openInventory(this.inventory);
     }
 
     public void close() {
-        dPlayer.closeInventory();
+        dPlayer.getCraftPlayer().closeInventory();
     }
 
     public abstract void onInteract(InventoryInteractEvent event);

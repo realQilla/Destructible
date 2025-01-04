@@ -4,14 +4,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.EntityType;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.EntityUtil;
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.entity.CraftBlockDisplay;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,13 +25,11 @@ import java.util.Set;
 public class BlockHighlight {
 
     private final DPlayer dPlayer;
-    private final ServerLevel serverLevel;
     private Set<String> visibleBlocks;
     private final RegistryMap<String, RegistryMap<ChunkPos, RegistryMap<Integer, Integer>>> highlight = new RegistryMap<>();
 
     public BlockHighlight(@NotNull DPlayer dPlayer) {
         this.dPlayer = dPlayer;
-        this.serverLevel = dPlayer.getHandle().serverLevel();
     }
 
     public boolean isBlockVisible(@NotNull String blockId) {
@@ -65,10 +69,10 @@ public class BlockHighlight {
 
         ChunkPos chunkPos = new ChunkPos(blockPos);
         int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
-        CraftEntity entity = EntityUtil.getHighlight(this.serverLevel);
+        CraftEntity entity = this.getHighlight();
 
-        this.dPlayer.getHandle().connection.send(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
-        this.dPlayer.getHandle().connection.send(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
+        dPlayer.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
+        dPlayer.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
 
         this.highlight.computeIfAbsent(blockId, blockId2 ->
                 new RegistryMap<>()).computeIfAbsent(chunkPos, chunkPos2 ->
@@ -82,7 +86,7 @@ public class BlockHighlight {
         this.highlight.forEach((blockId, chunkPosMap) -> {
             chunkPosMap.computeIfPresent(chunkPos, (chunkPos2, chunkIntMap) -> {
                 chunkIntMap.computeIfPresent(chunkInt, (chunkInt2, entityId) -> {
-                    this.dPlayer.getHandle().connection.send(new ClientboundRemoveEntitiesPacket(entityId));
+                    dPlayer.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
                     return null;
                 });
                 return chunkIntMap.isEmpty() ? null : chunkIntMap;
@@ -99,10 +103,10 @@ public class BlockHighlight {
             chunkPosMap.forEach((chunkPos, chunkIntSet) -> {
                 chunkIntSet.forEach(chunkInt -> {
                     BlockPos blockPos = CoordUtil.chunkIntToPos(chunkPos, chunkInt);
-                    CraftEntity entity = EntityUtil.getHighlight(this.serverLevel);
+                    CraftEntity entity = this.getHighlight();
 
-                    this.dPlayer.getHandle().connection.send(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
-                    this.dPlayer.getHandle().connection.send(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
+                    dPlayer.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
+                    dPlayer.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
                     this.highlight.computeIfAbsent(blockId, k4 -> new RegistryMap<>())
                             .computeIfAbsent(chunkPos, k5 -> new RegistryMap<>())
                             .putIfAbsent(chunkInt, entity.getEntityId());
@@ -121,7 +125,7 @@ public class BlockHighlight {
         this.highlight.computeIfPresent(blockId, (k, v) -> {
             v.forEach((k2, v2) -> {
                 v2.forEach((k3, v3) -> {
-                    this.dPlayer.getHandle().connection.send(new ClientboundRemoveEntitiesPacket(v3));
+                    dPlayer.sendPacket(new ClientboundRemoveEntitiesPacket(v3));
                 });
                 try {
                     Thread.sleep(10);
@@ -141,10 +145,10 @@ public class BlockHighlight {
             chunkPosMap.forEach((chunkPos, chunkIntSet) -> {
                 chunkIntSet.forEach(chunkInt -> {
                     BlockPos blockPos = CoordUtil.chunkIntToPos(chunkPos, chunkInt);
-                    CraftEntity entity = EntityUtil.getHighlight(this.serverLevel);
+                    CraftEntity entity = this.getHighlight();
 
-                    this.dPlayer.getHandle().connection.send(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
-                    this.dPlayer.getHandle().connection.send(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
+                    dPlayer.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
+                    dPlayer.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
                     this.highlight.computeIfAbsent(blockId, k4 -> new RegistryMap<>())
                             .computeIfAbsent(chunkPos, k5 -> new RegistryMap<>())
                             .putIfAbsent(chunkInt, entity.getEntityId());
@@ -162,7 +166,7 @@ public class BlockHighlight {
         this.highlight.forEach((blockId, chunkPosMap) -> {
             chunkPosMap.forEach((chunkPos, blockIntMap) -> {
                 blockIntMap.forEach((blockInt, entityId) -> {
-                    dPlayer.getHandle().connection.send(new ClientboundRemoveEntitiesPacket(entityId));
+                    dPlayer.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
                 });
                 try {
                     Thread.sleep(10);
@@ -172,5 +176,19 @@ public class BlockHighlight {
             });
         });
         this.highlight.clear();
+    }
+
+    public CraftEntity getHighlight() {
+        CraftBlockDisplay craftEntity = new CraftBlockDisplay(dPlayer.getCraftServer(), new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, dPlayer.getServerLevel()));
+        craftEntity.setGlowing(true);
+        craftEntity.setGlowColorOverride(Color.SILVER);
+        craftEntity.setBlock(Material.LIGHT_GRAY_CONCRETE.createBlockData());
+        craftEntity.setTransformation(new Transformation(
+                new Vector3f(0.05f, 0.05f, 0.05f),
+                new Quaternionf(),
+                new Vector3f(0.90f, 0.90f, 0.90f),
+                new Quaternionf()
+        ));
+        return craftEntity;
     }
 }

@@ -1,43 +1,84 @@
 package net.qilla.destructible.player;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.gui.DestructibleMenu;
 import net.qilla.destructible.mining.item.DDrop;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.logic.MiningManager;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class DPlayer extends CraftPlayer {
+public class DPlayer {
 
     private static final Random RANDOM = new Random();
     private static final Destructible PLUGIN = Destructible.getInstance();
+    private final CraftPlayer craftPlayer;
     private Overflow overflow;
     private MiningManager minerData;
     private DBlockEdit dBlockEdit;
     private Cooldown cooldown;
     private MenuData menuData;
 
-    public DPlayer(CraftServer server, ServerPlayer entity) {
-        super(server, entity);
+    public DPlayer(CraftPlayer craftPlayer) {
+        this.craftPlayer = craftPlayer;
+    }
+
+    private DPlayer(CraftPlayer craftPlayer, DPlayer dPlayer) {
+        this.craftPlayer = craftPlayer;
+        this.overflow = dPlayer.overflow;
+        this.minerData = dPlayer.minerData;
+        this.dBlockEdit = dPlayer.dBlockEdit;
+        this.cooldown = dPlayer.cooldown;
+        this.menuData = dPlayer.menuData;
+    }
+
+    public static DPlayer copyOf(CraftPlayer craftPlayer, DPlayer dPlayer) {
+        return new DPlayer(craftPlayer, dPlayer);
+    }
+
+    public void sendMessage(String message) {
+        craftPlayer.sendMessage(MiniMessage.miniMessage().deserialize(message));
+    }
+
+    public void sendMessage(Component component) {
+        craftPlayer.sendMessage(component);
+    }
+
+    public void playSound(Sound sound, SoundCategory category, float volume, float pitch, PlaySound playSound) {
+        switch(playSound) {
+            case PlaySound.BROADCAST_CUR_LOC ->
+                    getCraftPlayer().getWorld().playSound(getCraftPlayer().getLocation(), sound, category, volume, pitch);
+            case PlaySound.PLAYER_CUR_LOC -> craftPlayer.playSound(craftPlayer.getLocation(), sound, volume, pitch);
+            case PlaySound.PLAYER -> craftPlayer.playSound(craftPlayer, sound, volume, pitch);
+        }
+    }
+
+    public void sendPacket(Packet<?> packet) {
+        craftPlayer.getHandle().connection.send(packet);
+    }
+
+    public void broadcastPacket(Packet<?> packet) {
+        craftPlayer.getHandle().serverLevel().getChunkSource().broadcastAndSend(craftPlayer.getHandle(), packet);
     }
 
     public int getSpace(ItemStack itemStack) {
         int maxStackSize = itemStack.getMaxStackSize();
-        int preExisting = Arrays.stream(getInventory().getStorageContents())
+        int preExisting = Arrays.stream(craftPlayer.getInventory().getStorageContents())
                 .filter(i -> i != null && i.isSimilar(itemStack))
                 .mapToInt(i -> maxStackSize - i.getAmount())
                 .sum();
-        int empty = (int) Arrays.stream(getInventory().getStorageContents())
+        int empty = (int) Arrays.stream(craftPlayer.getInventory().getStorageContents())
                 .filter(Objects::isNull)
                 .count() * maxStackSize;
         return preExisting + empty;
@@ -47,22 +88,22 @@ public class DPlayer extends CraftPlayer {
         ItemStack itemStack = dItemStack.getItemStack();
         int space = getSpace(itemStack);
         if(space >= dItemStack.getAmount()) {
-            getInventory().addItem(itemStack);
+            this.craftPlayer.getInventory().addItem(itemStack);
             return;
         }
 
         ItemStack splitItem = itemStack.clone();
         splitItem.setAmount(space);
-        this.getInventory().addItem(splitItem);
+        craftPlayer.getInventory().addItem(splitItem);
         int remaining = itemStack.getAmount() - space;
         if(remaining <= 0) return;
         dItemStack.setAmount(remaining);
-        Overflow overflow = Registries.DESTRUCTIBLE_PLAYERS.get(this.getUniqueId()).getOverflow();
+        Overflow overflow = Registries.DESTRUCTIBLE_PLAYERS.get(craftPlayer.getUniqueId()).getOverflow();
         overflow.put(dItemStack);
 
-        this.getWorld().playSound(this.getLocation(), Sound.ENTITY_HORSE_SADDLE, 0.25f, 1);
+        craftPlayer.getWorld().playSound(craftPlayer.getLocation(), Sound.ENTITY_HORSE_SADDLE, 0.25f, 1);
 
-        this.sendActionBar(MiniMessage.miniMessage().deserialize("<green>+" + itemStack.getAmount() + " ")
+        craftPlayer.sendActionBar(MiniMessage.miniMessage().deserialize("<green>+" + itemStack.getAmount() + " ")
                 .append(dItemStack.getDItem().getDisplayName().asComponent())
                 .append(MiniMessage.miniMessage().deserialize(" added to stash!")));
     }
@@ -76,6 +117,22 @@ public class DPlayer extends CraftPlayer {
                     return DItemStack.of(drop.getDItem(), amount);
                 })
                 .toList();
+    }
+
+    public CraftPlayer getCraftPlayer() {
+        return this.craftPlayer;
+    }
+
+    public CraftServer getCraftServer() {
+        return (CraftServer) getCraftPlayer().getServer();
+    }
+
+    public ServerLevel getServerLevel() {
+        return this.craftPlayer.getHandle().serverLevel();
+    }
+
+    public ServerPlayer getServerPlayer() {
+        return this.craftPlayer.getHandle();
     }
 
     public MiningManager getMinerData() {

@@ -5,6 +5,7 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,6 +22,9 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.block.CraftBlockState;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftEntityType;
+import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,15 +35,11 @@ public class BlockMiner {
     private static final int ITEM_ALTERNATE_DELAY = 5;
     private static final int ITEM_DELETE_DELAY = 4;
     private static final RandomSource RANDOM = RandomSource.createNewThreadLocalInstance();
-    
+
     private final DPlayer dPlayer;
-    private final ServerPlayer serverPlayer;
-    private final ServerLevel serverLevel;
 
     public BlockMiner(@NotNull DPlayer dPlayer) {
         this.dPlayer = dPlayer;
-        this.serverPlayer = dPlayer.getHandle();
-        this.serverLevel = this.serverPlayer.serverLevel();
     }
 
     public void tickBlock(@NotNull BlockInstance blockInstance, @NotNull DTool dTool, @NotNull ToolManager toolManager) {
@@ -50,26 +50,23 @@ public class BlockMiner {
             this.destroyBlock(blockInstance);
             toolManager.damageTool(dTool, 1);
         } else {
-            this.serverLevel.getChunkSource().broadcastAndSend(
-                    dPlayer.getHandle(), new ClientboundBlockDestructionPacket(
-                            blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), blockInstance.getCrackLevel()));
+            dPlayer.broadcastPacket(new ClientboundBlockDestructionPacket(
+                    blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), blockInstance.getCrackLevel()));
         }
     }
 
     public void endProgress(@NotNull BlockInstance blockInstance) {
-        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, 
-                new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
+        dPlayer.broadcastPacket(new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
     }
 
     private void destroyBlock(@NotNull BlockInstance blockInstance) {
-        Bukkit.getScheduler().runTask(this.dPlayer.getPlugin(), () -> {
+        Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
             long msCooldown = RandomUtil.offset(blockInstance.getDBlock().getBlockCooldown(), 2000);
             BlockState blockState = ((CraftBlockState) blockInstance.getLocation().getBlock().getState()).getHandle();
             Vec3 midFace = DBlockUtil.getCenterFaceParticle(blockInstance.getDirection());
             float[] midOffset = DBlockUtil.getFlatOffsetParticles(blockInstance.getDirection());
 
-            this.serverLevel.getChunkSource().broadcastAndSend(
-                    this.serverPlayer, new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
+            dPlayer.broadcastPacket(new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
             blockInstance.getLocation().getWorld().playSound(blockInstance.getLocation(), blockInstance.getDBlock().getBreakSound(), 1, (float) RandomUtil.between(0.75, 1.25));
             blockInstance.getLocation().getWorld().spawnParticle(Particle.BLOCK,
                     new Location(blockInstance.getLocation().getWorld(),
@@ -79,13 +76,12 @@ public class BlockMiner {
                     50, midOffset[0], midOffset[1], midOffset[2], 0,
                     blockInstance.getDBlock().getBreakParticle().createBlockData());
 
-            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer, new ClientboundBlockUpdatePacket(blockInstance.getBlockPos(), Blocks.DEAD_BUBBLE_CORAL_BLOCK.defaultBlockState()));
+            dPlayer.broadcastPacket(new ClientboundBlockUpdatePacket(blockInstance.getBlockPos(), Blocks.DEAD_BUBBLE_CORAL_BLOCK.defaultBlockState()));
             blockInstance.getDBlockData().setLocked(false);
-            blockInstance.getDBlockData().mined(this.dPlayer, msCooldown);
+            blockInstance.getDBlockData().mined(dPlayer.getCraftPlayer(), msCooldown);
 
             Bukkit.getScheduler().runTaskLater(dPlayer.getPlugin(), () -> {
-                serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
-                        new ClientboundBlockUpdatePacket(blockInstance.getBlockPos(), blockState));
+                dPlayer.broadcastPacket(new ClientboundBlockUpdatePacket(blockInstance.getBlockPos(), blockState));
                 blockInstance.getLocation().getWorld().playSound(blockInstance.getLocation(), Sound.ENTITY_CHICKEN_EGG, 0.25f, (float) RandomUtil.between(0.75, 1.50));
                 blockInstance.getLocation().getWorld().spawnParticle(Particle.BLOCK,
                         blockInstance.getLocation().toCenterLocation(),
@@ -94,8 +90,8 @@ public class BlockMiner {
             }, msCooldown / 50);
         });
 
-        Bukkit.getScheduler().runTaskAsynchronously(this.dPlayer.getPlugin(), () -> {
-            List<DItemStack> dItemStacks = this.dPlayer.rollItemDrops(blockInstance.getDBlock().getItemDrops());
+        Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
+            List<DItemStack> dItemStacks = dPlayer.rollItemDrops(blockInstance.getDBlock().getItemDrops());
             Vec3 faceVec = blockInstance.getDirection().getUnitVec3();
 
             Vec3 itemMidFace = DBlockUtil.getFaceCenterItem(blockInstance.getDirection());
@@ -103,7 +99,7 @@ public class BlockMiner {
             BlockPos blockPos = blockInstance.getBlockPos();
             for(DItemStack dItemStack : dItemStacks) {
                 ItemEntity itemEntity = new ItemEntity(
-                        this.serverLevel,
+                        dPlayer.getServerLevel(),
                         blockPos.getX() + 0.5 + itemMidFace.x,
                         blockPos.getY() + 0.5 + itemMidFace.y,
                         blockPos.getZ() + 0.5 + itemMidFace.z,
@@ -111,9 +107,11 @@ public class BlockMiner {
                         faceVec.offsetRandom(RANDOM, 1.2f).x * 0.3,
                         faceVec.y * 0.3,
                         faceVec.offsetRandom(RANDOM, 1.2f).z * 0.3);
+
+                CraftItem craftItem = new CraftItem(dPlayer.getCraftServer(), itemEntity);
                 Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
-                    this.itemPopVisual(itemEntity);
-                    this.magnetVisual(itemEntity, dItemStack);
+                    this.itemPopVisual(craftItem);
+                    this.magnetVisual(craftItem, dItemStack);
                 });
                 try {
                     Thread.sleep(ITEM_ALTERNATE_DELAY * 50);
@@ -124,51 +122,45 @@ public class BlockMiner {
         });
     }
 
-    private void magnetVisual(final ItemEntity itemEntity, final DItemStack dItemStack) {
+    private void magnetVisual(CraftItem itemEntity, DItemStack dItemStack) {
         Bukkit.getScheduler().runTaskLater(Destructible.getInstance(), () -> {
-            this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
-                    new ClientboundTakeItemEntityPacket(
-                            itemEntity.getId(),
-                            this.serverPlayer.getId(),
-                            dItemStack.getAmount()
-                    ));
-            this.dPlayer.give(dItemStack);
+            dPlayer.broadcastPacket(new ClientboundTakeItemEntityPacket(
+                    itemEntity.getEntityId(),
+                    dPlayer.getCraftPlayer().getEntityId(),
+                    dItemStack.getAmount()
+            ));
+            dPlayer.give(dItemStack);
         }, ITEM_MAGNET_DELAY);
 
-        Bukkit.getScheduler().runTaskLater(this.dPlayer.getPlugin(), () -> {
-            if(itemEntity.isAlive()) {
-                this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
-                        new ClientboundRemoveEntitiesPacket(itemEntity.getId()));
+        Bukkit.getScheduler().runTaskLater(dPlayer.getPlugin(), () -> {
+            if(!itemEntity.isDead()) {
+                dPlayer.broadcastPacket(new ClientboundRemoveEntitiesPacket(itemEntity.getEntityId()));
             }
         }, ITEM_MAGNET_DELAY + ITEM_DELETE_DELAY);
     }
 
-    private void itemPopVisual(final ItemEntity itemEntity) {
-        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
-                new ClientboundAddEntityPacket(
-                        itemEntity.getId(),
-                        itemEntity.getUUID(),
-                        itemEntity.getX(),
-                        itemEntity.getY(),
-                        itemEntity.getZ(),
-                        0,
-                        0,
-                        itemEntity.getType(),
-                        0,
-                        itemEntity.getDeltaMovement(),
-                        0
-                ));
+    private void itemPopVisual(final CraftItem itemEntity) {
+        dPlayer.broadcastPacket(new ClientboundAddEntityPacket(
+                itemEntity.getEntityId(),
+                itemEntity.getUniqueId(),
+                itemEntity.getX(),
+                itemEntity.getY(),
+                itemEntity.getZ(),
+                0,
+                0,
+                itemEntity.getHandle().getType(),
+                0,
+                itemEntity.getHandle().getDeltaMovement(),
+                0
+        ));
 
-        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
-                new ClientboundSetEntityDataPacket(
-                        itemEntity.getId(),
-                        itemEntity.getEntityData().packAll()
-                ));
+        dPlayer.broadcastPacket(new ClientboundSetEntityDataPacket(
+                itemEntity.getEntityId(),
+                itemEntity.getHandle().getEntityData().packAll()
+        ));
 
-        this.serverLevel.getChunkSource().broadcastAndSend(this.serverPlayer,
-                new ClientboundSetEntityMotionPacket(
-                        itemEntity.getId(),
-                        itemEntity.getDeltaMovement()));
-
+        dPlayer.broadcastPacket(new ClientboundSetEntityMotionPacket(
+                itemEntity.getEntityId(),
+                itemEntity.getHandle().getDeltaMovement()));
     }
 }

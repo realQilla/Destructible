@@ -2,27 +2,20 @@ package net.qilla.destructible.mining;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
-import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
-import net.qilla.destructible.player.BlockHighlight;
 import net.qilla.destructible.player.DBlockEdit;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.DBlockUtil;
-import net.qilla.destructible.util.EntityUtil;
 import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,11 +52,11 @@ public class PluginListener implements Listener {
 
         if(dBlockEdit.getDblock() == null) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 
             if(!dBlockEdit.isRecursive()) {
                 dBlockEdit.loadBlock(blockPos, dBlockEdit.getDblock().getId());
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                Bukkit.getScheduler().runTask(plugin, () -> {
                     Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer2 -> {
                         dPlayer2.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlockEdit.getDblock().getId());
                     });
@@ -75,7 +68,7 @@ public class PluginListener implements Listener {
                 int originalSize = recursiveBlocks.size();
                 AtomicInteger currentSize = new AtomicInteger(recursiveBlocks.size());
 
-                BukkitTask task = Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
+                BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
                     player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Recursive operation <gold>" + FormatUtil.numberPercentage(originalSize, currentSize.get()) + "</gold> completed"));
                     player.playSound(player, Sound.BLOCK_NOTE_BLOCK_PLING, 0.10f, 2f);
                 }, 0, 40);
@@ -92,7 +85,7 @@ public class PluginListener implements Listener {
                     }
                     currentSize.decrementAndGet();
                 }
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                Bukkit.getScheduler().runTask(plugin, () -> {
                     player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <red><bold>RECURSIVE</red> operation completed, <gold>" + FormatUtil.numberChar(recursiveBlocks.size(), false) + "</gold> block(s) cached as <gold>" + dBlockEdit.getDblock().getId() + "</gold>!"));
                     player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Recursive operation <gold>" + FormatUtil.numberPercentage(originalSize, currentSize.get()) + "</gold> completed"));
                     player.playSound(player, Sound.ENTITY_PLAYER_BURP, 1.0f, 0.0f);
@@ -169,23 +162,32 @@ public class PluginListener implements Listener {
     }
 
     @EventHandler
-    private void onPlayerLeave(PlayerQuitEvent event) {
+    private void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
         removePlayer(player);
     }
 
-    public void initPlayer(final Player player) {
-        CraftPlayer serverPlayer = ((CraftPlayer) player);
-        DPlayer dPlayer = new DPlayer((CraftServer) serverPlayer.getServer(), serverPlayer.getHandle());
-        Registries.DESTRUCTIBLE_PLAYERS.put(player.getUniqueId(), dPlayer);
-        this.plugin.getPlayerPacketListener().addListener(player, dPlayer);
+    public void initPlayer(Player player) {
+        CraftPlayer craftPlayer = ((CraftPlayer) player);
+
+        var registry = Registries.DESTRUCTIBLE_PLAYERS;
+        if(registry.containsKey(player.getUniqueId())) {
+            registry.put(player.getUniqueId(), DPlayer.copyOf(craftPlayer, registry.get(player.getUniqueId())));
+        } else {
+            registry.put(player.getUniqueId(), new DPlayer(craftPlayer));
+        }
+
+        if(!Registries.DESTRUCTIBLE_PLAYERS.containsKey(player.getUniqueId())) {
+            plugin.getPlayerPacketListener().addListener(Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()));
+        }
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
     }
 
-    public void removePlayer(final Player player) {
-        Registries.DESTRUCTIBLE_PLAYERS.remove(player.getUniqueId());
-        this.plugin.getPlayerPacketListener().removeListener(player);
+    public void removePlayer(Player player) {
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+        if(dPlayer == null) return;
+        plugin.getPlayerPacketListener().removeListener(dPlayer);
     }
 }

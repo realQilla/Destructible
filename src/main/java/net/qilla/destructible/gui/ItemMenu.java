@@ -8,9 +8,11 @@ import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.PlaySound;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -96,7 +98,7 @@ public class ItemMenu extends DestructibleMenu {
                             dPlayer.getCooldown().set(CooldownType.GET_ITEM);
                             dPlayer.give(DItemStack.of(item.getId()));
                             dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(item.getDisplayName()).append(MiniMessage.miniMessage().deserialize("<green>!")));
-                            dPlayer.playSound(dPlayer, Sound.ITEM_BUNDLE_REMOVE_ONE, 1, RandomUtil.between(0.5f, 1.5f));
+                            dPlayer.playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS,1, RandomUtil.between(0.5f, 1.5f), PlaySound.PLAYER);
                         })
                 ).build();
                 setSlot(slot);

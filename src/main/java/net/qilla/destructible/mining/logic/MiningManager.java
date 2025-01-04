@@ -29,27 +29,27 @@ public class MiningManager {
 
     public void init(@NotNull BlockPos blockPos, @NotNull Direction direction) {
 
-        if(dPlayer.getGameMode() == GameMode.CREATIVE || this.blockInstance == null || blockPos.hashCode() != this.blockInstance.getBlockPos().hashCode()) {
-            this.blockInstance = new BlockInstance(dPlayer.getWorld(), blockPos, new ChunkPos(blockPos), CoordUtil.posToChunkLocalPos(blockPos), direction);
-            this.blockInstance.setDBlock(DBlockUtil.getDBlock(this.blockInstance.getChunkPos(), this.blockInstance.getChunkInt()));
+        if(dPlayer.getCraftPlayer().getGameMode() == GameMode.CREATIVE || blockInstance == null || blockPos.hashCode() != blockInstance.getBlockPos().hashCode()) {
+            blockInstance = new BlockInstance(dPlayer.getCraftPlayer().getWorld(), blockPos, new ChunkPos(blockPos), CoordUtil.posToChunkLocalPos(blockPos), direction);
+            blockInstance.setDBlock(DBlockUtil.getDBlock(blockInstance.getChunkPos(), blockInstance.getChunkInt()));
         }
     }
 
     public void tickBlock(@NotNull InteractionHand interactionHand) {
-        if(this.blockInstance == null || this.blockInstance.getDBlock().getBlockDurability() < 0 || !interactionHand.equals(InteractionHand.MAIN_HAND))
-            return;
+        if(blockInstance == null || blockInstance.getDBlock().getBlockDurability() < 0 ||
+                !interactionHand.equals(InteractionHand.MAIN_HAND)) return;
 
-        DItem dItem = DItemStack.getDItem(this.dPlayer.getEquipment().getItemInMainHand());
+        DItem dItem = DItemStack.getDItem(dPlayer.getCraftPlayer().getEquipment().getItemInMainHand());
         if(!(dItem instanceof DTool dTool)) return;
 
-        if(!this.toolManager.canMine(dTool, this.blockInstance)) return;
+        if(!toolManager.canMine(dTool, blockInstance)) return;
         if(toolManager.isToolBroken()) return;
-        this.blockMiner.tickBlock(this.blockInstance, dTool, toolManager);
+        blockMiner.tickBlock(blockInstance, dTool, toolManager);
     }
 
     public void stop() {
-        if(this.blockInstance == null) return;
-        this.blockMiner.endProgress(this.blockInstance);
-        this.blockInstance = null;
+        if(blockInstance == null) return;
+        blockMiner.endProgress(blockInstance);
+        blockInstance = null;
     }
 }

@@ -157,7 +157,7 @@ public class DestructibleCommand {
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
         if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Please wait a bit before accessing this menu."));
+            dPlayer.sendMessage("<red>Please wait a bit before accessing this menu.");
             return 0;
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
@@ -172,7 +172,7 @@ public class DestructibleCommand {
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
         if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>Please wait a bit before accessing this menu."));
+            dPlayer.sendMessage("<red>Please wait a bit before accessing this menu.");
             return 0;
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
@@ -192,7 +192,7 @@ public class DestructibleCommand {
                 dPlayer.removeDBlockEdit();
                 Registries.DESTRUCTIBLE_BLOCK_EDITORS.remove(dPlayer);
             });
-            dPlayer.getHandle().connection.send(new ClientboundRemoveMobEffectPacket(dPlayer.getHandle().getId(), MobEffects.NIGHT_VISION));
+            dPlayer.sendPacket(new ClientboundRemoveMobEffectPacket(dPlayer.getCraftPlayer().getEntityId(), MobEffects.NIGHT_VISION));
             player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You are no longer in Destructible modification mode!"));
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<red>You are not currently in Destructible modification mode!"));
@@ -226,7 +226,7 @@ public class DestructibleCommand {
         dPlayer.getDBlockEdit().getBlockHighlight().addVisibleBlock(dBlock.getId());
         Registries.DESTRUCTIBLE_BLOCK_EDITORS.add(dPlayer);
 
-        dPlayer.getHandle().connection.send(new ClientboundUpdateMobEffectPacket(dPlayer.getHandle().getId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
+        dPlayer.sendPacket(new ClientboundUpdateMobEffectPacket(dPlayer.getCraftPlayer().getEntityId(), new MobEffectInstance(MobEffects.NIGHT_VISION, -1), false));
         String message = recursive
                 ? "<yellow>You have enabled Destructible <red><bold>RECURSIVE</red> build mode, <gold>" + size + "</gold> adjacent blocks will be recursively set to <gold>" + dBlock.getId() + "</gold>."
                 : "<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getId() + "</gold>.";

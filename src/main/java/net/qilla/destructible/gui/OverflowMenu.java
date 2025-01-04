@@ -5,13 +5,13 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.PlaySound;
+import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -76,19 +76,19 @@ public class OverflowMenu extends DestructibleMenu {
 
     private void giveOverflow(DItemStack item) {
         if(super.getDPlayer().getSpace(item.getItemStack()) <= 0) {
-            super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<red>You don't have enough space in your inventory."));
-            super.getDPlayer().playSound(super.getDPlayer().getLocation(), Sound.ENTITY_VILLAGER_NO, 0.5f, 1f);
+            super.getDPlayer().sendMessage("<red>You don't have enough space in your inventory.");
+            super.getDPlayer().playSound(Sound.ENTITY_VILLAGER_NO, SoundCategory.PLAYERS, 0.5f, RandomUtil.between(0.5f, 1.5f), PlaySound.PLAYER);
             return;
         }
         super.getDPlayer().getOverflow().take(item.getDItem());
-        super.getDPlayer().playSound(super.getDPlayer().getLocation(), Sound.ENTITY_HORSE_SADDLE, 0.5f, 2f);
+        super.getDPlayer().playSound(Sound.ENTITY_HORSE_SADDLE, SoundCategory.PLAYERS, 0.5f, RandomUtil.between(0.5f, 1.0f), PlaySound.PLAYER);
         unsetSlots(overflowedSlots);
         initOverflowItems();
     }
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        super.getDPlayer().playSound(super.getDPlayer().getLocation(), Sound.ITEM_BUNDLE_INSERT, 0.5f, 1f);
+        super.getDPlayer().playSound(Sound.ITEM_BUNDLE_INSERT, SoundCategory.PLAYERS, 0.5f, RandomUtil.between(0.5f, 1.0f), PlaySound.PLAYER);
     }
 
     @Override
