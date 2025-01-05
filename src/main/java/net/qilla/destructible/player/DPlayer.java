@@ -7,9 +7,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.gui.SoundSettings;
 import net.qilla.destructible.mining.item.DDrop;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.logic.MiningManager;
+import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.craftbukkit.CraftServer;
@@ -23,7 +25,7 @@ public class DPlayer {
 
     private static final Random RANDOM = new Random();
     private static final Destructible PLUGIN = Destructible.getInstance();
-    private final CraftPlayer craftPlayer;
+    private CraftPlayer craftPlayer;
     private Overflow overflow;
     private MiningManager minerData;
     private DBlockEdit dBlockEdit;
@@ -34,19 +36,6 @@ public class DPlayer {
         this.craftPlayer = craftPlayer;
     }
 
-    private DPlayer(CraftPlayer craftPlayer, DPlayer dPlayer) {
-        this.craftPlayer = craftPlayer;
-        this.overflow = dPlayer.overflow;
-        this.minerData = dPlayer.minerData;
-        this.dBlockEdit = dPlayer.dBlockEdit;
-        this.cooldown = dPlayer.cooldown;
-        this.menuData = dPlayer.menuData;
-    }
-
-    public static DPlayer copyOf(CraftPlayer craftPlayer, DPlayer dPlayer) {
-        return new DPlayer(craftPlayer, dPlayer);
-    }
-
     public void sendMessage(String message) {
         craftPlayer.sendMessage(MiniMessage.miniMessage().deserialize(message));
     }
@@ -55,13 +44,18 @@ public class DPlayer {
         craftPlayer.sendMessage(component);
     }
 
-    public void playSound(Sound sound, SoundCategory category, float volume, float pitch, PlaySound playSound) {
-        switch(playSound) {
-            case PlaySound.BROADCAST_CUR_LOC ->
+    public void playSound(Sound sound, SoundCategory category, float volume, float pitch, PlayType playType) {
+        switch(playType) {
+            case PlayType.BROADCAST_CUR_LOC ->
                     getCraftPlayer().getWorld().playSound(getCraftPlayer().getLocation(), sound, category, volume, pitch);
-            case PlaySound.PLAYER_CUR_LOC -> craftPlayer.playSound(craftPlayer.getLocation(), sound, volume, pitch);
-            case PlaySound.PLAYER -> craftPlayer.playSound(craftPlayer, sound, volume, pitch);
+            case PlayType.PLAYER_CUR_LOC -> craftPlayer.playSound(craftPlayer.getLocation(), sound, volume, pitch);
+            case PlayType.PLAYER -> craftPlayer.playSound(craftPlayer, sound, volume, pitch);
         }
+    }
+
+    public void playSound(SoundSettings soundSettings, boolean randomPitch) {
+        if(soundSettings == null) return;
+        this.playSound(soundSettings.getSound(), soundSettings.getCategory(), soundSettings.getVolume(), randomPitch ? RandomUtil.between(0.5f, 2f) : soundSettings.getPitch(), soundSettings.getPlayType());
     }
 
     public void sendPacket(Packet<?> packet) {
@@ -84,11 +78,11 @@ public class DPlayer {
         return preExisting + empty;
     }
 
-    public void give(@NotNull DItemStack dItemStack) {
+    public void give(DItemStack dItemStack) {
         ItemStack itemStack = dItemStack.getItemStack();
         int space = getSpace(itemStack);
         if(space >= dItemStack.getAmount()) {
-            this.craftPlayer.getInventory().addItem(itemStack);
+            craftPlayer.getInventory().addItem(itemStack);
             return;
         }
 
@@ -117,6 +111,10 @@ public class DPlayer {
                     return DItemStack.of(drop.getDItem(), amount);
                 })
                 .toList();
+    }
+
+    public void resetCraftPlayer(CraftPlayer craftPlayer) {
+        this.craftPlayer = craftPlayer;
     }
 
     public CraftPlayer getCraftPlayer() {

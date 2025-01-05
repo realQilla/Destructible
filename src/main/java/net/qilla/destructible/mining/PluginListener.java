@@ -173,14 +173,11 @@ public class PluginListener implements Listener {
 
         var registry = Registries.DESTRUCTIBLE_PLAYERS;
         if(registry.containsKey(player.getUniqueId())) {
-            registry.put(player.getUniqueId(), DPlayer.copyOf(craftPlayer, registry.get(player.getUniqueId())));
+            registry.get(player.getUniqueId()).resetCraftPlayer(craftPlayer);
         } else {
             registry.put(player.getUniqueId(), new DPlayer(craftPlayer));
         }
-
-        if(!Registries.DESTRUCTIBLE_PLAYERS.containsKey(player.getUniqueId())) {
-            plugin.getPlayerPacketListener().addListener(Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()));
-        }
+        plugin.getPlayerPacketListener().addListener(Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()));
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
     }

@@ -3,7 +3,10 @@ package net.qilla.destructible.gui;
 import net.kyori.adventure.text.Component;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.PlayType;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -29,6 +32,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         int slotIndex = event.getSlot();
         Slot slot = this.slotHolder.getSlot(slotIndex);
         if(slot != null) {
+            dPlayer.playSound(slot.getSoundSettings(), true);
             slot.onClick();
         }
     }
@@ -37,6 +41,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) return;
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
+        dPlayer.playSound(SoundSettings.of(Sound.BLOCK_NOTE_BLOCK_BELL, 0.33f, 1.25f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
         DestructibleMenu lastMenu = dPlayer.getMenuData().getLastMenu();
         if(lastMenu != null) lastMenu.reopenInventory();
         else this.close();
@@ -47,7 +52,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         dPlayer.getCraftPlayer().openInventory(this.inventory);
     }
 
-    private void reopenInventory() {
+    public void reopenInventory() {
         dPlayer.getCraftPlayer().openInventory(this.inventory);
     }
 
@@ -63,6 +68,10 @@ public abstract class DestructibleMenu implements InventoryHolder {
         if(!event.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) {
             dPlayer.getMenuData().clearHistory();
         }
+    }
+
+    public SlotHolder getSlotHolder() {
+        return this.slotHolder;
     }
 
     public void setSlot(Slot slot) {
@@ -83,7 +92,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         slots.forEach(this::unsetSlot);
     }
 
-    public void unsetAllSlots() {
+    public void clearSlots() {
         this.slotHolder.clearSlots();
         this.inventory.clear();
     }

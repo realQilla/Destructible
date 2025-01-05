@@ -16,6 +16,7 @@ public final class Slot {
     private final int index;
     private final Consumer<Slot> clickAction;
     private final ItemStack itemStack;
+    private final SoundSettings soundSettings;
 
     public Slot(Builder builder) {
         this.index = builder.index;
@@ -25,7 +26,9 @@ public final class Slot {
             meta.getPersistentDataContainer().set(DataKey.GUI_ITEM, PersistentDataType.BOOLEAN, true);
         });
         this.itemStack.getDataTypes().forEach(dataType -> this.itemStack.unsetData(dataType));
-        this.itemStack.setData(DataComponentTypes.ITEM_MODEL, builder.material.getKey());
+        if(builder.material != null) {
+            this.itemStack.setData(DataComponentTypes.ITEM_MODEL, builder.material.getKey());
+        }
         this.itemStack.setData(DataComponentTypes.MAX_STACK_SIZE, builder.amount);
         this.itemStack.setAmount(builder.amount);
         if(builder.hideTooltip) {
@@ -34,6 +37,7 @@ public final class Slot {
             this.itemStack.setData(DataComponentTypes.ITEM_NAME, builder.displayName);
             this.itemStack.setData(DataComponentTypes.LORE, builder.lore);
         }
+        this.soundSettings = builder.soundSettings;
     }
 
     public int getIndex() {
@@ -49,6 +53,10 @@ public final class Slot {
         return this.itemStack;
     }
 
+    public SoundSettings getSoundSettings() {
+        return this.soundSettings;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -59,7 +67,7 @@ public final class Slot {
         return builder;
     }
 
-    static final class Builder {
+    public static final class Builder {
         private int index;
         private Consumer<Slot> clickAction;
         private Material material;
@@ -67,6 +75,7 @@ public final class Slot {
         private Component displayName;
         private boolean hideTooltip;
         private ItemLore lore;
+        private SoundSettings soundSettings;
 
         private Builder() {
             this.index = 0;
@@ -75,16 +84,22 @@ public final class Slot {
             this.amount = 1;
             this.displayName = MiniMessage.miniMessage().deserialize("Empty Slot");
             this.lore = ItemLore.lore().build();
+            this.soundSettings = null;
         }
 
         public Builder index(int index) {
-            Preconditions.checkArgument(index > 0 && index < 54, "Slot must be between 0 and 53");
+            Preconditions.checkArgument(index >= 0 && index < 54, "Slot must be between 0 and 53");
             this.index = index;
             return this;
         }
 
         public Builder clickAction(Consumer<Slot> clickAction) {
             this.clickAction = clickAction;
+            return this;
+        }
+
+        public Builder noMaterial() {
+            this.material = null;
             return this;
         }
 
@@ -105,8 +120,8 @@ public final class Slot {
             return this;
         }
 
-        public Builder showTooltip(boolean showTooltip) {
-            this.hideTooltip = showTooltip;
+        public Builder hideTooltip(boolean hide) {
+            this.hideTooltip = hide;
             return this;
         }
 
@@ -116,9 +131,14 @@ public final class Slot {
             return this;
         }
 
+        public Builder soundSettings(SoundSettings soundSettings) {
+            Preconditions.checkArgument(soundSettings != null, "Sound settings cannot be null");
+            this.soundSettings = soundSettings;
+            return this;
+        }
+
         public Slot build() {
             return new Slot(this);
         }
     }
-
 }

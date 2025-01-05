@@ -29,9 +29,14 @@ public class MenuListener implements Listener {
 
     @EventHandler
     private void onInventoryClick(InventoryClickEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
-        if(holder instanceof DestructibleMenu menu) {
+        if(event.getInventory().getHolder() instanceof DestructibleMenu) {
             event.setCancelled(true);
+        }
+
+        if(event.getClickedInventory() == null) return;
+        InventoryHolder holder = event.getClickedInventory().getHolder();
+
+        if(holder instanceof DestructibleMenu menu) {
             menu.handleClick(event);
         }
     }

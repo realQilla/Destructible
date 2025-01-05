@@ -1,5 +1,6 @@
 package net.qilla.destructible.player;
 
+import com.google.common.base.Preconditions;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 
@@ -30,33 +31,35 @@ public class Overflow {
     }
 
     public void put(DItemStack dItemStack) {
-        if(this.overflowItems.containsKey(dItemStack.getDItem())) {
-            this.overflowItems.computeIfPresent(dItemStack.getDItem(), (k, v) -> {
-                v.setAmount(v.getAmount() + dItemStack.getAmount());
-                return v;
-            });
-        } else {
-            this.overflowItems.put(dItemStack.getDItem(), dItemStack);
-        }
-        this.overflowItems.get(dItemStack.getDItem());
+        Preconditions.checkNotNull(dItemStack, "DItemStack cannot be null");
+
+        this.overflowItems.merge(dItemStack.getDItem(), dItemStack, (existingItem, newItem) -> {
+            existingItem.setAmount(existingItem.getAmount() + newItem.getAmount());
+            return existingItem;
+        });
+
+        DItemStack existingItem = this.overflowItems.remove(dItemStack.getDItem());
+        this.overflowItems.put(dItemStack.getDItem(), existingItem);
     }
 
     public DItemStack take(DItem dItem) {
         DItemStack dItemStack = this.overflowItems.get(dItem);
-        if(dItemStack == null) return null;
+        if(dItemStack == null) {
+            return null;
+        }
 
         int space = dPlayer.getSpace(dItemStack.getItemStack());
-        if(space == 0) return null;
+        if(space == 0) {
+            return null;
+        }
 
         if(space >= dItemStack.getAmount()) {
             this.overflowItems.remove(dItem);
-            dPlayer.give(dItemStack);
             return dItemStack;
         } else {
             dItemStack.setAmount(dItemStack.getAmount() - space);
             DItemStack splitItem = dItemStack.clone();
             splitItem.setAmount(space);
-            dPlayer.give(splitItem);
             return splitItem;
         }
     }
@@ -81,12 +84,11 @@ public class Overflow {
                 break;
             }
         }
-        itemList.forEach(dPlayer::give);
-        return new LinkedList<>(itemList);
+        return itemList;
     }
 
-    public LinkedList<DItemStack> getItems() {
-        return new LinkedList<>(this.overflowItems.values());
+    public Map<DItem, DItemStack> getItems() {
+        return Collections.unmodifiableMap(this.overflowItems);
     }
 
     public void clear() {

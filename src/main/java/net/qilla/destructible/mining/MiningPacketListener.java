@@ -7,6 +7,7 @@ import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -20,6 +21,8 @@ import net.qilla.destructible.util.CoordUtil;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 public final class MiningPacketListener {
 
@@ -39,8 +42,7 @@ public final class MiningPacketListener {
                     }
                 } else if(packet instanceof ServerboundSwingPacket swingPacket) {
                     miningManager.tickBlock(swingPacket.getHand());
-                }
-                if(packet instanceof ServerboundUseItemOnPacket usePacket) {
+                } else if(packet instanceof ServerboundUseItemOnPacket usePacket) {
                     BlockPos blockPos = usePacket.getHitResult().getBlockPos();
                     ChunkPos chunkPos = new ChunkPos(blockPos);
                     int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
@@ -49,6 +51,8 @@ public final class MiningPacketListener {
                             new BlockMemory()).isOnCooldown()) {
                         return;
                     }
+                } else if(packet instanceof ServerboundSignUpdatePacket signPacket) {
+                    dPlayer.getMenuData().setSignText(signPacket.getLines()[0]);
                 }
                 super.channelRead(context, object);
             }

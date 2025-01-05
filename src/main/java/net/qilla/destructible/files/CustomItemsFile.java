@@ -52,6 +52,7 @@ public class CustomItemsFile extends DestructibleFile {
 
     @Override
     public void load() {
+        Registries.DESTRUCTIBLE_ITEMS.clear();
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
             List<DItem> dBlockList = this.gson.fromJson(bufferedReader, type);
             for(DItem dItem : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);

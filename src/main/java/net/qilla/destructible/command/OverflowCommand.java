@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.gui.DestructibleMenu;
 import net.qilla.destructible.gui.OverflowMenu;
+import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
@@ -35,8 +36,8 @@ public class OverflowCommand {
         this.commands.register(Commands.literal(COMMAND)
                 .requires(source -> source.getSender() instanceof Player)
                 .executes(this::openGUI)
-                .then(Commands.literal(COLLECT)
-                        .executes(this::collect))
+                //.then(Commands.literal(COLLECT)
+                //.executes(this::collect))
                 .then(Commands.literal(CLEAR)
                         .executes(this::clear)).build(), ALIAS);
     }
@@ -88,8 +89,16 @@ public class OverflowCommand {
             return 0;
         }
 
+        List<DItemStack> itemList = overflow.take();
+
+        if(itemList.isEmpty()) {
+            dPlayer.sendMessage("<red>There was a problem claiming your items!");
+            return 0;
+        }
+
+        itemList.forEach(dPlayer::give);
         dPlayer.sendMessage("<yellow>You have successfully claimed: ");
-        overflow.take().forEach(item -> dPlayer.getCraftPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+" + item.getAmount() + " ")
+        itemList.forEach(item -> dPlayer.getCraftPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+" + item.getAmount() + " ")
                 .append(item.getDItem().getDisplayName())));
         dPlayer.getCraftPlayer().playSound(dPlayer.getCraftPlayer().getLocation(), Sound.ENTITY_HORSE_SADDLE, 1.0f, 1.0f);
         return Command.SINGLE_SUCCESS;

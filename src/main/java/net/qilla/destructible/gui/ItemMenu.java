@@ -4,37 +4,39 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
-import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.player.PlaySound;
+import net.qilla.destructible.player.PlayType;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ItemMenu extends DestructibleMenu {
     private static final GUISize SIZE = GUISize.SIX;
     private static final Component TITLE = MiniMessage.miniMessage().deserialize("Items");
 
-    private final List<Integer> blockSlots = List.of(
+    private final List<Integer> itemSlots = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
             18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35
+            27, 28, 29, 30, 31, 32, 33, 34, 35,
+            36, 37, 38, 39, 40, 41, 42, 43, 44
     );
+
+    private final List<DItem> itemList;
+    private int shiftIndex = 0;
 
     private final Slot menuItem = Slot.builder(slot -> slot
             .index(4)
-            .material(Material.GRASS_BLOCK)
+            .material(Material.LAPIS_LAZULI)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Item Modification"))
             .lore(ItemLore.lore(List.of(
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Select any item to view more"),
@@ -42,18 +44,23 @@ public class ItemMenu extends DestructibleMenu {
             ))
     ).build();
 
-    private final Slot backItem = Slot.builder(slot -> slot
-            .index(53)
-            .material(Material.BARRIER)
-            .displayName(MiniMessage.miniMessage().deserialize("<red>Return"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Click to return to your"),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>previously opened menu"))))
+    private final Slot returnItem = Slots.BACK_ITEM
+            .index(49)
             .clickAction(action -> super.returnToPreviousMenu())
-    ).build();
+            .build();
+
+    private final Slot shiftUpItem = Slots.UP_ITEM
+            .index(7)
+            .clickAction(action -> this.shift(-9))
+            .build();
+
+    private final Slot shiftDownItem = Slots.DOWN_ITEM
+            .index(52)
+            .clickAction(action -> this.shift(9))
+            .build();
 
     private final Slot toolMenuItem = Slot.builder(slot -> slot
-            .index(49)
+            .index(47)
             .material(Material.GOLDEN_PICKAXE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Tools"))
             .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to view destructible tools"))))
@@ -62,17 +69,35 @@ public class ItemMenu extends DestructibleMenu {
             })
     ).build();
 
+    private final Slot weaponMenuItem = Slot.builder(slot -> slot
+            .index(46)
+            .material(Material.GOLDEN_SWORD)
+            .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Weapons"))
+            .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to view destructible weapons"))))
+            .clickAction(action -> {
+            })
+    ).build();
+
     public ItemMenu(DPlayer dPlayer) {
         super(dPlayer, SIZE, TITLE);
+        this.itemList = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> item.getClass().equals(DItem.class)).toList();
         this.setSlot(this.menuItem);
-        this.setSlot(this.backItem);
+        this.setSlot(this.returnItem);
         this.setSlot(this.toolMenuItem);
+        this.setSlot(this.weaponMenuItem);
         initItems();
     }
 
     private void initItems() {
-        Iterator<Integer> iterator = blockSlots.iterator();
-        Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> !(item instanceof DTool)).forEach(item -> {
+        if(shiftIndex > 0) this.setSlot(this.shiftUpItem);
+        else this.unsetSlot(this.shiftUpItem.getIndex());
+        if(shiftIndex + itemSlots.size() < this.itemList.size()) this.setSlot(this.shiftDownItem);
+        else this.unsetSlot(this.shiftDownItem.getIndex());
+
+        List<DItem> shiftedList = new LinkedList<>(itemList).subList(shiftIndex, itemList.size());
+
+        Iterator<Integer> iterator = itemSlots.iterator();
+        shiftedList.iterator().forEachRemaining(item -> {
             if(iterator.hasNext()) {
                 Slot slot = Slot.builder(builder -> builder
                         .index(iterator.next())
@@ -98,12 +123,20 @@ public class ItemMenu extends DestructibleMenu {
                             dPlayer.getCooldown().set(CooldownType.GET_ITEM);
                             dPlayer.give(DItemStack.of(item.getId()));
                             dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(item.getDisplayName()).append(MiniMessage.miniMessage().deserialize("<green>!")));
-                            dPlayer.playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS,1, RandomUtil.between(0.5f, 1.5f), PlaySound.PLAYER);
+                            dPlayer.playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS,1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
                         })
                 ).build();
                 setSlot(slot);
             }
+            super.getSlotHolder().getRemainingSlots(itemSlots).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
+            super.getSlotHolder().getRemainingSlots().forEach(slotNum -> super.setSlot(Slots.FILLER_ITEM.index(slotNum).build()));
         });
+    }
+
+    private void shift(int amount) {
+        shiftIndex += amount;
+        super.unsetSlots(itemSlots);
+        this.initItems();
     }
 
     @Override
