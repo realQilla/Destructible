@@ -1,4 +1,4 @@
-package net.qilla.destructible.gui;
+package net.qilla.destructible.menus;
 
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.minimessage.MiniMessage;

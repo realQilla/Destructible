@@ -7,7 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
 import net.qilla.destructible.files.*;
-import net.qilla.destructible.gui.MenuListener;
+import net.qilla.destructible.menus.MenuListener;
 import net.qilla.destructible.mining.MiningPacketListener;
 import net.qilla.destructible.mining.PluginListener;
 import org.bukkit.Bukkit;

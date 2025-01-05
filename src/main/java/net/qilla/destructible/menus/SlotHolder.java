@@ -1,4 +1,4 @@
-package net.qilla.destructible.gui;
+package net.qilla.destructible.menus;
 
 import com.google.common.base.Preconditions;
 

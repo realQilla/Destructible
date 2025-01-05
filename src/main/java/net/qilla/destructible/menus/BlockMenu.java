@@ -1,4 +1,4 @@
-package net.qilla.destructible.gui;
+package net.qilla.destructible.menus;
 
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
@@ -15,7 +15,6 @@ import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

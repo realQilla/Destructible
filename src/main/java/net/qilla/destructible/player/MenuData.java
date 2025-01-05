@@ -1,6 +1,6 @@
 package net.qilla.destructible.player;
 
-import net.qilla.destructible.gui.DestructibleMenu;
+import net.qilla.destructible.menus.DestructibleMenu;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

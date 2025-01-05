@@ -1,24 +1,16 @@
-package net.qilla.destructible.gui;
+package net.qilla.destructible.menus;
 
-import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
@@ -29,8 +21,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.block.data.type.WallHangingSign;
-import org.bukkit.craftbukkit.block.CraftBlockState;
 import org.bukkit.craftbukkit.block.CraftSign;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -92,12 +82,14 @@ public class OverflowMenu extends DestructibleMenu {
 
                 Bukkit.getScheduler().runTaskAsynchronously(getDPlayer().getPlugin(), () -> {
                     getDPlayer().getMenuData().clearSignText();
+                    boolean gaveInput = false;
                     final long endTime = System.currentTimeMillis() + 15000;
-                    while (System.currentTimeMillis() < endTime) {
-                        if (getDPlayer().getMenuData().getSignText() != null) {
+                    while(System.currentTimeMillis() < endTime) {
+                        if(getDPlayer().getMenuData().getSignText() != null) {
+                            gaveInput = true;
                             String signText = getDPlayer().getMenuData().getSignText();
                             Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
-                                if (signText.equals("CONFIRM")) {
+                                if(signText.equals("CONFIRM")) {
                                     getDPlayer().getOverflow().clear();
                                     getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_PLAYER_BURP, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
                                     getDPlayer().sendMessage("<green>You have successfully cleared your overflow stash!");
@@ -113,15 +105,17 @@ public class OverflowMenu extends DestructibleMenu {
                         }
                         try {
                             Thread.sleep(100);
-                        } catch (InterruptedException e) {
+                        } catch(InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
                     }
-                    Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
-                        getDPlayer().sendPacket(new ClientboundBlockUpdatePacket(blockPos, originBlockState));
-                        super.reopenInventory();
-                        getDPlayer().sendMessage("<red>Sign input timed out. Please try again.");
-                    });
+                    if(!gaveInput) {
+                        Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
+                            getDPlayer().sendPacket(new ClientboundBlockUpdatePacket(blockPos, originBlockState));
+                            super.reopenInventory();
+                            getDPlayer().sendMessage("<red>Sign input timed out. Please try again.");
+                        });
+                    }
                 });
             })
     ).build();

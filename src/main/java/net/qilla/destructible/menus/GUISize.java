@@ -1,4 +1,4 @@
-package net.qilla.destructible.gui;
+package net.qilla.destructible.menus;
 
 public enum GUISize {
 
