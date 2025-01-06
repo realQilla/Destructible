@@ -10,11 +10,13 @@ import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
+import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -38,7 +40,7 @@ public class ItemMenu extends DestructibleMenu {
 
     private final Slot menuItem = Slot.builder(slot -> slot
             .index(4)
-            .material(Material.LAPIS_LAZULI)
+            .material(Material.QUARTZ)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Item Modification"))
             .lore(ItemLore.lore(List.of(
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Select any item to view more"),
@@ -48,36 +50,33 @@ public class ItemMenu extends DestructibleMenu {
 
     private final Slot returnItem = Slots.BACK_ITEM
             .index(49)
-            .clickAction(action -> super.returnToPreviousMenu())
+            .clickAction((action, clickType) -> super.returnToPreviousMenu())
             .build();
 
     private final Slot shiftUpItem = Slots.UP_ITEM
             .index(7)
-            .clickAction(action -> this.shift(-9))
+            .clickAction(this::shiftUp)
             .build();
 
     private final Slot shiftDownItem = Slots.DOWN_ITEM
             .index(52)
-            .clickAction(action -> this.shift(9))
+            .clickAction(this::shiftDown)
             .build();
 
     private final Slot toolMenuItem = Slot.builder(slot -> slot
             .index(47)
-            .material(Material.GOLDEN_PICKAXE)
+            .material(Material.IRON_PICKAXE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Tools"))
             .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to view destructible tools"))))
-            .clickAction(action -> {
-                new ItemToolMenu(super.getDPlayer()).openInventory();
-            })
+            .clickAction((action, clickType) -> new ItemToolMenu(super.getDPlayer()).openInventory())
     ).build();
 
     private final Slot weaponMenuItem = Slot.builder(slot -> slot
             .index(46)
-            .material(Material.GOLDEN_SWORD)
+            .material(Material.NETHERITE_AXE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Weapons"))
-            .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to view destructible weapons"))))
-            .clickAction(action -> {
-            })
+            .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Left-Click to view destructible weapons"))))
+            .clickAction((action, clickType) -> {})
     ).build();
 
     public ItemMenu(DPlayer dPlayer) {
@@ -91,9 +90,12 @@ public class ItemMenu extends DestructibleMenu {
     }
 
     private void initItems() {
-        if(shiftIndex > 0) this.setSlot(this.shiftUpItem);
+        if (shiftIndex < 0) shiftIndex = 0;
+
+        if (shiftIndex > 0) this.setSlot(this.shiftUpItem);
         else this.unsetSlot(this.shiftUpItem.getIndex());
-        if(shiftIndex + itemSlots.size() < this.itemList.size()) this.setSlot(this.shiftDownItem);
+
+        if (shiftIndex + itemSlots.size() < this.itemList.size()) this.setSlot(this.shiftDownItem);
         else this.unsetSlot(this.shiftDownItem.getIndex());
 
         List<DItem> shiftedList = new LinkedList<>(itemList).subList(shiftIndex, itemList.size());
@@ -115,34 +117,11 @@ public class ItemMenu extends DestructibleMenu {
                                         Component.empty(),
                                         MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
                                         Component.empty(),
-                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Click to get this item")
+                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
+                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
                                 ))
                                 .build())
-                        .clickAction(action -> {
-                            DPlayer dPlayer = super.getDPlayer();
-
-                            if(dPlayer.getCooldown().has(CooldownType.GET_ITEM)) return;
-                            dPlayer.getCooldown().set(CooldownType.GET_ITEM);
-
-                            SignInput signInput = new SignInput(dPlayer);
-                            signInput.init(List.of(
-                                    "^^^^^^^^^^^^^^^",
-                                    "Amount to receive",
-                                    ""), result -> {
-                                Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
-                                    try {
-                                        int value = Integer.parseInt(result);
-
-                                        dPlayer.give(DItemStack.of(item, value));
-                                        dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(item.getDisplayName()).append(MiniMessage.miniMessage().deserialize("<green>!")));
-                                        dPlayer.playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
-                                    } catch(NumberFormatException ignored) {
-                                    }
-                                    super.reopenInventory();
-                                    shift(0);
-                                });
-                            });
-                        })
+                        .clickAction((slotInfo, clickType) -> getItem(item, slotInfo, clickType))
                 ).build();
                 setSlot(slot);
             }
@@ -151,10 +130,52 @@ public class ItemMenu extends DestructibleMenu {
         });
     }
 
-    private void shift(int amount) {
-        shiftIndex += amount;
+    public void getItem(DItem item, Slot slotInfo, ClickType clickType) {
+        if(getDPlayer().getCooldown().has(CooldownType.GET_ITEM)) return;
+        getDPlayer().getCooldown().set(CooldownType.GET_ITEM);
+
+        if(clickType.isShiftClick() && clickType.isLeftClick()) {
+            List<String> signText = List.of(
+                    "^^^^^^^^^^^^^^^",
+                    "Amount to receive",
+                    "");
+
+            SignInput signInput = new SignInput(getDPlayer(), signText);
+            signInput.init(result -> {
+                Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
+                    try {
+                        int value = Integer.parseInt(result);
+
+                        getDPlayer().give(DItemStack.of(item, value));
+                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(item, value)).append(MiniMessage.miniMessage().deserialize("!")));
+                        getDPlayer().playSound(Sound.ITEM_BUNDLE_DROP_CONTENTS, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
+                    } catch(NumberFormatException ignored) {
+                    }
+                    super.reopenInventory();
+                });
+            });
+        } else if(clickType.isLeftClick()) {
+            getDPlayer().give(DItemStack.of(item, 1));
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(item, 1)).append(MiniMessage.miniMessage().deserialize("!")));
+            getDPlayer().playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
+        }
+
         super.unsetSlots(itemSlots);
-        this.initItems();
+        initItems();
+    }
+
+    public void shiftUp(Slot slotInfo, ClickType clickType) {
+        if(clickType.isShiftClick()) this.shiftIndex += -36;
+        else this.shiftIndex += -9;
+        super.unsetSlots(itemSlots);
+        initItems();
+    }
+
+    public void shiftDown(Slot slotInfo, ClickType clickType) {
+        if(clickType.isShiftClick()) this.shiftIndex += 36;
+        else this.shiftIndex += 9;
+        super.unsetSlots(itemSlots);
+        initItems();
     }
 
     @Override

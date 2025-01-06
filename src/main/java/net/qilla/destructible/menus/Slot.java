@@ -7,14 +7,16 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.DataKey;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public final class Slot {
     private final int index;
-    private final Consumer<Slot> clickAction;
+    private final BiConsumer<Slot, ClickType> clickAction;
     private final ItemStack itemStack;
     private final SoundSettings soundSettings;
 
@@ -44,9 +46,9 @@ public final class Slot {
         return this.index;
     }
 
-    public void onClick() {
+    public void onClick(ClickType clickType) {
         if(this.clickAction == null) return;
-        this.clickAction.accept(this);
+        this.clickAction.accept(this, clickType);
     }
 
     public ItemStack getItemStack() {
@@ -69,7 +71,7 @@ public final class Slot {
 
     public static final class Builder {
         private int index;
-        private Consumer<Slot> clickAction;
+        private BiConsumer<Slot, ClickType> clickAction;
         private Material material;
         private int amount;
         private Component displayName;
@@ -93,7 +95,7 @@ public final class Slot {
             return this;
         }
 
-        public Builder clickAction(Consumer<Slot> clickAction) {
+        public Builder clickAction(BiConsumer<Slot, ClickType> clickAction) {
             this.clickAction = clickAction;
             return this;
         }

@@ -12,6 +12,7 @@ import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
@@ -34,23 +35,17 @@ public class BlockMenu extends DestructibleMenu {
 
     private final Slot returnItem = Slots.BACK_ITEM
             .index(49)
-            .clickAction(action -> super.returnToPreviousMenu())
+            .clickAction((action, clickType) -> super.returnToPreviousMenu())
             .build();
 
     private final Slot shiftUpItem = Slots.UP_ITEM
             .index(7)
-            .clickAction(action -> {
-                getDPlayer().playSound(Sound.ENTITY_BREEZE_LAND, SoundCategory.PLAYERS, 0.75f, RandomUtil.between(1.5f, 2.0f), PlayType.PLAYER);
-                this.shift(-9);
-            })
+            .clickAction(this::shiftUp)
             .build();
 
     private final Slot shiftDownItem = Slots.DOWN_ITEM
             .index(52)
-            .clickAction(action -> {
-                getDPlayer().playSound(Sound.ENTITY_BREEZE_JUMP, SoundCategory.PLAYERS, 0.25f, RandomUtil.between(0.75f, 1.25f), PlayType.PLAYER);
-                this.shift(9);
-            })
+            .clickAction(this::shiftDown)
             .build();
 
     private final Slot menuItem = Slot.builder(slot -> slot
@@ -72,9 +67,12 @@ public class BlockMenu extends DestructibleMenu {
     }
 
     private void initBlocks() {
-        if(shiftIndex > 0) this.setSlot(this.shiftUpItem);
+        if (shiftIndex < 0) shiftIndex = 0;
+
+        if (shiftIndex > 0) this.setSlot(this.shiftUpItem);
         else this.unsetSlot(this.shiftUpItem.getIndex());
-        if(shiftIndex + blockSlots.size() < this.blockList.size()) this.setSlot(this.shiftDownItem);
+
+        if (shiftIndex + blockSlots.size() < this.blockList.size()) this.setSlot(this.shiftDownItem);
         else this.unsetSlot(this.shiftDownItem.getIndex());
 
         List<DBlock> shiftedList = new LinkedList<>(blockList).subList(shiftIndex, blockList.size());
@@ -93,11 +91,11 @@ public class BlockMenu extends DestructibleMenu {
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + FormatUtil.getTime(block.getBlockCooldown(), true)),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Correct Tools:"),
                                 MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.getList(block.getCorrectTools())),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <yellow>" + "Click to view"),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <yellow>" + "Middle-Click to view"),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + block.getBreakSound()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + block.getBreakParticle())
                         )))
-                        .clickAction(action -> {
+                        .clickAction((action, clickType) -> {
                         })
                 ).build();
                 setSlot(slot);
@@ -107,10 +105,18 @@ public class BlockMenu extends DestructibleMenu {
         });
     }
 
-    private void shift(int amount) {
-        shiftIndex += amount;
+    public void shiftUp(Slot slotInfo, ClickType clickType) {
+        if(clickType.isShiftClick()) this.shiftIndex += -36;
+        else this.shiftIndex += -9;
         super.unsetSlots(blockSlots);
-        this.initBlocks();
+        initBlocks();
+    }
+
+    public void shiftDown(Slot slotInfo, ClickType clickType) {
+        if(clickType.isShiftClick()) this.shiftIndex += 36;
+        else this.shiftIndex += 9;
+        super.unsetSlots(blockSlots);
+        initBlocks();
     }
 
     @Override

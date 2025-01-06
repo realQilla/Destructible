@@ -34,7 +34,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         Slot slot = this.slotHolder.getSlot(slotIndex);
         if(slot != null) {
             dPlayer.playSound(slot.getSoundSettings(), true);
-            slot.onClick();
+            slot.onClick(event.getClick());
         }
     }
 

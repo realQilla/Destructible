@@ -91,6 +91,10 @@ public class Overflow {
         return Collections.unmodifiableMap(this.overflowItems);
     }
 
+    public void clear(DItem dItem) {
+        this.overflowItems.remove(dItem);
+    }
+
     public void clear() {
         this.overflowItems.clear();
     }

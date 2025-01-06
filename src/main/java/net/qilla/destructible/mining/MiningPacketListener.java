@@ -5,12 +5,11 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
-import net.minecraft.network.protocol.game.ServerboundSignUpdatePacket;
-import net.minecraft.network.protocol.game.ServerboundSwingPacket;
-import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.stats.Stat;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.mining.block.BlockMemory;
@@ -19,6 +18,8 @@ import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.CoordUtil;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 public final class MiningPacketListener {
 
@@ -51,6 +52,15 @@ public final class MiningPacketListener {
                     dPlayer.getMenuData().fulfillInput(signPacket.getLines()[0]);
                 }
                 super.channelRead(context, object);
+            }
+
+            @Override
+            public void write(ChannelHandlerContext context, Object object, io.netty.channel.ChannelPromise promise) throws Exception {
+                Packet<?> packet = (Packet<?>) object;
+                if(packet instanceof ClientboundUpdateAdvancementsPacket) {
+                    //return;
+                }
+                super.write(context, object, promise);
             }
         };
 
