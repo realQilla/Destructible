@@ -18,11 +18,7 @@ import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.CoordUtil;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public final class MiningPacketListener {
 
@@ -52,7 +48,7 @@ public final class MiningPacketListener {
                         return;
                     }
                 } else if(packet instanceof ServerboundSignUpdatePacket signPacket) {
-                    dPlayer.getMenuData().setSignText(signPacket.getLines()[0]);
+                    dPlayer.getMenuData().fulfillInput(signPacket.getLines()[0]);
                 }
                 super.channelRead(context, object);
             }

@@ -4,6 +4,7 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.menus.input.SignInput;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.player.CooldownType;
@@ -11,6 +12,7 @@ import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
 import net.qilla.destructible.util.FormatUtil;
 import net.qilla.destructible.util.RandomUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -104,11 +106,28 @@ public class ItemToolMenu extends DestructibleMenu {
                                 .build())
                         .clickAction(action -> {
                             DPlayer dPlayer = super.getDPlayer();
-                            if (dPlayer.getCooldown().has(CooldownType.GET_ITEM)) return;
+
+                            if(dPlayer.getCooldown().has(CooldownType.GET_ITEM)) return;
                             dPlayer.getCooldown().set(CooldownType.GET_ITEM);
-                            dPlayer.give(DItemStack.of(tool.getId()));
-                            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(tool.getDisplayName()).append(MiniMessage.miniMessage().deserialize("<green>!")));
-                            dPlayer.playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
+
+                            SignInput signInput = new SignInput(dPlayer);
+                            signInput.init(List.of(
+                                    "^^^^^^^^^^^^^^^",
+                                    "Amount to receive",
+                                    ""), result -> {
+                                Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
+                                    try {
+                                        int value = Integer.parseInt(result);
+
+                                        dPlayer.give(DItemStack.of(tool, value));
+                                        dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(tool.getDisplayName()).append(MiniMessage.miniMessage().deserialize("<green>!")));
+                                        dPlayer.playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
+                                    } catch(NumberFormatException ignored) {
+                                    }
+                                    super.reopenInventory();
+                                    shift(0);
+                                });
+                            });
                         })
                 ).build();
                 setSlot(slot);

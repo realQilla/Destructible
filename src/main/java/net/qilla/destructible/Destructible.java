@@ -16,11 +16,14 @@ import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public final class Destructible extends JavaPlugin {
 
     private LifecycleEventManager<Plugin> lifecycleMan;
+    private List<Thread> activeThreads;
     private MiningPacketListener packetListener;
     private CustomItemsFile customItemsFile;
     private CustomToolsFile customToolsFile;
@@ -31,6 +34,7 @@ public final class Destructible extends JavaPlugin {
     @Override
     public void onEnable() {
         this.lifecycleMan = this.getLifecycleManager();
+        this.activeThreads = new ArrayList<>();
 
         this.packetListener = new MiningPacketListener();
         this.customItemsFile = new CustomItemsFile();
@@ -62,9 +66,20 @@ public final class Destructible extends JavaPlugin {
         });
     }
 
+    public void addThread(Thread thread) {
+        this.activeThreads.add(thread);
+        getPluginLogger().info("Added thread: " + thread.getName());
+    }
+
+    public void removeThread(Thread thread) {
+        this.activeThreads.remove(thread);
+        getPluginLogger().info("Removed thread: " + thread.getName());
+    }
+
     @Override
     public void onDisable() {
         Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Server Reloaded.")));
+        this.activeThreads.forEach(Thread::interrupt);
     }
 
     public CustomItemsFile getCustomItemsFile() {

@@ -4,10 +4,12 @@ import net.qilla.destructible.menus.DestructibleMenu;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 public class MenuData {
     private final Deque<DestructibleMenu> menuHistory;
-    private String signText = null;
+    private CompletableFuture<String> playerInput = null;
 
     public MenuData() {
         this.menuHistory = new ArrayDeque<>();
@@ -16,9 +18,7 @@ public class MenuData {
     public DestructibleMenu getLastMenu() {
         if(!menuHistory.isEmpty()) {
             menuHistory.pop();
-            if(!menuHistory.isEmpty()) {
-                return menuHistory.peekLast();
-            }
+            return menuHistory.peekLast();
         }
         return null;
     }
@@ -31,15 +31,14 @@ public class MenuData {
         menuHistory.clear();
     }
 
-    public void setSignText(String signText) {
-        this.signText = signText;
+    public Future<String> requestInput() {
+        return this.playerInput = new CompletableFuture<>();
     }
 
-    public String getSignText() {
-        return this.signText;
-    }
-
-    public void clearSignText() {
-        this.signText = null;
+    public void fulfillInput(String input) {
+        if(this.playerInput != null) {
+            this.playerInput.complete(input);
+            this.playerInput = null;
+        }
     }
 }

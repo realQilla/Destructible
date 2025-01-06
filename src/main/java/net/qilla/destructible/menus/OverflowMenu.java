@@ -3,29 +3,22 @@ package net.qilla.destructible.menus;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
-import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.qilla.destructible.menus.input.SignInput;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
-import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
-import org.bukkit.craftbukkit.block.CraftSign;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class OverflowMenu extends DestructibleMenu {
     private static final GUISize SIZE = GUISize.SIX;
@@ -58,64 +51,27 @@ public class OverflowMenu extends DestructibleMenu {
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Click to clear your entire overflow stash")))
             )
             .clickAction(action -> {
-
                 if(getDPlayer().getOverflow().isEmpty()) {
                     getDPlayer().sendMessage("<red>Your overflow stash is already empty!");
                     getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
                     return;
                 }
 
-                BlockPos blockPos = CoordUtil.locToBlockPos(getDPlayer().getCraftPlayer().getLocation()).offset(0, -7, 0);
-
-                BlockState originBlockState = getDPlayer().getServerLevel().getBlockState(blockPos);
-
-                CraftSign<SignBlockEntity> sign = new CraftSign<>(getDPlayer().getCraftPlayer().getWorld(), new SignBlockEntity(blockPos, Blocks.OAK_SIGN.defaultBlockState()));
-                sign.setLine(0, "");
-                sign.setLine(1, "^^^^^^^^^^^^^^^");
-                sign.setLine(2, "Type CONFIRM");
-                sign.setLine(3, "to clear stash");
-                sign.update();
-
-                getDPlayer().sendPacket(new ClientboundBlockUpdatePacket(blockPos, sign.getHandle()));
-                getDPlayer().sendPacket(new ClientboundBlockEntityDataPacket(blockPos, BlockEntityType.SIGN, sign.getUpdateNBT()));
-                getDPlayer().sendPacket(new ClientboundOpenSignEditorPacket(blockPos, true));
-
-                Bukkit.getScheduler().runTaskAsynchronously(getDPlayer().getPlugin(), () -> {
-                    getDPlayer().getMenuData().clearSignText();
-                    boolean gaveInput = false;
-                    final long endTime = System.currentTimeMillis() + 15000;
-                    while(System.currentTimeMillis() < endTime) {
-                        if(getDPlayer().getMenuData().getSignText() != null) {
-                            gaveInput = true;
-                            String signText = getDPlayer().getMenuData().getSignText();
-                            Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
-                                if(signText.equals("CONFIRM")) {
-                                    getDPlayer().getOverflow().clear();
-                                    getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_PLAYER_BURP, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
-                                    getDPlayer().sendMessage("<green>You have successfully cleared your overflow stash!");
-                                    shift(0);
-                                } else {
-                                    getDPlayer().sendMessage("<red>Invalid input. Type CONFIRM to clear your stash.");
-                                    getDPlayer().playSound(Sound.ENTITY_VILLAGER_NO, SoundCategory.PLAYERS, 0.5f, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
-                                }
-                                getDPlayer().sendPacket(new ClientboundBlockUpdatePacket(blockPos, originBlockState));
-                                super.reopenInventory();
-                            });
-                            break;
+                SignInput signInput = new SignInput(getDPlayer());
+                signInput.init(List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to clear stash"
+                ), result -> {
+                    Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            getDPlayer().getOverflow().clear();
+                            getDPlayer().playSound(Sound.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5f, RandomUtil.between(0.5f, 1.0f), PlayType.PLAYER);
+                            getDPlayer().sendMessage("<green>You have successfully cleared your overflow stash!");
                         }
-                        try {
-                            Thread.sleep(100);
-                        } catch(InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-                    if(!gaveInput) {
-                        Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
-                            getDPlayer().sendPacket(new ClientboundBlockUpdatePacket(blockPos, originBlockState));
-                            super.reopenInventory();
-                            getDPlayer().sendMessage("<red>Sign input timed out. Please try again.");
-                        });
-                    }
+                        super.reopenInventory();
+                        shift(0);
+                    });
                 });
             })
     ).build();

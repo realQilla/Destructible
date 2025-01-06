@@ -138,13 +138,13 @@ public class DPlayer {
         return this.minerData;
     }
 
-    public Overflow getOverflow() {
+    public synchronized Overflow getOverflow() {
         if(this.overflow == null) this.overflow = new Overflow(this);
         return this.overflow;
     }
 
     @NotNull
-    public DBlockEdit getDBlockEdit() {
+    public synchronized DBlockEdit getDBlockEdit() {
         if(this.dBlockEdit == null) this.dBlockEdit = new DBlockEdit(this);
         return this.dBlockEdit;
     }
@@ -153,16 +153,16 @@ public class DPlayer {
         return this.dBlockEdit != null;
     }
 
-    public void removeDBlockEdit() {
+    public synchronized void removeDBlockEdit() {
         this.dBlockEdit = null;
     }
 
-    public Cooldown getCooldown() {
+    public synchronized Cooldown getCooldown() {
         if(this.cooldown == null) this.cooldown = new Cooldown();
         return this.cooldown;
     }
 
-    public MenuData getMenuData() {
+    public synchronized MenuData getMenuData() {
         if(this.menuData == null) this.menuData = new MenuData();
         return this.menuData;
     }

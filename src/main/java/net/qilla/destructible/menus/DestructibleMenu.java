@@ -10,6 +10,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -101,6 +102,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         return this.dPlayer;
     }
 
+    @NotNull
     @Override
     public Inventory getInventory() {
         return this.inventory;
