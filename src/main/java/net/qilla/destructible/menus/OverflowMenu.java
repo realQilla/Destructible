@@ -17,8 +17,6 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class OverflowMenu extends DestructibleMenu {
     private static final GUISize SIZE = GUISize.SIX;

@@ -41,7 +41,7 @@ public class BlockMenu extends DestructibleMenu {
             .index(7)
             .clickAction(action -> {
                 getDPlayer().playSound(Sound.ENTITY_BREEZE_LAND, SoundCategory.PLAYERS, 0.75f, RandomUtil.between(1.5f, 2.0f), PlayType.PLAYER);
-                this.shift(-1);
+                this.shift(-9);
             })
             .build();
 
@@ -49,7 +49,7 @@ public class BlockMenu extends DestructibleMenu {
             .index(52)
             .clickAction(action -> {
                 getDPlayer().playSound(Sound.ENTITY_BREEZE_JUMP, SoundCategory.PLAYERS, 0.25f, RandomUtil.between(0.75f, 1.25f), PlayType.PLAYER);
-                this.shift(1);
+                this.shift(9);
             })
             .build();
 

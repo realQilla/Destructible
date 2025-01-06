@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
-public class SignInput {
+public class SignInput implements PlayerInput {
 
     private final DPlayer dPlayer;
     private final ExecutorService executorService;
@@ -26,16 +26,16 @@ public class SignInput {
         this.executorService = Executors.newSingleThreadExecutor();
     }
 
+    @Override
     public void init(List<String> signText, Consumer<String> onComplete) {
         CompletableFuture.supplyAsync(() -> {
             dPlayer.getPlugin().addThread(Thread.currentThread());
             BlockPos blockPos = CoordUtil.locToBlockPos(dPlayer.getCraftPlayer().getLocation()).offset(0, -7, 0);
 
             CraftSign<SignBlockEntity> sign = new CraftSign<>(dPlayer.getCraftPlayer().getWorld(), new SignBlockEntity(blockPos, Blocks.OAK_SIGN.defaultBlockState()));
-            sign.setLine(0, "");
-            sign.setLine(1, signText.get(0));
-            sign.setLine(2, signText.get(1));
-            sign.setLine(3, signText.get(2));
+            for(int i = 1; i < 4; i++) {
+                sign.setLine(i, signText.get(i - 1));
+            }
             sign.update();
 
             Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
@@ -50,7 +50,7 @@ public class SignInput {
                     try {
                         return dPlayer.getMenuData().requestInput().get(60, TimeUnit.SECONDS);
                     } catch(TimeoutException ex) {
-                        return null;
+                        return "";
                     } catch(ExecutionException | InterruptedException e) {
                         throw new RuntimeException(e);
                     } finally {
