@@ -8,7 +8,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.UUID;
 
 public class DItem {
     private final String id;
@@ -60,6 +60,7 @@ public class DItem {
         private Rarity rarity;
 
         public Builder() {
+            this.id = UUID.randomUUID().toString();
             this.material = Material.AIR;
             this.displayName = Component.text(material.name());
             this.lore = ItemLore.lore().build();
@@ -68,7 +69,6 @@ public class DItem {
         }
 
         public Builder id(String id) {
-            Preconditions.checkArgument(id != null, "ID cannot be null");
             this.id = id;
             return this;
         }

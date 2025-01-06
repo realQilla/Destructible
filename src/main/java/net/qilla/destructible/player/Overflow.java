@@ -87,11 +87,15 @@ public class Overflow {
         return itemList;
     }
 
-    public Map<DItem, DItemStack> getItems() {
-        return Collections.unmodifiableMap(this.overflowItems);
+    public Collection<DItemStack> getItems() {
+        return overflowItems.values();
     }
 
-    public void clear(DItem dItem) {
+    public boolean contains(DItem dItem) {
+        return this.overflowItems.containsKey(dItem);
+    }
+
+    public void remove(DItem dItem) {
         this.overflowItems.remove(dItem);
     }
 

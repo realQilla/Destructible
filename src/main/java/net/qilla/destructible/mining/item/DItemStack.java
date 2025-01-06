@@ -92,7 +92,8 @@ public final class DItemStack {
                     Component.empty(),
                     dTool.getRarity().getComponent().append(MiniMessage.miniMessage().deserialize(" " + FormatUtil.getList(dTool.getToolType())))
             ));
-        } else {
+        }
+        if(dItem.getRarity() != Rarity.NONE){
             lore.addLines(List.of(
                     Component.empty(),
                     dItem.getRarity().getComponent()

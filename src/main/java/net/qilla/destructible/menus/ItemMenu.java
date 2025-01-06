@@ -19,24 +19,25 @@ import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-public class ItemMenu extends DestructibleMenu {
+public class ItemMenu extends ModularMenu {
     private static final GUISize SIZE = GUISize.SIX;
     private static final Component TITLE = MiniMessage.miniMessage().deserialize("Items");
-
-    private final List<Integer> itemSlots = List.of(
+    private static final List<Integer> MODULAR_SLOTS = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
             18, 19, 20, 21, 22, 23, 24, 25, 26,
             27, 28, 29, 30, 31, 32, 33, 34, 35,
             36, 37, 38, 39, 40, 41, 42, 43, 44
     );
 
-    private final List<DItem> itemList;
-    private int shiftIndex = 0;
+    public ItemMenu(DPlayer dPlayer) {
+        super(dPlayer, SIZE, TITLE,
+                Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> item.getClass().equals(DItem.class)).map(item -> DItemStack.of(item, 1)).toList(),
+                MODULAR_SLOTS);
+
+        populateMenu();
+    }
 
     private final Slot menuItem = Slot.builder(slot -> slot
             .index(4)
@@ -48,19 +49,14 @@ public class ItemMenu extends DestructibleMenu {
             ))
     ).build();
 
-    private final Slot returnItem = Slots.BACK_ITEM
-            .index(49)
-            .clickAction((action, clickType) -> super.returnToPreviousMenu())
-            .build();
-
-    private final Slot shiftUpItem = Slots.UP_ITEM
+    private final Slot shiftPreviousItem = Slots.PREVIOUS_ITEM
             .index(7)
-            .clickAction(this::shiftUp)
+            .clickAction((slotInfo, clickType) -> rotatePrevious(slotInfo, clickType, 9))
             .build();
 
-    private final Slot shiftDownItem = Slots.DOWN_ITEM
+    private final Slot shiftNextItem = Slots.NEXT_ITEM
             .index(52)
-            .clickAction(this::shiftDown)
+            .clickAction((slotInfo, clickType) -> rotateNext(slotInfo, clickType, 9))
             .build();
 
     private final Slot toolMenuItem = Slot.builder(slot -> slot
@@ -79,58 +75,50 @@ public class ItemMenu extends DestructibleMenu {
             .clickAction((action, clickType) -> {})
     ).build();
 
-    public ItemMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE);
-        this.itemList = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> item.getClass().equals(DItem.class)).toList();
+    private final Slot returnItem = Slots.RETURN_ITEM
+            .index(49)
+            .clickAction((action, clickType) -> super.returnToPreviousMenu())
+            .build();
+
+    @Override
+    public void populateMenu() {
         this.setSlot(this.menuItem);
         this.setSlot(this.returnItem);
         this.setSlot(this.toolMenuItem);
         this.setSlot(this.weaponMenuItem);
-        initItems();
+
+        if(getShiftIndex() > 0) this.setSlot(this.shiftPreviousItem);
+        else this.unsetSlot(this.shiftPreviousItem.getIndex());
+        if(getShiftIndex() + getModularSlots().size() < getItemPopulation().size()) this.setSlot(this.shiftNextItem);
+        else this.unsetSlot(this.shiftNextItem.getIndex());
     }
 
-    private void initItems() {
-        if (shiftIndex < 0) shiftIndex = 0;
-
-        if (shiftIndex > 0) this.setSlot(this.shiftUpItem);
-        else this.unsetSlot(this.shiftUpItem.getIndex());
-
-        if (shiftIndex + itemSlots.size() < this.itemList.size()) this.setSlot(this.shiftDownItem);
-        else this.unsetSlot(this.shiftDownItem.getIndex());
-
-        List<DItem> shiftedList = new LinkedList<>(itemList).subList(shiftIndex, itemList.size());
-
-        Iterator<Integer> iterator = itemSlots.iterator();
-        shiftedList.iterator().forEachRemaining(item -> {
-            if(iterator.hasNext()) {
-                Slot slot = Slot.builder(builder -> builder
-                        .index(iterator.next())
-                        .material(item.getMaterial())
-                        .displayName(MiniMessage.miniMessage().deserialize(item.getId()))
-                        .lore(ItemLore.lore()
-                                .addLines(List.of(
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(item.getDisplayName()),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
-                                ))
-                                .addLines(item.getLore().lines())
-                                .addLines(List.of(
-                                        Component.empty(),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
-                                        Component.empty(),
-                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
-                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
-                                ))
-                                .build())
-                        .clickAction((slotInfo, clickType) -> getItem(item, slotInfo, clickType))
-                ).build();
-                setSlot(slot);
-            }
-            super.getSlotHolder().getRemainingSlots(itemSlots).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
-            super.getSlotHolder().getRemainingSlots().forEach(slotNum -> super.setSlot(Slots.FILLER_ITEM.index(slotNum).build()));
-        });
+    @Override
+    public Slot createSlot(int index, DItemStack item) {
+        DItem dItem = item.getDItem();
+        return Slot.builder(builder -> builder
+                .index(index)
+                .material(dItem.getMaterial())
+                .displayName(MiniMessage.miniMessage().deserialize(dItem.getId()))
+                .lore(ItemLore.lore()
+                        .addLines(List.of(
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(dItem.getDisplayName()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
+                        ))
+                        .addLines(dItem.getLore().lines())
+                        .addLines(List.of(
+                                Component.empty(),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(dItem.getRarity().getComponent()),
+                                Component.empty(),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
+                        ))
+                        .build())
+                .clickAction((slotInfo, clickType) -> getItem(slotInfo, clickType, dItem))
+        ).build();
     }
 
-    public void getItem(DItem item, Slot slotInfo, ClickType clickType) {
+    private void getItem(Slot slotInfo, ClickType clickType, DItem item) {
         if(getDPlayer().getCooldown().has(CooldownType.GET_ITEM)) return;
         getDPlayer().getCooldown().set(CooldownType.GET_ITEM);
 
@@ -159,23 +147,6 @@ public class ItemMenu extends DestructibleMenu {
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(item, 1)).append(MiniMessage.miniMessage().deserialize("!")));
             getDPlayer().playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
         }
-
-        super.unsetSlots(itemSlots);
-        initItems();
-    }
-
-    public void shiftUp(Slot slotInfo, ClickType clickType) {
-        if(clickType.isShiftClick()) this.shiftIndex += -36;
-        else this.shiftIndex += -9;
-        super.unsetSlots(itemSlots);
-        initItems();
-    }
-
-    public void shiftDown(Slot slotInfo, ClickType clickType) {
-        if(clickType.isShiftClick()) this.shiftIndex += 36;
-        else this.shiftIndex += 9;
-        super.unsetSlots(itemSlots);
-        initItems();
     }
 
     @Override

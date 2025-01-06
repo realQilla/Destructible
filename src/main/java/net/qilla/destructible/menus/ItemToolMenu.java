@@ -18,27 +18,28 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-public class ItemToolMenu extends DestructibleMenu {
+public class ItemToolMenu extends ModularMenu {
     private static final GUISize SIZE = GUISize.SIX;
     private static final Component TITLE = MiniMessage.miniMessage().deserialize("Tools");
-
-    private final List<Integer> toolSlots = List.of(
+    private static final List<Integer> MODULAR_SLOTS = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
             18, 19, 20, 21, 22, 23, 24, 25, 26,
             27, 28, 29, 30, 31, 32, 33, 34, 35,
             36, 37, 38, 39, 40, 41, 42, 43, 44
     );
 
-    private final List<DTool> toolList;
-    private int shiftIndex = 0;
+    public ItemToolMenu(DPlayer dPlayer) {
+        super(dPlayer, SIZE, TITLE,
+                Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(DTool.class::isInstance).map(DTool.class::cast).map(item -> DItemStack.of(item, 1)).toList(),
+                MODULAR_SLOTS
+        );
+
+        populateMenu();
+    }
 
     private final Slot menuItem = Slot.builder(slot -> slot
             .index(4)
@@ -48,76 +49,63 @@ public class ItemToolMenu extends DestructibleMenu {
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Select any tool to view more details or make changes"))))
     ).build();
 
-    private final Slot shiftUpItem = Slots.UP_ITEM
+    private final Slot shiftPreviousItem = Slots.PREVIOUS_ITEM
             .index(7)
-            .clickAction(this::shiftUp)
+            .clickAction((slotInfo, clickType) -> rotatePrevious(slotInfo, clickType, 9))
             .build();
 
-    private final Slot shiftDownItem = Slots.DOWN_ITEM
+    private final Slot shiftNextItem = Slots.NEXT_ITEM
             .index(52)
-            .clickAction(this::shiftDown)
+            .clickAction((slotInfo, clickType) -> rotateNext(slotInfo, clickType, 9))
             .build();
 
-    private final Slot backItem = Slots.BACK_ITEM
+    private final Slot returnItem = Slots.RETURN_ITEM
             .index(49)
             .clickAction((action, clickType) -> super.returnToPreviousMenu())
             .build();
 
-    public ItemToolMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE);
-        this.toolList = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(DTool.class::isInstance).map(DTool.class::cast).toList();
+    @Override
+    public void populateMenu() {
         this.setSlot(this.menuItem);
-        this.setSlot(this.backItem);
-        initTools();
+        this.setSlot(this.returnItem);
+
+        if(getShiftIndex() > 0) this.setSlot(this.shiftPreviousItem);
+        else this.unsetSlot(this.shiftPreviousItem.getIndex());
+        if(getShiftIndex() + getModularSlots().size() < getItemPopulation().size()) this.setSlot(this.shiftNextItem);
+        else this.unsetSlot(this.shiftNextItem.getIndex());
     }
 
-    private void initTools() {
-        if (shiftIndex < 0) shiftIndex = 0;
-
-        if (shiftIndex > 0) this.setSlot(this.shiftUpItem);
-        else this.unsetSlot(this.shiftUpItem.getIndex());
-
-        if (shiftIndex + toolSlots.size() < this.toolList.size()) this.setSlot(this.shiftDownItem);
-        else this.unsetSlot(this.shiftDownItem.getIndex());
-
-        List<DTool> shiftedList = new LinkedList<>(toolList).subList(shiftIndex, toolList.size());
-
-        Iterator<Integer> iterator = toolSlots.iterator();
-        shiftedList.iterator().forEachRemaining(tool -> {
-            if(iterator.hasNext()) {
-                Slot slot = Slot.builder(builder -> builder
-                        .index(iterator.next())
-                        .material(tool.getMaterial())
-                        .displayName(MiniMessage.miniMessage().deserialize(tool.getId()))
-                        .lore(ItemLore.lore()
-                                .addLines(List.of(
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(tool.getDisplayName()),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
-                                ))
-                                .addLines(tool.getLore().lines())
-                                .addLines(List.of(
-                                        Component.empty(),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Strength <white>" + FormatUtil.romanNumeral(tool.getToolStrength())),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Breaking Efficiency <white>" + tool.getBreakingEfficiency()),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Durability <white>" + tool.getToolDurability()),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Type: <white>"),
-                                        MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.getList(tool.getToolType())),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(tool.getRarity().getComponent()),
-                                        Component.empty(),
-                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
-                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
-                                ))
-                                .build())
-                        .clickAction((slotInfo, clickType) -> this.getTool(tool, slotInfo, clickType))
-                ).build();
-                setSlot(slot);
-            }
-            super.getSlotHolder().getRemainingSlots(toolSlots).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
-            super.getSlotHolder().getRemainingSlots().forEach(slotNum -> super.setSlot(Slots.FILLER_ITEM.index(slotNum).build()));
-        });
+    @Override
+    public Slot createSlot(int index, DItemStack item) {
+        DTool dTool = (DTool) item.getDItem();
+        return Slot.builder(builder -> builder
+                .index(index)
+                .material(dTool.getMaterial())
+                .displayName(MiniMessage.miniMessage().deserialize(dTool.getId()))
+                .lore(ItemLore.lore()
+                        .addLines(List.of(
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(dTool.getDisplayName()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
+                        ))
+                        .addLines(dTool.getLore().lines())
+                        .addLines(List.of(
+                                Component.empty(),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Strength <white>" + FormatUtil.romanNumeral(dTool.getToolStrength())),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Breaking Efficiency <white>" + dTool.getBreakingEfficiency()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Durability <white>" + dTool.getToolDurability()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Type: <white>"),
+                                MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.getList(dTool.getToolType())),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(dTool.getRarity().getComponent()),
+                                Component.empty(),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
+                        ))
+                        .build())
+                .clickAction((slotInfo, clickType) -> this.getItem(slotInfo, clickType, dTool))
+        ).build();
     }
 
-    public void getTool(DTool tool, Slot slotInfo, ClickType clickType) {
+    public void getItem(Slot slotInfo, ClickType clickType, DTool dTool) {
         if(getDPlayer().getCooldown().has(CooldownType.GET_ITEM)) return;
         getDPlayer().getCooldown().set(CooldownType.GET_ITEM);
 
@@ -133,8 +121,8 @@ public class ItemToolMenu extends DestructibleMenu {
                     try {
                         int value = Integer.parseInt(result);
 
-                        getDPlayer().give(DItemStack.of(tool, value));
-                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(tool, value)).append(MiniMessage.miniMessage().deserialize("!")));
+                        getDPlayer().give(DItemStack.of(dTool, value));
+                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dTool, value)).append(MiniMessage.miniMessage().deserialize("!")));
                         getDPlayer().playSound(Sound.ITEM_BUNDLE_DROP_CONTENTS, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
                     } catch(NumberFormatException ignored) {
                     }
@@ -142,47 +130,17 @@ public class ItemToolMenu extends DestructibleMenu {
                 });
             });
         } else if(clickType.isLeftClick()) {
-            getDPlayer().give(DItemStack.of(tool, 1));
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(tool, 1)).append(MiniMessage.miniMessage().deserialize("!")));
+            getDPlayer().give(DItemStack.of(dTool, 1));
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dTool, 1)).append(MiniMessage.miniMessage().deserialize("!")));
             getDPlayer().playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
         }
-
-        super.unsetSlots(toolSlots);
-        initTools();
-    }
-
-    public void shiftUp(Slot slotInfo, ClickType clickType) {
-        if(clickType.isShiftClick()) this.shiftIndex += -36;
-        else this.shiftIndex += -9;
-        super.unsetSlots(toolSlots);
-        initTools();
-    }
-
-    public void shiftDown(Slot slotInfo, ClickType clickType) {
-        if(clickType.isShiftClick()) this.shiftIndex += 36;
-        else this.shiftIndex += 9;
-        super.unsetSlots(toolSlots);
-        initTools();
-    }
-
-    private void shift(int amount) {
-        shiftIndex += amount;
-        super.unsetSlots(toolSlots);
-        this.initTools();
     }
 
     @Override
     public void onInteract(InventoryInteractEvent event) {
-
     }
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-
     }
 }

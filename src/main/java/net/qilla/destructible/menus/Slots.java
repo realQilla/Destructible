@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Slots {
 
-    public static final Slot.Builder BACK_ITEM = Slot.builder(slot -> slot
+    public static final Slot.Builder RETURN_ITEM = Slot.builder(slot -> slot
             .material(Material.BELL)
             .displayName(MiniMessage.miniMessage().deserialize("<red>Return"))
             .lore(ItemLore.lore(List.of(
@@ -29,20 +29,20 @@ public class Slots {
             .hideTooltip(true)
     );
 
-    public static final Slot.Builder UP_ITEM = Slot.builder(slot -> slot
+    public static final Slot.Builder PREVIOUS_ITEM = Slot.builder(slot -> slot
             .material(Material.ARROW)
-            .displayName(MiniMessage.miniMessage().deserialize("<white>Go up"))
+            .displayName(MiniMessage.miniMessage().deserialize("<white>Previous"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Click to shift the menu up"))
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Click to shift the menu backwards"))
             ))
             .soundSettings(SoundSettings.of(Sound.ENTITY_BREEZE_LAND, 0.75f, 1.75f, SoundCategory.PLAYERS, PlayType.PLAYER))
     );
 
-    public static final Slot.Builder DOWN_ITEM = Slot.builder(slot -> slot
+    public static final Slot.Builder NEXT_ITEM = Slot.builder(slot -> slot
             .material(Material.SPECTRAL_ARROW)
-            .displayName(MiniMessage.miniMessage().deserialize("<white>Go down"))
+            .displayName(MiniMessage.miniMessage().deserialize("<white>Next"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Click to shift the menu down"))
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Click to shift the menu forwards"))
             ))
             .soundSettings(SoundSettings.of(Sound.ENTITY_BREEZE_JUMP, 0.25f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER))
     );
