@@ -12,64 +12,35 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
-/**
- * This class is so complex, and for what reason :/
- * Rework later, maybe?
- * Also, I need to properly implement lore, etc.
- */
 public final class DItemStack {
 
-    private final DItem dItem;
-    private int amount;
-    private ItemStack itemStack;
-
-    private DItemStack(DItem dItem, int amount) {
-        this.dItem = dItem;
-        this.amount = amount;
+    private DItemStack() {
     }
 
     @NotNull
-    public static DItemStack of(DItem dItem, int amount) {
+    public static ItemStack of(DItem dItem, int amount) {
         Preconditions.checkArgument(dItem != null, "DItem cannot be null");
-        return new DItemStack(dItem, amount);
+        return getItemStack(dItem, amount);
     }
 
     @NotNull
-    public static DItemStack of(ItemStack itemStack) {
-        Objects.requireNonNull(itemStack, "ItemStack cannot be null");
-        String id = itemStack.getItemMeta().getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
-        return of(Registries.DESTRUCTIBLE_ITEMS.get(id), itemStack.getAmount());
+    public static ItemStack of(String id, int amount) {
+        return of(Registries.DESTRUCTIBLE_ITEMS.get(id), amount);
     }
 
     @NotNull
-    public static DItemStack of(String id) {
-        return of(Objects.requireNonNull(Registries.DESTRUCTIBLE_ITEMS.get(id), "ID cannot be null"), 1);
-    }
-
-    @Nullable
-    public static DItem getDItem(ItemStack itemStack) {
-        Preconditions.checkArgument(itemStack != null, "ItemStack is not a DItem");
+    public static Optional<DItem> getDItem(ItemStack itemStack) {
+        Preconditions.checkArgument(itemStack != null, "ItemStack cannot be null");
         String id = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
-        return id == null ? null : Registries.DESTRUCTIBLE_ITEMS.get(id);
+        return Optional.ofNullable(Registries.DESTRUCTIBLE_ITEMS.get(id));
     }
 
-    public void setAmount(int amount) {
-        if (this.itemStack != null) this.itemStack.setAmount(amount);
-        this.amount = amount;
-    }
-
-    public int getAmount() {
-        return this.itemStack != null ? this.itemStack.getAmount() : this.amount;
-    }
-
-    public ItemStack getItemStack() {
-        if(this.itemStack != null) return this.itemStack;
-        ItemStack itemStack = ItemStack.of(Material.STICK, this.amount);
+    @NotNull
+    private static ItemStack getItemStack(DItem dItem, int amount) {
+        ItemStack itemStack = ItemStack.of(Material.STICK, amount);
         itemStack.getDataTypes().forEach(dataType -> itemStack.unsetData(dataType));
         itemStack.editMeta(meta -> {
             meta.getPersistentDataContainer().set(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING, dItem.getId());
@@ -78,7 +49,7 @@ public final class DItemStack {
         ItemLore.Builder lore = ItemLore.lore();
         lore.addLines(dItem.getLore().lines());
 
-        if(this.dItem instanceof DTool dTool) {
+        if(dItem instanceof DTool dTool) {
             if(dTool.getToolDurability() != -1) {
                 itemStack.editMeta(meta -> {
                     meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getToolDurability());
@@ -103,24 +74,6 @@ public final class DItemStack {
         itemStack.setData(DataComponentTypes.ITEM_NAME, dItem.getDisplayName());
         itemStack.setData(DataComponentTypes.LORE, lore);
         itemStack.setData(DataComponentTypes.MAX_STACK_SIZE, dItem.getStackSize());
-        this.itemStack = itemStack;
-        return this.itemStack;
-    }
-
-    @NotNull
-    public DItem getDItem() {
-        return this.dItem;
-    }
-
-    @Override
-    public @NotNull DItemStack clone() {
-        return of(this.dItem, this.amount);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(!(obj instanceof DItemStack dItemStack)) return false;
-        return super.equals(obj) && dItem.getId().equals(dItemStack.dItem.getId());
+        return itemStack;
     }
 }

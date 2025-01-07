@@ -11,6 +11,14 @@ import java.util.List;
 
 public class Slots {
 
+    public static final Slot.Builder MISSING_ITEM = Slot.builder(slot -> slot
+            .material(Material.BARRIER)
+            .displayName(MiniMessage.miniMessage().deserialize("<red>Missing Item"))
+            .lore(ItemLore.lore(List.of(
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>This item is missing"),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>from the menu"))))
+    );
+
     public static final Slot.Builder RETURN_ITEM = Slot.builder(slot -> slot
             .material(Material.BELL)
             .displayName(MiniMessage.miniMessage().deserialize("<red>Return"))

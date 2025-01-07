@@ -20,11 +20,13 @@ import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
-public class ItemToolMenu extends ModularMenu {
+public class ItemToolMenu extends DestructibleMenu {
     private static final GUISize SIZE = GUISize.SIX;
-    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Tools");
+    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Destructible Tools");
     private static final List<Integer> MODULAR_SLOTS = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
             18, 19, 20, 21, 22, 23, 24, 25, 26,
@@ -32,13 +34,14 @@ public class ItemToolMenu extends ModularMenu {
             36, 37, 38, 39, 40, 41, 42, 43, 44
     );
 
+    private int shiftIndex = 0;
+    private final List<DTool> itemPopulation = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(DTool.class::isInstance).map(item -> (DTool) item).toList();
+
     public ItemToolMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE,
-                Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(DTool.class::isInstance).map(DTool.class::cast).map(item -> DItemStack.of(item, 1)).toList(),
-                MODULAR_SLOTS
-        );
+        super(dPlayer, SIZE, TITLE);
 
         populateMenu();
+        populateModular();
     }
 
     private final Slot menuItem = Slot.builder(slot -> slot
@@ -64,20 +67,30 @@ public class ItemToolMenu extends ModularMenu {
             .clickAction((action, clickType) -> super.returnToPreviousMenu())
             .build();
 
-    @Override
     public void populateMenu() {
         this.setSlot(this.menuItem);
         this.setSlot(this.returnItem);
 
-        if(getShiftIndex() > 0) this.setSlot(this.shiftPreviousItem);
+        if(shiftIndex > 0) this.setSlot(this.shiftPreviousItem);
         else this.unsetSlot(this.shiftPreviousItem.getIndex());
-        if(getShiftIndex() + getModularSlots().size() < getItemPopulation().size()) this.setSlot(this.shiftNextItem);
+        if(shiftIndex + MODULAR_SLOTS.size() < itemPopulation.size()) this.setSlot(this.shiftNextItem);
         else this.unsetSlot(this.shiftNextItem.getIndex());
     }
 
-    @Override
-    public Slot createSlot(int index, DItemStack item) {
-        DTool dTool = (DTool) item.getDItem();
+    public void populateModular() {
+        List<DTool> shiftedList = new LinkedList<>(itemPopulation).subList(shiftIndex, Math.min(shiftIndex + MODULAR_SLOTS.size(), itemPopulation.size()));
+
+        Iterator<Integer> iterator = MODULAR_SLOTS.iterator();
+        shiftedList.iterator().forEachRemaining(item -> {
+            if(iterator.hasNext()) {
+                setSlot(createSlot(iterator.next(), item));
+            }
+        });
+        super.getSlotHolder().getRemainingSlots(MODULAR_SLOTS).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
+        super.getSlotHolder().getRemainingSlots().forEach(slotNum -> super.setSlot(Slots.FILLER_ITEM.index(slotNum).build()));
+    }
+
+    public Slot createSlot(int index, DTool dTool) {
         return Slot.builder(builder -> builder
                 .index(index)
                 .material(dTool.getMaterial())
@@ -134,6 +147,33 @@ public class ItemToolMenu extends ModularMenu {
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dTool, 1)).append(MiniMessage.miniMessage().deserialize("!")));
             getDPlayer().playSound(Sound.ITEM_BUNDLE_REMOVE_ONE, SoundCategory.PLAYERS, 1, RandomUtil.between(0.5f, 1.5f), PlayType.PLAYER);
         }
+    }
+
+    public void refresh() {
+        super.unsetSlots(MODULAR_SLOTS);
+        populateMenu();
+        populateModular();
+    }
+
+    public void rotateNext(Slot slotInfo, ClickType clickType, int amount) {
+        if(clickType.isShiftClick()) this.shiftIndex += MODULAR_SLOTS.size();
+        else this.shiftIndex += amount;
+
+        do {
+            this.shiftIndex -= amount;
+        } while (shiftIndex + MODULAR_SLOTS.size() > itemPopulation.size());
+        this.shiftIndex += amount;
+
+        this.refresh();
+    }
+
+    public void rotatePrevious(Slot slotInfo, ClickType clickType, int amount) {
+        if(clickType.isShiftClick()) this.shiftIndex -= MODULAR_SLOTS.size();
+        else this.shiftIndex -= amount;
+
+        if(shiftIndex < 0) shiftIndex = 0;
+
+        this.refresh();
     }
 
     @Override

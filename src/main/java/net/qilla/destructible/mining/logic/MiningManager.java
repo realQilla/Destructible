@@ -14,6 +14,8 @@ import net.qilla.destructible.util.DBlockUtil;
 import org.bukkit.GameMode;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public class MiningManager {
 
     private final DPlayer dPlayer;
@@ -39,7 +41,12 @@ public class MiningManager {
         if(blockInstance == null || blockInstance.getDBlock().getBlockDurability() < 0 ||
                 !interactionHand.equals(InteractionHand.MAIN_HAND)) return;
 
-        DItem dItem = DItemStack.getDItem(dPlayer.getCraftPlayer().getEquipment().getItemInMainHand());
+        Optional<DItem> optional = DItemStack.getDItem(dPlayer.getCraftPlayer().getEquipment().getItemInMainHand());
+
+        if(optional.isEmpty()) return;
+
+        DItem dItem = optional.get();
+
         if(!(dItem instanceof DTool dTool)) return;
 
         if(!toolManager.canMine(dTool, blockInstance)) return;

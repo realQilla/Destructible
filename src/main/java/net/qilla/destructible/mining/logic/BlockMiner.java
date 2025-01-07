@@ -26,6 +26,7 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -91,19 +92,19 @@ public class BlockMiner {
         });
 
         Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
-            List<DItemStack> dItemStacks = dPlayer.rollItemDrops(blockInstance.getDBlock().getItemDrops());
+            List<ItemStack> itemStacks = dPlayer.rollItemDrops(blockInstance.getDBlock().getItemDrops());
             Vec3 faceVec = blockInstance.getDirection().getUnitVec3();
 
             Vec3 itemMidFace = DBlockUtil.getFaceCenterItem(blockInstance.getDirection());
 
             BlockPos blockPos = blockInstance.getBlockPos();
-            for(DItemStack dItemStack : dItemStacks) {
+            for(ItemStack itemStack : itemStacks) {
                 ItemEntity itemEntity = new ItemEntity(
                         dPlayer.getServerLevel(),
                         blockPos.getX() + 0.5 + itemMidFace.x,
                         blockPos.getY() + 0.5 + itemMidFace.y,
                         blockPos.getZ() + 0.5 + itemMidFace.z,
-                        CraftItemStack.asCraftCopy(dItemStack.getItemStack()).handle,
+                        CraftItemStack.asCraftCopy(itemStack).handle,
                         faceVec.offsetRandom(RANDOM, 1.2f).x * 0.3,
                         faceVec.y * 0.3,
                         faceVec.offsetRandom(RANDOM, 1.2f).z * 0.3);
@@ -111,7 +112,7 @@ public class BlockMiner {
                 CraftItem craftItem = new CraftItem(dPlayer.getCraftServer(), itemEntity);
                 Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
                     this.itemPopVisual(craftItem);
-                    this.magnetVisual(craftItem, dItemStack);
+                    this.magnetVisual(craftItem, itemStack);
                 });
                 try {
                     Thread.sleep(ITEM_ALTERNATE_DELAY * 50);
@@ -122,14 +123,14 @@ public class BlockMiner {
         });
     }
 
-    private void magnetVisual(CraftItem itemEntity, DItemStack dItemStack) {
+    private void magnetVisual(CraftItem itemEntity, ItemStack itemStack) {
         Bukkit.getScheduler().runTaskLater(Destructible.getInstance(), () -> {
             dPlayer.broadcastPacket(new ClientboundTakeItemEntityPacket(
                     itemEntity.getEntityId(),
                     dPlayer.getCraftPlayer().getEntityId(),
-                    dItemStack.getAmount()
+                    itemStack.getAmount()
             ));
-            dPlayer.give(dItemStack);
+            dPlayer.give(itemStack);
         }, ITEM_MAGNET_DELAY);
 
         Bukkit.getScheduler().runTaskLater(dPlayer.getPlugin(), () -> {

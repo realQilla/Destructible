@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.menus.DestructibleMenu;
@@ -13,8 +14,11 @@ import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.util.ComponentUtil;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.List;
 
 public class OverflowCommand {
@@ -89,17 +93,16 @@ public class OverflowCommand {
             return 0;
         }
 
-        List<DItemStack> itemList = overflow.take();
+        List<ItemStack> itemStacks = overflow.take();
 
-        if(itemList.isEmpty()) {
+        if(itemStacks.isEmpty()) {
             dPlayer.sendMessage("<red>There was a problem claiming your items!");
             return 0;
         }
 
-        itemList.forEach(dPlayer::give);
+        itemStacks.forEach(dPlayer::give);
         dPlayer.sendMessage("<yellow>You have successfully claimed: ");
-        itemList.forEach(item -> dPlayer.getCraftPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+" + item.getAmount() + " ")
-                .append(item.getDItem().getDisplayName())));
+        itemStacks.forEach(item -> dPlayer.getCraftPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+").append(ComponentUtil.getItem(item))));
         dPlayer.getCraftPlayer().playSound(dPlayer.getCraftPlayer().getLocation(), Sound.ENTITY_HORSE_SADDLE, 1.0f, 1.0f);
         return Command.SINGLE_SUCCESS;
     }

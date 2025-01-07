@@ -1,5 +1,6 @@
 package net.qilla.destructible.player;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.network.protocol.Packet;
@@ -78,31 +79,31 @@ public class DPlayer {
         return preExisting + empty;
     }
 
-    public void give(DItemStack dItemStack) {
-        ItemStack itemStack = dItemStack.getItemStack();
-        int space = getSpace(itemStack);
-        if(space >= dItemStack.getAmount()) {
-            craftPlayer.getInventory().addItem(itemStack);
+    public void give(ItemStack itemStack) {
+        ItemStack clone = itemStack.clone();
+        int space = getSpace(clone);
+        if(space >= clone.getAmount()) {
+            craftPlayer.getInventory().addItem(clone);
             return;
         }
 
-        ItemStack splitItem = itemStack.clone();
+        ItemStack splitItem = clone.clone();
         splitItem.setAmount(space);
         craftPlayer.getInventory().addItem(splitItem);
-        int remaining = itemStack.getAmount() - space;
+        int remaining = clone.getAmount() - space;
         if(remaining <= 0) return;
-        dItemStack.setAmount(remaining);
+        clone.setAmount(remaining);
         Overflow overflow = Registries.DESTRUCTIBLE_PLAYERS.get(craftPlayer.getUniqueId()).getOverflow();
-        overflow.put(dItemStack);
+        overflow.put(clone);
 
         craftPlayer.getWorld().playSound(craftPlayer.getLocation(), Sound.ENTITY_HORSE_SADDLE, 0.25f, 1);
 
-        craftPlayer.sendActionBar(MiniMessage.miniMessage().deserialize("<green>+" + itemStack.getAmount() + " ")
-                .append(dItemStack.getDItem().getDisplayName().asComponent())
+        craftPlayer.sendActionBar(MiniMessage.miniMessage().deserialize("<green>+" + clone.getAmount() + " ")
+                .append(clone.getData(DataComponentTypes.ITEM_NAME))
                 .append(MiniMessage.miniMessage().deserialize(" added to stash!")));
     }
 
-    public List<DItemStack> rollItemDrops(List<DDrop> itemDrops) {
+    public List<ItemStack> rollItemDrops(List<DDrop> itemDrops) {
         if(itemDrops.isEmpty()) return List.of();
 
         return itemDrops.stream().filter(drop -> RANDOM.nextFloat() <= drop.getChance())
