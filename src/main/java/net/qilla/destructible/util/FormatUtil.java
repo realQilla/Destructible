@@ -22,6 +22,10 @@ public class FormatUtil {
         return String.format("%,d", (int) number);
     }
 
+    public static String numberComma(long number) {
+        return String.format("%,d", number);
+    }
+
     public static String decimalTruncation(double number, int decimals) {
         Format format = new DecimalFormat("#." + "#".repeat(decimals));
         return format.format(number);

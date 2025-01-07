@@ -7,29 +7,23 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.DataKey;
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public final class Slot {
-    private final int index;
-    private final BiConsumer<Slot, ClickType> clickAction;
-    private final ItemStack itemStack;
-    private final SoundSettings soundSettings;
+public class Display {
     private final Builder builder;
+    private final ItemStack itemStack;
 
-    public Slot(Builder builder) {
-        this.index = builder.index;
-        this.clickAction = builder.clickAction;
+    private Display(Builder builder) {
+        this.builder = builder;
         this.itemStack = ItemStack.of(Material.GLASS_PANE);
         this.itemStack.editMeta(meta -> {
             meta.getPersistentDataContainer().set(DataKey.GUI_ITEM, PersistentDataType.BOOLEAN, true);
         });
 
         this.itemStack.getDataTypes().forEach(dataType -> this.itemStack.unsetData(dataType));
+
         if(builder.material != null) {
             this.itemStack.setData(DataComponentTypes.ITEM_MODEL, builder.material.getKey());
         }
@@ -47,78 +41,49 @@ public final class Slot {
         if(builder.glow) {
             this.itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
         }
-        this.soundSettings = builder.soundSettings;
-        this.builder = builder;
     }
 
-    public int getIndex() {
-        return this.index;
-    }
-
-    public void onClick(ClickType clickType) {
-        if(this.clickAction == null) return;
-        this.clickAction.accept(this, clickType);
-    }
-
-    public ItemStack getItemStack() {
-        return this.itemStack;
-    }
-
-    public SoundSettings getSoundSettings() {
-        return this.soundSettings;
+    public Display modify(Consumer<Builder> consumer) {
+        Builder builder = this.builder;
+        consumer.accept(builder);
+        return builder.build();
     }
 
     public Builder getBuilder() {
         return this.builder;
     }
 
-    public static Builder builder() {
+    public ItemStack get() {
+        return this.itemStack;
+    }
+
+    public static Builder of() {
         return new Builder();
     }
 
-    public static Builder builder(Consumer<Builder> consumer) {
-        Builder builder = new Builder();
-        consumer.accept(builder);
-        return builder;
+    public static Display of(Builder builder) {
+        return new Display(builder);
     }
 
-    public static Slot rebuild(Slot slot, Consumer<Builder> builder) {
-        Builder newBuilder = new Builder();
-        newBuilder.builder(slot.getBuilder());
-        builder.accept(newBuilder);
-        return new Slot(newBuilder);
+    public static Display of(Consumer<Builder> consumer) {
+        Builder builder = new Builder();
+        consumer.accept(builder);
+        return builder.build();
     }
 
     public static final class Builder {
-        private int index;
-        private BiConsumer<Slot, ClickType> clickAction;
         private Material material;
         private int amount;
         private Component displayName;
         private boolean hideTooltip;
         private boolean glow;
         private ItemLore lore;
-        private SoundSettings soundSettings;
 
         private Builder() {
-            this.index = 0;
-            this.clickAction = null;
             this.material = Material.BLACK_STAINED_GLASS_PANE;
             this.amount = 1;
             this.displayName = MiniMessage.miniMessage().deserialize("Empty Slot");
             this.lore = ItemLore.lore().build();
-            this.soundSettings = null;
-        }
-
-        public Builder index(int index) {
-            Preconditions.checkArgument(index >= 0 && index < 54, "Slot must be between 0 and 53");
-            this.index = index;
-            return this;
-        }
-
-        public Builder clickAction(BiConsumer<Slot, ClickType> clickAction) {
-            this.clickAction = clickAction;
-            return this;
         }
 
         public Builder noMaterial() {
@@ -159,26 +124,8 @@ public final class Slot {
             return this;
         }
 
-        public Builder soundSettings(SoundSettings soundSettings) {
-            Preconditions.checkArgument(soundSettings != null, "Sound settings cannot be null");
-            this.soundSettings = soundSettings;
-            return this;
-        }
-
-        public Builder builder(Builder builder) {
-            this.index = builder.index;
-            this.clickAction = builder.clickAction;
-            this.material = builder.material;
-            this.amount = builder.amount;
-            this.displayName = builder.displayName;
-            this.hideTooltip = builder.hideTooltip;
-            this.lore = builder.lore;
-            this.soundSettings = builder.soundSettings;
-            return this;
-        }
-
-        public Slot build() {
-            return new Slot(this);
+        public Display build() {
+            return new Display(this);
         }
     }
 }

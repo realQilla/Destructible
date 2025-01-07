@@ -1,6 +1,6 @@
 package net.qilla.destructible.menus;
 
-public enum GUISize {
+public enum MenuSize {
 
     ONE(9),
     TWO(18),
@@ -10,7 +10,7 @@ public enum GUISize {
     SIX(54);
 
     private final int size;
-    GUISize(int size) {
+    MenuSize(int size) {
         this.size = size;
     }
 

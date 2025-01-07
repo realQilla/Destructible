@@ -1,11 +1,12 @@
 package net.qilla.destructible.menus;
 
-import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.menus.input.SignInput;
+import net.qilla.destructible.menus.slot.Slot;
+import net.qilla.destructible.menus.slot.Displays;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.CooldownType;
@@ -20,12 +21,11 @@ import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class ItemMenu extends DestructibleMenu {
-    private static final GUISize SIZE = GUISize.SIX;
+public class ItemMenu extends ModularMenu {
+    private static final MenuSize SIZE = MenuSize.SIX;
     private static final Component TITLE = MiniMessage.miniMessage().deserialize("Destructible Items");
     private static final List<Integer> MODULAR_SLOTS = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -34,85 +34,54 @@ public class ItemMenu extends DestructibleMenu {
             36, 37, 38, 39, 40, 41, 42, 43, 44
     );
 
-    private int shiftIndex = 0;
-    private final List<DItem> itemPopulation = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> item.getClass() == DItem.class).sorted(Comparator.comparing(DItem::getId)).toList();
+    private static final List<DItem> ITEM_POPULATION = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> item.getClass() == DItem.class).sorted(Comparator.comparing(DItem::getId)).toList();
+    private final Slot nextSlot;
+    private final Slot previousSlot;
 
     public ItemMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE);
+        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS, ITEM_POPULATION.size());
 
-        populateMenu();
+        super.register(Slot.of(4, Displays.ITEM_MENU));
+        super.register(Slot.of(47, toolMenu, (slot, clickType) -> new ItemToolMenu(super.getDPlayer()).openInventory()));
+        super.register(Slot.of(46, weaponMenu));
+        super.register(Slot.of(49, Displays.RETURN, (slot, clickType) -> returnToPreviousMenu()));
+        this.nextSlot = Slot.of(52, Displays.NEXT, (slot, clickType) -> rotateNext(slot, clickType, 9));
+        this.previousSlot = Slot.of(7, Displays.PREVIOUS, (slot, clickType) -> rotatePrevious(slot, clickType, 9));
+
+        if(ITEM_POPULATION.size() > MODULAR_SLOTS.size()) this.register(nextSlot);
+
         populateModular();
     }
 
-    private final Slot menuItem = Slot.builder(slot -> slot
-            .index(4)
-            .material(Material.QUARTZ)
-            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Item Modification"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Select any item to view more"),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>details or make changes"))
-            ))
-    ).build();
-
-    private final Slot shiftPreviousItem = Slots.PREVIOUS_ITEM
-            .index(7)
-            .clickAction((slotInfo, clickType) -> rotatePrevious(slotInfo, clickType, 9))
-            .build();
-
-    private final Slot shiftNextItem = Slots.NEXT_ITEM
-            .index(52)
-            .clickAction((slotInfo, clickType) -> rotateNext(slotInfo, clickType, 9))
-            .build();
-
-    private final Slot toolMenuItem = Slot.builder(slot -> slot
-            .index(47)
+    public final net.qilla.destructible.menus.Display toolMenu = net.qilla.destructible.menus.Display.of(consumer -> consumer
             .material(Material.IRON_PICKAXE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Tools"))
             .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to view destructible tools"))))
-            .clickAction((action, clickType) -> new ItemToolMenu(super.getDPlayer()).openInventory())
-    ).build();
+    );
 
-    private final Slot weaponMenuItem = Slot.builder(slot -> slot
-            .index(46)
+    public final net.qilla.destructible.menus.Display weaponMenu = net.qilla.destructible.menus.Display.of(consumer -> consumer
             .material(Material.NETHERITE_AXE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Weapons"))
             .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Left-Click to view destructible weapons"))))
-            .clickAction((action, clickType) -> {})
-    ).build();
+    );
 
-    private final Slot returnItem = Slots.RETURN_ITEM
-            .index(49)
-            .clickAction((action, clickType) -> super.returnToPreviousMenu())
-            .build();
-
-    public void populateMenu() {
-        setSlot(this.menuItem);
-        setSlot(this.returnItem);
-        setSlot(this.toolMenuItem);
-        setSlot(this.weaponMenuItem);
-
-        if(shiftIndex > 0) this.setSlot(this.shiftPreviousItem);
-        else this.unsetSlot(this.shiftPreviousItem.getIndex());
-        if(shiftIndex + MODULAR_SLOTS.size() < itemPopulation.size()) this.setSlot(this.shiftNextItem);
-        else this.unsetSlot(this.shiftNextItem.getIndex());
-    }
-
+    @Override
     public void populateModular() {
-        List<DItem> shiftedList = new LinkedList<>(itemPopulation).subList(shiftIndex, Math.min(shiftIndex + MODULAR_SLOTS.size(), itemPopulation.size()));
+        List<DItem> shiftedList = new LinkedList<>(ITEM_POPULATION).subList(super.getShiftIndex(), Math.min(super.getShiftIndex() + MODULAR_SLOTS.size(), ITEM_POPULATION.size()));
 
         Iterator<Integer> iterator = MODULAR_SLOTS.iterator();
         shiftedList.iterator().forEachRemaining(item -> {
             if(iterator.hasNext()) {
-                setSlot(createSlot(iterator.next(), item));
+                register(createSlot(iterator.next(), item));
             }
         });
-        super.getSlotHolder().getRemainingSlots(MODULAR_SLOTS).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
-        super.getSlotHolder().getRemainingSlots().forEach(slotNum -> super.setSlot(Slots.FILLER_ITEM.index(slotNum).build()));
+
+        super.getSocket().getRemaining(MODULAR_SLOTS).forEach(slotNum -> super.register(Slot.of(slotNum, Displays.EMPTY_SLOT)));
+        super.getSocket().getRemaining().forEach(slotNum -> super.register(Slot.of(slotNum, Displays.FILLER)));
     }
 
     public Slot createSlot(int index, DItem dItem) {
-        return Slot.builder(builder -> builder
-                .index(index)
+        net.qilla.destructible.menus.Display display = net.qilla.destructible.menus.Display.of(builder -> builder
                 .material(dItem.getMaterial())
                 .displayName(MiniMessage.miniMessage().deserialize(dItem.getId()))
                 .lore(ItemLore.lore()
@@ -127,13 +96,13 @@ public class ItemMenu extends DestructibleMenu {
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
-                        ))
-                        .build())
-                .clickAction((slotInfo, clickType) -> getItem(slotInfo, clickType, dItem))
-        ).build();
+                        )).build()
+                )
+        );
+        return Slot.of(index, display, (slot, clickType) -> getItem(slot, clickType, dItem));
     }
 
-    private void getItem(Slot slotInfo, ClickType clickType, DItem dItem) {
+    private void getItem(Slot slot, ClickType clickType, DItem dItem) {
         if(getDPlayer().getCooldown().has(CooldownType.GET_ITEM)) return;
         getDPlayer().getCooldown().set(CooldownType.GET_ITEM);
 
@@ -165,30 +134,15 @@ public class ItemMenu extends DestructibleMenu {
     }
 
     public void refresh() {
-        super.unsetSlots(MODULAR_SLOTS);
-        populateMenu();
+        MODULAR_SLOTS.forEach(super::unregister);
+        int shiftIndex = super.getShiftIndex();
+
+        if(shiftIndex > 0) this.register(this.previousSlot);
+        else super.unregister(this.previousSlot.getIndex());
+        if(shiftIndex + MODULAR_SLOTS.size() < ITEM_POPULATION.size()) this.register(this.nextSlot);
+        else super.unregister(this.nextSlot.getIndex());
+
         populateModular();
-    }
-
-    public void rotateNext(Slot slotInfo, ClickType clickType, int amount) {
-        if(clickType.isShiftClick()) this.shiftIndex += MODULAR_SLOTS.size();
-        else this.shiftIndex += amount;
-
-        do {
-            this.shiftIndex -= amount;
-        } while (shiftIndex + MODULAR_SLOTS.size() > itemPopulation.size());
-        this.shiftIndex += amount;
-
-        this.refresh();
-    }
-
-    public void rotatePrevious(Slot slotInfo, ClickType clickType, int amount) {
-        if(clickType.isShiftClick()) this.shiftIndex -= MODULAR_SLOTS.size();
-        else this.shiftIndex -= amount;
-
-        if(shiftIndex < 0) shiftIndex = 0;
-
-        this.refresh();
     }
 
     @Override

@@ -6,7 +6,9 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.menus.input.SignInput;
-import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.menus.slot.Displays;
+import net.qilla.destructible.menus.slot.Slot;
+import net.qilla.destructible.menus.slot.SlotType;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
@@ -22,8 +24,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class OverflowMenu extends DestructibleMenu {
-    private static final GUISize SIZE = GUISize.SIX;
+public class OverflowMenu extends ModularMenu {
+    private static final MenuSize SIZE = MenuSize.SIX;
     private static final Component TITLE = MiniMessage.miniMessage().deserialize("Overflow Stash");
     private static final List<Integer> MODULAR_SLOTS = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -32,80 +34,52 @@ public class OverflowMenu extends DestructibleMenu {
             36, 37, 38, 39, 40, 41, 42, 43, 44
     );
 
-    private int shiftIndex = 0;
     private final Map<DItem, Integer> itemPopulation = getDPlayer().getOverflow().getOverflow();
+    private final Slot nextSlot;
+    private final Slot previousSlot;
 
     public OverflowMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE);
+        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS, dPlayer.getOverflow().getOverflow().size());
         super.getDPlayer().playSound(Sound.ITEM_BUNDLE_INSERT, SoundCategory.PLAYERS, 0.5f, RandomUtil.between(0.5f, 1.0f), PlayType.PLAYER);
 
-        populateMenu();
+        super.register(Slot.of(4, Displays.OVERFLOW_MENU));
+        super.register(Slot.of(45, removeAllDisplay, this::clearOverflow));
+        super.register(Slot.of(49, Displays.RETURN, (slot, clickType) -> returnToPreviousMenu()), SlotType.RETURN);
+        this.nextSlot = Slot.of(52, Displays.NEXT, (slot, clickType) -> rotateNext(slot, clickType, 9));
+        this.previousSlot = Slot.of(7, Displays.PREVIOUS, (slot, clickType) -> rotatePrevious(slot, clickType, 9));
+
+        if(itemPopulation.size() > MODULAR_SLOTS.size()) this.register(nextSlot);
         populateModular();
     }
 
-    private final Slot menuItem = Slot.builder(slot -> slot
-            .index(4)
-            .material(Material.BROWN_BUNDLE)
-            .displayName(MiniMessage.miniMessage().deserialize("<gold>Overflowing Items"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to claim any items that were not "),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>able to fit into your inventory"))))
-    ).build();
-
-    private final Slot shiftPreviousItem = Slots.PREVIOUS_ITEM
-            .index(7)
-            .clickAction((slotInfo, clickType) -> rotatePrevious(slotInfo, clickType, 9))
-            .build();
-
-    private final Slot shiftNextItem = Slots.NEXT_ITEM
-            .index(52)
-            .clickAction((slotInfo, clickType) -> rotateNext(slotInfo, clickType, 9))
-            .build();
-
-    private final Slot returnItem = Slots.RETURN_ITEM
-            .index(49)
-            .clickAction((action, clickType) -> super.returnToPreviousMenu())
-            .build();
-
-    private final Slot removeAllItem = Slot.builder(slot -> slot
-            .index(45)
+    net.qilla.destructible.menus.Display removeAllDisplay = net.qilla.destructible.menus.Display.of(consumer -> consumer
             .material(Material.BARRIER)
             .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Click to clear your entire"),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>overflow stash")))
+                            MiniMessage.miniMessage().deserialize("<!italic><gray>Click to clear your entire"),
+                            MiniMessage.miniMessage().deserialize("<!italic><gray>overflow stash")
+                    ))
             )
-            .clickAction(this::clearOverflow)
-    ).build();
+    );
 
-    public void populateMenu() {
-        setSlot(menuItem);
-        setSlot(removeAllItem);
-        setSlot(returnItem);
-
-        if(shiftIndex > 0) this.setSlot(this.shiftPreviousItem);
-        else this.unsetSlot(this.shiftPreviousItem.getIndex());
-        if(shiftIndex + MODULAR_SLOTS.size() < itemPopulation.size()) this.setSlot(this.shiftNextItem);
-        else this.unsetSlot(this.shiftNextItem.getIndex());
-    }
-
+    @Override
     public void populateModular() {
         List<ItemStack> shiftedList = new LinkedList<>(itemPopulation.entrySet().stream().map(entry -> DItemStack.of(entry.getKey(), entry.getValue())).toList())
-                .subList(shiftIndex, Math.min(shiftIndex + MODULAR_SLOTS.size(), itemPopulation.size()));
+                .subList(super.getShiftIndex(), Math.min(super.getShiftIndex() + MODULAR_SLOTS.size(), itemPopulation.size()));
 
         Iterator<Integer> iterator = MODULAR_SLOTS.iterator();
         shiftedList.iterator().forEachRemaining(item -> {
             if(iterator.hasNext()) {
-                setSlot(createSlot(iterator.next(), item));
+                register(createSlot(iterator.next(), item));
             }
         });
-        super.getSlotHolder().getRemainingSlots(MODULAR_SLOTS).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
-        super.getSlotHolder().getRemainingSlots().forEach(slotNum -> super.setSlot(Slots.FILLER_ITEM.index(slotNum).build()));
+
+        super.getSocket().getRemaining(MODULAR_SLOTS).forEach(slotNum -> super.register(Slot.of(slotNum, Displays.EMPTY_SLOT)));
+        super.getSocket().getRemaining().forEach(slotNum -> super.register(Slot.of(slotNum, Displays.FILLER)));
     }
 
     public Slot createSlot(int index, ItemStack itemStack) {
-        return Slot.builder(builder -> builder
-                .index(index)
+        net.qilla.destructible.menus.Display display = net.qilla.destructible.menus.Display.of(consumer -> consumer
                 .material(Registry.MATERIAL.get(itemStack.getData(DataComponentTypes.ITEM_MODEL)))
                 .amount(itemStack.getAmount())
                 .displayName(itemStack.getData(DataComponentTypes.ITEM_NAME).append(MiniMessage.miniMessage().deserialize("<white> x" + itemStack.getAmount())))
@@ -117,11 +91,11 @@ public class OverflowMenu extends DestructibleMenu {
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Right Click to remove")
                         )).build()
                 )
-                .clickAction((slotInfo, clickType) -> claimOverflow(slotInfo, clickType, itemStack))
-        ).build();
+        );
+        return Slot.of(index, display, (slot, clickType) -> claimOverflow(slot, clickType, itemStack));
     }
 
-    private void claimOverflow(Slot slotInfo, ClickType clickType, ItemStack itemStack) {
+    private void claimOverflow(Slot slot, ClickType clickType, ItemStack itemStack) {
         Overflow overflow = super.getDPlayer().getOverflow();
         Optional<DItem> optional = DItemStack.getDItem(itemStack);
 
@@ -161,7 +135,7 @@ public class OverflowMenu extends DestructibleMenu {
         this.refresh();
     }
 
-    public void clearOverflow(Slot slotInfo, ClickType clickType) {
+    public void clearOverflow(Slot slot, ClickType clickType) {
         if(getDPlayer().getOverflow().isEmpty()) {
             getDPlayer().sendMessage("<red>Your overflow stash is already empty!");
             getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
@@ -189,30 +163,15 @@ public class OverflowMenu extends DestructibleMenu {
     }
 
     public void refresh() {
-        super.unsetSlots(MODULAR_SLOTS);
-        populateMenu();
+        MODULAR_SLOTS.forEach(super::unregister);
+        int shiftIndex = super.getShiftIndex();
+
+        if(shiftIndex > 0) this.register(this.previousSlot);
+        else super.unregister(this.previousSlot.getIndex());
+        if(shiftIndex + MODULAR_SLOTS.size() < itemPopulation.size()) this.register(this.nextSlot);
+        else super.unregister(this.nextSlot.getIndex());
+
         populateModular();
-    }
-
-    public void rotateNext(Slot slotInfo, ClickType clickType, int amount) {
-        if(clickType.isShiftClick()) this.shiftIndex += MODULAR_SLOTS.size();
-        else this.shiftIndex += amount;
-
-        do {
-            this.shiftIndex -= amount;
-        } while (shiftIndex + MODULAR_SLOTS.size() > itemPopulation.size());
-        this.shiftIndex += amount;
-
-        this.refresh();
-    }
-
-    public void rotatePrevious(Slot slotInfo, ClickType clickType, int amount) {
-        if(clickType.isShiftClick()) this.shiftIndex -= MODULAR_SLOTS.size();
-        else this.shiftIndex -= amount;
-
-        if(shiftIndex < 0) shiftIndex = 0;
-
-        this.refresh();
     }
 
     @Override

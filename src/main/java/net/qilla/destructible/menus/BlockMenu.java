@@ -4,6 +4,8 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.menus.slot.Slot;
+import net.qilla.destructible.menus.slot.Displays;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.FormatUtil;
@@ -17,9 +19,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BlockMenu extends DestructibleMenu {
+public class BlockMenu extends ModularMenu {
 
-    private static final GUISize SIZE = GUISize.SIX;
+    private static final MenuSize SIZE = MenuSize.SIX;
     private static final Component TITLE = MiniMessage.miniMessage().deserialize("Destructible Blocks");
     private static final List<Integer> MODULAR_SLOTS = List.of(
             9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -28,78 +30,48 @@ public class BlockMenu extends DestructibleMenu {
             36, 37, 38, 39, 40, 41, 42, 43, 44
     );
 
-    private int shiftIndex = 0;
-    private final List<DBlock> itemPopulation = Registries.DESTRUCTIBLE_BLOCKS.values().stream().sorted(Comparator.comparing(DBlock::getId)).toList();
+    private static final List<DBlock> ITEM_POPULATION = Registries.DESTRUCTIBLE_BLOCKS.values().stream().sorted(Comparator.comparing(DBlock::getId)).toList();
+    private final Slot nextSlot;
+    private final Slot previousSlot;
 
     public BlockMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE);
+        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS, ITEM_POPULATION.size());
 
-        populateMenu();
+        super.register(Slot.of(4, Displays.BLOCK_MENU));
+        super.register(Slot.of(46, createMenu, (slot, clickType) -> new BlockMenuModify(super.getDPlayer()).openInventory()));
+        super.register(Slot.of(49, Displays.RETURN, (slot, clickType) -> returnToPreviousMenu()));
+        this.nextSlot = Slot.of(52, Displays.NEXT, (slot, clickType) -> rotateNext(slot, clickType, 9));
+        this.previousSlot = Slot.of(7, Displays.PREVIOUS, (slot, clickType) -> rotatePrevious(slot, clickType, 9));
+
+        if(ITEM_POPULATION.size() > MODULAR_SLOTS.size()) this.register(nextSlot);
+
         populateModular();
     }
 
-    private final Slot menuItem = Slot.builder(slot -> slot
-            .index(4)
-            .material(Material.CHEST)
-            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Modification"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Select any block to view more"),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>details or make changes"))
-            ))
-    ).build();
-
-    private final Slot shiftPreviousItem = Slots.PREVIOUS_ITEM
-            .index(7)
-            .clickAction((slotInfo, clickType) -> rotatePrevious(slotInfo, clickType, 9))
-            .build();
-
-    private final Slot shiftNextItem = Slots.NEXT_ITEM
-            .index(52)
-            .clickAction((slotInfo, clickType) -> rotateNext(slotInfo, clickType, 9))
-            .build();
-
-    private final Slot returnItem = Slots.RETURN_ITEM
-            .index(49)
-            .clickAction((action, clickType) -> super.returnToPreviousMenu())
-            .build();
-
-    private final Slot createItem = Slot.builder(slot -> slot
-            .index(46)
+    private final net.qilla.destructible.menus.Display createMenu = net.qilla.destructible.menus.Display.of(consumer -> consumer
             .material(Material.SHULKER_SHELL)
             .displayName(MiniMessage.miniMessage().deserialize("<dark_green>Create New"))
             .lore(ItemLore.lore(List.of(
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Click to create a new destructible block"))
             ))
-            .clickAction((slotInfo, clickType) -> new BlockMenuModify(super.getDPlayer()).openInventory())
-    ).build();
-
-    public void populateMenu() {
-        this.setSlot(this.menuItem);
-        this.setSlot(this.returnItem);
-        this.setSlot(this.createItem);
-
-        if(shiftIndex > 0) this.setSlot(this.shiftPreviousItem);
-        else this.unsetSlot(this.shiftPreviousItem.getIndex());
-        if(shiftIndex + MODULAR_SLOTS.size() < itemPopulation.size()) this.setSlot(this.shiftNextItem);
-        else this.unsetSlot(this.shiftNextItem.getIndex());
-    }
+    );
 
     public void populateModular() {
-        List<DBlock> shiftedList = new LinkedList<>(itemPopulation).subList(shiftIndex, Math.min(shiftIndex + MODULAR_SLOTS.size(), itemPopulation.size()));
+        List<DBlock> shiftedList = new LinkedList<>(ITEM_POPULATION).subList(super.getShiftIndex(), Math.min(super.getShiftIndex() + MODULAR_SLOTS.size(), ITEM_POPULATION.size()));
 
         Iterator<Integer> iterator = MODULAR_SLOTS.iterator();
         shiftedList.iterator().forEachRemaining(dBlock -> {
             if(iterator.hasNext()) {
-                setSlot(createSlot(iterator.next(), dBlock));
+                register(createSlot(iterator.next(), dBlock));
             }
         });
-        super.getSlotHolder().getRemainingSlots(MODULAR_SLOTS).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
-        super.getSlotHolder().getRemainingSlots().forEach(slotNum -> super.setSlot(Slots.FILLER_ITEM.index(slotNum).build()));
+
+        super.getSocket().getRemaining(MODULAR_SLOTS).forEach(slotNum -> super.register(Slot.of(slotNum, Displays.EMPTY_SLOT)));
+        super.getSocket().getRemaining().forEach(slotNum -> super.register(Slot.of(slotNum, Displays.FILLER)));
     }
 
     public Slot createSlot(int index, DBlock dBlock) {
-        return Slot.builder(builder -> builder
-                        .index(index))
+        net.qilla.destructible.menus.Display display = net.qilla.destructible.menus.Display.of(builder -> builder
                 .material(dBlock.getBlockMaterial())
                 .displayName(Component.text(dBlock.getId()))
                 .lore(ItemLore.lore(List.of(
@@ -115,43 +87,28 @@ public class BlockMenu extends DestructibleMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Click to modify block")
                 )))
-                .clickAction((slotInfo, clickType) -> blockClickInteraction(slotInfo, clickType, dBlock))
-                .build();
+        );
+        return Slot.of(index, display, (slot, clickType) -> blockClickInteraction(slot, clickType, dBlock));
     }
 
-    private void blockClickInteraction(Slot slotInfo, ClickType clickType, DBlock dBlock) {
+    private void blockClickInteraction(Slot slot, ClickType clickType, DBlock dBlock) {
         if(clickType.isLeftClick()) {
             new BlockMenuModify(getDPlayer(), dBlock).openInventory();
         } else if(clickType.isRightClick()) {
-            new BlockMenuDrops(getDPlayer(), slotInfo, Registries.DESTRUCTIBLE_BLOCKS.get(dBlock.getId())).openInventory();
+            new BlockMenuDrops(getDPlayer(), slot, Registries.DESTRUCTIBLE_BLOCKS.get(dBlock.getId())).openInventory();
         }
     }
 
     public void refresh() {
-        super.unsetSlots(MODULAR_SLOTS);
-        populateMenu();
+        MODULAR_SLOTS.forEach(super::unregister);
+        int shiftIndex = super.getShiftIndex();
+
+        if(shiftIndex > 0) this.register(this.previousSlot);
+        else super.unregister(this.previousSlot.getIndex());
+        if(shiftIndex + MODULAR_SLOTS.size() < ITEM_POPULATION.size()) this.register(this.nextSlot);
+        else super.unregister(this.nextSlot.getIndex());
+
         populateModular();
-    }
-
-    public void rotateNext(Slot slotInfo, ClickType clickType, int amount) {
-        if(clickType.isShiftClick()) this.shiftIndex += MODULAR_SLOTS.size();
-        else this.shiftIndex += amount;
-
-        do {
-            this.shiftIndex -= amount;
-        } while (shiftIndex + MODULAR_SLOTS.size() > itemPopulation.size());
-        this.shiftIndex += amount;
-
-        this.refresh();
-    }
-
-    public void rotatePrevious(Slot slotInfo, ClickType clickType, int amount) {
-        if(clickType.isShiftClick()) this.shiftIndex -= MODULAR_SLOTS.size();
-        else this.shiftIndex -= amount;
-
-        this.shiftIndex = Math.max(this.shiftIndex, 0);
-
-        this.refresh();
     }
 
     @Override

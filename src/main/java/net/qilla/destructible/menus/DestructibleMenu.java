@@ -1,6 +1,9 @@
 package net.qilla.destructible.menus;
 
 import net.kyori.adventure.text.Component;
+import net.qilla.destructible.menus.slot.Slot;
+import net.qilla.destructible.menus.slot.SlotType;
+import net.qilla.destructible.menus.slot.Socket;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
@@ -13,29 +16,27 @@ import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class DestructibleMenu implements InventoryHolder {
 
     private final DPlayer dPlayer;
     private final Inventory inventory;
-    private final SlotHolder slotHolder;
+    private final Socket socket;
 
-    public DestructibleMenu(DPlayer dPlayer, GUISize size, Component title) {
+    public DestructibleMenu(DPlayer dPlayer, MenuSize size, Component title) {
         this.dPlayer = dPlayer;
         this.inventory = Bukkit.createInventory(this, size.getSize(), title);
-        this.slotHolder = new SlotHolder();
+        this.socket = new Socket(size);
     }
 
     public void handleClick(InventoryClickEvent event) {
         if(dPlayer.getCooldown().has(CooldownType.MENU_CLICK)) return;
         dPlayer.getCooldown().set(CooldownType.MENU_CLICK);
 
-        int slotIndex = event.getSlot();
-        Slot slot = this.slotHolder.getSlot(slotIndex);
-        if(slot != null) {
-            dPlayer.playSound(slot.getSoundSettings(), true);
-            slot.onClick(event.getClick());
-        }
+        Slot slot = this.socket.get(event.getSlot());
+        if(slot == null) return;
+        slot.onClick(event.getClick());
     }
 
     public void returnToPreviousMenu() {
@@ -71,30 +72,35 @@ public abstract class DestructibleMenu implements InventoryHolder {
         }
     }
 
-    public SlotHolder getSlotHolder() {
-        return this.slotHolder;
+    public Socket getSocket() {
+        return this.socket;
     }
 
-    public void setSlot(Slot slot) {
-        this.slotHolder.registerSlot(slot);
-        this.inventory.setItem(slot.getIndex(), slot.getItemStack());
+    public void register(Slot slot) {
+        this.socket.register(slot);
+        this.inventory.setItem(slot.getIndex(), slot.getDisplay().get());
     }
 
-    public void setSlots(List<Slot> slots) {
-        slots.forEach(this::setSlot);
+    public void register(Slot slot, SlotType slotType) {
+        this.socket.register(slot, slotType);
+        this.inventory.setItem(slot.getIndex(), slot.getDisplay().get());
     }
 
-    public void unsetSlot(int slot) {
-        this.slotHolder.unregisterSlot(slot);
-        this.inventory.clear(slot);
+    public void unregister(int index) {
+        this.socket.unregister(index);
+        this.inventory.clear(index);
     }
 
-    public void unsetSlots(List<Integer> slots) {
-        slots.forEach(this::unsetSlot);
+    public void unregister(SlotType slotType) {
+        Slot slot = this.socket.get(slotType);
+        this.socket.unregister(slotType);
+        if(slot == null) return;
+        this.socket.unregister(slot.getIndex());
+        this.inventory.clear(slot.getIndex());
     }
 
-    public void clearSlots() {
-        this.slotHolder.clearSlots();
+    public void clear() {
+        this.socket.clear();
         this.inventory.clear();
     }
 
