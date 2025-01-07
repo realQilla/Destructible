@@ -21,9 +21,7 @@ public class ToolManager {
         this.dPlayer = dPlayer;
     }
 
-    public boolean isToolBroken() {
-        ItemStack itemStack = dPlayer.getCraftPlayer().getEquipment().getItemInMainHand();
-        if(itemStack.isEmpty()) return false;
+    public boolean isToolBroken(ItemStack itemStack) {
         if(!itemStack.getPersistentDataContainer().has(DataKey.DURABILITY, PersistentDataType.INTEGER)) return false;
         return itemStack.getPersistentDataContainer().get(DataKey.DURABILITY, PersistentDataType.INTEGER) == -1;
     }
@@ -31,7 +29,8 @@ public class ToolManager {
     public boolean canMine(@NotNull DTool dTool, @NotNull BlockInstance blockInstance) {
         if(blockInstance.getDBlockData().isLocked() ||
                 blockInstance.getDBlockData().isOnCooldown() ||
-                blockInstance.getDBlock().getBlockStrength() > dTool.getToolStrength()) return false;
+                blockInstance.getDBlock().getBlockStrength() > dTool.getToolStrength() ||
+                blockInstance.getDBlock().getBlockDurability() < 0) return false;
         return blockInstance.getDBlock().getCorrectTools().stream().anyMatch(dToolType -> dToolType.equals(ToolType.HAND) || dTool.getToolType().contains(dToolType));
     }
 

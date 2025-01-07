@@ -35,6 +35,7 @@ public final class DItemStack {
     public static Optional<DItem> getDItem(ItemStack itemStack) {
         Preconditions.checkArgument(itemStack != null, "ItemStack cannot be null");
         String id = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
+        if(id == null) return Optional.empty();
         return Optional.ofNullable(Registries.DESTRUCTIBLE_ITEMS.get(id));
     }
 
@@ -59,9 +60,7 @@ public final class DItemStack {
             lore.addLines(List.of(
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + FormatUtil.romanNumeral(dTool.getBreakingEfficiency())),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(dTool.getToolStrength())),
-                    Component.empty(),
-                    dTool.getRarity().getComponent().append(MiniMessage.miniMessage().deserialize(" " + FormatUtil.getList(dTool.getToolType())))
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(dTool.getToolStrength()))
             ));
         }
         if(dItem.getRarity() != Rarity.NONE){

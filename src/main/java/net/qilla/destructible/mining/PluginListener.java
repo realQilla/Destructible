@@ -138,9 +138,11 @@ public class PluginListener implements Listener {
         }
 
         BlockPos blockPos = CoordUtil.locToBlockPos(event.getBlock().getLocation());
-        DBlock dBlock = DBlockUtil.getDBlock(blockPos);
+        Optional<DBlock> optional = DBlockUtil.getDBlock(blockPos);
 
-        if(dBlock.equals(DBlocks.DEFAULT)) return;
+        if(optional.isEmpty()) return;
+
+        DBlock dBlock = optional.get();
 
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 

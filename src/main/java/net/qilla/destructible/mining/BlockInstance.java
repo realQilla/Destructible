@@ -1,5 +1,6 @@
 package net.qilla.destructible.mining;
 
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +11,7 @@ import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.util.CoordUtil;
+import net.qilla.destructible.util.DBlockUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
@@ -29,13 +31,14 @@ public final class BlockInstance {
     private final AtomicDouble currentDurability;
     private final AtomicInteger crackLevel;
 
-    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, @NotNull ChunkPos chunkPos, int chunkInt, @NotNull Direction direction) {
+    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, @NotNull ChunkPos chunkPos, int chunkInt, @NotNull DBlock dBlock, @NotNull Direction direction) {
+        Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
         this.location = CoordUtil.blockPosToLoc(blockPos, world);
         this.blockPos = blockPos;
         this.chunkPos = chunkPos;
         this.chunkInt = chunkInt;
+        this.dBlock = dBlock;
         this.direction = direction;
-        this.dBlock = DBlocks.DEFAULT;
         this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
                 new RegistryMap<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());
@@ -94,7 +97,8 @@ public final class BlockInstance {
         return crackLevel.get();
     }
 
-    public void setDBlock(final DBlock dBlock) {
+    public void setDBlock(DBlock dBlock) {
+        Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
         this.dBlock = dBlock;
         this.totalDurability.set(dBlock.getBlockDurability());
         this.currentDurability.set(dBlock.getBlockDurability());

@@ -7,25 +7,19 @@ import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.mining.block.DBlocks;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public final class DBlockUtil {
 
-    public static DBlock getDBlock(@NotNull BlockPos blockPos) {
+    public static Optional<DBlock> getDBlock(@NotNull BlockPos blockPos) {
         ChunkPos chunkPos = new ChunkPos(blockPos);
         int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
 
-        RegistryMap<Integer, String> chunkIntMap = Registries.LOADED_DESTRUCTIBLE_BLOCKS.computeIfPresent(chunkPos, (k, v) -> v);
-        if(chunkIntMap == null || !chunkIntMap.containsKey(chunkInt)) return DBlocks.DEFAULT;
-        return Registries.DESTRUCTIBLE_BLOCKS.getOrDefault(chunkIntMap.get(chunkInt), DBlocks.DEFAULT);
-    }
-
-    public static DBlock getDBlock(@NotNull ChunkPos chunkPos, int chunkInt) {
-        var blockCache = Registries.LOADED_DESTRUCTIBLE_BLOCKS.computeIfPresent(chunkPos, (k, v) -> v);
-        if(blockCache == null) return DBlocks.DEFAULT;
-        String blockString = blockCache.computeIfPresent(chunkInt, (k2, v2) -> v2);
-        return blockString == null ? DBlocks.DEFAULT : Registries.DESTRUCTIBLE_BLOCKS.getOrDefault(blockString, DBlocks.DEFAULT);
+        RegistryMap<Integer, String> chunkIntMap = Registries.LOADED_DESTRUCTIBLE_BLOCKS.get(chunkPos);
+        if(chunkIntMap == null || !chunkIntMap.containsKey(chunkInt)) return Optional.empty();
+        return Optional.ofNullable(Registries.DESTRUCTIBLE_BLOCKS.get(chunkIntMap.get(chunkInt)));
     }
 
     public static Vec3 getCenterFaceParticle(@NotNull final Direction dir) {
