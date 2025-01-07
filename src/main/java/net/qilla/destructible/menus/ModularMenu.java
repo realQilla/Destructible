@@ -50,6 +50,10 @@ public abstract class ModularMenu extends DestructibleMenu {
         return shiftIndex;
     }
 
+    public void resetIndex() {
+        this.shiftIndex = 0;
+    }
+
     public abstract void populateModular();
     public abstract void refresh();
 }

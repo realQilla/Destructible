@@ -156,6 +156,7 @@ public class OverflowMenu extends ModularMenu {
                     getDPlayer().playSound(Sound.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5f, RandomUtil.between(0.5f, 1.0f), PlayType.PLAYER);
                     getDPlayer().sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
                 }
+                super.resetIndex();
                 super.reopenInventory();
                 this.refresh();
             });
