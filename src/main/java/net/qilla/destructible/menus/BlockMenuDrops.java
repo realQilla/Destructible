@@ -107,7 +107,7 @@ public class BlockMenuDrops extends DestructibleMenu {
                                 .addLines(List.of(
                                         Component.empty(),
                                         MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Amount <white>" + dDrop.getMinAmount() + " - " + dDrop.getMaxAmount()),
-                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" + FormatUtil.decimalTruncation(dDrop.getChance() * 100, 2) + "%")
+                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" + FormatUtil.decimalTruncation(dDrop.getChance() * 100, 17) + "% (1/" + FormatUtil.numberComma((int) (1 / dDrop.getChance())) + ")")
                                 )).build()))
                 .build();
     }
