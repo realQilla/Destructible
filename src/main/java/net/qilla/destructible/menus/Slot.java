@@ -19,6 +19,7 @@ public final class Slot {
     private final BiConsumer<Slot, ClickType> clickAction;
     private final ItemStack itemStack;
     private final SoundSettings soundSettings;
+    private final Builder builder;
 
     public Slot(Builder builder) {
         this.index = builder.index;
@@ -27,19 +28,27 @@ public final class Slot {
         this.itemStack.editMeta(meta -> {
             meta.getPersistentDataContainer().set(DataKey.GUI_ITEM, PersistentDataType.BOOLEAN, true);
         });
+
         this.itemStack.getDataTypes().forEach(dataType -> this.itemStack.unsetData(dataType));
         if(builder.material != null) {
             this.itemStack.setData(DataComponentTypes.ITEM_MODEL, builder.material.getKey());
         }
+
         this.itemStack.setData(DataComponentTypes.MAX_STACK_SIZE, builder.amount);
         this.itemStack.setAmount(builder.amount);
+
         if(builder.hideTooltip) {
             this.itemStack.setData(DataComponentTypes.HIDE_TOOLTIP);
         } else {
             this.itemStack.setData(DataComponentTypes.ITEM_NAME, builder.displayName);
             this.itemStack.setData(DataComponentTypes.LORE, builder.lore);
         }
+
+        if(builder.glow) {
+            this.itemStack.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true);
+        }
         this.soundSettings = builder.soundSettings;
+        this.builder = builder;
     }
 
     public int getIndex() {
@@ -59,6 +68,10 @@ public final class Slot {
         return this.soundSettings;
     }
 
+    public Builder getBuilder() {
+        return this.builder;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -69,6 +82,13 @@ public final class Slot {
         return builder;
     }
 
+    public static Slot rebuild(Slot slot, Consumer<Builder> builder) {
+        Builder newBuilder = new Builder();
+        newBuilder.builder(slot.getBuilder());
+        builder.accept(newBuilder);
+        return new Slot(newBuilder);
+    }
+
     public static final class Builder {
         private int index;
         private BiConsumer<Slot, ClickType> clickAction;
@@ -76,6 +96,7 @@ public final class Slot {
         private int amount;
         private Component displayName;
         private boolean hideTooltip;
+        private boolean glow;
         private ItemLore lore;
         private SoundSettings soundSettings;
 
@@ -127,6 +148,11 @@ public final class Slot {
             return this;
         }
 
+        public Builder glow(boolean glow) {
+            this.glow = glow;
+            return this;
+        }
+
         public Builder lore(ItemLore lore) {
             Preconditions.checkArgument(lore != null, "Lore cannot be null");
             this.lore = lore;
@@ -136,6 +162,18 @@ public final class Slot {
         public Builder soundSettings(SoundSettings soundSettings) {
             Preconditions.checkArgument(soundSettings != null, "Sound settings cannot be null");
             this.soundSettings = soundSettings;
+            return this;
+        }
+
+        public Builder builder(Builder builder) {
+            this.index = builder.index;
+            this.clickAction = builder.clickAction;
+            this.material = builder.material;
+            this.amount = builder.amount;
+            this.displayName = builder.displayName;
+            this.hideTooltip = builder.hideTooltip;
+            this.lore = builder.lore;
+            this.soundSettings = builder.soundSettings;
             return this;
         }
 

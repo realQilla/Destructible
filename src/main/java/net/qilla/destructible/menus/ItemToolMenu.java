@@ -20,6 +20,8 @@ import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +37,7 @@ public class ItemToolMenu extends DestructibleMenu {
     );
 
     private int shiftIndex = 0;
-    private final List<DTool> itemPopulation = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(DTool.class::isInstance).map(item -> (DTool) item).toList();
+    private final List<DTool> itemPopulation = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(DTool.class::isInstance).map(item -> (DTool) item).sorted(Comparator.comparing(DTool::getId)).toList();
 
     public ItemToolMenu(DPlayer dPlayer) {
         super(dPlayer, SIZE, TITLE);

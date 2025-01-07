@@ -35,7 +35,7 @@ public class ItemMenu extends DestructibleMenu {
     );
 
     private int shiftIndex = 0;
-    private final List<DItem> itemPopulation = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> item.getClass() == DItem.class).toList();
+    private final List<DItem> itemPopulation = Registries.DESTRUCTIBLE_ITEMS.values().stream().filter(item -> item.getClass() == DItem.class).sorted(Comparator.comparing(DItem::getId)).toList();
 
     public ItemMenu(DPlayer dPlayer) {
         super(dPlayer, SIZE, TITLE);

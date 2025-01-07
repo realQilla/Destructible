@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class BlockMenu extends DestructibleMenu {
     );
 
     private int shiftIndex = 0;
-    private final List<DBlock> itemPopulation = Registries.DESTRUCTIBLE_BLOCKS.values().stream().toList();
+    private final List<DBlock> itemPopulation = Registries.DESTRUCTIBLE_BLOCKS.values().stream().sorted(Comparator.comparing(DBlock::getId)).toList();
 
     public BlockMenu(DPlayer dPlayer) {
         super(dPlayer, SIZE, TITLE);
@@ -61,9 +63,20 @@ public class BlockMenu extends DestructibleMenu {
             .clickAction((action, clickType) -> super.returnToPreviousMenu())
             .build();
 
+    private final Slot createItem = Slot.builder(slot -> slot
+            .index(46)
+            .material(Material.SHULKER_SHELL)
+            .displayName(MiniMessage.miniMessage().deserialize("<dark_green>Create New"))
+            .lore(ItemLore.lore(List.of(
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Click to create a new destructible block"))
+            ))
+            .clickAction((slotInfo, clickType) -> new BlockMenuModify(super.getDPlayer()).openInventory())
+    ).build();
+
     public void populateMenu() {
         this.setSlot(this.menuItem);
         this.setSlot(this.returnItem);
+        this.setSlot(this.createItem);
 
         if(shiftIndex > 0) this.setSlot(this.shiftPreviousItem);
         else this.unsetSlot(this.shiftPreviousItem.getIndex());
@@ -75,9 +88,9 @@ public class BlockMenu extends DestructibleMenu {
         List<DBlock> shiftedList = new LinkedList<>(itemPopulation).subList(shiftIndex, Math.min(shiftIndex + MODULAR_SLOTS.size(), itemPopulation.size()));
 
         Iterator<Integer> iterator = MODULAR_SLOTS.iterator();
-        shiftedList.iterator().forEachRemaining(item -> {
+        shiftedList.iterator().forEachRemaining(dBlock -> {
             if(iterator.hasNext()) {
-                setSlot(createSlot(iterator.next(), item));
+                setSlot(createSlot(iterator.next(), dBlock));
             }
         });
         super.getSlotHolder().getRemainingSlots(MODULAR_SLOTS).forEach(slotNum -> super.setSlot(Slots.EMPTY_ITEM.index(slotNum).build()));
@@ -98,15 +111,19 @@ public class BlockMenu extends DestructibleMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.getList(dBlock.getCorrectTools())),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <yellow>" + "Right Click to view"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle()),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Click to modify block")
                 )))
-                .clickAction((slotInfo, clickType) -> openBlockMenuDrops(slotInfo, clickType, dBlock))
+                .clickAction((slotInfo, clickType) -> blockClickInteraction(slotInfo, clickType, dBlock))
                 .build();
     }
 
-    private void openBlockMenuDrops(Slot slotInfo, ClickType clickType, DBlock dBlock) {
-        if(clickType.isRightClick()) {
-            new BlockMenuDrops(getDPlayer(), Registries.DESTRUCTIBLE_BLOCKS.get(dBlock.getId())).openInventory();
+    private void blockClickInteraction(Slot slotInfo, ClickType clickType, DBlock dBlock) {
+        if(clickType.isLeftClick()) {
+            new BlockMenuModify(getDPlayer(), dBlock).openInventory();
+        } else if(clickType.isRightClick()) {
+            new BlockMenuDrops(getDPlayer(), slotInfo, Registries.DESTRUCTIBLE_BLOCKS.get(dBlock.getId())).openInventory();
         }
     }
 

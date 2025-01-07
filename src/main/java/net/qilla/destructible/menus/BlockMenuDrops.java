@@ -1,5 +1,6 @@
 package net.qilla.destructible.menus;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -12,6 +13,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,23 +25,37 @@ public class BlockMenuDrops extends DestructibleMenu {
     );
 
     private int shiftIndex = 0;
-    private DBlock dBlock;
+    private final DBlock dBlock;
     private final List<DDrop> itemPopulation;
 
-    public BlockMenuDrops(DPlayer dPlayer, DBlock dBlock) {
-        super(dPlayer, SIZE, MiniMessage.miniMessage().deserialize(dBlock.getId() + " Drops"));
+    public BlockMenuDrops(DPlayer dPlayer, Slot slotInfo, DBlock dBlock) {
+        super(dPlayer, SIZE, MiniMessage.miniMessage().deserialize("Item Drops"));
+        Preconditions.checkNotNull(dBlock, "DBlock cannot be null.");
+
         this.dBlock = dBlock;
-        this.itemPopulation = dBlock.getItemDrops();
+        this.itemPopulation = this.dBlock.getItemDrops().stream().sorted((Comparator.comparingDouble(DDrop::getChance).reversed())).toList();
+
+        this.menuItem = Slot.rebuild(slotInfo, slot -> slot
+                .index(4)
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + FormatUtil.romanNumeral(dBlock.getBlockStrength())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Durability <white>" + dBlock.getBlockDurability()),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + FormatUtil.getTime(dBlock.getBlockCooldown(), true)),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Correct Tools:"),
+                        MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.getList(dBlock.getCorrectTools())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <yellow>" + "[Currently viewing]"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())
+                )))
+                .glow(true)
+                .clickAction(null));
 
         populateMenu();
         populateModular();
     }
 
-    private final Slot menuItem = Slot.builder(slot -> slot
-            .index(4)
-            .material(dBlock.getBlockMaterial())
-            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Modification"))
-    ).build();
+    private final Slot menuItem;
 
     private final Slot shiftPreviousItem = Slots.PREVIOUS_ITEM
             .index(46)
