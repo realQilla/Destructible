@@ -1,4 +1,4 @@
-package net.qilla.destructible.menus;
+package net.qilla.destructible.menus.slot;
 
 import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -43,32 +43,24 @@ public class Display {
         }
     }
 
-    public Display modify(Consumer<Builder> consumer) {
-        Builder builder = this.builder;
-        consumer.accept(builder);
-        return builder.build();
-    }
-
-    public Builder getBuilder() {
-        return this.builder;
-    }
-
     public ItemStack get() {
         return this.itemStack;
+    }
+
+    public Display ofNew(Consumer<Builder> builder) {
+        Builder curBuilder = this.builder;
+        builder.accept(curBuilder);
+        return new Display(curBuilder);
     }
 
     public static Builder of() {
         return new Builder();
     }
 
-    public static Display of(Builder builder) {
-        return new Display(builder);
-    }
-
-    public static Display of(Consumer<Builder> consumer) {
-        Builder builder = new Builder();
-        consumer.accept(builder);
-        return builder.build();
+    public static Display of(Consumer<Builder> builder) {
+        Builder newBuilder = new Builder();
+        builder.accept(newBuilder);
+        return newBuilder.build();
     }
 
     public static final class Builder {

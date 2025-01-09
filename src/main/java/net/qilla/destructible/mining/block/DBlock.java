@@ -1,21 +1,25 @@
 package net.qilla.destructible.mining.block;
 
-import net.qilla.destructible.mining.item.DDrop;
+import com.google.common.base.Preconditions;
+import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DBlock {
     private final String id;
     private final Material blockMaterial;
     private final int blockStrength;
-    private final int blockDurability;
+    private final long blockDurability;
     private final long blockCooldown;
-    private final List<ToolType> correctTools;
-    private final List<DDrop> itemDrops;
+    private final Set<ToolType> correctTools;
+    private final List<ItemDrop> lootpool;
     private final Sound breakSound;
     private final Material breakParticle;
 
@@ -26,7 +30,7 @@ public class DBlock {
         this.blockDurability = builder.blockDurability;
         this.blockCooldown = builder.blockCooldown;
         this.correctTools = builder.correctTools;
-        this.itemDrops = builder.itemDrops;
+        this.lootpool = builder.lootpool;
         this.breakSound = builder.breakSound;
         this.breakParticle = builder.breakParticle;
     }
@@ -37,24 +41,24 @@ public class DBlock {
     }
 
     @NotNull
-    public Material getBlockMaterial() {
+    public Material getMaterial() {
         return this.blockMaterial;
     }
 
-    public int getBlockStrength() {
+    public int getStrength() {
         return this.blockStrength;
     }
 
-    public int getBlockDurability() {
+    public long getDurability() {
         return this.blockDurability;
     }
 
-    public long getBlockCooldown() {
+    public long getCooldown() {
         return this.blockCooldown;
     }
 
     @NotNull
-    public List<ToolType> getCorrectTools() {
+    public Set<ToolType> getCorrectTools() {
         return this.correctTools;
     }
 
@@ -63,8 +67,8 @@ public class DBlock {
     }
 
     @NotNull
-    public List<DDrop> getItemDrops() {
-        return this.itemDrops;
+    public List<ItemDrop> getLootpool() {
+        return this.lootpool;
     }
 
     @NotNull
@@ -77,14 +81,28 @@ public class DBlock {
         return this.breakParticle;
     }
 
+    @NotNull
+    public static Builder getBuilder(DBlock dBlock) {
+        return new Builder()
+                .id(dBlock.getId())
+                .blockMaterial(dBlock.getMaterial())
+                .blockStrength(dBlock.getStrength())
+                .blockDurability(dBlock.getDurability())
+                .blockCooldown(dBlock.getCooldown())
+                .correctTools(dBlock.getCorrectTools())
+                .lootpool(dBlock.getLootpool())
+                .breakSound(dBlock.getBreakSound())
+                .breakParticle(dBlock.getBreakParticle());
+    }
+
     public static class Builder {
         private String id;
         private Material blockMaterial;
         private int blockStrength;
-        private int blockDurability;
+        private long blockDurability;
         private long blockCooldown;
-        private List<ToolType> correctTools;
-        private List<DDrop> itemDrops;
+        private Set<ToolType> correctTools;
+        private List<ItemDrop> lootpool;
         private Sound breakSound;
         private Material breakParticle;
 
@@ -93,18 +111,20 @@ public class DBlock {
             this.blockStrength = 0;
             this.blockDurability = -1;
             this.blockCooldown = 1000;
-            this.correctTools = List.of();
-            this.itemDrops = List.of();
+            this.correctTools = new HashSet<>();
+            this.lootpool = List.of();
             this.breakSound = Sound.BLOCK_STONE_BREAK;
             this.breakParticle = Material.BEDROCK;
         }
 
         public Builder id(@NotNull String id) {
+            Preconditions.checkNotNull(id, "ID cannot be null");
             this.id = id;
             return this;
         }
 
         public Builder blockMaterial(@NotNull Material material) {
+            Preconditions.checkNotNull(material, "Material cannot be null");
             this.blockMaterial = material;
             return this;
         }
@@ -128,7 +148,7 @@ public class DBlock {
          *
          * @return
          */
-        public Builder blockDurability(int durability) {
+        public Builder blockDurability(long durability) {
             this.blockDurability = Math.max(0, durability);
             return this;
         }
@@ -156,24 +176,39 @@ public class DBlock {
         /**
          * Milliseconds cooldown the block will have after being destroyed
          *
-         * @param msValue
+         * @param ms
          *
          * @return
          */
-        public Builder blockCooldown(long msValue) {
-            this.blockCooldown = Math.max(1000, msValue);
+        public Builder blockCooldown(long ms) {
+            this.blockCooldown = Math.max(1000, ms);
             return this;
         }
 
         /**
-         * Array of tools that can destroy this block
+         * Set of tools that can destroy this block
+         *
+         * @param toolTypes
+         *
+         * @return
+         */
+        public Builder correctTools(@NotNull Set<ToolType> toolTypes) {
+            Preconditions.checkNotNull(toolTypes, "ToolTypes cannot be null");
+
+            this.correctTools = toolTypes;
+            return this;
+        }
+
+        /**
+         * Set of tools that can destroy this block
          *
          * @param toolTypes
          *
          * @return
          */
         public Builder correctTools(@NotNull List<ToolType> toolTypes) {
-            this.correctTools = toolTypes;
+            Preconditions.checkNotNull(toolTypes, "ToolTypes cannot be null");
+            this.correctTools = new HashSet<>(toolTypes);
             return this;
         }
 
@@ -183,19 +218,20 @@ public class DBlock {
          * @return
          */
         public Builder noCorrectTools() {
-            this.correctTools = List.of();
+            this.correctTools = new HashSet<>();
             return this;
         }
 
         /**
          * Array of ItemDrop objects that will drop when block is destroyed
          *
-         * @param itemDrops
+         * @param lootpool
          *
          * @return
          */
-        public Builder itemDrops(@NotNull List<DDrop> itemDrops) {
-            this.itemDrops = itemDrops;
+        public Builder lootpool(@NotNull List<ItemDrop> lootpool) {
+            Preconditions.checkNotNull(lootpool, "Lootpool cannot be null");
+            this.lootpool = lootpool;
             return this;
         }
 
@@ -205,7 +241,7 @@ public class DBlock {
          * @return
          */
         public Builder noItemDrops() {
-            this.itemDrops = List.of();
+            this.lootpool = List.of();
             return this;
         }
 
@@ -217,6 +253,7 @@ public class DBlock {
          * @return
          */
         public Builder breakSound(@NotNull Sound sound) {
+            Preconditions.checkNotNull(sound, "Sound cannot be null");
             this.breakSound = sound;
             return this;
         }
@@ -229,6 +266,7 @@ public class DBlock {
          * @return
          */
         public Builder breakParticle(@NotNull Material particle) {
+            Preconditions.checkNotNull(particle, "Particle cannot be null");
             this.breakParticle = particle;
             return this;
         }

@@ -2,17 +2,13 @@ package net.qilla.destructible.mining.logic;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.mining.BlockInstance;
-import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.util.DBlockUtil;
@@ -22,8 +18,6 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.craftbukkit.block.CraftBlockState;
-import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftEntityType;
 import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -62,7 +56,7 @@ public class BlockMiner {
 
     private void destroyBlock(@NotNull BlockInstance blockInstance) {
         Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
-            long msCooldown = RandomUtil.offset(blockInstance.getDBlock().getBlockCooldown(), 2000);
+            long msCooldown = RandomUtil.offset(blockInstance.getDBlock().getCooldown(), 2000);
             BlockState blockState = ((CraftBlockState) blockInstance.getLocation().getBlock().getState()).getHandle();
             Vec3 midFace = DBlockUtil.getCenterFaceParticle(blockInstance.getDirection());
             float[] midOffset = DBlockUtil.getFlatOffsetParticles(blockInstance.getDirection());
@@ -92,7 +86,7 @@ public class BlockMiner {
         });
 
         Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
-            List<ItemStack> itemStacks = dPlayer.rollItemDrops(blockInstance.getDBlock().getItemDrops());
+            List<ItemStack> itemStacks = dPlayer.rollItemDrops(blockInstance.getDBlock().getLootpool());
             Vec3 faceVec = blockInstance.getDirection().getUnitVec3();
 
             Vec3 itemMidFace = DBlockUtil.getFaceCenterItem(blockInstance.getDirection());

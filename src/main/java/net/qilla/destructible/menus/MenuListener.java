@@ -21,22 +21,22 @@ public class MenuListener implements Listener {
     private void onInventoryInteract(InventoryInteractEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();
 
-        if(holder instanceof DestructibleMenu menu) {
+        if(holder instanceof DestructibleMenu) {
             event.setCancelled(true);
-            menu.onInteract(event);
         }
     }
 
     @EventHandler
     private void onInventoryClick(InventoryClickEvent event) {
-        if(event.getInventory().getHolder() instanceof DestructibleMenu) {
-            event.setCancelled(true);
+        if(event.getClickedInventory() == null) return;
+        if(event.getInventory().getHolder() instanceof DestructibleMenu menu) {
+            menu.inventoryClickEvent(event);
         }
 
-        if(event.getClickedInventory() == null) return;
         InventoryHolder holder = event.getClickedInventory().getHolder();
 
         if(holder instanceof DestructibleMenu menu) {
+            menu.inventoryClickEvent(event);
             menu.handleClick(event);
         }
     }
@@ -46,7 +46,7 @@ public class MenuListener implements Listener {
         InventoryHolder holder = event.getInventory().getHolder();
 
         if(holder instanceof DestructibleMenu menu) {
-            menu.onOpen(event);
+            menu.inventoryOpenEvent(event);
         }
     }
 

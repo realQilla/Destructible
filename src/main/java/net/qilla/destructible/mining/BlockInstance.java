@@ -9,9 +9,7 @@ import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.DBlockUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +40,7 @@ public final class BlockInstance {
         this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
                 new RegistryMap<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());
-        this.totalDurability = new AtomicDouble(dBlock.getBlockDurability());
+        this.totalDurability = new AtomicDouble(dBlock.getDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());
         this.crackLevel = new AtomicInteger(0);
     }
@@ -100,8 +98,8 @@ public final class BlockInstance {
     public void setDBlock(DBlock dBlock) {
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
         this.dBlock = dBlock;
-        this.totalDurability.set(dBlock.getBlockDurability());
-        this.currentDurability.set(dBlock.getBlockDurability());
+        this.totalDurability.set(dBlock.getDurability());
+        this.currentDurability.set(dBlock.getDurability());
         this.crackLevel.set(0);
     }
 

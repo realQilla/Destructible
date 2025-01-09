@@ -33,7 +33,7 @@ public class SignInput extends PlayerInput {
         getDPlayer().getPlugin().addThread(Thread.currentThread());
 
         CraftSign<SignBlockEntity> sign = new CraftSign<>(getDPlayer().getCraftPlayer().getWorld(), new SignBlockEntity(getBlockPos(), Blocks.OAK_SIGN.defaultBlockState()));
-        for(int i = 1; i < 3; i++) {
+        for(int i = 1; i < 4; i++) {
             sign.setLine(i, text.get(i - 1));
         }
         sign.update();

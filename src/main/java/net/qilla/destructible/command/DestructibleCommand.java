@@ -162,8 +162,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        DestructibleMenu gui = new ItemMenu(dPlayer);
-        gui.openInventory();
+        new ItemMenu(dPlayer).openInventory(true);;
         return Command.SINGLE_SUCCESS;
     }
 
@@ -177,8 +176,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        DestructibleMenu gui = new BlockMenu(dPlayer);
-        gui.openInventory();
+        new BlockMenu(dPlayer).openInventory(true);
         return Command.SINGLE_SUCCESS;
     }
 

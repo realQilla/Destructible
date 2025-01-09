@@ -4,7 +4,7 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.mining.item.DDrop;
+import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -19,10 +19,10 @@ public class DBlockTA extends TypeAdapter<DBlock> {
     public void write(JsonWriter out, DBlock value) throws IOException {
         out.beginObject();
         out.name("ID").value(value.getId());
-        out.name("BLOCK_MATERIAL").value(Registry.MATERIAL.getKey(value.getBlockMaterial()).value());
-        out.name("BLOCK_STRENGTH").value(value.getBlockStrength());
-        out.name("BLOCK_DURABILITY").value(value.getBlockDurability());
-        out.name("BLOCK_COOLDOWN").value(value.getBlockCooldown());
+        out.name("BLOCK_MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
+        out.name("BLOCK_STRENGTH").value(value.getStrength());
+        out.name("BLOCK_DURABILITY").value(value.getDurability());
+        out.name("BLOCK_COOLDOWN").value(value.getCooldown());
         out.name("CORRECT_TOOLS");
         out.beginArray();
         for(ToolType tool : value.getCorrectTools()) {
@@ -33,7 +33,7 @@ public class DBlockTA extends TypeAdapter<DBlock> {
         out.name("BREAK_PARTICLE").value(Registry.MATERIAL.getKey(value.getBreakParticle()).value());
         out.name("ITEM_DROPS");
         out.beginArray();
-        for(DDrop drop : value.getItemDrops()) {
+        for(ItemDrop drop : value.getLootpool()) {
             out.beginObject();
             out.name("DESTRUCTIBLE_ITEM").value(drop.getDItem().getId());
             out.name("MIN_AMOUNT").value(drop.getMinAmount());
@@ -82,11 +82,11 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                     builder.breakParticle(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
                 case "ITEM_DROPS":
-                    List<DDrop> dDrops = new ArrayList<>();
+                    List<ItemDrop> itemDrops = new ArrayList<>();
                     in.beginArray();
                     while(in.hasNext()) {
                         in.beginObject();
-                        DDrop.Builder dropBuilder = new DDrop.Builder();
+                        ItemDrop.Builder dropBuilder = new ItemDrop.Builder();
                         while(in.hasNext()) {
                             switch(in.nextName()) {
                                 case "DESTRUCTIBLE_ITEM":
@@ -103,9 +103,9 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                                     break;
                             }
                         }
-                        dDrops.add(dropBuilder.build());
+                        itemDrops.add(dropBuilder.build());
                         in.endObject();
-                        builder.itemDrops(dDrops);
+                        builder.lootpool(itemDrops);
                     }
                     in.endArray();
                     break;

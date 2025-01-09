@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.menus.SoundSettings;
-import net.qilla.destructible.mining.item.DDrop;
+import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.RandomUtil;
@@ -45,7 +45,7 @@ public class DPlayer {
         craftPlayer.sendMessage(component);
     }
 
-    public void playSound(Sound sound, SoundCategory category, float volume, float pitch, PlayType playType) {
+    public void playSound(Sound sound, float volume, float pitch, SoundCategory category, PlayType playType) {
         switch(playType) {
             case PlayType.BROADCAST_CUR_LOC ->
                     getCraftPlayer().getWorld().playSound(getCraftPlayer().getLocation(), sound, category, volume, pitch);
@@ -56,7 +56,7 @@ public class DPlayer {
 
     public void playSound(SoundSettings soundSettings, boolean randomPitch) {
         if(soundSettings == null) return;
-        this.playSound(soundSettings.getSound(), soundSettings.getCategory(), soundSettings.getVolume(), randomPitch ? RandomUtil.between(0.5f, 2f) : soundSettings.getPitch(), soundSettings.getPlayType());
+        this.playSound(soundSettings.getSound(), soundSettings.getVolume(),  randomPitch ? RandomUtil.between(0.5f, 2f) : soundSettings.getPitch(), soundSettings.getCategory(), soundSettings.getPlayType());
     }
 
     public void sendPacket(Packet<?> packet) {
@@ -103,7 +103,7 @@ public class DPlayer {
                 .append(MiniMessage.miniMessage().deserialize(" added to stash!")));
     }
 
-    public List<ItemStack> rollItemDrops(List<DDrop> itemDrops) {
+    public List<ItemStack> rollItemDrops(List<ItemDrop> itemDrops) {
         if(itemDrops.isEmpty()) return List.of();
 
         return itemDrops.stream().filter(drop -> RANDOM.nextFloat() <= drop.getChance())

@@ -9,39 +9,41 @@ public final class Socket {
 
     private final MenuSize menuSize;
     private final Map<Integer, Slot> socket;
-    private final Map<SlotType, Slot> uniqueSocket = new HashMap<>();
+    private final Map<UniqueSlot, Slot> uniqueSocket = new HashMap<>();
 
     public Socket(MenuSize menuSize) {
         this.menuSize = menuSize;
         this.socket = new HashMap<>(menuSize.getSize());
     }
 
-    public void register(Slot slot) {
+    public Slot register(Slot slot) {
         Preconditions.checkNotNull(slot, "Slot cannot be null");
         socket.put(slot.getIndex(), slot);
+        return slot;
     }
 
-    public void register(Slot slot, SlotType slotType) {
+    public Slot register(Slot slot, UniqueSlot uniqueSlot) {
         Preconditions.checkNotNull(slot, "Slot cannot be null");
         socket.put(slot.getIndex(), slot);
-        uniqueSocket.put(slotType, slot);
+        uniqueSocket.put(uniqueSlot, slot);
+        return slot;
     }
 
-    public void unregister(int index) {
-        socket.remove(index);
+    public Slot unregister(int index) {
+        return socket.remove(index);
     }
 
-    public void unregister(SlotType slotType) {
-        socket.remove(uniqueSocket.get(slotType).getIndex());
-        uniqueSocket.remove(slotType);
+    public Slot unregister(UniqueSlot uniqueSlot) {
+        socket.remove(uniqueSocket.get(uniqueSlot).getIndex());
+        return uniqueSocket.remove(uniqueSlot);
     }
 
     public Slot get(int index) {
         return socket.get(index);
     }
 
-    public Slot get(SlotType slotType) {
-        return uniqueSocket.get(slotType);
+    public Slot get(UniqueSlot uniqueSlot) {
+        return uniqueSocket.get(uniqueSlot);
     }
 
     public Map<Integer, Slot> getAll() {

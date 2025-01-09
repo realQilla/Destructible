@@ -1,20 +1,17 @@
 package net.qilla.destructible.mining.item;
 
 import com.google.common.base.Preconditions;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
 import org.jetbrains.annotations.NotNull;
-import java.util.logging.Logger;
 
-public class DDrop {
+public class ItemDrop {
 
-    private static final Logger LOGGER = Destructible.getPluginLogger();
     private final DItem item;
     private final int minAmount;
     private final int maxAmount;
     private final double chance;
 
-    protected DDrop(@NotNull Builder builder) {
+    protected ItemDrop(@NotNull Builder builder) {
         this.item = builder.item;
         this.minAmount = builder.minAmount;
         this.maxAmount = builder.maxAmount;
@@ -88,8 +85,8 @@ public class DDrop {
             return this;
         }
 
-        public DDrop build() {
-            return new DDrop(this);
+        public ItemDrop build() {
+            return new ItemDrop(this);
         }
     }
 }

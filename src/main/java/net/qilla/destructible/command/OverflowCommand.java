@@ -4,12 +4,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.menus.DestructibleMenu;
 import net.qilla.destructible.menus.OverflowMenu;
-import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
@@ -39,14 +36,14 @@ public class OverflowCommand {
     public void register() {
         this.commands.register(Commands.literal(COMMAND)
                 .requires(source -> source.getSender() instanceof Player)
-                .executes(this::openGUI)
+                .executes(this::openMenu)
                 //.then(Commands.literal(COLLECT)
                 //.executes(this::collect))
                 .then(Commands.literal(CLEAR)
                         .executes(this::clear)).build(), ALIAS);
     }
 
-    private int openGUI(CommandContext<CommandSourceStack> context) {
+    private int openMenu(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
@@ -56,8 +53,7 @@ public class OverflowCommand {
         }
         dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
 
-        DestructibleMenu gui = new OverflowMenu(dPlayer);
-        gui.openInventory();
+        new OverflowMenu(dPlayer).openInventory(true);
         return Command.SINGLE_SUCCESS;
     }
 

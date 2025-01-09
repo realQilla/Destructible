@@ -18,7 +18,7 @@ public class MenuData {
     public DestructibleMenu getLastMenu() {
         if(!menuHistory.isEmpty()) {
             menuHistory.pop();
-            return menuHistory.peekLast();
+            return menuHistory.peek();
         }
         return null;
     }

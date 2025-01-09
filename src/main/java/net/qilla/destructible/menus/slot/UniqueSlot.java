@@ -1,7 +1,8 @@
 package net.qilla.destructible.menus.slot;
 
-public enum SlotType {
+public enum UniqueSlot {
     RETURN,
     NEXT,
-    PREVIOUS;
+    PREVIOUS,
+    RESET_SEARCH;
 }

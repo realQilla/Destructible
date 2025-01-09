@@ -90,8 +90,8 @@ public class Overflow {
         return itemStacks;
     }
 
-    public Map<DItem, Integer> getOverflow() {
-        return Collections.unmodifiableMap(this.overflowItems);
+    public List<OverflowItem> getOverflow() {
+        return this.overflowItems.entrySet().stream().map(entry -> new OverflowItem(entry.getKey(), entry.getValue())).toList();
     }
 
     public boolean contains(DItem dItem) {

@@ -1,7 +1,6 @@
 package net.qilla.destructible.mining.logic;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.BlockInstance;
 import net.qilla.destructible.mining.item.DTool;
@@ -29,8 +28,8 @@ public class ToolManager {
     public boolean canMine(@NotNull DTool dTool, @NotNull BlockInstance blockInstance) {
         if(blockInstance.getDBlockData().isLocked() ||
                 blockInstance.getDBlockData().isOnCooldown() ||
-                blockInstance.getDBlock().getBlockStrength() > dTool.getToolStrength() ||
-                blockInstance.getDBlock().getBlockDurability() < 0) return false;
+                blockInstance.getDBlock().getStrength() > dTool.getToolStrength() ||
+                blockInstance.getDBlock().getDurability() < 0) return false;
         return blockInstance.getDBlock().getCorrectTools().stream().anyMatch(dToolType -> dToolType.equals(ToolType.HAND) || dTool.getToolType().contains(dToolType));
     }
 

@@ -1,5 +1,7 @@
 package net.qilla.destructible.util;
 
+import com.google.common.base.Preconditions;
+
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.List;
@@ -36,25 +38,37 @@ public class FormatUtil {
     }
 
     public static String romanNumeral(int number) {
-        if(number < 0 || number > 3999) return "Invalid Roman Numeral";
-        if(number == 0) return "";
-        String[] romanNumerals = {"I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M"};
-        int[] values = {1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000};
+        if(number <= 0 || number > 9999) return String.valueOf(number);
+
+        String[] romanNumerals = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+
         StringBuilder roman = new StringBuilder();
-        int i = 12;
-        while(number > 0) {
-            int div = number / values[i];
-            number %= values[i];
-            while(div-- > 0) roman.append(romanNumerals[i]);
-            i--;
+        for(int i = 0; i < values.length; i++) {
+            while(number >= values[i]) {
+                roman.append(romanNumerals[i]);
+                number -= values[i];
+            }
         }
         return roman.toString();
     }
 
-    public static String getList(List<?> list) {
+    public static String toName(String string) {
+        StringBuilder builder = new StringBuilder();
+        for(String word : string.split("_")) {
+            if(!builder.isEmpty()) {
+                builder.append(" ");
+            }
+            builder.append(Character.toUpperCase(word.charAt(0)))
+                    .append(word.substring(1).toLowerCase());
+        }
+        return builder.toString();
+    }
+
+    public static String toNameList(List<?> list) {
         StringBuilder builder = new StringBuilder();
         for(int i = 0; i < list.size(); i++) {
-            builder.append(list.get(i));
+            builder.append(toName(list.get(i).toString()));
             if(i < list.size() - 1) builder.append(", ");
         }
         return builder.toString();
@@ -76,24 +90,42 @@ public class FormatUtil {
         weeks %= 4;
         months %= 12;
 
-        if (shortForm) {
-            if (years > 0) return years + "y";
-            if (months > 0) return months + "mo";
-            if (weeks > 0) return weeks + "w";
-            if (days > 0) return days + "d";
-            if (hours > 0) return hours + "h";
-            if (minutes > 0) return minutes + "m";
+        if(shortForm) {
+            if(years > 0) return years + "y";
+            if(months > 0) return months + "mo";
+            if(weeks > 0) return weeks + "w";
+            if(days > 0) return days + "d";
+            if(hours > 0) return hours + "h";
+            if(minutes > 0) return minutes + "m";
             return seconds + "s";
         }
 
         StringBuilder builder = new StringBuilder();
-        if (years > 0) builder.append(years).append(" year").append(years > 1 ? "s" : "").append(" ");
-        if (months > 0) builder.append(months).append(" month").append(months > 1 ? "s" : "").append(" ");
-        if (weeks > 0) builder.append(weeks).append(" week").append(weeks > 1 ? "s" : "").append(" ");
-        if (days > 0) builder.append(days).append(" day").append(days > 1 ? "s" : "").append(" ");
-        if (hours > 0) builder.append(hours).append(" hour").append(hours > 1 ? "s" : "").append(" ");
-        if (minutes > 0) builder.append(minutes).append(" minute").append(minutes > 1 ? "s" : "").append(" ");
-        if (seconds > 0) builder.append(seconds).append(" second").append(seconds > 1 ? "s" : "");
+        if(years > 0) builder.append(years).append(" year").append(years > 1 ? "s" : "").append(" ");
+        if(months > 0) builder.append(months).append(" month").append(months > 1 ? "s" : "").append(" ");
+        if(weeks > 0) builder.append(weeks).append(" week").append(weeks > 1 ? "s" : "").append(" ");
+        if(days > 0) builder.append(days).append(" day").append(days > 1 ? "s" : "").append(" ");
+        if(hours > 0) builder.append(hours).append(" hour").append(hours > 1 ? "s" : "").append(" ");
+        if(minutes > 0) builder.append(minutes).append(" minute").append(minutes > 1 ? "s" : "").append(" ");
+        if(seconds > 0) builder.append(seconds).append(" second").append(seconds > 1 ? "s" : "");
         return builder.toString().trim();
+    }
+
+    public static long stringToMs(String string) {
+        Preconditions.checkNotNull(string, "String cannot be null.");
+        if(string.isEmpty()) return 0;
+
+        char timeType = string.charAt(string.length() - 1);
+        long value = Long.parseLong(string.substring(0, string.length() - 1));
+
+        return switch(timeType) {
+            case 's' -> value * 1000;
+            case 'm' -> value * 60 * 1000;
+            case 'h' -> value * 60 * 60 * 1000;
+            case 'd' -> value * 24 * 60 * 60 * 1000;
+            case 'w' -> value * 7 * 24 * 60 * 60 * 1000;
+            case 'y' -> value * 365 * 24 * 60 * 60 * 1000;
+            default -> value;
+        };
     }
 }

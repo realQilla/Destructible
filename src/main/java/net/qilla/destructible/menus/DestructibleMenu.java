@@ -1,12 +1,14 @@
 package net.qilla.destructible.menus;
 
+import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import net.qilla.destructible.menus.slot.Slot;
-import net.qilla.destructible.menus.slot.SlotType;
+import net.qilla.destructible.menus.slot.UniqueSlot;
 import net.qilla.destructible.menus.slot.Socket;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
+import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -15,56 +17,58 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Map;
-
 public abstract class DestructibleMenu implements InventoryHolder {
 
     private final DPlayer dPlayer;
     private final Inventory inventory;
     private final Socket socket;
 
-    public DestructibleMenu(DPlayer dPlayer, MenuSize size, Component title) {
+    public DestructibleMenu(DPlayer dPlayer, MenuSize menuSize, Component title) {
+        Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
+
         this.dPlayer = dPlayer;
-        this.inventory = Bukkit.createInventory(this, size.getSize(), title);
-        this.socket = new Socket(size);
+        this.inventory = Bukkit.createInventory(this, menuSize.getSize(), title);
+        this.socket = new Socket(menuSize);
     }
 
     public void handleClick(InventoryClickEvent event) {
+        Preconditions.checkNotNull(event, "InventoryClickEvent cannot be null");
+
         if(dPlayer.getCooldown().has(CooldownType.MENU_CLICK)) return;
         dPlayer.getCooldown().set(CooldownType.MENU_CLICK);
 
         Slot slot = this.socket.get(event.getSlot());
-        if(slot == null) return;
-        slot.onClick(event.getClick());
+        if(slot != null) {
+            slot.onClick(event);
+            dPlayer.playSound(slot.getClickSound(), true);
+        }
     }
 
     public void returnToPreviousMenu() {
         if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) return;
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        dPlayer.playSound(SoundSettings.of(Sound.BLOCK_NOTE_BLOCK_BELL, 0.33f, 1.25f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
         DestructibleMenu lastMenu = dPlayer.getMenuData().getLastMenu();
-        if(lastMenu != null) lastMenu.reopenInventory();
-        else this.close();
+        if(lastMenu != null) lastMenu.openInventory(false);
+        else this.closeInventory();
+        dPlayer.playSound(SoundSettings.of(Sound.BLOCK_NOTE_BLOCK_BELL, 0.33f, 1.25f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
     }
 
-    public void openInventory() {
-        dPlayer.getMenuData().addMenu(this);
+    public void openInventory(boolean saveMenu) {
+        if(saveMenu) dPlayer.getMenuData().addMenu(this);
         dPlayer.getCraftPlayer().openInventory(this.inventory);
     }
 
-    public void reopenInventory() {
-        dPlayer.getCraftPlayer().openInventory(this.inventory);
-    }
-
-    public void close() {
+    public void closeInventory() {
         dPlayer.getCraftPlayer().closeInventory();
     }
 
-    public abstract void onInteract(InventoryInteractEvent event);
+    public void inventoryClickEvent(InventoryClickEvent event) {
+        event.setCancelled(true);
+    }
 
-    public abstract void onOpen(InventoryOpenEvent event);
+    public void inventoryOpenEvent(InventoryOpenEvent event) {
+    }
 
     public void onClose(InventoryCloseEvent event) {
         if(!event.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) {
@@ -76,32 +80,49 @@ public abstract class DestructibleMenu implements InventoryHolder {
         return this.socket;
     }
 
-    public void register(Slot slot) {
-        this.socket.register(slot);
+    public Slot register(Slot slot) {
+        Preconditions.checkNotNull(slot, "Slot cannot be null");
+
+        UniqueSlot uniqueSlot = slot.getUniqueSlot();
+        if(uniqueSlot == null) this.socket.register(slot);
+        else this.socket.register(slot, uniqueSlot);
+
         this.inventory.setItem(slot.getIndex(), slot.getDisplay().get());
+        dPlayer.playSound(slot.getAppearSound(), true);
+
+        return slot;
     }
 
-    public void register(Slot slot, SlotType slotType) {
-        this.socket.register(slot, slotType);
-        this.inventory.setItem(slot.getIndex(), slot.getDisplay().get());
+    public Slot register(Slot slot, int delay) {
+        Preconditions.checkNotNull(slot, "Slot cannot be null");
+
+        UniqueSlot uniqueSlot = slot.getUniqueSlot();
+        if(uniqueSlot == null) this.socket.register(slot);
+        else this.socket.register(slot, uniqueSlot);
+
+        Bukkit.getScheduler().runTaskLater(dPlayer.getPlugin(), () -> {
+            this.inventory.setItem(slot.getIndex(), slot.getDisplay().get());
+            dPlayer.playSound(slot.getAppearSound(), true);
+        }, delay);
+
+        return slot;
     }
 
-    public void unregister(int index) {
-        this.socket.unregister(index);
+    public Slot register(Slot slot, int min, int max) {
+        return this.register(slot, RandomUtil.between(min, max));
+    }
+
+    public Slot unregister(int index) {
         this.inventory.clear(index);
+        return this.socket.unregister(index);
     }
 
-    public void unregister(SlotType slotType) {
-        Slot slot = this.socket.get(slotType);
-        this.socket.unregister(slotType);
+    public void unregister(UniqueSlot uniqueSlot) {
+        Slot slot = this.socket.get(uniqueSlot);
+        this.socket.unregister(uniqueSlot);
         if(slot == null) return;
         this.socket.unregister(slot.getIndex());
         this.inventory.clear(slot.getIndex());
-    }
-
-    public void clear() {
-        this.socket.clear();
-        this.inventory.clear();
     }
 
     public DPlayer getDPlayer() {
