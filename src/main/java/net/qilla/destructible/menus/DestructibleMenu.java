@@ -16,6 +16,7 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
 public abstract class DestructibleMenu implements InventoryHolder {
 
@@ -25,7 +26,6 @@ public abstract class DestructibleMenu implements InventoryHolder {
 
     public DestructibleMenu(DPlayer dPlayer, MenuSize menuSize, Component title) {
         Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
-
         this.dPlayer = dPlayer;
         this.inventory = Bukkit.createInventory(this, menuSize.getSize(), title);
         this.socket = new Socket(menuSize);
@@ -51,7 +51,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         DestructibleMenu lastMenu = dPlayer.getMenuData().getLastMenu();
         if(lastMenu != null) lastMenu.openInventory(false);
         else this.closeInventory();
-        dPlayer.playSound(SoundSettings.of(Sound.BLOCK_NOTE_BLOCK_BELL, 0.33f, 1.25f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+        dPlayer.playSound(SoundSettings.of(Sound.BLOCK_NOTE_BLOCK_BELL, 0.25f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
     }
 
     public void openInventory(boolean saveMenu) {
@@ -96,20 +96,29 @@ public abstract class DestructibleMenu implements InventoryHolder {
     public Slot register(Slot slot, int delay) {
         Preconditions.checkNotNull(slot, "Slot cannot be null");
 
-        UniqueSlot uniqueSlot = slot.getUniqueSlot();
-        if(uniqueSlot == null) this.socket.register(slot);
-        else this.socket.register(slot, uniqueSlot);
-
-        Bukkit.getScheduler().runTaskLater(dPlayer.getPlugin(), () -> {
-            this.inventory.setItem(slot.getIndex(), slot.getDisplay().get());
-            dPlayer.playSound(slot.getAppearSound(), true);
-        }, delay);
-
+        Bukkit.getScheduler().runTaskLater(dPlayer.getPlugin(), () -> this.register(slot), delay);
         return slot;
     }
 
     public Slot register(Slot slot, int min, int max) {
         return this.register(slot, RandomUtil.between(min, max));
+    }
+
+    public void register(List<Slot> slots, int min, int max) {
+        Preconditions.checkNotNull(slots, "List cannot be null");
+
+        Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
+            slots.forEach(slot -> {
+                Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
+                    this.register(slot);
+                });
+                try {
+                    Thread.sleep(RandomUtil.between(min, max) * 50L);
+                } catch(InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        });
     }
 
     public Slot unregister(int index) {
@@ -125,6 +134,10 @@ public abstract class DestructibleMenu implements InventoryHolder {
         this.inventory.clear(slot.getIndex());
     }
 
+    public void refreshMenu() {
+        this.populateMenu();
+    }
+
     public DPlayer getDPlayer() {
         return this.dPlayer;
     }
@@ -134,4 +147,6 @@ public abstract class DestructibleMenu implements InventoryHolder {
     public Inventory getInventory() {
         return this.inventory;
     }
+
+    protected abstract void populateMenu();
 }

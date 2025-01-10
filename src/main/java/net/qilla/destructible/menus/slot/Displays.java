@@ -41,8 +41,7 @@ public class Displays {
             .material(Material.ARROW)
             .displayName(MiniMessage.miniMessage().deserialize("<white>Previous"))
             .lore(ItemLore.lore(List.of(
-                    Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to shift the menu backwards")
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to shift the menu backwards")
             )))
     );
 
@@ -50,8 +49,7 @@ public class Displays {
             .material(Material.SPECTRAL_ARROW)
             .displayName(MiniMessage.miniMessage().deserialize("<white>Next"))
             .lore(ItemLore.lore(List.of(
-                    Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to shift the menu forwards")
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to shift the menu forwards")
             )))
     );
 
@@ -61,6 +59,15 @@ public class Displays {
             .lore(ItemLore.lore(List.of(
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to search for"),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>something more specific")
+            )))
+    );
+
+    public static final Display CONFIRM = Display.of(consumer -> consumer
+            .material(Material.END_CRYSTAL)
+            .displayName(MiniMessage.miniMessage().deserialize("<green><bold>CONFIRM"))
+            .lore(ItemLore.lore(List.of(
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left click to accept any"),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>changes you have made")
             )))
     );
 

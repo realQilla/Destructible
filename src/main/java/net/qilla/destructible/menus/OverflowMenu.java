@@ -1,7 +1,5 @@
 package net.qilla.destructible.menus;
 
-import com.google.common.base.Preconditions;
-import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -39,6 +37,12 @@ public class OverflowMenu extends ModularMenu<OverflowItem> {
         super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
                 dPlayer.getOverflow().getOverflow());
 
+        this.populateMenu();
+        super.populateModular();
+    }
+
+    @Override
+    protected void populateMenu() {
         super.register(Slot.of(4, Displays.OVERFLOW_MENU));
         super.register(Slot.of(45, builder -> builder
                 .display(REMOVE_ALL)
@@ -47,8 +51,6 @@ public class OverflowMenu extends ModularMenu<OverflowItem> {
                 .display(Displays.RETURN)
                 .action((slot, clickType) -> returnToPreviousMenu())
                 .uniqueSlot(UniqueSlot.RETURN)));
-
-        populateModular();
     }
 
     private static final Display REMOVE_ALL = Display.of(consumer -> consumer
@@ -88,18 +90,18 @@ public class OverflowMenu extends ModularMenu<OverflowItem> {
 
         if(!overflow.contains(dItem)) {
             super.getDPlayer().sendMessage("<red>This item is no longer in your overflow stash!");
-            getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+            getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
             return;
         }
 
         if(clickType.isShiftClick() && clickType.isRightClick()) {
             overflow.remove(dItem);
             super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You have <red><bold>REMOVED</red> ").append(dItem.getDisplayName().asComponent()).append(MiniMessage.miniMessage().deserialize(" from your stash!")));
-            getDPlayer().playSound(SoundSettings.of(Sound.BLOCK_LAVA_POP, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+            getDPlayer().playSound(SoundSettings.of(Sound.BLOCK_LAVA_POP, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
         } else if(clickType.isLeftClick()) {
             if(super.getDPlayer().getSpace(DItemStack.of(dItem, item.getAmount())) <= 0) {
                 super.getDPlayer().sendMessage("<red>You do not have enough space in your inventory!");
-                getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+                getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
                 return;
             }
 
@@ -107,15 +109,15 @@ public class OverflowMenu extends ModularMenu<OverflowItem> {
 
             if(takenItemStack == null) {
                 super.getDPlayer().sendMessage("<red>There was an error claiming this item!");
-                getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+                getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
                 return;
             }
 
             super.getDPlayer().give(takenItemStack);
             super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You claimed ").append(ComponentUtil.getItem(takenItemStack)).append(MiniMessage.miniMessage().deserialize("!")));
-            getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_HORSE_SADDLE, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+            getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_HORSE_SADDLE, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
         }
-        this.refresh();
+        this.refreshModular();
     }
 
     public void clearOverflow(Slot slot, InventoryClickEvent event) {
@@ -136,19 +138,19 @@ public class OverflowMenu extends ModularMenu<OverflowItem> {
             Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
                 if(result.equals("CONFIRM")) {
                     getDPlayer().getOverflow().clear();
-                    getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_PLAYER_BURP, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+                    getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_PLAYER_BURP, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
                     getDPlayer().sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
                 }
                 super.resetIndex();
                 super.openInventory(false);
-                this.refresh();
+                this.refreshModular();
             });
         });
     }
 
     @Override
     public void inventoryOpenEvent(InventoryOpenEvent event) {
-        getDPlayer().playSound(SoundSettings.of(Sound.ITEM_BUNDLE_INSERT, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+        getDPlayer().playSound(SoundSettings.of(Sound.ITEM_BUNDLE_INSERT, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
     }
 
     @Override

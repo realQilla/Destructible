@@ -23,14 +23,28 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
             9, 10, 19, 28, 37, 38, 39, 30, 21, 12, 13, 14, 23, 32, 41, 42, 43, 34, 25, 16, 17
     );
 
-    public BlockMenuDrops(DPlayer dPlayer, Slot slotInfo, DBlock dBlock) {
+    private final DBlock dBlock;
+
+    public BlockMenuDrops(DPlayer dPlayer, DBlock dBlock) {
         super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
                 dBlock.getLootpool().stream()
                         .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
                         .toList());
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null.");
+        this.dBlock = dBlock;
 
-        Display display = slotInfo.getDisplay().ofNew(consumer -> consumer
+        this.populateMenu();
+        super.populateModular();
+    }
+
+    @Override
+    protected void populateMenu() {
+        super.register(Slot.of(49, builder -> builder
+                .display(Displays.RETURN)
+                .action((slot, clickType) -> returnToPreviousMenu())
+                .uniqueSlot(UniqueSlot.RETURN)));
+        super.register(Slot.of(4, Display.of(consumer -> consumer
+                .material(dBlock.getMaterial())
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + FormatUtil.romanNumeral(dBlock.getStrength())),
@@ -42,16 +56,7 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())
                 )))
-                .glow(true)
-        );
-
-        super.register(Slot.of(4, display));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, clickType) -> returnToPreviousMenu())
-                .uniqueSlot(UniqueSlot.RETURN)));
-
-        populateModular();
+                .glow(true))));
     }
 
     @Override
@@ -60,6 +65,7 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
 
         Display display = Display.of(builder -> builder
                 .material(dItem.getMaterial())
+                .amount(itemDrop.getMinAmount())
                 .displayName(dItem.getDisplayName())
                 .lore(ItemLore.lore().addLines(dItem.getLore().lines())
                         .addLines(List.of(

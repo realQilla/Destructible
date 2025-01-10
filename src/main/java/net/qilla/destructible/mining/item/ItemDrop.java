@@ -53,6 +53,11 @@ public class ItemDrop {
             return this;
         }
 
+        public Builder dItem(@NotNull DItem item) {
+            this.item = item;
+            return this;
+        }
+
         public Builder amount(int minAmount, int maxAmount) {
             Preconditions.checkArgument(minAmount > 0, "Minimum amount must be greater than 0");
             this.minAmount = minAmount;

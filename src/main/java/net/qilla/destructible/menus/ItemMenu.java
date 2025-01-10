@@ -40,6 +40,12 @@ public class ItemMenu extends ModularMenu<DItem> {
                         .sorted(Comparator.comparing(DItem::getId))
                         .toList());
 
+        this.populateMenu();
+        super.populateModular();
+    }
+
+    @Override
+    protected void populateMenu() {
         super.register(Slot.of(4, Displays.ITEM_MENU));
         super.register(Slot.of(47, builder -> builder
                 .display(TOOL_MENU)
@@ -48,8 +54,6 @@ public class ItemMenu extends ModularMenu<DItem> {
         super.register(Slot.of(49, builder -> builder
                 .display(Displays.RETURN)
                 .action((slot, clickType) -> returnToPreviousMenu())));
-
-        populateModular();
     }
 
     public static final Display TOOL_MENU = Display.of(consumer -> consumer

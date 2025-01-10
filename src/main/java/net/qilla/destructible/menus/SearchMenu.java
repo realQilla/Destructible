@@ -1,29 +1,50 @@
 package net.qilla.destructible.menus;
 
-import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.menus.input.SignInput;
-import net.qilla.destructible.menus.slot.Display;
+import net.qilla.destructible.menus.slot.Displays;
 import net.qilla.destructible.menus.slot.Slot;
 import net.qilla.destructible.menus.slot.UniqueSlot;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public abstract class SearchMenu<T> extends ModularMenu<T> {
 
     private List<T> localItemPopulation;
+    private final Slot searchSlot;
+    private final Slot resetSearchSlot;
 
     public SearchMenu(DPlayer dPlayer, MenuSize menuSize, Component title, List<Integer> modularSlots, List<T> itemPopulation) {
         super(dPlayer, menuSize, title, modularSlots, itemPopulation);
         this.localItemPopulation = itemPopulation;
+        this.searchSlot = getSearchSlot();
+        this.resetSearchSlot = getResetSearchSlot();
 
-        populateModular();
+        super.register(this.searchSlot);
+    }
+
+    @Override
+    protected void populateModular() {
+        int fromIndex = Math.min(super.getShiftIndex(), localItemPopulation.size());
+        int toIndex = Math.min(fromIndex + getModularSlots().size(), localItemPopulation.size());
+        List<T> shiftedList = new ArrayList<>(localItemPopulation).subList(fromIndex, toIndex);
+
+        Iterator<Integer> iterator = getModularSlots().iterator();
+        shiftedList.forEach(item -> {
+            if(iterator.hasNext()) {
+                register(createSlot(iterator.next(), item));
+            }
+        });
+
+        super.getSocket().getRemaining(getModularSlots()).forEach(slotNum -> super.register(Slot.of(slotNum, Displays.EMPTY_SLOT)));
+        super.getSocket().getRemaining().forEach(slotNum -> super.register(Slot.of(slotNum, Displays.FILLER)));
     }
 
     public void searchFor() {
@@ -36,25 +57,14 @@ public abstract class SearchMenu<T> extends ModularMenu<T> {
         signInput.init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 try {
-
                     this.localItemPopulation = getItemPopulation().stream()
                             .filter(item -> matchSearchCriteria(item, result))
                             .toList();
 
-                    super.register(Slot.of(47, builder -> builder
-                            .display(Display.of(builder2 -> builder2
-                                    .material(Material.BARRIER)
-                                    .displayName(MiniMessage.miniMessage().deserialize("<red>Reset Search"))
-                                    .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Resets your currently searched term")
-                                    )))
-                            ))
-                            .uniqueSlot(UniqueSlot.RESET_SEARCH)
-                            .action((slot, clickType) -> resetItemPopulation())
-                            .appearSound(SoundSettings.of(Sound.ENTITY_CHICKEN_EGG, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER))
-                            .clickSound(SoundSettings.of(Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER))
-                    ));
+                    super.register(this.resetSearchSlot);
                     super.resetIndex();
-                    refresh();
+                    refreshModular();
+                    getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
 
                 } catch(NumberFormatException ignored) {
                 }
@@ -66,7 +76,7 @@ public abstract class SearchMenu<T> extends ModularMenu<T> {
     public void resetItemPopulation() {
         this.localItemPopulation = getItemPopulation();
         super.unregister(UniqueSlot.RESET_SEARCH);
-        refresh();
+        refreshModular();
     }
 
     public boolean matchSearchCriteria(T item, String search) {
@@ -74,4 +84,6 @@ public abstract class SearchMenu<T> extends ModularMenu<T> {
     }
 
     protected abstract String getString(T item);
+    protected abstract Slot getSearchSlot();
+    protected abstract Slot getResetSearchSlot();
 }

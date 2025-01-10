@@ -2,7 +2,6 @@ package net.qilla.destructible.menus.slot;
 
 import com.google.common.base.Preconditions;
 import net.qilla.destructible.menus.SoundSettings;
-import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

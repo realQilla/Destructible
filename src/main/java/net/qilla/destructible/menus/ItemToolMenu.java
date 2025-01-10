@@ -41,13 +41,17 @@ public class ItemToolMenu extends ModularMenu<DTool> {
                         .sorted(Comparator.comparing(DTool::getId))
                         .toList());
 
+        this.populateMenu();
+        super.populateModular();
+    }
+
+    @Override
+    protected void populateMenu() {
         super.register(Slot.of(4, Displays.TOOL_MENU));
         super.register(Slot.of(49, builder -> builder
                 .display(Displays.RETURN)
                 .action((slot, clickType) -> returnToPreviousMenu())
                 .uniqueSlot(UniqueSlot.RETURN)));
-
-        populateModular();
     }
 
     public Slot createSlot(int index, DTool dTool) {

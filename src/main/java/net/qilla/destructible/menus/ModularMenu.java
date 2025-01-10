@@ -1,5 +1,6 @@
 package net.qilla.destructible.menus;
 
+import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.Component;
 import net.qilla.destructible.menus.slot.Displays;
 import net.qilla.destructible.menus.slot.Slot;
@@ -23,25 +24,26 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
 
     public ModularMenu(DPlayer dPlayer, MenuSize size, Component title, List<Integer> modularSlots, List<T> itemPopulation) {
         super(dPlayer, size, title);
+        Preconditions.checkNotNull(modularSlots, "Modular slots list cannot be null");
+        Preconditions.checkNotNull(itemPopulation, "Item population list cannot be null");
         this.modularSlots = modularSlots;
         this.itemPopulation = itemPopulation;
         this.shiftIndex = 0;
-
         this.nextSlot = getNextSlot();
         this.previousSlot = getPreviousSlot();
 
-        if(itemPopulation.size() > modularSlots.size()) this.register(getNextSlot());
+        if(itemPopulation.size() > modularSlots.size()) super.register(getNextSlot());
     }
 
     protected void populateModular() {
-        int fromIndex = Math.min(this.shiftIndex, itemPopulation.size());
-        int toIndex = Math.min(fromIndex + modularSlots.size(), itemPopulation.size());
-        List<T> shiftedList = new ArrayList<>(itemPopulation).subList(fromIndex, toIndex);
+        int fromIndex = Math.min(this.shiftIndex, this.itemPopulation.size());
+        int toIndex = Math.min(fromIndex + modularSlots.size(), this.itemPopulation.size());
+        List<T> shiftedList = new ArrayList<>(this.itemPopulation).subList(fromIndex, toIndex);
 
         Iterator<Integer> iterator = modularSlots.iterator();
         shiftedList.forEach(item -> {
             if(iterator.hasNext()) {
-                register(createSlot(iterator.next(), item));
+                super.register(createSlot(iterator.next(), item));
             }
         });
 
@@ -54,7 +56,7 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
         if(clickType.isShiftClick() && clickType.isLeftClick()) this.shiftIndex += modularSlots.size();
         else if(clickType.isLeftClick()) this.shiftIndex += amount;
 
-        this.refresh();
+        this.refreshModular();
         super.getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_BREEZE_JUMP, 0.25f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
     }
 
@@ -65,11 +67,11 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
 
         if(shiftIndex < 0) shiftIndex = 0;
 
-        this.refresh();
+        this.refreshModular();
         super.getDPlayer().playSound(SoundSettings.of(Sound.ENTITY_BREEZE_LAND, 0.75f, 1.75f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
     }
 
-    public void refresh() {
+    public void refreshModular() {
         modularSlots.forEach(super::unregister);
 
         if(shiftIndex > 0) super.register(this.previousSlot);
@@ -97,8 +99,6 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
     }
 
     protected abstract Slot getNextSlot();
-
     protected abstract Slot getPreviousSlot();
-
     protected abstract Slot createSlot(int index, T item);
 }

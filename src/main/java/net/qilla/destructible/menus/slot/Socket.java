@@ -46,10 +46,6 @@ public final class Socket {
         return uniqueSocket.get(uniqueSlot);
     }
 
-    public Map<Integer, Slot> getAll() {
-        return Collections.unmodifiableMap(socket);
-    }
-
     public List<Integer> getRemaining(List<Integer> slotsToCheck) {
         List<Integer> unregisteredSlots = new ArrayList<>();
         for(int slot : slotsToCheck) {
@@ -68,10 +64,5 @@ public final class Socket {
             }
         }
         return unregisteredSlots;
-    }
-
-    public void clear() {
-        socket.clear();
-        uniqueSocket.clear();
     }
 }
