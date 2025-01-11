@@ -7,11 +7,8 @@ import net.qilla.destructible.menus.slot.UniqueSlot;
 import net.qilla.destructible.menus.slot.Socket;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.player.PlayType;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -51,7 +48,6 @@ public abstract class DestructibleMenu implements InventoryHolder {
         DestructibleMenu lastMenu = dPlayer.getMenuData().getLastMenu();
         if(lastMenu != null) lastMenu.openInventory(false);
         else this.closeInventory();
-        dPlayer.playSound(SoundSettings.of(Sound.BLOCK_NOTE_BLOCK_BELL, 0.25f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
     }
 
     public void openInventory(boolean saveMenu) {
@@ -100,11 +96,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
         return slot;
     }
 
-    public Slot register(Slot slot, int min, int max) {
-        return this.register(slot, RandomUtil.between(min, max));
-    }
-
-    public void register(List<Slot> slots, int min, int max) {
+    public void register(List<Slot> slots, int delay) {
         Preconditions.checkNotNull(slots, "List cannot be null");
 
         Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
@@ -113,7 +105,7 @@ public abstract class DestructibleMenu implements InventoryHolder {
                     this.register(slot);
                 });
                 try {
-                    Thread.sleep(RandomUtil.between(min, max) * 50L);
+                    Thread.sleep(delay * 50L);
                 } catch(InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -132,10 +124,6 @@ public abstract class DestructibleMenu implements InventoryHolder {
         if(slot == null) return;
         this.socket.unregister(slot.getIndex());
         this.inventory.clear(slot.getIndex());
-    }
-
-    public void refreshMenu() {
-        this.populateMenu();
     }
 
     public DPlayer getDPlayer() {

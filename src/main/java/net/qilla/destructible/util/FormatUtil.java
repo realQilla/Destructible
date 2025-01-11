@@ -116,6 +116,7 @@ public class FormatUtil {
         if(string.isEmpty()) return 0;
 
         char timeType = string.charAt(string.length() - 1);
+        if(!Character.isLetter(timeType)) return Long.parseLong(string);
         long value = Long.parseLong(string.substring(0, string.length() - 1));
 
         return switch(timeType) {

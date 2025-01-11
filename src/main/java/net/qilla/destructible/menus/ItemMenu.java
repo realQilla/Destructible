@@ -1,8 +1,10 @@
 package net.qilla.destructible.menus;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.command.Sounds;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.menus.input.SignInput;
 import net.qilla.destructible.menus.slot.Display;
@@ -12,15 +14,11 @@ import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.player.PlayType;
 import net.qilla.destructible.util.ComponentUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-
 import java.util.*;
 
 public class ItemMenu extends ModularMenu<DItem> {
@@ -35,11 +33,7 @@ public class ItemMenu extends ModularMenu<DItem> {
 
     public ItemMenu(DPlayer dPlayer) {
         super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                Registries.DESTRUCTIBLE_ITEMS.values().stream()
-                        .filter(item -> item.getClass() == DItem.class)
-                        .sorted(Comparator.comparing(DItem::getId))
-                        .toList());
-
+                Registries.getDestructibleItem(DItem.class));
         this.populateMenu();
         super.populateModular();
     }
@@ -48,48 +42,57 @@ public class ItemMenu extends ModularMenu<DItem> {
     protected void populateMenu() {
         super.register(Slot.of(4, Displays.ITEM_MENU));
         super.register(Slot.of(47, builder -> builder
-                .display(TOOL_MENU)
-                .action((slot, clickType) -> new ItemToolMenu(super.getDPlayer()).openInventory(true))));
-        super.register(Slot.of(46, WEAPON_MENU));
+                .display(Display.of(consumer -> consumer
+                        .material(Material.IRON_PICKAXE)
+                        .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Tools"))
+                        .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to view destructible tools"))))
+                ))
+                .action((slot, event) -> {
+                    if(event.getClick().isLeftClick()) {
+                        new ItemToolMenu(super.getDPlayer()).openInventory(true);
+                    }
+                })
+                .clickSound(Sounds.CLICK_MENU_ITEM)
+        ));
+        super.register(Slot.of(46, Display.of(consumer -> consumer
+                .material(Material.NETHERITE_AXE)
+                .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Weapons"))
+                .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to view destructible weapons"))))
+        )));
         super.register(Slot.of(49, builder -> builder
                 .display(Displays.RETURN)
-                .action((slot, clickType) -> returnToPreviousMenu())));
+                .action((slot, event) -> {
+                    if(event.getClick().isLeftClick()) {
+                        returnToPreviousMenu();
+                    }
+                })
+                .clickSound(Sounds.RETURN_MENU)
+        ));
     }
 
-    public static final Display TOOL_MENU = Display.of(consumer -> consumer
-            .material(Material.IRON_PICKAXE)
-            .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Tools"))
-            .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Click to view destructible tools"))))
-    );
-
-    public static final Display WEAPON_MENU = Display.of(consumer -> consumer
-            .material(Material.NETHERITE_AXE)
-            .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Weapons"))
-            .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Left-Click to view destructible weapons"))))
-    );
-
     public Slot createSlot(int index, DItem dItem) {
-        Display display = Display.of(builder -> builder
-                .material(dItem.getMaterial())
-                .displayName(MiniMessage.miniMessage().deserialize(dItem.getId()))
-                .lore(ItemLore.lore()
-                        .addLines(List.of(
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(dItem.getDisplayName()),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
-                        ))
-                        .addLines(dItem.getLore().lines())
-                        .addLines(List.of(
-                                Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(dItem.getRarity().getComponent()),
-                                Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
-                        )).build()
-                )
-        );
         return Slot.of(index, builder -> builder
-                .display(display)
-                .action((slot, event) -> getItem(slot, event, dItem)));
+                .display(Display.of(builder2 -> builder2
+                        .material(dItem.getMaterial())
+                        .displayName(MiniMessage.miniMessage().deserialize(dItem.getId()))
+                        .lore(ItemLore.lore()
+                                .addLines(List.of(
+                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(dItem.getDisplayName()),
+                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
+                                ))
+                                .addLines(dItem.getLore().lines())
+                                .addLines(List.of(
+                                        Component.empty(),
+                                        MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(dItem.getRarity().getComponent()),
+                                        Component.empty(),
+                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
+                                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
+                                )).build()
+                        )
+                ))
+                .action((slot, event) -> getItem(slot, event, dItem))
+                .clickSound(Sounds.GET_ITEM)
+        );
     }
 
     private void getItem(Slot slot, InventoryClickEvent event, DItem dItem) {
@@ -112,7 +115,7 @@ public class ItemMenu extends ModularMenu<DItem> {
 
                         getDPlayer().give(DItemStack.of(dItem, value));
                         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dItem, value)).append(MiniMessage.miniMessage().deserialize("!")));
-                        getDPlayer().playSound(SoundSettings.of(Sound.ITEM_BUNDLE_DROP_CONTENTS, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+                        getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                     } catch(NumberFormatException ignored) {
                     }
                     super.openInventory(false);
@@ -120,9 +123,7 @@ public class ItemMenu extends ModularMenu<DItem> {
             });
         } else if(clickType.isLeftClick()) {
             getDPlayer().give(DItemStack.of(dItem, 1));
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dItem, 1)).append(MiniMessage.miniMessage().deserialize("!")));
-            getDPlayer().playSound(SoundSettings.of(Sound.ITEM_BUNDLE_REMOVE_ONE, 1, 1, SoundCategory.PLAYERS, PlayType.PLAYER), true);
-        }
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dItem, 1)).append(MiniMessage.miniMessage().deserialize("!")));}
     }
 
     @Override
@@ -136,6 +137,6 @@ public class ItemMenu extends ModularMenu<DItem> {
     protected Slot getPreviousSlot() {
         return Slot.of(7, builder -> builder
                 .display(Displays.PREVIOUS)
-                .action((slot, clickType) -> super.rotatePrevious(slot, clickType, 9)));
+                .action((slot, event) -> super.rotatePrevious(slot, event, 9)));
     }
 }

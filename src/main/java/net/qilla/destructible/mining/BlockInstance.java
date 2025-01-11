@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.util.CoordUtil;
@@ -14,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class BlockInstance {
@@ -38,7 +38,7 @@ public final class BlockInstance {
         this.dBlock = dBlock;
         this.direction = direction;
         this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
-                new RegistryMap<>()).computeIfAbsent(chunkInt, k ->
+                new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());
         this.totalDurability = new AtomicDouble(dBlock.getDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());

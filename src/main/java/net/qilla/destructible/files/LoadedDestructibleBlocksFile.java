@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.data.Registries;
 import org.bukkit.Bukkit;
 import java.io.*;
@@ -15,6 +14,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LoadedDestructibleBlocksFile extends DestructibleFile {
 
@@ -28,7 +28,7 @@ public class LoadedDestructibleBlocksFile extends DestructibleFile {
         this.gson = new GsonBuilder()
                 .enableComplexMapKeySerialization()
                 .create();
-        this.type = new TypeToken<RegistryMap<ChunkPos, RegistryMap<Integer, String>>>() {}.getType();
+        this.type = new TypeToken<ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, String>>>() {}.getType();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class LoadedDestructibleBlocksFile extends DestructibleFile {
     @Override
     public void load() {
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
-            RegistryMap<ChunkPos, RegistryMap<Integer, String>> registry = this.gson.fromJson(bufferedReader, type);
+            ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, String>> registry = this.gson.fromJson(bufferedReader, type);
             Registries.LOADED_DESTRUCTIBLE_BLOCKS.putAll(registry);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();

@@ -5,11 +5,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.mining.block.DBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class DBlockUtil {
 
@@ -17,7 +17,7 @@ public final class DBlockUtil {
         ChunkPos chunkPos = new ChunkPos(blockPos);
         int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
 
-        RegistryMap<Integer, String> chunkIntMap = Registries.LOADED_DESTRUCTIBLE_BLOCKS.get(chunkPos);
+        var chunkIntMap = Registries.LOADED_DESTRUCTIBLE_BLOCKS.get(chunkPos);
         if(chunkIntMap == null || !chunkIntMap.containsKey(chunkInt)) return Optional.empty();
         return Optional.ofNullable(Registries.DESTRUCTIBLE_BLOCKS.get(chunkIntMap.get(chunkInt)));
     }

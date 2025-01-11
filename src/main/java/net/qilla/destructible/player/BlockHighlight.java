@@ -8,7 +8,6 @@ import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.util.CoordUtil;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -21,12 +20,13 @@ import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BlockHighlight {
 
     private final DPlayer dPlayer;
     private Set<String> visibleBlocks;
-    private final RegistryMap<String, RegistryMap<ChunkPos, RegistryMap<Integer, Integer>>> highlight = new RegistryMap<>();
+    private final ConcurrentHashMap<String, ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, Integer>>> highlight = new ConcurrentHashMap<>();
 
     public BlockHighlight(@NotNull DPlayer dPlayer) {
         this.dPlayer = dPlayer;
@@ -75,8 +75,8 @@ public class BlockHighlight {
         dPlayer.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
 
         this.highlight.computeIfAbsent(blockId, blockId2 ->
-                new RegistryMap<>()).computeIfAbsent(chunkPos, chunkPos2 ->
-                new RegistryMap<>()).putIfAbsent(chunkInt, entity.getEntityId());
+                new ConcurrentHashMap<>()).computeIfAbsent(chunkPos, chunkPos2 ->
+                new ConcurrentHashMap<>()).putIfAbsent(chunkInt, entity.getEntityId());
     }
 
     public void removeHighlight(@NotNull BlockPos blockPos) {
@@ -107,8 +107,8 @@ public class BlockHighlight {
 
                     dPlayer.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
                     dPlayer.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
-                    this.highlight.computeIfAbsent(blockId, k4 -> new RegistryMap<>())
-                            .computeIfAbsent(chunkPos, k5 -> new RegistryMap<>())
+                    this.highlight.computeIfAbsent(blockId, k4 -> new ConcurrentHashMap<>())
+                            .computeIfAbsent(chunkPos, k5 -> new ConcurrentHashMap<>())
                             .putIfAbsent(chunkInt, entity.getEntityId());
                 });
                 try {
@@ -149,8 +149,8 @@ public class BlockHighlight {
 
                     dPlayer.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
                     dPlayer.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
-                    this.highlight.computeIfAbsent(blockId, k4 -> new RegistryMap<>())
-                            .computeIfAbsent(chunkPos, k5 -> new RegistryMap<>())
+                    this.highlight.computeIfAbsent(blockId, k4 -> new ConcurrentHashMap<>())
+                            .computeIfAbsent(chunkPos, k5 -> new ConcurrentHashMap<>())
                             .putIfAbsent(chunkInt, entity.getEntityId());
                 });
                 try {

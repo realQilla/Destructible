@@ -3,12 +3,12 @@ package net.qilla.destructible.player;
 import net.minecraft.core.BlockPos;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.util.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DBlockEdit {
     private final DPlayer dPlayer;
@@ -56,9 +56,9 @@ public class DBlockEdit {
         var loadedBlocksGrouped = Registries.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED;
 
         loadedBlocks.computeIfAbsent(chunkPos, chunkPosMap ->
-                new RegistryMap<>()).put(chunkInt, blockId);
+                new ConcurrentHashMap<>()).put(chunkInt, blockId);
         loadedBlocksGrouped.computeIfAbsent(blockId, blockId2 ->
-                        new RegistryMap<>())
+                        new ConcurrentHashMap<>())
                 .computeIfAbsent(chunkPos, chunkPos2 ->
                         new HashSet<>()).add(chunkInt);
     }

@@ -47,7 +47,7 @@ public final class Socket {
     }
 
     public List<Integer> getRemaining(List<Integer> slotsToCheck) {
-        List<Integer> unregisteredSlots = new ArrayList<>();
+        List<Integer> unregisteredSlots = new LinkedList<>();
         for(int slot : slotsToCheck) {
             if(!socket.containsKey(slot)) {
                 unregisteredSlots.add(slot);
@@ -57,7 +57,7 @@ public final class Socket {
     }
 
     public List<Integer> getRemaining() {
-        List<Integer> unregisteredSlots = new ArrayList<>();
+        List<Integer> unregisteredSlots = new LinkedList<>();
         for(int i = 0; i < menuSize.getSize(); i++) {
             if(!socket.containsKey(i)) {
                 unregisteredSlots.add(i);

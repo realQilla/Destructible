@@ -6,6 +6,7 @@ import net.qilla.destructible.mining.item.DItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Overflow {
 
@@ -90,8 +91,8 @@ public class Overflow {
         return itemStacks;
     }
 
-    public List<OverflowItem> getOverflow() {
-        return this.overflowItems.entrySet().stream().map(entry -> new OverflowItem(entry.getKey(), entry.getValue())).toList();
+    public Set<Map.Entry<DItem, Integer>> getOverflow() {
+        return this.overflowItems.entrySet();
     }
 
     public boolean contains(DItem dItem) {

@@ -62,6 +62,13 @@ public class Displays {
             )))
     );
 
+    public static final Display RESET_SEARCH = Display.of(builder2 -> builder2
+            .material(Material.BARRIER)
+            .displayName(MiniMessage.miniMessage().deserialize("<red>Reset Search"))
+            .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Resets your currently searched term")
+            )))
+    );
+
     public static final Display CONFIRM = Display.of(consumer -> consumer
             .material(Material.END_CRYSTAL)
             .displayName(MiniMessage.miniMessage().deserialize("<green><bold>CONFIRM"))
@@ -75,7 +82,7 @@ public class Displays {
             .material(Material.BROWN_BUNDLE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Overflowing Items"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to claim any items that were not "),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to claim any items that were not"),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>able to fit into your inventory")
             )))
     );

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.command.Sounds;
 import net.qilla.destructible.menus.slot.Display;
 import net.qilla.destructible.menus.slot.Slot;
 import net.qilla.destructible.menus.slot.Displays;
@@ -13,8 +14,10 @@ import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.FormatUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BlockMenuDrops extends ModularMenu<ItemDrop> {
     private static final MenuSize SIZE = MenuSize.SIX;
@@ -25,11 +28,11 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
 
     private final DBlock dBlock;
 
-    public BlockMenuDrops(DPlayer dPlayer, DBlock dBlock) {
+    public BlockMenuDrops(@NotNull DPlayer dPlayer, @NotNull DBlock dBlock) {
         super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
                 dBlock.getLootpool().stream()
-                        .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
-                        .toList());
+                    .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
+                        .collect(Collectors.toList()));
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null.");
         this.dBlock = dBlock;
 
@@ -42,7 +45,9 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
         super.register(Slot.of(49, builder -> builder
                 .display(Displays.RETURN)
                 .action((slot, clickType) -> returnToPreviousMenu())
-                .uniqueSlot(UniqueSlot.RETURN)));
+                .uniqueSlot(UniqueSlot.RETURN)
+                .clickSound(Sounds.RETURN_MENU)
+        ));
         super.register(Slot.of(4, Display.of(consumer -> consumer
                 .material(dBlock.getMaterial())
                 .lore(ItemLore.lore(List.of(
@@ -56,14 +61,14 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())
                 )))
-                .glow(true))));
+                .glow(true)))
+        );
     }
 
     @Override
     protected Slot createSlot(int index, ItemDrop itemDrop) {
         DItem dItem = itemDrop.getDItem();
-
-        Display display = Display.of(builder -> builder
+        return Slot.of(index, Display.of(builder -> builder
                 .material(dItem.getMaterial())
                 .amount(itemDrop.getMinAmount())
                 .displayName(dItem.getDisplayName())
@@ -76,8 +81,7 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
                                         FormatUtil.decimalTruncation(itemDrop.getChance() * 100, 17) + "% (1/" + FormatUtil.numberComma((long) Math.ceil(1 / itemDrop.getChance())) + ")")
                         )).build()
                 )
-        );
-        return Slot.of(index, display);
+        ));
     }
 
     @Override

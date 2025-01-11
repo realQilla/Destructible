@@ -5,21 +5,18 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.stats.Stat;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.mining.block.BlockMemory;
-import net.qilla.destructible.data.RegistryMap;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class MiningPacketListener {
 
@@ -44,7 +41,7 @@ public final class MiningPacketListener {
                     ChunkPos chunkPos = new ChunkPos(blockPos);
                     int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
                     if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, v ->
-                            new RegistryMap<>()).computeIfAbsent(chunkInt, v ->
+                            new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, v ->
                             new BlockMemory()).isOnCooldown()) {
                         return;
                     }
