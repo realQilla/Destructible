@@ -14,53 +14,25 @@ import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
+
+import java.util.Collection;
 import java.util.List;
 
 public class SetParticle extends SearchMenu<Material> {
 
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = Component.text("Block Search");
-    private static final List<Integer> MODULAR_SLOTS = List.of(
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44
-    );
-
     private final BlockMenuModify menu;
 
     public SetParticle(DPlayer dPlayer, BlockMenuModify menu) {
-        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                Registry.MATERIAL.stream()
-                        .filter(Material::isBlock)
-                        .toList());
+        super(dPlayer, Registry.MATERIAL.stream()
+                .filter(Material::isBlock)
+                .toList());
 
         this.menu = menu;
-        this.populateMenu();
         super.populateModular();
     }
 
     @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Display.of(builder -> builder
-                .material(Material.HEART_OF_THE_SEA)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Particle Search"))
-        )));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, event) -> menu.returnToPreviousMenu())
-                .uniqueSlot(UniqueSlot.RETURN)
-                .clickSound(Sounds.RETURN_MENU)
-        ));
-        super.register(Slot.of(47, builder -> builder
-                .display(Displays.SEARCH)
-                .action((slot, event) -> super.searchFor())
-                .clickSound(Sounds.CLICK_MENU_ITEM)
-        ));
-    }
-
-    @Override
-    public Slot createSlot(int index, Material item) {
+    public Slot createSocket(int index, Material item) {
         return Slot.of(index, builder -> builder
                 .display(Display.of(builder2 -> builder2
                         .material(item)
@@ -72,24 +44,9 @@ public class SetParticle extends SearchMenu<Material> {
                 ))
                 .action((slot, event) -> {
                     this.menu.setBreakParticle(item);
-                    this.menu.particleSlot();
-                    super.returnToPreviousMenu();
+                    super.returnToPrevious();
                 })
         );
-    }
-
-    @Override
-    protected Slot getNextSlot() {
-        return Slot.of(52, builder -> builder
-                .display(Displays.NEXT)
-                .action((slot, event) -> rotateNext(slot, event, 9)));
-    }
-
-    @Override
-    protected Slot getPreviousSlot() {
-        return Slot.of(7, builder -> builder
-                .display(Displays.PREVIOUS)
-                .action((slot, event) -> rotatePrevious(slot, event, 9)));
     }
 
     @Override
@@ -98,21 +55,60 @@ public class SetParticle extends SearchMenu<Material> {
     }
 
     @Override
-    protected Slot getSearchSlot() {
-        return Slot.of(47, builder -> builder
-                .display(Displays.SEARCH)
-                .action((slot, event) -> super.searchFor())
+    public List<Integer> modularIndexes() {
+        return List.of(
+                9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31, 32, 33, 34, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 44
         );
     }
 
     @Override
-    protected Slot getResetSearchSlot() {
-        return Slot.of(45, builder -> builder
-                .display(Displays.RESET_SEARCH)
-                .uniqueSlot(UniqueSlot.RESET_SEARCH)
-                .action((slot, event) -> super.resetSearch())
-                .appearSound(Sounds.ITEM_APPEAR)
-                .clickSound(Sounds.RESET)
-        );
+    public int returnIndex() {
+        return 49;
+    }
+
+    @Override
+    public int nextIndex() {
+        return 52;
+    }
+
+    @Override
+    public int previousIndex() {
+        return 7;
+    }
+
+    @Override
+    public int rotateAmount() {
+        return 9;
+    }
+
+    @Override
+    public Component tile() {
+        return Component.text("Block Particle Search");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Display.of(builder -> builder
+                .material(Material.HEART_OF_THE_SEA)
+                .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Particle Search"))
+        ));
+    }
+
+    @Override
+    public int searchIndex() {
+        return 47;
+    }
+
+    @Override
+    public int resetSearchIndex() {
+        return 45;
     }
 }

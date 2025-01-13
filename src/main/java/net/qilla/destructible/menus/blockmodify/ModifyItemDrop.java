@@ -11,7 +11,6 @@ import net.qilla.destructible.menus.input.SignInput;
 import net.qilla.destructible.menus.slot.Display;
 import net.qilla.destructible.menus.slot.Displays;
 import net.qilla.destructible.menus.slot.Slot;
-import net.qilla.destructible.menus.slot.UniqueSlot;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.DPlayer;
@@ -25,9 +24,6 @@ import java.util.List;
 
 public class ModifyItemDrop extends DestructibleMenu {
 
-    private static final MenuSize SIZE = MenuSize.FIVE;
-    private static final Component TITLE = Component.text("Item Drop Modification");
-
     private final SetLootpool menu;
     private boolean fullMenu;
     private final ItemDrop itemDrop;
@@ -37,7 +33,7 @@ public class ModifyItemDrop extends DestructibleMenu {
     private Double chance;
 
     public ModifyItemDrop(DPlayer dPlayer, SetLootpool menu, ItemDrop itemDrop) {
-        super(dPlayer, SIZE, TITLE);
+        super(dPlayer);
         Preconditions.checkNotNull(itemDrop, "ItemDrop cannot be null");
 
         this.menu = menu;
@@ -48,13 +44,12 @@ public class ModifyItemDrop extends DestructibleMenu {
         this.chance = itemDrop.getChance() * 100;
         this.fullMenu = true;
 
-        this.populateMenu();
         super.register(this.itemSlot());
         populateSettings();
     }
 
     public ModifyItemDrop(DPlayer dPlayer, SetLootpool menu) {
-        super(dPlayer, SIZE, TITLE);
+        super(dPlayer);
         this.menu = menu;
         this.itemDrop = null;
         super.register(Slot.of(22, builder -> builder
@@ -68,34 +63,13 @@ public class ModifyItemDrop extends DestructibleMenu {
                 ))
                 .action(((slot, event) -> {
                     if(event.getClick().isRightClick()) {
-                        new SetDItem(getDPlayer(), this).openInventory(false);
+                        new SetDItem(getDPlayer(), this).openMenu(false);
                     }
                 }))
                 .clickSound(Sounds.CLICK_MENU_ITEM)
                 .appearSound(Sounds.ITEM_APPEAR)
         ), 3);
 
-        this.populateMenu();
-    }
-
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Display.of(builder -> builder
-                .material(Material.PINK_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Item Drop Modification"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Create new item drops for"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>existing lootpools")
-                ))))));
-        super.register(Slot.of(40, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, event) -> {
-                    returnToPreviousMenu();
-                })
-                .uniqueSlot(UniqueSlot.RETURN)
-                .clickSound(Sounds.RETURN_MENU)
-        ));
     }
 
     private void populateSettings() {
@@ -112,15 +86,14 @@ public class ModifyItemDrop extends DestructibleMenu {
                 .action((slot, event) -> {
                     ClickType clickType = event.getClick();
                     if(clickType.isLeftClick()) {
-                        menu.removeItemDrop(itemDrop);
-                        menu.addItemDrop(new ItemDrop.Builder()
+                        menu.getItemPopulation().remove(itemDrop);
+                        menu.getItemPopulation().add(new ItemDrop.Builder()
                                 .dItem(dItem)
                                 .minAmount(minAmount)
-                                .maxAmount(Math.max(minAmount, maxAmount))
+                                .maxAmount(maxAmount)
                                 .chance(chance / 100)
                                 .build());
-                        menu.updateModular();
-                        menu.returnToPreviousMenu();
+                        menu.returnToPrevious();
                     }
                 })
                 .appearSound(Sounds.ITEM_APPEAR)
@@ -145,7 +118,7 @@ public class ModifyItemDrop extends DestructibleMenu {
                                 )).build()
                         )
                 ))
-                .action(((slot, event) -> new SetDItem(getDPlayer(), this).openInventory(true)))
+                .action(((slot, event) -> new SetDItem(getDPlayer(), this).openMenu(true)))
                 .clickSound(Sounds.CLICK_MENU_ITEM)
                 .appearSound(Sounds.ITEM_APPEAR)
         );
@@ -209,11 +182,12 @@ public class ModifyItemDrop extends DestructibleMenu {
 
                 try {
                     this.minAmount = Math.max(1, Integer.parseInt(result));
+                    if(this.minAmount > maxAmount) this.maxAmount = minAmount;
                     super.register(this.amountSlot());
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
@@ -230,11 +204,12 @@ public class ModifyItemDrop extends DestructibleMenu {
 
                 try {
                     this.maxAmount = Math.max(1, Integer.parseInt(result));
+                    if(this.maxAmount < minAmount) this.minAmount = maxAmount;
                     super.register(this.amountSlot());
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
@@ -255,7 +230,7 @@ public class ModifyItemDrop extends DestructibleMenu {
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
@@ -267,5 +242,32 @@ public class ModifyItemDrop extends DestructibleMenu {
             populateSettings();
             fullMenu = true;
         }
+    }
+
+    @Override
+    public Component tile() {
+        return Component.text("Item Drop Modification");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.FIVE;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Display.of(builder -> builder
+                .material(Material.PINK_BUNDLE)
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Item Drop Modification"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Create new item drops for"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>existing lootpools")
+                )))));
+    }
+
+    @Override
+    public int returnIndex() {
+        return 40;
     }
 }

@@ -32,6 +32,7 @@ public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
         super(DEFAULT_RESOURCE, FILE_PATH);
         this.gson = new GsonBuilder()
                 .enableComplexMapKeySerialization()
+                .setPrettyPrinting()
                 .create();
         this.type = new TypeToken<ConcurrentHashMap<String, ConcurrentHashMap<ChunkPos, Set<Integer>>>>() {}.getType();
     }

@@ -27,9 +27,6 @@ import java.util.*;
 
 public class BlockMenuModify extends DestructibleMenu {
 
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = Component.text("Destructible Block Modification");
-
     private boolean fullMenu;
     private final BlockMenu blockMenu;
     private final DBlock dBlock;
@@ -44,7 +41,7 @@ public class BlockMenuModify extends DestructibleMenu {
     private Material breakParticle;
 
     public BlockMenuModify(@NotNull DPlayer dPlayer, @NotNull BlockMenu blockMenu, @NotNull DBlock dBlock) {
-        super(dPlayer, SIZE, TITLE);
+        super(dPlayer);
         Preconditions.checkNotNull(dBlock, "Block cannot be null");
         this.fullMenu = true;
         this.blockMenu = blockMenu;
@@ -54,20 +51,19 @@ public class BlockMenuModify extends DestructibleMenu {
         this.strength = dBlock.getStrength();
         this.durability = dBlock.getDurability();
         this.cooldown = dBlock.getCooldown();
-        this.correctTools = dBlock.getCorrectTools();
-        this.lootpool = dBlock.getLootpool();
+        this.correctTools = new HashSet<>(dBlock.getCorrectTools());
+        this.lootpool = new ArrayList<>(dBlock.getLootpool());
         this.breakSound = dBlock.getBreakSound();
         this.breakParticle = dBlock.getBreakParticle();
 
         super.register(materialSlot());
         super.register(removeSlot());
 
-        this.populateMenu();
         this.populateSettings();
     }
 
     public BlockMenuModify(@NotNull DPlayer dPlayer, @NotNull BlockMenu blockMenu) {
-        super(dPlayer, SIZE, TITLE);
+        super(dPlayer);
         this.fullMenu = false;
         this.blockMenu = blockMenu;
         this.dBlock = null;
@@ -84,18 +80,6 @@ public class BlockMenuModify extends DestructibleMenu {
                 .action((this::clickMainBlock))
                 .appearSound(Sounds.ITEM_APPEAR)
         ), 3);
-
-        this.populateMenu();
-    }
-
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Displays.BLOCK_MODIFICATION_MENU));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, event) -> returnToPreviousMenu())
-                .clickSound(Sounds.RETURN_MENU)
-        ));
     }
 
     private void populateSettings() {
@@ -119,7 +103,7 @@ public class BlockMenuModify extends DestructibleMenu {
             getDPlayer().getCraftPlayer().setItemOnCursor(null);
 
         } else if(clickType.isRightClick()) {
-            new SetMaterial(super.getDPlayer(), this).openInventory(true);
+            new SetMaterial(super.getDPlayer(), this).openMenu(true);
         }
     }
 
@@ -168,8 +152,7 @@ public class BlockMenuModify extends DestructibleMenu {
             Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
             getDPlayer().getPlugin().getCustomBlocksFile().save();
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered."));
-            super.returnToPreviousMenu();
-            this.blockMenu.updateModular();
+            super.returnToPrevious();
         }
     }
 
@@ -184,7 +167,7 @@ public class BlockMenuModify extends DestructibleMenu {
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
             Registries.DESTRUCTIBLE_BLOCKS.remove(dBlock.getId());
             getDPlayer().getPlugin().getCustomBlocksFile().save();
-            super.returnToPreviousMenu();
+            super.pullPreviousMenu();
             this.blockMenu.updateModular();
         }
     }
@@ -272,7 +255,7 @@ public class BlockMenuModify extends DestructibleMenu {
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
                         )))
                 ))
-                .action((event, slot) -> new SetLootpool(getDPlayer(), this).openInventory(true))
+                .action((event, slot) -> new SetLootpool(getDPlayer(), this.lootpool).openMenu(true))
                 .clickSound(Sounds.CLICK_MENU_ITEM)
                 .appearSound(Sounds.ITEM_APPEAR)
         );
@@ -292,7 +275,7 @@ public class BlockMenuModify extends DestructibleMenu {
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
                         )))
                 ))
-                .action((Slot, event) -> new SetToolType(getDPlayer(), this).openInventory(true))
+                .action((Slot, event) -> new SetToolType(getDPlayer(), this).openMenu(true))
                 .clickSound(Sounds.CLICK_MENU_ITEM)
                 .appearSound(Sounds.ITEM_APPEAR)
         );
@@ -328,7 +311,7 @@ public class BlockMenuModify extends DestructibleMenu {
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
                         )))
                 ))
-                .action((slot, event) -> new SetParticle(getDPlayer(), this).openInventory(true))
+                .action((slot, event) -> new SetParticle(getDPlayer(), this).openMenu(true))
                 .clickSound(Sounds.CLICK_MENU_ITEM)
                 .appearSound(Sounds.ITEM_APPEAR)
         );
@@ -346,7 +329,7 @@ public class BlockMenuModify extends DestructibleMenu {
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
                         )))
                 ))
-                .action((slot, event) -> new SetSound(getDPlayer(), this).openInventory(true))
+                .action((slot, event) -> new SetSound(getDPlayer(), this).openMenu(true))
                 .clickSound(Sounds.CLICK_MENU_ITEM)
                 .appearSound(Sounds.ITEM_APPEAR)
         );
@@ -371,7 +354,7 @@ public class BlockMenuModify extends DestructibleMenu {
                         getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                     }
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
@@ -390,7 +373,7 @@ public class BlockMenuModify extends DestructibleMenu {
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
@@ -409,7 +392,7 @@ public class BlockMenuModify extends DestructibleMenu {
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
@@ -428,7 +411,7 @@ public class BlockMenuModify extends DestructibleMenu {
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
@@ -465,5 +448,25 @@ public class BlockMenuModify extends DestructibleMenu {
     public void setBreakSound(Sound breakSound) {
         this.breakSound = breakSound;
         this.register(soundSlot());
+    }
+
+    @Override
+    public Component tile() {
+        return Component.text("Block Modification");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Displays.BLOCK_MODIFICATION_MENU);
+    }
+
+    @Override
+    public int returnIndex() {
+        return 49;
     }
 }

@@ -15,7 +15,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.menus.BlockMenu;
-import net.qilla.destructible.menus.DestructibleMenu;
 import net.qilla.destructible.menus.ItemMenu;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
@@ -162,7 +161,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        new ItemMenu(dPlayer).openInventory(true);;
+        new ItemMenu(dPlayer).openMenu(true);;
         return Command.SINGLE_SUCCESS;
     }
 
@@ -176,7 +175,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        new BlockMenu(dPlayer).openInventory(true);
+        new BlockMenu(dPlayer).openMenu(true);
         return Command.SINGLE_SUCCESS;
     }
 

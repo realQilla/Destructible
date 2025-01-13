@@ -4,5 +4,6 @@ public enum UniqueSlot {
     RETURN,
     NEXT,
     PREVIOUS,
+    SEARCH,
     RESET_SEARCH;
 }

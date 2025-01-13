@@ -35,7 +35,7 @@ tasks {
 
     withType<ShadowJar> {
         configurations = listOf(project.configurations.getByName("shade"))
-        destinationDirectory.set(file("C:\\Users\\Richard\\Development\\Servers\\1.21.4\\plugins"))
+        destinationDirectory.set(file("C:\\Users\\pitsu\\Desktop\\Server\\plugins"))
     }
 }
 

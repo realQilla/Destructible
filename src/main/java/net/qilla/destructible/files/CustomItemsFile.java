@@ -33,6 +33,7 @@ public class CustomItemsFile extends DestructibleFile {
         this.type = new TypeToken<List<DItem>>() {}.getType();
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(DItem.class, new DItemTA())
+                .setPrettyPrinting()
                 .create();
     }
 

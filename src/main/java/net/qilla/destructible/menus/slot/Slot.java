@@ -8,35 +8,33 @@ import java.util.function.Consumer;
 
 public class Slot {
 
-    private final Builder builder;
-    private final int index;
     private Display display;
+    private UniqueSlot uniqueSlot;
     private BiConsumer<Slot, InventoryClickEvent> action;
     private SoundSettings appearSound;
     private SoundSettings clickSound;
-    private final UniqueSlot uniqueSlot;
+    private int delay;
 
-    private Slot(int index, Builder builder) {
-        this.builder = builder;
-        this.index = index;
+    private Slot(Builder builder) {
         this.display = builder.display;
+        this.uniqueSlot = builder.uniqueSlot;
         this.action = builder.action;
         this.appearSound = builder.appearSound;
         this.clickSound = builder.clickSound;
-        this.uniqueSlot = builder.uniqueSlot;
+        this.delay = builder.delay;
     }
 
-    public static Slot of(int index, Consumer<Builder> builder) {
+    public static Slot of(Consumer<Builder> builder) {
         Builder newBuilder = new Builder();
         builder.accept(newBuilder);
-        return new Slot(index, newBuilder);
+        return new Slot(newBuilder);
     }
 
-    public static Slot of(int index, Display display) {
+    public static Slot of(Display display) {
         Preconditions.checkNotNull(display, "Display cannot be null");
         Builder builder = new Builder();
         builder.display = display;
-        return new Slot(index, builder);
+        return new Slot(builder);
     }
 
     public void onClick(InventoryClickEvent event) {
@@ -45,12 +43,12 @@ public class Slot {
         }
     }
 
-    public int getIndex() {
-        return index;
-    }
-
     public Display getDisplay() {
         return display;
+    }
+
+public UniqueSlot getUniqueSlot() {
+        return this.uniqueSlot;
     }
 
     public SoundSettings getAppearSound() {
@@ -61,38 +59,35 @@ public class Slot {
         return this.clickSound;
     }
 
-    public UniqueSlot getUniqueSlot() {
-        return this.uniqueSlot;
-    }
-
-    public Slot modify(Consumer<Builder> builder) {
-        builder.accept(this.builder);
-        this.display = this.builder.display;
-        this.action = this.builder.action;
-        this.appearSound = this.builder.appearSound;
-        this.clickSound = this.builder.clickSound;
-        return this;
+    public int getDelay() {
+        return this.delay;
     }
 
     public static class Builder {
 
         private Display display;
+        private UniqueSlot uniqueSlot;
         private BiConsumer<Slot, InventoryClickEvent> action;
         private SoundSettings appearSound;
         private SoundSettings clickSound;
-        private UniqueSlot uniqueSlot;
+        private int delay;
 
         private Builder() {
             this.display = Displays.MISSING;
             this.action = null;
             this.appearSound = null;
             this.clickSound = null;
-            this.uniqueSlot = null;
+            this.delay = 0;
         }
 
         public Builder display(Display display) {
             Preconditions.checkNotNull(display, "Display cannot be null");
             this.display = display;
+            return this;
+        }
+
+        public Builder uniqueSlot(UniqueSlot uniqueSlot) {
+            this.uniqueSlot = uniqueSlot;
             return this;
         }
 
@@ -111,8 +106,8 @@ public class Slot {
             return this;
         }
 
-        public Builder uniqueSlot(UniqueSlot uniqueSlot) {
-            this.uniqueSlot = uniqueSlot;
+        public Builder delay(int delay) {
+            this.delay = delay;
             return this;
         }
     }

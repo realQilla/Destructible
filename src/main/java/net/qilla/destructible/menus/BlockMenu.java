@@ -1,5 +1,6 @@
 package net.qilla.destructible.menus;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -9,7 +10,6 @@ import net.qilla.destructible.menus.blockmodify.BlockMenuModify;
 import net.qilla.destructible.menus.slot.Display;
 import net.qilla.destructible.menus.slot.Slot;
 import net.qilla.destructible.menus.slot.Displays;
-import net.qilla.destructible.menus.slot.UniqueSlot;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.FormatUtil;
@@ -21,26 +21,9 @@ import java.util.*;
 
 public class BlockMenu extends ModularMenu<DBlock> {
 
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Destructible Blocks");
-    private static final List<Integer> MODULAR_SLOTS = List.of(
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44
-    );
-
     public BlockMenu(@NotNull DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                Registries.DESTRUCTIBLE_BLOCKS.values());
+        super(dPlayer, Registries.DESTRUCTIBLE_BLOCKS.values());
 
-        this.populateMenu();
-        super.populateModular();
-    }
-
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Displays.BLOCK_MENU));
         super.register(Slot.of(46, builder -> builder
                 .display(Display.of(consumer -> consumer
                         .material(Material.SHULKER_SHELL)
@@ -53,20 +36,16 @@ public class BlockMenu extends ModularMenu<DBlock> {
                 .action((slot, event) -> {
                     ClickType clickType = event.getClick();
                     if(clickType.isLeftClick()) {
-                        new BlockMenuModify(super.getDPlayer(), this).openInventory(true);
+                        new BlockMenuModify(super.getDPlayer(), this).openMenu(true);
                     }
                 })
                 .clickSound(Sounds.CLICK_MENU_ITEM)
         ));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, event) -> returnToPreviousMenu())
-                .uniqueSlot(UniqueSlot.RETURN)
-                .clickSound(Sounds.RETURN_MENU)
-        ));
+
+        super.populateModular();
     }
 
-    public Slot createSlot(int index, DBlock dBlock) {
+    public Slot createSocket(int index, DBlock dBlock) {
         return Slot.of(index, builder -> builder
                 .display(Display.of(builder2 -> builder2
                         .material(dBlock.getMaterial())
@@ -91,27 +70,58 @@ public class BlockMenu extends ModularMenu<DBlock> {
         );
     }
 
-    private void blockClickInteraction(Slot slot, InventoryClickEvent event, DBlock dBlock) {
+    private void blockClickInteraction(@NotNull Slot slot, @NotNull InventoryClickEvent event, @NotNull DBlock dBlock) {
         ClickType clickType = event.getClick();
 
         if(clickType.isLeftClick()) {
-            new BlockMenuModify(getDPlayer(), this, dBlock).openInventory(true);
+            new BlockMenuModify(getDPlayer(), this, dBlock).openMenu(true);
         } else if(clickType.isRightClick()) {
-            new BlockMenuDrops(getDPlayer(), dBlock).openInventory(true);
+            new BlockLootpoolMenu(getDPlayer(), dBlock).openMenu(true);
         }
     }
 
     @Override
-    protected Slot getNextSlot() {
-        return Slot.of(52, builder -> builder
-                .display(Displays.NEXT)
-                .action((slot, event) -> super.rotateNext(slot, event, 9)));
+    public List<Integer> modularIndexes() {
+        return List.of(
+                9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31, 32, 33, 34, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 44
+        );
     }
 
     @Override
-    protected Slot getPreviousSlot() {
-        return Slot.of(7, builder -> builder
-                .display(Displays.PREVIOUS)
-                .action((slot, event) -> super.rotatePrevious(slot, event, 9)));
+    public int returnIndex() {
+        return 49;
+    }
+
+    @Override
+    public int nextIndex() {
+        return 52;
+    }
+
+    @Override
+    public int previousIndex() {
+        return 7;
+    }
+
+    @Override
+    public int rotateAmount() {
+        return 9;
+    }
+
+    @Override
+    public Component tile() {
+        return MiniMessage.miniMessage().deserialize("Destructible Blocks");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Displays.BLOCK_MENU);
     }
 }

@@ -20,38 +20,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ItemToolMenu extends ModularMenu<DTool> {
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Destructible Tools");
-    private static final List<Integer> MODULAR_SLOTS = List.of(
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44
-    );
 
     public ItemToolMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                Registries.getDestructibleItem(DTool.class));
+        super(dPlayer, Registries.getDestructibleItem(DTool.class));
 
-        this.populateMenu();
         super.populateModular();
     }
 
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Displays.TOOL_MENU));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, clickType) -> returnToPreviousMenu())
-                .uniqueSlot(UniqueSlot.RETURN)
-                .clickSound(Sounds.RETURN_MENU)
-        ));
-    }
-
-    public Slot createSlot(int index, DTool dTool) {
+    public Slot createSocket(int index, DTool dTool) {
         return Slot.of(index, builder -> builder
                 .display(Display.of(builder2 -> builder2
                         .material(dTool.getMaterial())
@@ -102,7 +80,7 @@ public class ItemToolMenu extends ModularMenu<DTool> {
                         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dTool, value)).append(MiniMessage.miniMessage().deserialize("!")));
                     } catch(NumberFormatException ignored) {
                     }
-                    super.openInventory(false);
+                    super.openMenu(false);
                 });
             });
         } else if(clickType.isLeftClick()) {
@@ -112,16 +90,47 @@ public class ItemToolMenu extends ModularMenu<DTool> {
     }
 
     @Override
-    protected Slot getNextSlot() {
-        return Slot.of(52, builder -> builder
-                .display(Displays.NEXT)
-                .action((slot, event) -> super.rotateNext(slot, event, 9)));
+    public List<Integer> modularIndexes() {
+        return List.of(
+                9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31, 32, 33, 34, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 44
+        );
     }
 
     @Override
-    protected Slot getPreviousSlot() {
-        return Slot.of(7, builder -> builder
-                .display(Displays.PREVIOUS)
-                .action((slot, clickType) -> super.rotatePrevious(slot, clickType, 9)));
+    public int returnIndex() {
+        return 49;
+    }
+
+    @Override
+    public int nextIndex() {
+        return 52;
+    }
+
+    @Override
+    public int previousIndex() {
+        return 7;
+    }
+
+    @Override
+    public int rotateAmount() {
+        return 9;
+    }
+
+    @Override
+    public Component tile() {
+        return MiniMessage.miniMessage().deserialize("Destructible Tools");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Displays.TOOL_MENU);
     }
 }

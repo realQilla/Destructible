@@ -1,6 +1,5 @@
 package net.qilla.destructible.menus;
 
-import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -22,25 +21,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import java.util.*;
 
 public class ItemMenu extends ModularMenu<DItem> {
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Destructible Items");
-    private static final List<Integer> MODULAR_SLOTS = List.of(
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44
-    );
 
     public ItemMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                Registries.getDestructibleItem(DItem.class));
-        this.populateMenu();
-        super.populateModular();
-    }
+        super(dPlayer, Registries.getDestructibleItem(DItem.class));
 
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Displays.ITEM_MENU));
         super.register(Slot.of(47, builder -> builder
                 .display(Display.of(consumer -> consumer
                         .material(Material.IRON_PICKAXE)
@@ -49,7 +33,7 @@ public class ItemMenu extends ModularMenu<DItem> {
                 ))
                 .action((slot, event) -> {
                     if(event.getClick().isLeftClick()) {
-                        new ItemToolMenu(super.getDPlayer()).openInventory(true);
+                        new ItemToolMenu(super.getDPlayer()).openMenu(true);
                     }
                 })
                 .clickSound(Sounds.CLICK_MENU_ITEM)
@@ -59,18 +43,11 @@ public class ItemMenu extends ModularMenu<DItem> {
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Weapons"))
                 .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to view destructible weapons"))))
         )));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, event) -> {
-                    if(event.getClick().isLeftClick()) {
-                        returnToPreviousMenu();
-                    }
-                })
-                .clickSound(Sounds.RETURN_MENU)
-        ));
+
+        super.populateModular();
     }
 
-    public Slot createSlot(int index, DItem dItem) {
+    public Slot createSocket(int index, DItem dItem) {
         return Slot.of(index, builder -> builder
                 .display(Display.of(builder2 -> builder2
                         .material(dItem.getMaterial())
@@ -118,7 +95,7 @@ public class ItemMenu extends ModularMenu<DItem> {
                         getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                     } catch(NumberFormatException ignored) {
                     }
-                    super.openInventory(false);
+                    super.openMenu(false);
                 });
             });
         } else if(clickType.isLeftClick()) {
@@ -127,16 +104,47 @@ public class ItemMenu extends ModularMenu<DItem> {
     }
 
     @Override
-    protected Slot getNextSlot() {
-        return Slot.of(52, builder -> builder
-                .display(Displays.NEXT)
-                .action((slot, event) -> super.rotateNext(slot, event, 9)));
+    public List<Integer> modularIndexes() {
+        return List.of(
+                9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31, 32, 33, 34, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 44
+        );
     }
 
     @Override
-    protected Slot getPreviousSlot() {
-        return Slot.of(7, builder -> builder
-                .display(Displays.PREVIOUS)
-                .action((slot, event) -> super.rotatePrevious(slot, event, 9)));
+    public int returnIndex() {
+        return 49;
+    }
+
+    @Override
+    public int nextIndex() {
+        return 52;
+    }
+
+    @Override
+    public int previousIndex() {
+        return 7;
+    }
+
+    @Override
+    public int rotateAmount() {
+        return 9;
+    }
+
+    @Override
+    public Component tile() {
+        return MiniMessage.miniMessage().deserialize("Destructible Items");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Displays.ITEM_MENU);
     }
 }

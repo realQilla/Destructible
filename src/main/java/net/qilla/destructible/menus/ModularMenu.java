@@ -1,40 +1,35 @@
 package net.qilla.destructible.menus;
 
-import com.google.common.base.Preconditions;
-import net.kyori.adventure.text.Component;
 import net.qilla.destructible.command.Sounds;
 import net.qilla.destructible.menus.slot.Displays;
 import net.qilla.destructible.menus.slot.Slot;
+import net.qilla.destructible.menus.slot.Socket;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class ModularMenu<T> extends DestructibleMenu {
+public abstract class ModularMenu<T> extends DestructibleMenu implements ModularConfig {
 
     private final List<Integer> modularSlots;
-    private Collection<T> itemPopulation;
+    private final Collection<T> itemPopulation;
     private int shiftIndex;
-    private final Slot nextSlot;
-    private final Slot previousSlot;
 
-    public ModularMenu(DPlayer dPlayer, MenuSize size, Component title, List<Integer> modularSlots, Collection<T> itemPopulation) {
-        super(dPlayer, size, title);
-        Preconditions.checkNotNull(modularSlots, "Modular slots list cannot be null");
-        Preconditions.checkNotNull(itemPopulation, "Item population list cannot be null");
+    public ModularMenu(@NotNull DPlayer dPlayer, @NotNull Collection<T> itemPopulation) {
+        super(dPlayer);
         this.itemPopulation = itemPopulation;
-        this.modularSlots = modularSlots;
+        this.modularSlots = modularIndexes();
         this.shiftIndex = 0;
-        this.nextSlot = getNextSlot();
-        this.previousSlot = getPreviousSlot();
 
-        if(itemPopulation.size() > modularSlots.size()) super.register(getNextSlot());
+        if(itemPopulation.size() > modularSlots.size()) super.register(nextSocket());
     }
 
-    protected void populateModular() {
+    public void populateModular() {
         int fromIndex = Math.min(this.shiftIndex, this.itemPopulation.size());
         int toIndex = Math.min(fromIndex + modularSlots.size(), this.itemPopulation.size());
         List<T> shiftedList = new ArrayList<>(this.itemPopulation).subList(fromIndex, toIndex);
@@ -42,15 +37,15 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
         Iterator<Integer> iterator = modularSlots.iterator();
         shiftedList.forEach(item -> {
             if(iterator.hasNext()) {
-                super.register(createSlot(iterator.next(), item));
+                super.register(createSocket(iterator.next(), item));
             }
         });
 
-        super.getSocket().getRemaining(modularSlots).forEach(slotNum -> super.register(Slot.of(slotNum, Displays.EMPTY_SLOT)));
-        super.getSocket().getRemaining().forEach(slotNum -> super.register(Slot.of(slotNum, Displays.FILLER)));
+        super.getSocket().getRemaining(modularSlots).forEach(index -> super.register(Socket.of(index, Slot.of(Displays.EMPTY_SLOT))));
+        super.getSocket().getRemaining().forEach(index -> super.register(Socket.of(index, Slot.of(Displays.FILLER))));
     }
 
-    public void rotateNext(Slot slot, InventoryClickEvent event, int amount) {
+    public void rotateNext(@NotNull Slot slot, InventoryClickEvent event, int amount) {
         ClickType clickType = event.getClick();
         if(clickType.isShiftClick() && clickType.isLeftClick()) this.shiftIndex += modularSlots.size();
         else if(clickType.isLeftClick()) this.shiftIndex += amount;
@@ -61,7 +56,7 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
         super.getDPlayer().playSound(Sounds.MENU_NEXT, true);
     }
 
-    public void rotatePrevious(Slot slot, InventoryClickEvent event, int amount) {
+    public void rotatePrevious(@NotNull Slot slot, InventoryClickEvent event, int amount) {
         ClickType clickType = event.getClick();
         if(clickType.isShiftClick() && clickType.isLeftClick()) this.shiftIndex -= modularSlots.size();
         else if(clickType.isLeftClick()) this.shiftIndex -= amount;
@@ -75,20 +70,33 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
     public void updateModular() {
         modularSlots.forEach(super::unregister);
 
-        if(shiftIndex > 0) super.register(this.previousSlot);
-        else super.unregister(this.previousSlot.getIndex());
-        if(shiftIndex + modularSlots.size() < itemPopulation.size()) super.register(this.nextSlot);
-        else super.unregister(this.nextSlot.getIndex());
+        if(shiftIndex > 0) super.register(previousSocket());
+        else super.unregister(previousSocket().index());
+        if(shiftIndex + modularSlots.size() < itemPopulation.size()) super.register(nextSocket());
+        else super.unregister(nextSocket().index());
 
         populateModular();
     }
 
-    public List<Integer> getModularSlots() {
-        return this.modularSlots;
+    @Override
+    public void returnToPrevious() {
+        if(super.getDPlayer().getCooldown().has(CooldownType.OPEN_MENU)) return;
+        super.getDPlayer().getCooldown().set(CooldownType.OPEN_MENU);
+
+        DestructibleMenu lastMenu = super.getDPlayer().getMenuData().getLastMenu();
+
+        if(lastMenu == null) {
+            this.closeMenu();
+            return;
+        }
+        if(lastMenu instanceof ModularMenu<?> modularMenu) {
+            modularMenu.updateModular();
+        }
+        lastMenu.openMenu(false);
     }
 
     public Collection<T> getItemPopulation() {
-        return this.itemPopulation;
+        return itemPopulation;
     }
 
     public int getShiftIndex() {
@@ -99,11 +107,7 @@ public abstract class ModularMenu<T> extends DestructibleMenu {
         this.shiftIndex = 0;
     }
 
-    protected void setItemPopulation(List<T> newItemPopulation) {
-        this.itemPopulation = newItemPopulation;
-    }
-
-    protected abstract Slot getNextSlot();
-    protected abstract Slot getPreviousSlot();
-    protected abstract Slot createSlot(int index, T item);
+    public abstract Socket nextSocket();
+    public abstract Socket previousSocket();
+    public abstract Socket createSocket(int index, T item);
 }

@@ -1,6 +1,5 @@
 package net.qilla.destructible.menus;
 
-import net.kyori.adventure.text.Component;
 import net.qilla.destructible.command.Sounds;
 import net.qilla.destructible.menus.input.SignInput;
 import net.qilla.destructible.menus.slot.Displays;
@@ -8,33 +7,34 @@ import net.qilla.destructible.menus.slot.Slot;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.Bukkit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class SearchMenu<T> extends ModularMenu<T> {
+public abstract class SearchMenu<T> extends ModularMenu<T> implements SearchConfig {
     private List<T> localPopulation;
 
-    public SearchMenu(DPlayer dPlayer, MenuSize menuSize, Component title, List<Integer> modularSlots, List<T> itemPopulation) {
-        super(dPlayer, menuSize, title, modularSlots, itemPopulation);
+    public SearchMenu(DPlayer dPlayer, Collection<T> itemPopulation) {
+        super(dPlayer, itemPopulation);
         this.localPopulation = new ArrayList<>(itemPopulation);
 
-        super.register(this.getSearchSlot());
+        super.register(searchSlot());
     }
 
     @Override
-    protected void populateModular() {
+    public void populateModular() {
         int fromIndex = Math.min(super.getShiftIndex(), this.localPopulation.size());
-        int toIndex = Math.min(fromIndex + super.getModularSlots().size(), this.localPopulation.size());
+        int toIndex = Math.min(fromIndex + modularIndexes().size(), this.localPopulation.size());
         List<T> shiftedList = new ArrayList<>(this.localPopulation).subList(fromIndex, toIndex);
 
-        Iterator<Integer> iterator = super.getModularSlots().iterator();
+        Iterator<Integer> iterator = modularIndexes().iterator();
         shiftedList.forEach(item -> {
             if(iterator.hasNext()) {
-                super.register(createSlot(iterator.next(), item));
+                super.register(createSocket(iterator.next(), item));
             }
         });
 
-        super.getSocket().getRemaining(super.getModularSlots()).forEach(slotNum -> super.register(Slot.of(slotNum, Displays.EMPTY_SLOT)));
+        super.getSocket().getRemaining(modularIndexes()).forEach(slotNum -> super.register(Slot.of(slotNum, Displays.EMPTY_SLOT)));
         super.getSocket().getRemaining().forEach(slotNum -> super.register(Slot.of(slotNum, Displays.FILLER)));
     }
 
@@ -48,24 +48,22 @@ public abstract class SearchMenu<T> extends ModularMenu<T> {
         signInput.init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 try {
-                    this.localPopulation = super.getItemPopulation().stream()
+                    this.localPopulation = getItemPopulation().stream()
                             .filter(item -> matchSearchCriteria(item, result))
                             .toList();
 
-                    super.register(this.getResetSearchSlot());
-                    super.resetIndex();
-                    updateModular();
+                    super.register(resetSearchSlot());
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
-                super.openInventory(false);
+                super.openMenu(false);
             });
         });
     }
 
     protected void resetSearch() {
         this.localPopulation = new ArrayList<>(super.getItemPopulation());
-        super.unregister(this.getResetSearchSlot().getIndex());
+        super.unregister(resetSearchIndex());
         super.resetIndex();
         updateModular();
     }
@@ -74,7 +72,19 @@ public abstract class SearchMenu<T> extends ModularMenu<T> {
         return getString(item).toLowerCase().contains(search.toLowerCase());
     }
 
+    protected Slot searchSlot() {
+        return Slot.of(searchIndex(), builder -> builder
+                .display(Displays.SEARCH)
+                .action((slot, event) -> searchFor())
+        );
+    }
+
+    protected Slot resetSearchSlot() {
+        return Slot.of(resetSearchIndex(), builder -> builder
+                .display(Displays.RESET_SEARCH)
+                .action((slot, event) -> resetSearch())
+        );
+    }
+
     protected abstract String getString(T item);
-    protected abstract Slot getSearchSlot();
-    protected abstract Slot getResetSearchSlot();
 }

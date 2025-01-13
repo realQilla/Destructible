@@ -18,68 +18,40 @@ import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class SetLootpool extends ModularMenu<ItemDrop> {
 
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = Component.text("Destructible Lootpool");
+    private final List<ItemDrop> lootpool;
 
-    private static final List<Integer> MODULAR_SLOTS = List.of(
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35
-    );
+    public SetLootpool(@NotNull DPlayer dPlayer, @NotNull List<ItemDrop> lootpool) {
+        super(dPlayer, lootpool);
+        Preconditions.checkNotNull(lootpool, "Lootpool cannot be null");
+        this.lootpool = lootpool;
 
-    private final BlockMenuModify menu;
-
-    public SetLootpool(@NotNull DPlayer dPlayer, @NotNull BlockMenuModify menu) {
-        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                menu.getLootpool());
-        Preconditions.checkNotNull(menu, "Menu cannot be null");
-        this.menu = menu;
-
-        this.populateMenu();
-        super.populateModular();
-    }
-
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Display.of(builder -> builder
-                .material(Material.PINK_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Make lootpool modifications to"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>the selected destructible block")
-                )))
-        )));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, event) -> {
-                    returnToPreviousMenu();
-                })
-                .uniqueSlot(UniqueSlot.RETURN)
-                .clickSound(Sounds.RETURN_MENU)
-        ));
         super.register(Slot.of(47, builder -> builder
                 .display(Display.of(builder2 -> builder2
                         .material(Material.LIME_BUNDLE)
                         .displayName(MiniMessage.miniMessage().deserialize("<green>Add new item drop"))
                 ))
                 .action((slot, event) -> {
-                    new ModifyItemDrop(getDPlayer(), this).openInventory(true);
+                    new ModifyItemDrop(getDPlayer(), this).openMenu(true);
                 })
                 .clickSound(Sounds.CLICK_MENU_ITEM)
         ));
-        populateModular();
+
+        super.populateModular();
     }
 
-    public Slot createSlot(int index, ItemDrop itemDrop) {
+    public Slot createSocket(int index, ItemDrop itemDrop) {
         DItem dItem = itemDrop.getDItem();
         return Slot.of(index, builder -> builder
                 .display(Display.of(builder2 -> builder2
                         .material(dItem.getMaterial())
+                        .amount(itemDrop.getMinAmount())
                         .displayName(Component.text(dItem.getId()))
                         .lore(ItemLore.lore(List.of(
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Amount <white>" + itemDrop.getMinAmount() + " - " + itemDrop.getMaxAmount()),
@@ -93,9 +65,10 @@ public class SetLootpool extends ModularMenu<ItemDrop> {
                 .action((slot, event) -> {
                     ClickType clickType = event.getClick();
                     if(clickType.isLeftClick()) {
-                        new ModifyItemDrop(getDPlayer(), this, itemDrop).openInventory(true);
+                        new ModifyItemDrop(getDPlayer(), this, itemDrop).openMenu(true);
                     } else if(clickType.isRightClick()) {
-                        menu.getLootpool().remove(itemDrop);
+                        lootpool.remove(itemDrop);
+                        super.updateModular();
                     }
                 })
                 .clickSound(Sounds.CLICK_MENU_ITEM)
@@ -103,26 +76,54 @@ public class SetLootpool extends ModularMenu<ItemDrop> {
     }
 
     @Override
-    protected Slot getNextSlot() {
-        return Slot.of(52, builder -> builder
-                .display(Displays.NEXT)
-                .action((slot, event) -> rotateNext(slot, event, 9)));
+    public List<Integer> modularIndexes() {
+        return List.of(
+                9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31, 32, 33, 34, 35
+        );
     }
 
     @Override
-    protected Slot getPreviousSlot() {
-        return Slot.of(7, builder -> builder
-                .display(Displays.PREVIOUS)
-                .action((slot, event) -> rotatePrevious(slot, event, 9)));
+    public int returnIndex() {
+        return 49;
     }
 
-    public void addItemDrop(ItemDrop itemDrop) {
-        menu.getLootpool().add(itemDrop);
-        this.updateModular();
+    @Override
+    public int nextIndex() {
+        return 52;
     }
 
-    public void removeItemDrop(ItemDrop itemDrop) {
-        super.getItemPopulation().remove(itemDrop);
-        this.updateModular();
+    @Override
+    public int previousIndex() {
+        return 7;
+    }
+
+    @Override
+    public int rotateAmount() {
+        return 9;
+    }
+
+    @Override
+    public Component tile() {
+        return Component.text("Destructible Lootpool");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Display.of(builder -> builder
+                .material(Material.PINK_BUNDLE)
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Make lootpool modifications to"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>the selected destructible block")
+                )))
+        ));
     }
 }

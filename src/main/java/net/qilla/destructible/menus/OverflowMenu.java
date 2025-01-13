@@ -8,7 +8,7 @@ import net.qilla.destructible.menus.input.SignInput;
 import net.qilla.destructible.menus.slot.Display;
 import net.qilla.destructible.menus.slot.Displays;
 import net.qilla.destructible.menus.slot.Slot;
-import net.qilla.destructible.menus.slot.UniqueSlot;
+import net.qilla.destructible.menus.slot.Socket;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
@@ -22,27 +22,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class OverflowMenu extends ModularMenu<Map.Entry<DItem, Integer>> {
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Overflow Stash");
-    private static final List<Integer> MODULAR_SLOTS = List.of(
-            9, 10, 11, 12, 13, 14, 15, 16, 17,
-            18, 19, 20, 21, 22, 23, 24, 25, 26,
-            27, 28, 29, 30, 31, 32, 33, 34, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44
-    );
 
     public OverflowMenu(DPlayer dPlayer) {
-        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                dPlayer.getOverflow().getOverflow());
+        super(dPlayer, dPlayer.getOverflow().getOverflow());
 
-        this.populateMenu();
-        super.populateModular();
-    }
-
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(4, Displays.OVERFLOW_MENU));
-        super.register(Slot.of(45, builder -> builder
+        super.register(Socket.of(4, Slot.of(Displays.OVERFLOW_MENU)));
+        super.register(Socket.of(51, super.returnSlot()));
+        super.register(Socket.of(45, Slot.of(builder -> builder
                 .display(Display.of(consumer -> consumer
                         .material(Material.BARRIER)
                         .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
@@ -53,22 +39,13 @@ public class OverflowMenu extends ModularMenu<Map.Entry<DItem, Integer>> {
                         )
                 ))
                 .action(this::clearOverflow)
-        ));
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, event) -> {
-                    if(event.getClick().isLeftClick()) {
-                        returnToPreviousMenu();
-                    }
-                })
-                .uniqueSlot(UniqueSlot.RETURN)
-                .clickSound(Sounds.RETURN_MENU)
-        ));
+        )));
+        super.populateModular();
     }
 
     @Override
-    protected Slot createSlot(int index, Map.Entry<DItem, Integer> item) {
-        return Slot.of(index, builder -> builder
+    public Socket createSocket(int index, Map.Entry<DItem, Integer> item) {
+        return Socket.of(index, Slot.of(builder -> builder
                 .display(Display.of(consumer -> consumer
                         .material(item.getKey().getMaterial())
                         .amount(item.getValue())
@@ -84,7 +61,7 @@ public class OverflowMenu extends ModularMenu<Map.Entry<DItem, Integer>> {
                 ))
                 .action((slot, event) -> claimOverflow(slot, event, item))
                 .clickSound(Sounds.GET_ITEM)
-        );
+        ));
     }
 
     private void claimOverflow(Slot slot, InventoryClickEvent event, Map.Entry<DItem, Integer> item) {
@@ -149,7 +126,7 @@ public class OverflowMenu extends ModularMenu<Map.Entry<DItem, Integer>> {
                         getDPlayer().sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
                     }
                     super.resetIndex();
-                    super.openInventory(false);
+                    super.openMenu(false);
                     this.updateModular();
                 });
             });
@@ -157,16 +134,36 @@ public class OverflowMenu extends ModularMenu<Map.Entry<DItem, Integer>> {
     }
 
     @Override
-    protected Slot getNextSlot() {
-        return Slot.of(52, builder -> builder
-                .display(Displays.NEXT)
-                .action((slot, event) -> super.rotateNext(slot, event, 9)));
+    public List<Integer> modularIndexes() {
+        return List.of(
+                9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26,
+                27, 28, 29, 30, 31, 32, 33, 34, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 44
+        );
     }
 
     @Override
-    protected Slot getPreviousSlot() {
-        return Slot.of(7, builder -> builder
+    public Component tile() {
+        return MiniMessage.miniMessage().deserialize("Overflow");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Socket nextSocket() {
+        return Socket.of(4, Slot.of(builder -> builder
+                .display(Displays.NEXT)
+                .action((slot, event) -> this.rotateNext(slot, event, 9))));
+    }
+
+    @Override
+    public Socket previousSocket() {
+        return Socket.of(4, Slot.of(builder -> builder
                 .display(Displays.PREVIOUS)
-                .action((slot, clickType) -> super.rotatePrevious(slot, clickType, 9)));
+                .action((slot, clickType) -> this.rotatePrevious(slot, clickType, 9))));
     }
 }

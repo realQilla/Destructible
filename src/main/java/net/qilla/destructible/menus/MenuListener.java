@@ -55,7 +55,7 @@ public class MenuListener implements Listener {
         InventoryHolder holder = event.getInventory().getHolder();
 
         if(holder instanceof DestructibleMenu menu) {
-            menu.onClose(event);
+            menu.inventoryCloseEvent(event);
         }
     }
 }

@@ -16,6 +16,7 @@ import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class MiningPacketListener {

@@ -1,7 +1,8 @@
 package net.qilla.destructible.player;
 
+import com.google.common.base.Preconditions;
 import net.qilla.destructible.menus.DestructibleMenu;
-
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +24,8 @@ public class MenuData {
         return null;
     }
 
-    public void addMenu(DestructibleMenu menu) {
+    public void addHistory(@NotNull DestructibleMenu menu) {
+        Preconditions.checkNotNull(menu, "Menu cannot be null");
         menuHistory.push(menu);
     }
 
@@ -36,9 +38,8 @@ public class MenuData {
     }
 
     public void fulfillInput(String input) {
-        if(this.playerInput != null) {
-            this.playerInput.complete(input);
-            this.playerInput = null;
-        }
+        if(playerInput == null) return;
+        playerInput.complete(input);
+        playerInput = null;
     }
 }

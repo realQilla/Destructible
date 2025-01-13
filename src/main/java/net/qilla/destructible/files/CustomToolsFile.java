@@ -30,6 +30,7 @@ public class CustomToolsFile extends DestructibleFile {
         this.type = new TypeToken<List<DTool>>() {}.getType();
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(DTool.class, new DToolTA())
+                .setPrettyPrinting()
                 .create();
     }
 

@@ -27,6 +27,7 @@ public class LoadedDestructibleBlocksFile extends DestructibleFile {
         super(DEFAULT_RESOURCE, FILE_PATH);
         this.gson = new GsonBuilder()
                 .enableComplexMapKeySerialization()
+                .setPrettyPrinting()
                 .create();
         this.type = new TypeToken<ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, String>>>() {}.getType();
     }

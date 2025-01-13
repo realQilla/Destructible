@@ -32,6 +32,7 @@ public class CustomBlocksFile extends DestructibleFile {
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(DItem.class, new DItemTA())
                 .registerTypeAdapter(DBlock.class, new DBlockTA())
+                .setPrettyPrinting()
                 .create();
     }
 

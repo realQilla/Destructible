@@ -1,55 +1,31 @@
 package net.qilla.destructible.menus;
 
-import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.command.Sounds;
 import net.qilla.destructible.menus.slot.Display;
 import net.qilla.destructible.menus.slot.Slot;
-import net.qilla.destructible.menus.slot.Displays;
-import net.qilla.destructible.menus.slot.UniqueSlot;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.FormatUtil;
+import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class BlockMenuDrops extends ModularMenu<ItemDrop> {
-    private static final MenuSize SIZE = MenuSize.SIX;
-    private static final Component TITLE = MiniMessage.miniMessage().deserialize("Item Drops");
-    private static final List<Integer> MODULAR_SLOTS = List.of(
-            9, 10, 19, 28, 37, 38, 39, 30, 21, 12, 13, 14, 23, 32, 41, 42, 43, 34, 25, 16, 17
-    );
+public class BlockLootpoolMenu extends ModularMenu<ItemDrop> {
 
     private final DBlock dBlock;
 
-    public BlockMenuDrops(@NotNull DPlayer dPlayer, @NotNull DBlock dBlock) {
-        super(dPlayer, SIZE, TITLE, MODULAR_SLOTS,
-                dBlock.getLootpool().stream()
-                    .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
-                        .collect(Collectors.toList()));
-        Preconditions.checkNotNull(dBlock, "DBlock cannot be null.");
+    public BlockLootpoolMenu(@NotNull DPlayer dPlayer, @NotNull DBlock dBlock) {
+        super(dPlayer, dBlock.getLootpool().stream()
+                        .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
+                        .toList());
         this.dBlock = dBlock;
-
-        this.populateMenu();
-        super.populateModular();
-    }
-
-    @Override
-    protected void populateMenu() {
-        super.register(Slot.of(49, builder -> builder
-                .display(Displays.RETURN)
-                .action((slot, clickType) -> returnToPreviousMenu())
-                .uniqueSlot(UniqueSlot.RETURN)
-                .clickSound(Sounds.RETURN_MENU)
-        ));
-        super.register(Slot.of(4, Display.of(consumer -> consumer
+        super.register(Slot.of(31, Display.of(consumer -> consumer
                 .material(dBlock.getMaterial())
+                .displayName(Component.text(dBlock.getId()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + FormatUtil.romanNumeral(dBlock.getStrength())),
@@ -61,12 +37,13 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())
                 )))
-                .glow(true)))
-        );
+        )));
+
+        super.populateModular();
     }
 
     @Override
-    protected Slot createSlot(int index, ItemDrop itemDrop) {
+    public Slot createSocket(int index, ItemDrop itemDrop) {
         DItem dItem = itemDrop.getDItem();
         return Slot.of(index, Display.of(builder -> builder
                 .material(dItem.getMaterial())
@@ -85,16 +62,52 @@ public class BlockMenuDrops extends ModularMenu<ItemDrop> {
     }
 
     @Override
-    protected Slot getNextSlot() {
-        return Slot.of(52, builder -> builder
-                .display(Displays.NEXT)
-                .action((slot, event) -> super.rotateNext(slot, event, 1)));
+    public List<Integer> modularIndexes() {
+        return List.of(9, 10, 19, 28, 37, 38, 39, 30, 21, 12, 13, 14, 23, 32, 41, 42, 43, 34, 25, 16, 17
+        );
     }
 
     @Override
-    protected Slot getPreviousSlot() {
-        return Slot.of(46, builder -> builder
-                .display(Displays.PREVIOUS)
-                .action((slot, clickType) -> super.rotatePrevious(slot, clickType, 1)));
+    public int returnIndex() {
+        return 49;
+    }
+
+    @Override
+    public int nextIndex() {
+        return 52;
+    }
+
+    @Override
+    public int previousIndex() {
+        return 7;
+    }
+
+    @Override
+    public int rotateAmount() {
+        return 9;
+    }
+
+    @Override
+    public Component tile() {
+        return MiniMessage.miniMessage().deserialize("Lootpool");
+    }
+
+    @Override
+    public MenuSize menuSize() {
+        return MenuSize.SIX;
+    }
+
+    @Override
+    public Slot menuSlot() {
+        return Slot.of(4, Display.of(builder -> builder
+                .material(Material.PINK_BUNDLE)
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>All information regarding block"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>lootpool's can be found below,"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>ordered by each item's chance ")
+                )))
+        ));
     }
 }

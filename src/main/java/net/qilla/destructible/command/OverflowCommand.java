@@ -53,7 +53,7 @@ public class OverflowCommand {
         }
         dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
 
-        new OverflowMenu(dPlayer).openInventory(true);
+        new OverflowMenu(dPlayer).openMenu(true);
         return Command.SINGLE_SUCCESS;
     }
 
