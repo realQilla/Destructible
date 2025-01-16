@@ -11,7 +11,9 @@ import org.bukkit.Registry;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DBlockTA extends TypeAdapter<DBlock> {
 
@@ -67,7 +69,7 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                     builder.blockCooldown(in.nextLong());
                     break;
                 case "CORRECT_TOOLS":
-                    List<ToolType> tools = new ArrayList<>();
+                    Set<ToolType> tools = new HashSet<>();
                     in.beginArray();
                     while(in.hasNext()) {
                         tools.add(ToolType.valueOf(in.nextString()));

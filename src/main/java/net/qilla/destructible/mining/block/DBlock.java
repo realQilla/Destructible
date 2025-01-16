@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class DBlock {
 
     @NotNull
     public Set<ToolType> getCorrectTools() {
-        return this.correctTools;
+        return Collections.unmodifiableSet(this.correctTools);
     }
 
     public boolean hasProperTool() {
@@ -68,7 +69,7 @@ public class DBlock {
 
     @NotNull
     public List<ItemDrop> getLootpool() {
-        return this.lootpool;
+        return Collections.unmodifiableList(this.lootpool);
     }
 
     @NotNull
@@ -196,19 +197,6 @@ public class DBlock {
             Preconditions.checkNotNull(toolTypes, "ToolTypes cannot be null");
 
             this.correctTools = toolTypes;
-            return this;
-        }
-
-        /**
-         * Set of tools that can destroy this block
-         *
-         * @param toolTypes
-         *
-         * @return
-         */
-        public Builder correctTools(@NotNull List<ToolType> toolTypes) {
-            Preconditions.checkNotNull(toolTypes, "ToolTypes cannot be null");
-            this.correctTools = new HashSet<>(toolTypes);
             return this;
         }
 

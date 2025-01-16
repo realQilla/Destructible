@@ -63,12 +63,6 @@ public final class DItemStack {
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(dTool.getToolStrength()))
             ));
         }
-        if(dItem.getRarity() != Rarity.NONE){
-            lore.addLines(List.of(
-                    Component.empty(),
-                    dItem.getRarity().getComponent()
-            ));
-        }
         itemStack.setData(DataComponentTypes.ITEM_MODEL, dItem.getMaterial().getKey());
         itemStack.setData(DataComponentTypes.ITEM_NAME, dItem.getDisplayName());
         itemStack.setData(DataComponentTypes.LORE, lore);

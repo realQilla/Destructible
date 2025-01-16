@@ -6,7 +6,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.menus.OverflowMenu;
+import net.qilla.destructible.menugeneral.menu.OverflowMenu;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
@@ -53,7 +53,7 @@ public class OverflowCommand {
         }
         dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
 
-        new OverflowMenu(dPlayer).openMenu(true);
+        new OverflowMenu(dPlayer).open(true);
         return Command.SINGLE_SUCCESS;
     }
 
