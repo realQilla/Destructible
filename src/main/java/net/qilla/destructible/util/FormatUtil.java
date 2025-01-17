@@ -1,6 +1,8 @@
 package net.qilla.destructible.util;
 
 import com.google.common.base.Preconditions;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -128,5 +130,9 @@ public class FormatUtil {
             case 'y' -> value * 365 * 24 * 60 * 60 * 1000;
             default -> value;
         };
+    }
+
+    public static String cleanComponent(Component component) {
+        return PlainTextComponentSerializer.plainText().serialize(component);
     }
 }

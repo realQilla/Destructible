@@ -158,7 +158,7 @@ public class ItemOverviewMenu extends SearchMenu<DItem> {
 
     @Override
     public String getString(DItem item) {
-        return item.getId();
+        return FormatUtil.cleanComponent(item.getDisplayName());
     }
 
     @Override

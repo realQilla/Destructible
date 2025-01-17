@@ -134,7 +134,7 @@ public class ToolOverviewMenu extends SearchMenu<DTool> {
 
     @Override
     public String getString(DTool item) {
-        return item.getId();
+        return FormatUtil.cleanComponent(item.getDisplayName());
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Material;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
 
     @Override
     public String getString(DItem item) {
-        return item.getId();
+        return FormatUtil.cleanComponent(item.getDisplayName());
     }
 
     @Override

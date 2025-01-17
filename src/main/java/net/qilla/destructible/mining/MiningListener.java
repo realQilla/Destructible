@@ -1,7 +1,9 @@
 package net.qilla.destructible.mining;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.block.DBlock;
@@ -20,6 +22,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -190,5 +193,13 @@ public class MiningListener implements Listener {
         DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
         if(dPlayer == null) return;
         plugin.getPlayerPacketListener().removeListener(dPlayer);
+    }
+
+    @EventHandler
+    private void onChatEvent(AsyncChatEvent event) {
+        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
+        if(dPlayer.getMenuData().fulfillInput(FormatUtil.cleanComponent(event.message()))) {
+            event.setCancelled(true);
+        }
     }
 }
