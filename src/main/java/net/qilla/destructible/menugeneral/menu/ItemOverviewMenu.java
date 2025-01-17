@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ItemOverviewMenu extends SearchMenu<DItem> {
+public class ItemOverviewMenu extends DynamicMenu<DItem> {
 
     List<Material> materials = Registry.MATERIAL.stream().filter(material -> material.isItem() && !material.isBlock()).toList();
 
@@ -153,19 +153,6 @@ public class ItemOverviewMenu extends SearchMenu<DItem> {
                         .nextIndex(52)
                         .previousIndex(7)
                         .shiftAmount(9)
-        );
-    }
-
-    @Override
-    public String getString(DItem item) {
-        return FormatUtil.cleanComponent(item.getDisplayName());
-    }
-
-    @Override
-    public SearchConfig searchConfig() {
-        return SearchConfig.of(builder -> builder
-                .searchIndex(47)
-                .resetSearchIndex(46)
         );
     }
 }

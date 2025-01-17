@@ -74,18 +74,18 @@ public final class DestructibleUtil {
     }
 
     public static ItemLore getLore(DTool item) {
-        List<Component> rarity = item.getRarity() == Rarity.NONE ? List.of() : List.of(
-                Component.empty(),
-                item.getRarity().getComponent());
-
-        return ItemLore.lore()
-                .addLines(item.getLore().lines())
-                .addLines(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + FormatUtil.romanNumeral(item.getEfficiency())),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(item.getStrength()))
-                ))
-                .addLines(rarity)
-                .build();
+        ItemLore.Builder builder = ItemLore.lore();
+        builder.addLines(item.getLore().lines());
+        builder.addLine(Component.empty());
+        if(item.getEfficiency() > 0)
+            builder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + FormatUtil.romanNumeral(item.getEfficiency())));
+        builder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(item.getStrength())));
+        if(item.getRarity() != Rarity.NONE) {
+            builder.addLines(List.of(
+                    Component.empty(),
+                    item.getRarity().getComponent())
+            );
+        }
+        return builder.build();
     }
 }

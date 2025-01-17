@@ -19,7 +19,7 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
         super(dPlayer, itemPopulation);
         this.localPopulation = new ArrayList<>(itemPopulation);
 
-        super.addSocket(searchSocket(), 0);
+        super.addSocket(searchSocket());
     }
 
     @Override
@@ -34,7 +34,7 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
                 super.addSocket(createSocket(iterator.next(), item), 0);
             }
         });
-        iterator.forEachRemaining(index -> super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT), 0));
+        iterator.forEachRemaining(index -> super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT)));
     }
 
     protected boolean searchFor() {
@@ -45,7 +45,7 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
         );
         new SignInput(super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
-                if (!result.isBlank()) {
+                if(!result.isBlank()) {
                     this.localPopulation = getItemPopulation().stream()
                             .filter(item -> matchSearchCriteria(item, result))
                             .toList();
@@ -53,13 +53,12 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
                         super.refreshSockets();
                         super.addSocket(resetSearchSocket(), 0);
                         getDPlayer().playSound(Sounds.SIGN_INPUT, true);
-                    } catch (NumberFormatException ignored) {
+                    } catch(NumberFormatException ignored) {
                     }
                 }
                 super.open(false);
             });
         });
-
         return true;
     }
 
@@ -94,5 +93,6 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
     }
 
     public abstract String getString(T item);
+
     public abstract SearchConfig searchConfig();
 }

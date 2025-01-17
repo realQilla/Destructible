@@ -19,7 +19,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import java.util.*;
 
-public class ToolOverviewMenu extends SearchMenu<DTool> {
+public class ToolOverviewMenu extends DynamicMenu<DTool> {
 
     public ToolOverviewMenu(DPlayer dPlayer) {
         super(dPlayer, Registries.getDestructibleItem(DTool.class));
@@ -36,6 +36,8 @@ public class ToolOverviewMenu extends SearchMenu<DTool> {
 
     @Override
     public Socket createSocket(int index, DTool item) {
+        String toolList = item.getToolType().isEmpty() ? "<red>None" : FormatUtil.toNameList(item.getToolType().stream().toList());
+
         return new Socket(index, Slot.of(builder -> builder
                 .material(item.getMaterial())
                 .displayName(MiniMessage.miniMessage().deserialize(item.getId()))
@@ -51,7 +53,7 @@ public class ToolOverviewMenu extends SearchMenu<DTool> {
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency <white>" + item.getEfficiency()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Durability <white>" + item.getDurability()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Type: <white>"),
-                                MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.toNameList(item.getToolType().stream().toList())),
+                                MiniMessage.miniMessage().deserialize("<!italic><white>" + toolList),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
@@ -129,19 +131,6 @@ public class ToolOverviewMenu extends SearchMenu<DTool> {
                 .nextIndex(52)
                 .previousIndex(7)
                 .shiftAmount(9)
-        );
-    }
-
-    @Override
-    public String getString(DTool item) {
-        return FormatUtil.cleanComponent(item.getDisplayName());
-    }
-
-    @Override
-    public SearchConfig searchConfig() {
-        return SearchConfig.of(builder -> builder
-                .searchIndex(47)
-                .resetSearchIndex(46)
         );
     }
 }

@@ -22,12 +22,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class OverflowMenu extends SearchMenu<Map.Entry<DItem, Integer>> {
+public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
 
     public OverflowMenu(DPlayer dPlayer) {
         super(dPlayer, dPlayer.getOverflow().getOverflow());
 
-        super.addSocket(new Socket(8, Slot.of(builder -> builder
+        super.addSocket(new Socket(53, Slot.of(builder -> builder
                 .material(Material.BARRIER)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
                 .lore(ItemLore.lore(List.of(
@@ -157,19 +157,6 @@ public class OverflowMenu extends SearchMenu<Map.Entry<DItem, Integer>> {
                 .nextIndex(52)
                 .previousIndex(7)
                 .shiftAmount(9)
-        );
-    }
-
-    @Override
-    public String getString(Map.Entry<DItem, Integer> item) {
-        return FormatUtil.toName(item.getKey().getId());
-    }
-
-    @Override
-    public SearchConfig searchConfig() {
-        return SearchConfig.of(builder -> builder
-                .searchIndex(47)
-                .resetSearchIndex(46)
         );
     }
 }

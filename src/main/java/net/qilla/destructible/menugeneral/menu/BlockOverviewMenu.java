@@ -18,7 +18,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
-public class BlockOverviewMenu extends SearchMenu<DBlock> {
+public class BlockOverviewMenu extends DynamicMenu<DBlock> {
 
     public BlockOverviewMenu(@NotNull DPlayer dPlayer) {
         super(dPlayer, Registries.DESTRUCTIBLE_BLOCKS.values());
@@ -35,6 +35,8 @@ public class BlockOverviewMenu extends SearchMenu<DBlock> {
 
     @Override
     public Socket createSocket(int index, DBlock item) {
+        String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : FormatUtil.toNameList(item.getCorrectTools().stream().toList());
+
         return new Socket(index, Slot.of(builder -> builder
                 .material(item.getMaterial())
                 .displayName(Component.text(item.getId()))
@@ -44,7 +46,7 @@ public class BlockOverviewMenu extends SearchMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Durability <white>" + item.getDurability()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + FormatUtil.getTime(item.getCooldown(), true)),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Correct Tools:"),
-                        MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.toNameList(item.getCorrectTools().stream().toList())),
+                        MiniMessage.miniMessage().deserialize("<!italic><white>" + toolList),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <white>" + item.getLootpool().size()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + FormatUtil.toName(item.getBreakParticle().toString())),
@@ -95,19 +97,6 @@ public class BlockOverviewMenu extends SearchMenu<DBlock> {
                         .nextIndex(52)
                         .previousIndex(7)
                         .shiftAmount(9)
-        );
-    }
-
-    @Override
-    public String getString(DBlock item) {
-        return item.getId();
-    }
-
-    @Override
-    public SearchConfig searchConfig() {
-        return SearchConfig.of(builder -> builder
-                .searchIndex(47)
-                .resetSearchIndex(46)
         );
     }
 }

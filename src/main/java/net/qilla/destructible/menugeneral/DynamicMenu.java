@@ -21,7 +21,7 @@ public abstract class DynamicMenu<T> extends StaticMenu {
         this.dynamicSlots = dynamicConfig().dynamicIndexes();
         this.shiftIndex = 0;
 
-        if(itemPopulation.size() > dynamicSlots.size()) super.addSocket(nextSocket(), 5);
+        if(itemPopulation.size() > dynamicSlots.size()) super.addSocket(nextSocket());
     }
 
     public void finalizeMenu() {
@@ -41,7 +41,7 @@ public abstract class DynamicMenu<T> extends StaticMenu {
                 super.addSocket(createSocket(iterator.next(), item), 0);
             }
         }
-        iterator.forEachRemaining(index -> super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT), 0));
+        iterator.forEachRemaining(index -> super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT)));
     }
 
     public void rotateNext(InventoryClickEvent event, int amount) {
@@ -81,7 +81,7 @@ public abstract class DynamicMenu<T> extends StaticMenu {
         if(shiftIndex > 0) super.addSocket(previousSocket(), 5);
         else super.removeSocket(previousSocket().index());
 
-        populateModular();
+        this.populateModular();
     }
 
     public Collection<T> getItemPopulation() {
@@ -96,7 +96,11 @@ public abstract class DynamicMenu<T> extends StaticMenu {
         this.shiftIndex = shiftIndex;
     }
 
-    private Socket nextSocket() {
+    public List<Integer> getDynamicSlots() {
+        return dynamicSlots;
+    }
+
+    protected Socket nextSocket() {
         return new Socket(dynamicConfig().nextIndex(), Slots.NEXT, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -106,7 +110,7 @@ public abstract class DynamicMenu<T> extends StaticMenu {
         });
     }
 
-    private Socket previousSocket() {
+    protected Socket previousSocket() {
         return new Socket(dynamicConfig().previousIndex(), Slots.PREVIOUS, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {

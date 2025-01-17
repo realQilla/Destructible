@@ -29,8 +29,8 @@ public abstract class StaticMenu implements InventoryHolder {
         this.totalIndexes = IntStream.range(0, staticConfig().menuSize().getSize()).boxed().toList();
 
         totalIndexes.forEach(index -> inventory.setItem(index, Slots.FILLER.getItem()));
-        this.addSocket(menuSocket(), 0);
-        this.addSocket(returnSocket(), 0);
+        this.addSocket(menuSocket());
+        this.addSocket(returnSocket());
     }
 
     public void finalizeMenu() {
