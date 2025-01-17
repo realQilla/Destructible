@@ -1,4 +1,4 @@
-package net.qilla.destructible.mining;
+package net.qilla.destructible.player;
 
 import com.google.common.base.Preconditions;
 import io.netty.channel.Channel;
@@ -9,55 +9,28 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class MiningPacketListener {
+public final class PlayerPacketListener {
 
-    public void addListener(DPlayer dPlayer) {
+    public void addListener(@NotNull DPlayer dPlayer) {
         Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
         ChannelDuplexHandler handler = new ChannelDuplexHandler() {
             @Override
             public void channelRead(ChannelHandlerContext context, Object object) throws Exception {
                 Packet<?> packet = (Packet<?>) object;
-                MiningManager miningManager = dPlayer.getMinerData();
-
-                if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
-                    switch(actionPacket.getAction()) {
-                        case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK ->
-                                miningManager.init(actionPacket.getPos(), actionPacket.getDirection());
-                        default -> miningManager.stop();
-                    }
-                } else if(packet instanceof ServerboundSwingPacket swingPacket) {
-                    miningManager.tickBlock(swingPacket.getHand());
-                } else if(packet instanceof ServerboundUseItemOnPacket usePacket) {
-                    BlockPos blockPos = usePacket.getHitResult().getBlockPos();
-                    ChunkPos chunkPos = new ChunkPos(blockPos);
-                    int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
-                    if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, v ->
-                            new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, v ->
-                            new BlockMemory()).isOnCooldown()) {
-                        return;
-                    }
-                } else if(packet instanceof ServerboundSignUpdatePacket signPacket) {
-                    dPlayer.getMenuData().fulfillInput(signPacket.getLines()[0]);
-                }
+                if(packetLogic(packet, dPlayer)) return;
                 super.channelRead(context, object);
             }
 
             @Override
             public void write(ChannelHandlerContext context, Object object, io.netty.channel.ChannelPromise promise) throws Exception {
-                Packet<?> packet = (Packet<?>) object;
-                if(packet instanceof ClientboundUpdateAdvancementsPacket) {
-                    //return;
-                }
                 super.write(context, object, promise);
             }
         };
@@ -68,7 +41,35 @@ public final class MiningPacketListener {
         channel.pipeline().addBefore("packet_handler", dPlayer.getCraftPlayer().getUniqueId().toString(), handler);
     }
 
-    public void removeListener(@NotNull DPlayer dPlayer) {
+    private boolean packetLogic(Packet<?> packet, DPlayer dPlayer) {
+        MiningManager miningManager = dPlayer.getMinerData();
+
+        if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
+            switch(actionPacket.getAction()) {
+                case ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK ->
+                        miningManager.init(actionPacket.getPos(), actionPacket.getDirection());
+                default -> miningManager.stop();
+            }
+        } else if(packet instanceof ServerboundSwingPacket swingPacket) {
+            miningManager.tickBlock(swingPacket.getHand());
+        } else if(packet instanceof ServerboundUseItemOnPacket usePacket) {
+            BlockPos blockPos = usePacket.getHitResult().getBlockPos();
+            ChunkPos chunkPos = new ChunkPos(blockPos);
+            int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
+            if(Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, v ->
+                    new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, v ->
+                    new BlockMemory()).isOnCooldown()) {
+                return true;
+            }
+        } else if(packet instanceof ServerboundSignUpdatePacket signPacket) {
+            return dPlayer.getMenuData().fulfillInput(signPacket.getLines()[0]);
+        } else if(packet instanceof ServerboundChatPacket chatPacket) {
+            return dPlayer.getMenuData().fulfillInput(chatPacket.message());
+        }
+        return false;
+    }
+
+    public void removeListener(DPlayer dPlayer) {
         ServerGamePacketListenerImpl playerCon = dPlayer.getServerPlayer().connection;
         Channel channel = playerCon.connection.channel;
 

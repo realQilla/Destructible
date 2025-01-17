@@ -23,7 +23,15 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
 
     public ToolOverviewMenu(DPlayer dPlayer) {
         super(dPlayer, Registries.getDestructibleItem(DTool.class));
+        super.addSocket(new Socket(46, Slots.CREATE_NEW, event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                new ToolModificationMenu(super.getDPlayer(), null).open(true);
+                return true;
+            } else return false;
+        }));
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override
@@ -39,19 +47,28 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                         .addLines(item.getLore().lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Strength <white>" + FormatUtil.romanNumeral(item.getToolStrength())),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Breaking Efficiency <white>" + item.getBreakingEfficiency()),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Durability <white>" + item.getToolDurability()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Strength <white>" + FormatUtil.romanNumeral(item.getStrength())),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency <white>" + item.getEfficiency()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Durability <white>" + item.getDurability()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Type: <white>"),
-                                MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.toNameList(item.getToolType())),
+                                MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.toNameList(item.getToolType().stream().toList())),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to make modifications")
                         ))
                         .build())
                 .clickSound(Sounds.MENU_GET_ITEM)
-        ), event -> this.getItem(event, item));
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                return this.getItem(event, item);
+            } else if(clickType == ClickType.MIDDLE) {
+                new ToolModificationMenu(getDPlayer(), item).open(true);
+                return true;
+            } else return false;
+        });
     }
 
     private boolean getItem(InventoryClickEvent event, DTool dTool) {

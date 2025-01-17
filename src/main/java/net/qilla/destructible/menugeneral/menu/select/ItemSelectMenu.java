@@ -3,66 +3,56 @@ package net.qilla.destructible.menugeneral.menu.select;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
-import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Material;
+import org.bukkit.Registry;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DItemSelectMenu extends SearchMenu<DItem> {
+public class ItemSelectMenu extends SearchMenu<Material> {
 
-    private final CompletableFuture<DItem> future;
+    private final CompletableFuture<Material> future;
 
-    public DItemSelectMenu(DPlayer dPlayer, CompletableFuture<DItem> future) {
-        super(dPlayer, Registries.DESTRUCTIBLE_ITEMS.values().stream().toList());
+    public ItemSelectMenu(DPlayer dPlayer, CompletableFuture<Material> future) {
+        super(dPlayer, Registry.MATERIAL.stream()
+                .filter(Material::isItem)
+                .toList());
         this.future = future;
         super.populateModular();
         super.finalizeMenu();
     }
 
     @Override
-    public Socket createSocket(int index, DItem item) {
+    public Socket createSocket(int index, Material item) {
         return new Socket(index, Slot.of(builder -> builder
-                .material(item.getMaterial())
-                .displayName(MiniMessage.miniMessage().deserialize(item.getId()))
-                .lore(ItemLore.lore()
-                        .addLines(List.of(
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(item.getDisplayName()),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
-                        ))
-                        .addLines(item.getLore().lines())
-                        .addLines(List.of(
-                                Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent())
-                        )).build()
-                )
+                .material(item)
+                .displayName(MiniMessage.miniMessage().deserialize(FormatUtil.toName(item.toString())))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select material")
+                )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
-            future.complete(item);
+            this.future.complete(item);
             return this.returnMenu();
         });
     }
 
     @Override
-    public String getString(DItem item) {
-        return item.getId();
+    public String getString(Material item) {
+        return item.toString();
     }
 
     @Override
     public Socket menuSocket() {
         return new Socket(4, Slot.of(builder -> builder
-                .material(Material.PINK_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Make lootpool modifications to"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>the selected destructible block")
-                )))
+                .material(Material.IRON_INGOT)
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Item Search"))
         ));
     }
 

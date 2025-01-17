@@ -24,6 +24,12 @@ public abstract class DynamicMenu<T> extends StaticMenu {
         if(itemPopulation.size() > dynamicSlots.size()) super.addSocket(nextSocket(), 5);
     }
 
+    public void finalizeMenu() {
+        getTotalIndexes().stream()
+                .filter(index -> !dynamicSlots.contains(index))
+                .forEach(index -> super.getInventory().addItem(Slots.FILLER.getItem()));
+    }
+
     public void populateModular() {
         int fromIndex = Math.min(this.shiftIndex, this.itemPopulation.size());
         int toIndex = Math.min(fromIndex + dynamicSlots.size(), this.itemPopulation.size());

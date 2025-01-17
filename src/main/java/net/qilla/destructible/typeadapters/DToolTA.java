@@ -14,8 +14,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DToolTA extends TypeAdapter<DTool> {
     @Override
@@ -37,9 +37,9 @@ public class DToolTA extends TypeAdapter<DTool> {
             out.value(toolType.toString());
         }
         out.endArray();
-        out.name("TOOL_STRENGTH").value(value.getToolStrength());
-        out.name("BREAKING_EFFICIENCY").value(value.getBreakingEfficiency());
-        out.name("TOOL_DURABILITY").value(value.getToolDurability());
+        out.name("TOOL_STRENGTH").value(value.getStrength());
+        out.name("BREAKING_EFFICIENCY").value(value.getEfficiency());
+        out.name("TOOL_DURABILITY").value(value.getDurability());
         out.endObject();
     }
 
@@ -75,7 +75,7 @@ public class DToolTA extends TypeAdapter<DTool> {
                     builder.rarity(Rarity.valueOf(in.nextString()));
                     break;
                 case "TOOL_TYPE":
-                    List<ToolType> toolTypes = new ArrayList<>();
+                    Set<ToolType> toolTypes = new HashSet<>();
                     in.beginArray();
                     while (in.hasNext()) {
                         toolTypes.add(ToolType.valueOf(in.nextString()));
@@ -84,13 +84,13 @@ public class DToolTA extends TypeAdapter<DTool> {
                     in.endArray();
                     break;
                 case "TOOL_STRENGTH":
-                    toolBuilder.toolStrength(in.nextInt());
+                    toolBuilder.strength(in.nextInt());
                     break;
                 case "BREAKING_EFFICIENCY":
-                    toolBuilder.toolEfficiency(in.nextInt());
+                    toolBuilder.efficiency(in.nextInt());
                     break;
                 case "TOOL_DURABILITY":
-                    toolBuilder.toolDurability(in.nextInt());
+                    toolBuilder.durability(in.nextInt());
                     break;
             }
         }

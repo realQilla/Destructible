@@ -57,16 +57,16 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                     builder.id(in.nextString());
                     break;
                 case "BLOCK_MATERIAL":
-                    builder.blockMaterial(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
+                    builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
                 case "BLOCK_STRENGTH":
-                    builder.blockStrength(in.nextInt());
+                    builder.strength(in.nextInt());
                     break;
                 case "BLOCK_DURABILITY":
-                    builder.blockDurability(in.nextInt());
+                    builder.durability(in.nextInt());
                     break;
                 case "BLOCK_COOLDOWN":
-                    builder.blockCooldown(in.nextLong());
+                    builder.cooldown(in.nextLong());
                     break;
                 case "CORRECT_TOOLS":
                     Set<ToolType> tools = new HashSet<>();

@@ -11,7 +11,7 @@ import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.DBlockUtil;
+import net.qilla.destructible.util.DestructibleUtil;
 import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class MiningManager {
         if(dPlayer.getCraftPlayer().getGameMode() == GameMode.CREATIVE) return;
 
         if(blockInstance == null || blockPos.hashCode() != blockInstance.getBlockPos().hashCode()) {
-            Optional<DBlock> optional = DBlockUtil.getDBlock(blockPos);
+            Optional<DBlock> optional = DestructibleUtil.getDBlock(blockPos);
 
             if(optional.isEmpty()) return;
 

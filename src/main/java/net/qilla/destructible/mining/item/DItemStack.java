@@ -3,16 +3,13 @@ package net.qilla.destructible.mining.item;
 import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.DataKey;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.DestructibleUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-import java.util.List;
 import java.util.Optional;
 
 public final class DItemStack {
@@ -47,22 +44,17 @@ public final class DItemStack {
             meta.getPersistentDataContainer().set(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING, dItem.getId());
         });
 
-        ItemLore.Builder lore = ItemLore.lore();
-        lore.addLines(dItem.getLore().lines());
+        ItemLore lore;
 
         if(dItem instanceof DTool dTool) {
-            if(dTool.getToolDurability() != -1) {
+            if(dTool.getDurability() != -1) {
                 itemStack.editMeta(meta -> {
-                    meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getToolDurability());
+                    meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, dTool.getDurability());
                 });
-                itemStack.setData(DataComponentTypes.MAX_DAMAGE, dTool.getToolDurability());
+                itemStack.setData(DataComponentTypes.MAX_DAMAGE, dTool.getDurability());
             }
-            lore.addLines(List.of(
-                    Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + FormatUtil.romanNumeral(dTool.getBreakingEfficiency())),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(dTool.getToolStrength()))
-            ));
-        }
+            lore = DestructibleUtil.getLore(dTool);
+        } else lore = DestructibleUtil.getLore(dItem);
         itemStack.setData(DataComponentTypes.ITEM_MODEL, dItem.getMaterial().getKey());
         itemStack.setData(DataComponentTypes.ITEM_NAME, dItem.getDisplayName());
         itemStack.setData(DataComponentTypes.LORE, lore);

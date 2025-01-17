@@ -8,10 +8,13 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.BlockInstance;
+import net.qilla.destructible.mining.item.DItem;
+import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.mining.item.DTool;
-import net.qilla.destructible.util.DBlockUtil;
+import net.qilla.destructible.util.DestructibleUtil;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,7 +26,7 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Map;
 
 public class BlockMiner {
     private static final int ITEM_MAGNET_DELAY = 8;
@@ -38,7 +41,7 @@ public class BlockMiner {
     }
 
     public void tickBlock(@NotNull BlockInstance blockInstance, @NotNull DTool dTool, @NotNull ToolManager toolManager) {
-        blockInstance.damageBlock(dTool.getBreakingEfficiency());
+        blockInstance.damageBlock(dTool.getEfficiency());
 
         if(blockInstance.isDestroyed()) {
             blockInstance.getDBlockData().setLocked(true);
@@ -58,8 +61,8 @@ public class BlockMiner {
         Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
             long msCooldown = RandomUtil.offset(blockInstance.getDBlock().getCooldown(), 2000);
             BlockState blockState = ((CraftBlockState) blockInstance.getLocation().getBlock().getState()).getHandle();
-            Vec3 midFace = DBlockUtil.getCenterFaceParticle(blockInstance.getDirection());
-            float[] midOffset = DBlockUtil.getFlatOffsetParticles(blockInstance.getDirection());
+            Vec3 midFace = DestructibleUtil.getCenterFaceParticle(blockInstance.getDirection());
+            float[] midOffset = DestructibleUtil.getFlatOffsetParticles(blockInstance.getDirection());
 
             dPlayer.broadcastPacket(new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
             blockInstance.getLocation().getWorld().playSound(blockInstance.getLocation(), blockInstance.getDBlock().getBreakSound(), 1, (float) RandomUtil.between(0.75, 1.25));
@@ -86,19 +89,19 @@ public class BlockMiner {
         });
 
         Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
-            List<ItemStack> itemStacks = dPlayer.rollItemDrops(blockInstance.getDBlock().getLootpool());
+            Map<DItem, Integer> itemDrops = dPlayer.calculateItemDrops(blockInstance.getDBlock().getLootpool());
             Vec3 faceVec = blockInstance.getDirection().getUnitVec3();
 
-            Vec3 itemMidFace = DBlockUtil.getFaceCenterItem(blockInstance.getDirection());
+            Vec3 itemMidFace = DestructibleUtil.getFaceCenterItem(blockInstance.getDirection());
 
             BlockPos blockPos = blockInstance.getBlockPos();
-            for(ItemStack itemStack : itemStacks) {
+            for(Map.Entry<DItem, Integer> itemDrop : itemDrops.entrySet()) {
                 ItemEntity itemEntity = new ItemEntity(
                         dPlayer.getServerLevel(),
                         blockPos.getX() + 0.5 + itemMidFace.x,
                         blockPos.getY() + 0.5 + itemMidFace.y,
                         blockPos.getZ() + 0.5 + itemMidFace.z,
-                        CraftItemStack.asCraftCopy(itemStack).handle,
+                        CraftItemStack.asCraftCopy(ItemStack.of(itemDrop.getKey().getMaterial(), itemDrop.getValue())).handle,
                         faceVec.offsetRandom(RANDOM, 1.2f).x * 0.3,
                         faceVec.y * 0.3,
                         faceVec.offsetRandom(RANDOM, 1.2f).z * 0.3);
@@ -106,7 +109,7 @@ public class BlockMiner {
                 CraftItem craftItem = new CraftItem(dPlayer.getCraftServer(), itemEntity);
                 Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
                     this.itemPopVisual(craftItem);
-                    this.magnetVisual(craftItem, itemStack);
+                    this.magnetVisual(craftItem, itemDrop);
                 });
                 try {
                     Thread.sleep(ITEM_ALTERNATE_DELAY * 50);
@@ -117,14 +120,15 @@ public class BlockMiner {
         });
     }
 
-    private void magnetVisual(CraftItem itemEntity, ItemStack itemStack) {
+    private void magnetVisual(CraftItem itemEntity, Map.Entry<DItem, Integer> itemDrop) {
         Bukkit.getScheduler().runTaskLater(Destructible.getInstance(), () -> {
             dPlayer.broadcastPacket(new ClientboundTakeItemEntityPacket(
                     itemEntity.getEntityId(),
                     dPlayer.getCraftPlayer().getEntityId(),
-                    itemStack.getAmount()
+                    itemDrop.getValue()
             ));
-            dPlayer.give(itemStack);
+            if(!Registries.DESTRUCTIBLE_ITEMS.containsKey(itemDrop.getKey().getId())) return;
+            dPlayer.give(DItemStack.of(itemDrop.getKey(), itemDrop.getValue()));
         }, ITEM_MAGNET_DELAY);
 
         Bukkit.getScheduler().runTaskLater(dPlayer.getPlugin(), () -> {

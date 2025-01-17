@@ -11,14 +11,12 @@ public class Socket {
 
     private final int index;
     private final Slot slot;
-    private boolean hasAppeared;
     private final ClickAction clickAction;
 
     public Socket(int index, @NotNull Slot slot) {
         Preconditions.checkNotNull(slot, "Slot cannot be null");
         this.index = index;
         this.slot = slot;
-        this.hasAppeared = false;
         this.clickAction = null;
     }
 
@@ -40,11 +38,9 @@ public class Socket {
     public void onClick(@NotNull DPlayer dPlayer, @NotNull InventoryClickEvent event) {
         Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
         Preconditions.checkNotNull(event, "Inventory click event cannot be null");
-        if(clickAction != null) {
-            if(clickAction.onClick(event) && !hasAppeared) {
-                dPlayer.playSound(slot.getClickSound(), true);
-                hasAppeared = true;
-            }
+        if(clickAction == null) return;
+        if(clickAction.onClick(event)) {
+            dPlayer.playSound(slot.getClickSound(), true);
         }
     }
 

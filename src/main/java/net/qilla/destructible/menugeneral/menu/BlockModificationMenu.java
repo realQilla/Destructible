@@ -8,7 +8,7 @@ import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.menu.select.BlockParticleSelectMenu;
-import net.qilla.destructible.menugeneral.menu.select.MaterialSelectMenu;
+import net.qilla.destructible.menugeneral.menu.select.BlockSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.SoundSelectMenu;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class BlockModificationMenu extends StaticMenu {
 
+    private boolean fullMenu;
     private final DBlock dBlock;
     private String id;
     private Material material;
@@ -46,6 +47,7 @@ public class BlockModificationMenu extends StaticMenu {
         this.dBlock = dBlock;
 
         if(dBlock != null) {
+            this.fullMenu = true;
             this.id = dBlock.getId();
             this.material = dBlock.getMaterial();
             this.strength = dBlock.getStrength();
@@ -58,12 +60,14 @@ public class BlockModificationMenu extends StaticMenu {
             this.populateSettings();
         }
         super.addSocket(materialSocket(), 50);
+        super.finalizeMenu();
     }
 
     private void populateSettings() {
-        List<Socket> socketList = new ArrayList<>(List.of(idSocket(), materialSocket(), strengthSocket(),
+        List<Socket> socketList = new ArrayList<>(List.of(
+                idSocket(), strengthSocket(),
                 durabilitySocket(), lootpoolSocket(), correctToolSocket(),
-                cooldownSocket(), particleSocket(), soundSocket()));
+                cooldownSocket(), breakParticleSocket(), breakSoundSocket()));
         Collections.shuffle(socketList);
         socketList.add(buildSocket());
         socketList.add(removeSocket());
@@ -77,7 +81,7 @@ public class BlockModificationMenu extends StaticMenu {
             Material cursorMaterial = event.getCursor().getType();
             if(cursorMaterial.isEmpty()) {
                 CompletableFuture<Material> future = new CompletableFuture<>();
-                new MaterialSelectMenu(super.getDPlayer(), future).open(true);
+                new BlockSelectMenu(super.getDPlayer(), future).open(true);
                 future.thenAccept(material -> {
                     if(material != null) this.material = material;
                 });
@@ -88,6 +92,7 @@ public class BlockModificationMenu extends StaticMenu {
                 }
                 this.material = cursorMaterial;
                 getDPlayer().getCraftPlayer().setItemOnCursor(null);
+                this.refreshSockets();
             }
             return true;
         } else return false;
@@ -99,29 +104,27 @@ public class BlockModificationMenu extends StaticMenu {
 
     private boolean build(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
-        if(clickType.isLeftClick()) {
-            DBlock dBlock = new DBlock.Builder()
-                    .id(id)
-                    .blockMaterial(material)
-                    .blockStrength(strength)
-                    .blockDurability(durability)
-                    .blockCooldown(cooldown)
-                    .correctTools(correctTools)
-                    .lootpool(lootpool)
-                    .breakSound(breakSound)
-                    .breakParticle(breakParticle)
-                    .build();
-            if(this.dBlock != null) {
-                Registries.DESTRUCTIBLE_BLOCKS.remove(this.dBlock.getId());
-                getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully replaced by " + id + "!"));
-            } else
-                getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
-            Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
-            getDPlayer().getPlugin().getCustomBlocksFile().save();
-            getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
-            return super.returnMenu();
-        }
-        return false;
+        if(!clickType.isLeftClick()) return false;
+        DBlock dBlock = new DBlock.Builder()
+                .id(id)
+                .material(material)
+                .strength(strength)
+                .durability(durability)
+                .cooldown(cooldown)
+                .correctTools(correctTools)
+                .lootpool(lootpool)
+                .breakSound(breakSound)
+                .breakParticle(breakParticle)
+                .build();
+        if(this.dBlock != null) {
+            Registries.DESTRUCTIBLE_BLOCKS.remove(this.dBlock.getId());
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully replaced by " + id + "!"));
+        } else
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
+        Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
+        getDPlayer().getPlugin().getCustomBlocksFile().save();
+        getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+        return super.returnMenu();
     }
 
     public Socket removeSocket() {
@@ -137,19 +140,17 @@ public class BlockModificationMenu extends StaticMenu {
 
     private boolean remove(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
-        if(clickType.isLeftClick()) {
-            if(this.dBlock == null) {
-                getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<red>This block does not currently exist!"));
-                return false;
-            }
-
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
-            Registries.DESTRUCTIBLE_BLOCKS.remove(dBlock.getId());
-            getDPlayer().getPlugin().getCustomBlocksFile().save();
-            getDPlayer().playSound(Sounds.RESET, true);
-            return super.returnMenu();
+        if(!clickType.isLeftClick()) return false;
+        if(this.dBlock == null) {
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<red>This block does not currently exist!"));
+            return false;
         }
-        return false;
+
+        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
+        Registries.DESTRUCTIBLE_BLOCKS.remove(dBlock.getId());
+        getDPlayer().getPlugin().getCustomBlocksFile().save();
+        getDPlayer().playSound(Sounds.RESET, true);
+        return super.returnMenu();
     }
 
     public Socket materialSocket() {
@@ -158,25 +159,24 @@ public class BlockModificationMenu extends StaticMenu {
                     .material(Material.HOPPER_MINECART)
                     .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
                     .lore(ItemLore.lore(List.of(
-                            MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <red>Empty"),
+                            MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <red>Empty"),
                             Component.empty(),
                             MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either a block or nothing to set a material")
                     )))
                     .clickSound(Sounds.MENU_CLICK_ITEM)
                     .appearSound(Sounds.MENU_ITEM_APPEAR)
             ), this::clickMaterial);
-        } else
-            return new Socket(13, Slot.of(builder -> builder
-                    .material(material)
-                    .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
-                    .lore(ItemLore.lore(List.of(
-                            MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>" + FormatUtil.toName(material.toString())),
-                            Component.empty(),
-                            MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either a block or nothing to set a material")
-                    )))
-                    .clickSound(Sounds.MENU_CLICK_ITEM)
-                    .appearSound(Sounds.MENU_ITEM_APPEAR)
-            ), this::clickMaterial);
+        } else return new Socket(13, Slot.of(builder -> builder
+                .material(material)
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(material.toString())),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either a block or nothing to set a material")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .appearSound(Sounds.MENU_ITEM_APPEAR)
+        ), this::clickMaterial);
     }
 
     public Socket idSocket() {
@@ -185,13 +185,39 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.OAK_SIGN)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_green>Block ID"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>" + id),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + id),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), event -> inputID());
+        ), this::inputID);
+    }
+
+    private boolean inputID(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(!clickType.isLeftClick()) return false;
+        List<String> signText = List.of(
+                "^^^^^^^^^^^^^^^",
+                "Unique identifier",
+                "for this block");
+
+        new SignInput(super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+                if(!result.isEmpty()) {
+                    if(Registries.DESTRUCTIBLE_BLOCKS.containsKey(result)) {
+                        super.getDPlayer().sendMessage("<red>Block ID already exists.");
+                        super.getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
+                    } else {
+                        id = result;
+                        super.addSocket(this.idSocket());
+                        getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                    }
+                }
+                super.open(false);
+            });
+        });
+        return true;
     }
 
     protected Socket durabilitySocket() {
@@ -200,13 +226,36 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.IRON_INGOT)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Block Durability"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>" + durability),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + durability),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), event -> inputDurability());
+        ), this::inputDurability);
+    }
+
+    private boolean inputDurability(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(!clickType.isLeftClick()) return false;
+
+        List<String> signText = List.of(
+                "^^^^^^^^^^^^^^^",
+                "Block durability",
+                "value");
+
+        new SignInput(super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+                try {
+                    durability = Math.max(-1, Long.parseLong(result));
+                    super.addSocket(this.durabilitySocket());
+                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                } catch(NumberFormatException ignored) {
+                }
+                super.open(false);
+            });
+        });
+        return true;
     }
 
     protected Socket strengthSocket() {
@@ -215,13 +264,36 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.RESIN_BRICK)
                 .displayName(MiniMessage.miniMessage().deserialize("<Red>Block Strength"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>" + strength),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + strength),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), event -> inputStrength());
+        ), this::inputStrength);
+    }
+
+    private boolean inputStrength(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(!clickType.isLeftClick()) return false;
+
+        List<String> signText = List.of(
+                "^^^^^^^^^^^^^^^",
+                "Block strength",
+                "value");
+
+        new SignInput(super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+                try {
+                    strength = Integer.parseInt(result);
+                    super.addSocket(this.strengthSocket());
+                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                } catch(NumberFormatException ignored) {
+                }
+                super.open(false);
+            });
+        });
+        return true;
     }
 
     protected Socket lootpoolSocket() {
@@ -230,13 +302,16 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
                 .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Unique lootpools <white>" + lootpool.size()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
         ), event -> {
-            new LootpoolMenu(getDPlayer(), lootpool).open(true);
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
+            new LootpoolSetMenu(getDPlayer(), lootpool).open(true);
             return true;
         });
     }
@@ -247,14 +322,16 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.BLACK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Correct Tools"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value:"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current list:"),
                         MiniMessage.miniMessage().deserialize("<!italic><white>" + (correctTools.isEmpty() ? "<red>None" : FormatUtil.toNameList(new ArrayList<>(correctTools)))),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
         ), event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
             new CorrectToolMenu(getDPlayer(), correctTools).open(true);
             return true;
         });
@@ -266,127 +343,19 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.GOLD_INGOT)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Block Cooldown"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>" + FormatUtil.getTime(cooldown, true)),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.getTime(cooldown, true)),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), event -> inputCooldown());
+        ), this::inputCooldown);
     }
 
-    public Socket particleSocket() {
-        if(breakParticle == null) breakParticle = Material.STONE;
-        return new Socket(15, Slot.of(builder -> builder
-                .material(Material.HEART_OF_THE_SEA)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Break Particle"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>" + FormatUtil.toName(breakParticle.toString())),
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
-                )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-                .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), event -> {
-            ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                CompletableFuture<Material> future = new CompletableFuture<>();
-                new BlockParticleSelectMenu(getDPlayer(), future).open(true);
-                future.thenAccept(breakParticle -> this.breakParticle = breakParticle);
-                return true;
-            } else return false;
-        });
-    }
+    private boolean inputCooldown(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(!clickType.isLeftClick()) return false;
 
-    public Socket soundSocket() {
-        if(breakSound == null) breakSound = Sound.BLOCK_STONE_BREAK;
-        return new Socket(16, Slot.of(builder -> builder
-                .material(Material.NAUTILUS_SHELL)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Break Sound"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>" + breakSound.toString()),
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to change")
-                )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-                .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), event -> {
-            ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                CompletableFuture<Sound> future = new CompletableFuture<>();
-                new SoundSelectMenu(getDPlayer(), future).open(true);
-                future.thenAccept(sound -> this.breakSound = sound);
-                return true;
-            } else return false;
-        });
-    }
-
-    private boolean inputID() {
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Block ID",
-                "value");
-
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
-
-                if(!result.isEmpty()) {
-                    if(Registries.DESTRUCTIBLE_BLOCKS.containsKey(result)) {
-                        super.getDPlayer().sendMessage("<red>Block ID already exists.");
-                        super.getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
-                    } else {
-                        id = result;
-                        super.addSocket(this.idSocket(), 0);
-                        getDPlayer().playSound(Sounds.SIGN_INPUT, true);
-                    }
-                }
-                super.open(false);
-            });
-        });
-        return true;
-    }
-
-    private boolean inputStrength() {
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Block strength",
-                "value");
-
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
-                try {
-                    strength = Integer.parseInt(result);
-                    super.addSocket(this.strengthSocket(), 0);
-                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
-                } catch(NumberFormatException ignored) {
-                }
-                super.open(false);
-            });
-        });
-        return true;
-    }
-
-    private boolean inputDurability() {
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Block durability",
-                "value");
-
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
-                try {
-                    durability = Math.max(-1, Long.parseLong(result));
-                    super.addSocket(this.durabilitySocket(), 0);
-                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
-                } catch(NumberFormatException ignored) {
-                }
-                super.open(false);
-            });
-        });
-        return true;
-    }
-
-    private boolean inputCooldown() {
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
                 "Block cooldown",
@@ -396,7 +365,7 @@ public class BlockModificationMenu extends StaticMenu {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 try {
                     cooldown = FormatUtil.stringToMs(result);
-                    super.addSocket(this.cooldownSocket(), 0);
+                    super.addSocket(this.cooldownSocket());
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
@@ -406,21 +375,68 @@ public class BlockModificationMenu extends StaticMenu {
         return true;
     }
 
+    public Socket breakParticleSocket() {
+        if(breakParticle == null) breakParticle = Material.STONE;
+        return new Socket(15, Slot.of(builder -> builder
+                .material(Material.HEART_OF_THE_SEA)
+                .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Break Particle"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(breakParticle.toString())),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .appearSound(Sounds.MENU_ITEM_APPEAR)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
+            CompletableFuture<Material> future = new CompletableFuture<>();
+            new BlockParticleSelectMenu(getDPlayer(), future).open(true);
+            future.thenAccept(breakParticle -> this.breakParticle = breakParticle);
+            return true;
+        });
+    }
+
+    public Socket breakSoundSocket() {
+        if(breakSound == null) breakSound = Sound.BLOCK_STONE_BREAK;
+        return new Socket(16, Slot.of(builder -> builder
+                .material(Material.NAUTILUS_SHELL)
+                .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Break Sound"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + breakSound.toString()),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .appearSound(Sounds.MENU_ITEM_APPEAR)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
+            CompletableFuture<Sound> future = new CompletableFuture<>();
+            new SoundSelectMenu(getDPlayer(), future).open(true);
+            future.thenAccept(sound -> this.breakSound = sound);
+            return true;
+        });
+    }
+
     @Override
     public void inventoryClickEvent(InventoryClickEvent event) {
-        if(event.getClickedInventory().getHolder() instanceof BlockModificationMenu) {
+        if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
             event.setCancelled(true);
         }
     }
 
     @Override
     public void refreshSockets() {
-        super.addSocket(materialSocket());
-        if(material != null) {
+        if(!fullMenu && material != null) {
+            super.addSocket(materialSocket(), 100);
+            this.populateSettings();
+            fullMenu = true;
+        } else if(material != null) {
             super.addSocket(List.of(
-                    idSocket(), strengthSocket(), durabilitySocket(),
-                    lootpoolSocket(), correctToolSocket(), cooldownSocket(), particleSocket(),
-                    soundSocket(), buildSocket(), removeSocket()));
+                    materialSocket(), idSocket(), strengthSocket(), durabilitySocket(),
+                    lootpoolSocket(), correctToolSocket(), cooldownSocket(), breakParticleSocket(),
+                    breakSoundSocket(), buildSocket(), removeSocket()));
         }
     }
 

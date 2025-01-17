@@ -41,6 +41,7 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
             return true;
         }), 0);
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override
@@ -121,10 +122,11 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
                         getDPlayer().getOverflow().clear();
                         getDPlayer().playSound(Sounds.RESET, true);
                         getDPlayer().sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
+
+                        super.setShiftIndex(0);
+                        this.refreshSockets();
                     }
-                    super.setShiftIndex(0);
                     super.open(false);
-                    this.refreshSockets();
                 });
             });
             return true;

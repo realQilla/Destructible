@@ -1,17 +1,23 @@
 package net.qilla.destructible.util;
 
+import io.papermc.paper.datacomponent.item.ItemLore;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.item.DItem;
+import net.qilla.destructible.mining.item.DTool;
+import net.qilla.destructible.mining.item.Rarity;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
-public final class DBlockUtil {
+public final class DestructibleUtil {
 
     public static Optional<DBlock> getDBlock(@NotNull BlockPos blockPos) {
         ChunkPos chunkPos = new ChunkPos(blockPos);
@@ -54,5 +60,32 @@ public final class DBlockUtil {
             case EAST, WEST -> new float[]{0.05f, 0.25f, 0.25f};
             case NORTH, SOUTH -> new float[]{0.25f, 0.25f, 0.05f};
         };
+    }
+
+    public static ItemLore getLore(DItem item) {
+        List<Component> rarity = item.getRarity() == Rarity.NONE ? List.of() : List.of(
+                Component.empty(),
+                item.getRarity().getComponent());
+
+        return ItemLore.lore()
+                .addLines(item.getLore().lines())
+                .addLines(rarity)
+                .build();
+    }
+
+    public static ItemLore getLore(DTool item) {
+        List<Component> rarity = item.getRarity() == Rarity.NONE ? List.of() : List.of(
+                Component.empty(),
+                item.getRarity().getComponent());
+
+        return ItemLore.lore()
+                .addLines(item.getLore().lines())
+                .addLines(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + FormatUtil.romanNumeral(item.getEfficiency())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(item.getStrength()))
+                ))
+                .addLines(rarity)
+                .build();
     }
 }

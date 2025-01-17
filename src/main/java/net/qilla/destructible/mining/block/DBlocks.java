@@ -10,12 +10,9 @@ import java.util.function.Function;
 public final class DBlocks {
 
     public static final DBlock DEFAULT = new DBlock.Builder()
-            .blockMaterial(Material.STONE)
-            .blockStrength(0)
-            .infiniteDurability()
-            .blockCooldown(0)
-            .noCorrectTools()
-            .noItemDrops()
+            .material(Material.STONE)
+            .strength(0)
+            .cooldown(0)
             .breakSound(Sound.BLOCK_STEM_BREAK)
             .breakParticle(Material.BEDROCK).build();
 

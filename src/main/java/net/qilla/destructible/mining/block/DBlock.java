@@ -8,17 +8,15 @@ import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DBlock {
     private final String id;
-    private final Material blockMaterial;
-    private final int blockStrength;
-    private final long blockDurability;
-    private final long blockCooldown;
+    private final Material material;
+    private final int strength;
+    private final long durability;
+    private final long cooldown;
     private final Set<ToolType> correctTools;
     private final List<ItemDrop> lootpool;
     private final Sound breakSound;
@@ -26,10 +24,10 @@ public class DBlock {
 
     public DBlock(Builder builder) {
         this.id = builder.id;
-        this.blockMaterial = builder.blockMaterial;
-        this.blockStrength = builder.blockStrength;
-        this.blockDurability = builder.blockDurability;
-        this.blockCooldown = builder.blockCooldown;
+        this.material = builder.material;
+        this.strength = builder.strength;
+        this.durability = builder.durability;
+        this.cooldown = builder.cooldown;
         this.correctTools = builder.correctTools;
         this.lootpool = builder.lootpool;
         this.breakSound = builder.breakSound;
@@ -43,19 +41,19 @@ public class DBlock {
 
     @NotNull
     public Material getMaterial() {
-        return this.blockMaterial;
+        return this.material;
     }
 
     public int getStrength() {
-        return this.blockStrength;
+        return this.strength;
     }
 
     public long getDurability() {
-        return this.blockDurability;
+        return this.durability;
     }
 
     public long getCooldown() {
-        return this.blockCooldown;
+        return this.cooldown;
     }
 
     @NotNull
@@ -86,10 +84,10 @@ public class DBlock {
     public static Builder getBuilder(DBlock dBlock) {
         return new Builder()
                 .id(dBlock.getId())
-                .blockMaterial(dBlock.getMaterial())
-                .blockStrength(dBlock.getStrength())
-                .blockDurability(dBlock.getDurability())
-                .blockCooldown(dBlock.getCooldown())
+                .material(dBlock.getMaterial())
+                .strength(dBlock.getStrength())
+                .durability(dBlock.getDurability())
+                .cooldown(dBlock.getCooldown())
                 .correctTools(dBlock.getCorrectTools())
                 .lootpool(dBlock.getLootpool())
                 .breakSound(dBlock.getBreakSound())
@@ -98,21 +96,21 @@ public class DBlock {
 
     public static class Builder {
         private String id;
-        private Material blockMaterial;
-        private int blockStrength;
-        private long blockDurability;
-        private long blockCooldown;
+        private Material material;
+        private int strength;
+        private long durability;
+        private long cooldown;
         private Set<ToolType> correctTools;
         private List<ItemDrop> lootpool;
         private Sound breakSound;
         private Material breakParticle;
 
         public Builder() {
-            this.blockMaterial = Material.AIR;
-            this.blockStrength = 0;
-            this.blockDurability = -1;
-            this.blockCooldown = 1000;
-            this.correctTools = new HashSet<>();
+            this.material = Material.AIR;
+            this.strength = 0;
+            this.durability = -1;
+            this.cooldown = 1000;
+            this.correctTools = Set.of();
             this.lootpool = List.of();
             this.breakSound = Sound.BLOCK_STONE_BREAK;
             this.breakParticle = Material.BEDROCK;
@@ -124,9 +122,9 @@ public class DBlock {
             return this;
         }
 
-        public Builder blockMaterial(@NotNull Material material) {
+        public Builder material(@NotNull Material material) {
             Preconditions.checkNotNull(material, "Material cannot be null");
-            this.blockMaterial = material;
+            this.material = material;
             return this;
         }
 
@@ -137,8 +135,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder blockStrength(int strength) {
-            this.blockStrength = strength;
+        public Builder strength(int strength) {
+            this.strength = strength;
             return this;
         }
 
@@ -149,30 +147,11 @@ public class DBlock {
          *
          * @return
          */
-        public Builder blockDurability(long durability) {
-            this.blockDurability = Math.max(0, durability);
+        public Builder durability(long durability) {
+            this.durability = Math.max(0, durability);
             return this;
         }
 
-        /**
-         * Flags block to be instantly broken
-         *
-         * @return
-         */
-        public Builder noBlockDurability() {
-            this.blockDurability = 0;
-            return this;
-        }
-
-        /**
-         * Flags block to never break
-         *
-         * @return
-         */
-        public Builder infiniteDurability() {
-            this.blockDurability = -1;
-            return this;
-        }
 
         /**
          * Milliseconds cooldown the block will have after being destroyed
@@ -181,8 +160,8 @@ public class DBlock {
          *
          * @return
          */
-        public Builder blockCooldown(long ms) {
-            this.blockCooldown = Math.max(1000, ms);
+        public Builder cooldown(long ms) {
+            this.cooldown = Math.max(1000, ms);
             return this;
         }
 
@@ -201,16 +180,6 @@ public class DBlock {
         }
 
         /**
-         * Flags that block has no tools to destroy it(becomes unbreakable)
-         *
-         * @return
-         */
-        public Builder noCorrectTools() {
-            this.correctTools = new HashSet<>();
-            return this;
-        }
-
-        /**
          * Array of ItemDrop objects that will drop when block is destroyed
          *
          * @param lootpool
@@ -220,16 +189,6 @@ public class DBlock {
         public Builder lootpool(@NotNull List<ItemDrop> lootpool) {
             Preconditions.checkNotNull(lootpool, "Lootpool cannot be null");
             this.lootpool = lootpool;
-            return this;
-        }
-
-        /**
-         * Flags block to have no drops
-         *
-         * @return
-         */
-        public Builder noItemDrops() {
-            this.lootpool = List.of();
             return this;
         }
 

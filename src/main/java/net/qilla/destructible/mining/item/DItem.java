@@ -40,11 +40,7 @@ public class DItem {
     }
 
     public ItemLore getLore() {
-        ItemLore.Builder builder = ItemLore.lore();
-        builder.addLines(this.lore.lines());
-        builder.addLine(Component.empty());
-        builder.addLine(this.rarity.getComponent());
-        return builder.build();
+        return this.lore;
     }
 
     public int getStackSize() {

@@ -28,7 +28,7 @@ public class ToolManager {
     public boolean canMine(@NotNull DTool dTool, @NotNull BlockInstance blockInstance) {
         if(blockInstance.getDBlockData().isLocked() ||
                 blockInstance.getDBlockData().isOnCooldown() ||
-                blockInstance.getDBlock().getStrength() > dTool.getToolStrength() ||
+                blockInstance.getDBlock().getStrength() > dTool.getStrength() ||
                 blockInstance.getDBlock().getDurability() < 0) return false;
         return blockInstance.getDBlock().getCorrectTools().stream().anyMatch(dToolType -> dToolType.equals(ToolType.HAND) || dTool.getToolType().contains(dToolType));
     }
@@ -43,13 +43,13 @@ public class ToolManager {
                 itemStack.editMeta(meta -> {
                     meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, durability);
                 });
-                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getToolDurability() - durability);
+                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getDurability() - durability);
             } else if(durability == 0) {
                 itemStack.editMeta(meta -> {
                     meta.getPersistentDataContainer().set(DataKey.DURABILITY, PersistentDataType.INTEGER, -1);
                 });
 
-                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getToolDurability());
+                itemStack.setData(DataComponentTypes.DAMAGE, dTool.getDurability());
                 dPlayer.sendMessage("<red>Your currently active tool has broken!");
                 dPlayer.getCraftPlayer().getWorld().playSound(dPlayer.getCraftPlayer().getLocation(), Sound.ENTITY_ITEM_BREAK, 0.2f, 1);
             }

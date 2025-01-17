@@ -18,11 +18,11 @@ import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
-public class LootpoolMenu extends DynamicMenu<ItemDrop> {
+public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
 
     private final List<ItemDrop> lootpool;
 
-    public LootpoolMenu(@NotNull DPlayer dPlayer, @NotNull List<ItemDrop> lootpool) {
+    public LootpoolSetMenu(@NotNull DPlayer dPlayer, @NotNull List<ItemDrop> lootpool) {
         super(dPlayer, lootpool);
         this.lootpool = lootpool;
 
@@ -35,6 +35,7 @@ public class LootpoolMenu extends DynamicMenu<ItemDrop> {
             return true;
         }), 0);
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override
@@ -49,15 +50,16 @@ public class LootpoolMenu extends DynamicMenu<ItemDrop> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" +
                                 FormatUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + FormatUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click to modify"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Right click to remove"))
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to modify"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Right Click to remove"))
                 ))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
+            if(clickType == ClickType.MIDDLE) {
                 new ItemDropCreationMenu(getDPlayer(), lootpool, item).open(true);
                 return true;
-            } else if(clickType.isRightClick()) {
+            } else if(clickType.isShiftClick() && clickType.isLeftClick()) {
                 lootpool.remove(item);
                 super.refreshSockets();
                 return true;
@@ -71,7 +73,6 @@ public class LootpoolMenu extends DynamicMenu<ItemDrop> {
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
                 .lore(ItemLore.lore(List.of(
-                        Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Make lootpool modifications to"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>the selected destructible block")
                 )))

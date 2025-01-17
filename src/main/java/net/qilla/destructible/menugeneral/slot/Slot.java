@@ -67,6 +67,16 @@ public class Slot {
         return new Slot(newBuilder);
     }
 
+    public Slot modifyDisplayName(Component displayName) {
+        this.itemStack.setData(DataComponentTypes.ITEM_NAME, displayName);
+        return this;
+    }
+
+    public Slot modifyLore(ItemLore lore) {
+        this.itemStack.setData(DataComponentTypes.LORE, lore);
+        return this;
+    }
+
     public ItemStack getItem() {
         return this.itemStack;
     }

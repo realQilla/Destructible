@@ -30,6 +30,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ItemDropCreationMenu extends StaticMenu {
 
+    private boolean fullMenu;
     private final List<ItemDrop> lootpool;
     private final ItemDrop itemDrop;
     private DItem dItem;
@@ -44,6 +45,7 @@ public class ItemDropCreationMenu extends StaticMenu {
         this.itemDrop = itemDrop;
 
         if(this.itemDrop != null) {
+            this.fullMenu = true;
             this.dItem = itemDrop.getDItem();
             this.minAmount = itemDrop.getMinAmount();
             this.maxAmount = itemDrop.getMaxAmount();
@@ -51,6 +53,7 @@ public class ItemDropCreationMenu extends StaticMenu {
             this.populateSettings();
         }
         super.addSocket(this.dItemSocket(), 50);
+        super.finalizeMenu();
     }
 
     private void populateSettings() {
@@ -66,16 +69,15 @@ public class ItemDropCreationMenu extends StaticMenu {
     private Socket buildSocket() {
         return new Socket(42, Slots.CONFIRM, event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                lootpool.remove(itemDrop);
-                lootpool.add(new ItemDrop.Builder()
-                        .dItem(dItem)
-                        .minAmount(minAmount)
-                        .maxAmount(maxAmount)
-                        .chance(chance / 100)
-                        .build());
-                return super.returnMenu();
-            } else return false;
+            if(!clickType.isLeftClick()) return false;
+            lootpool.remove(itemDrop);
+            lootpool.add(new ItemDrop.Builder()
+                    .dItem(dItem)
+                    .minAmount(minAmount)
+                    .maxAmount(maxAmount)
+                    .chance(chance / 100)
+                    .build());
+            return super.returnMenu();
         });
     }
 
@@ -110,6 +112,16 @@ public class ItemDropCreationMenu extends StaticMenu {
         }
     }
 
+    private boolean setDItem(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(clickType.isLeftClick()) {
+            CompletableFuture<DItem> future = new CompletableFuture<>();
+            new DItemSelectMenu(getDPlayer(), future).open(true);
+            future.thenAccept(dItem -> this.dItem = dItem);
+            return true;
+        } else return false;
+    }
+
     private Socket amountSocket() {
         if(minAmount == null) this.minAmount = 1;
         if(maxAmount == null) this.maxAmount = 1;
@@ -128,45 +140,17 @@ public class ItemDropCreationMenu extends StaticMenu {
             ClickType clickType = event.getClick();
 
             if(clickType.isLeftClick()) {
-                return this.setMinAmount();
+                return this.setMinAmount(event);
             } else if(clickType.isRightClick()) {
-                return this.setMaxAmount();
+                return this.setMaxAmount(event);
             } else return false;
         });
     }
 
-    private Socket chanceSocket() {
-        if(chance == null) this.chance = 100.0;
-        String string = (FormatUtil.decimalTruncation(this.chance, 17)) + "% (1/" + FormatUtil.numberComma((long) Math.ceil(100 / this.chance)) + ")";
-        return new Socket(24, Slot.of(builder -> builder
-                .material(Material.ENCHANTED_BOOK)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Drop Chance"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Drop chance: <white>" + string),
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to set a drop chance")
-                )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-                .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), event -> {
-            ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                return this.setChance();
-            } else return false;
-        });
-    }
-
-    private boolean setDItem(InventoryClickEvent event) {
+    private boolean setMinAmount(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
-        if(clickType.isLeftClick()) {
-            CompletableFuture<DItem> future = new CompletableFuture<>();
-            new DItemSelectMenu(getDPlayer(), future).open(true);
-            future.thenAccept(dItem -> this.dItem = dItem);
-            return true;
-        } else return false;
-    }
+        if(!clickType.isLeftClick()) return false;
 
-    private boolean setMinAmount() {
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
                 "Minimum amount",
@@ -189,7 +173,10 @@ public class ItemDropCreationMenu extends StaticMenu {
         return true;
     }
 
-    private boolean setMaxAmount() {
+    private boolean setMaxAmount(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(!clickType.isLeftClick()) return false;
+
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
                 "Maximum amount",
@@ -212,7 +199,26 @@ public class ItemDropCreationMenu extends StaticMenu {
         return true;
     }
 
-    private boolean setChance() {
+    private Socket chanceSocket() {
+        if(chance == null) this.chance = 100.0;
+        String string = (FormatUtil.decimalTruncation(this.chance, 17)) + "% (1/" + FormatUtil.numberComma((long) Math.ceil(100 / this.chance)) + ")";
+        return new Socket(24, Slot.of(builder -> builder
+                .material(Material.ENCHANTED_BOOK)
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Drop Chance"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Drop chance: <white>" + string),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to set a drop chance")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .appearSound(Sounds.MENU_ITEM_APPEAR)
+        ), this::setChance);
+    }
+
+    private boolean setChance(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(!clickType.isLeftClick()) return false;
+
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
                 "Chance that this",
@@ -236,10 +242,13 @@ public class ItemDropCreationMenu extends StaticMenu {
 
     @Override
     public void refreshSockets() {
-        super.addSocket(dItemSocket());
-        if(dItem != null) {
+        if(!fullMenu && dItem != null) {
+            super.addSocket(dItemSocket(), 50);
+            this.populateSettings();
+            this.fullMenu = true;
+        } else if(dItem != null) {
             super.addSocket(List.of(
-                    this.amountSocket(), this.chanceSocket(), buildSocket()));
+                    dItemSocket(),amountSocket(), chanceSocket(), buildSocket()));
         }
     }
 
@@ -249,9 +258,8 @@ public class ItemDropCreationMenu extends StaticMenu {
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Item Drop Modification"))
                 .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Create new item drops for"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>existing lootpools")
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Tool menu for modifying properties"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>of existing lootpools")
                 )))
         ));
     }

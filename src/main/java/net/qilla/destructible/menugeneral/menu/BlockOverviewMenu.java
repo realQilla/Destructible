@@ -25,15 +25,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
 
     public BlockOverviewMenu(@NotNull DPlayer dPlayer) {
         super(dPlayer, Registries.DESTRUCTIBLE_BLOCKS.values());
-        super.addSocket(new Socket(46, Slot.of(builder -> builder
-                .material(Material.SHULKER_SHELL)
-                .displayName(MiniMessage.miniMessage().deserialize("<green>Create New"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to create a new block")
-                )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-        ), event -> {
+        super.addSocket(new Socket(46, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new BlockModificationMenu(super.getDPlayer(), null).open(true);
@@ -41,6 +33,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
             } else return false;
         }), 0);
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override
@@ -59,8 +52,8 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + FormatUtil.toName(item.getBreakParticle().toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to make modifications"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Right Click to view possible drops")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to view possible drops"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to make modifications")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> blockClickInteraction(event, item));
@@ -70,10 +63,10 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
         ClickType clickType = event.getClick();
 
         if(clickType.isLeftClick()) {
-            new BlockModificationMenu(getDPlayer(), dBlock).open(true);
-            return true;
-        } else if(clickType.isRightClick()) {
             new BlockLootpoolOverview(getDPlayer(), dBlock).open(true);
+            return true;
+        } else if(clickType == ClickType.MIDDLE) {
+            new BlockModificationMenu(getDPlayer(), dBlock).open(true);
             return true;
         } else return false;
     }

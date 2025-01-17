@@ -13,12 +13,12 @@ import java.util.concurrent.Future;
 public class MenuData {
     private final Deque<StaticMenu> menuHistory;
     private final EnumMap<MenuSave, MenuMetadata> menuMetadata;
-    private CompletableFuture<String> playerInput;
+    private CompletableFuture<String> future;
 
     public MenuData() {
         this.menuHistory = new ArrayDeque<>();
         this.menuMetadata = new EnumMap<>(MenuSave.class);
-        this.playerInput = null;
+        this.future = null;
     }
 
     public Optional<StaticMenu> popFromHistory() {
@@ -51,12 +51,13 @@ public class MenuData {
     }
 
     public Future<String> requestInput() {
-        return this.playerInput = new CompletableFuture<>();
+        return this.future = new CompletableFuture<>();
     }
 
-    public void fulfillInput(String input) {
-        if(playerInput == null) return;
-        playerInput.complete(input);
-        playerInput = null;
+    public boolean fulfillInput(String input) {
+        if(future == null) return false;
+        future.complete(input);
+        future = null;
+        return true;
     }
 }

@@ -9,7 +9,7 @@ import net.qilla.destructible.command.OverflowCommand;
 import net.qilla.destructible.command.TestCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
-import net.qilla.destructible.mining.MiningPacketListener;
+import net.qilla.destructible.player.PlayerPacketListener;
 import net.qilla.destructible.mining.PluginListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -25,7 +25,7 @@ public final class Destructible extends JavaPlugin {
 
     private LifecycleEventManager<Plugin> lifecycleMan;
     private List<Thread> activeThreads;
-    private MiningPacketListener packetListener;
+    private PlayerPacketListener packetListener;
     private CustomItemsFile customItemsFile;
     private CustomToolsFile customToolsFile;
     private CustomBlocksFile customBlocksFile;
@@ -37,7 +37,7 @@ public final class Destructible extends JavaPlugin {
         this.lifecycleMan = this.getLifecycleManager();
         this.activeThreads = new ArrayList<>();
 
-        this.packetListener = new MiningPacketListener();
+        this.packetListener = new PlayerPacketListener();
         this.customItemsFile = new CustomItemsFile();
         this.customToolsFile = new CustomToolsFile();
         this.customBlocksFile = new CustomBlocksFile();
@@ -104,7 +104,7 @@ public final class Destructible extends JavaPlugin {
         return this.loadedDestructibleBlocksGroupedFile;
     }
 
-    public MiningPacketListener getPlayerPacketListener() {
+    public PlayerPacketListener getPlayerPacketListener() {
         return this.packetListener;
     }
 

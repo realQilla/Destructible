@@ -9,8 +9,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Registries;
 import net.qilla.destructible.data.SoundSettings;
+import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
-import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Sound;
@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DPlayer {
 
@@ -56,7 +57,7 @@ public class DPlayer {
 
     public void playSound(SoundSettings soundSettings, boolean randomPitch) {
         if(soundSettings == null) return;
-        this.playSound(soundSettings.getSound(), soundSettings.getVolume(),  randomPitch ? RandomUtil.between(0.5f, 2f) : soundSettings.getPitch(), soundSettings.getCategory(), soundSettings.getPlayType());
+        this.playSound(soundSettings.getSound(), soundSettings.getVolume(),  randomPitch ? RandomUtil.between(0.75f, 1.25f) : soundSettings.getPitch(), soundSettings.getCategory(), soundSettings.getPlayType());
     }
 
     public void sendPacket(Packet<?> packet) {
@@ -103,15 +104,23 @@ public class DPlayer {
                 .append(MiniMessage.miniMessage().deserialize(" added to stash!")));
     }
 
-    public List<ItemStack> rollItemDrops(List<ItemDrop> itemDrops) {
-        if(itemDrops.isEmpty()) return List.of();
+    public Map<DItem, Integer> calculateItemDrops(List<ItemDrop> itemDrops) {
+        return itemDrops.stream()
+                .filter(this::hasChanceToDrop)
+                .collect(Collectors.toMap(
+                        ItemDrop::getDItem,
+                        this::calculateAmount,
+                        Integer::sum
+                ));
+    }
 
-        return itemDrops.stream().filter(drop -> RANDOM.nextFloat() <= drop.getChance())
-                .map(drop -> {
-                    int amount = RANDOM.nextInt(drop.getMaxAmount() - drop.getMinAmount() + 1) + drop.getMinAmount();
-                    return DItemStack.of(drop.getDItem(), amount);
-                })
-                .toList();
+    private boolean hasChanceToDrop(ItemDrop itemDrop) {
+        double dropChance = itemDrop.getChance();
+        return RANDOM.nextDouble() < dropChance;
+    }
+
+    private int calculateAmount(ItemDrop itemDrop) {
+        return RANDOM.nextInt(itemDrop.getMaxAmount() - itemDrop.getMinAmount() + 1) + itemDrop.getMinAmount();
     }
 
     public void resetCraftPlayer(CraftPlayer craftPlayer) {

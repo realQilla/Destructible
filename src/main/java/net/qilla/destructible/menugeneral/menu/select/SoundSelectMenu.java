@@ -28,6 +28,7 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
                 .toList());
         this.future = future;
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override

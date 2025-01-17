@@ -40,24 +40,26 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
     protected boolean searchFor() {
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
-                "Block name to",
-                "search for");
-
-        SignInput signInput = new SignInput(super.getDPlayer(), signText);
-        signInput.init(result -> {
+                "Searched item",
+                "name"
+        );
+        new SignInput(super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
-                try {
+                if (!result.isBlank()) {
                     this.localPopulation = getItemPopulation().stream()
                             .filter(item -> matchSearchCriteria(item, result))
                             .toList();
-                    super.refreshSockets();
-                    super.addSocket(resetSearchSocket(), 0);
-                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
-                } catch(NumberFormatException ignored) {
+                    try {
+                        super.refreshSockets();
+                        super.addSocket(resetSearchSocket(), 0);
+                        getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
                 super.open(false);
             });
         });
+
         return true;
     }
 

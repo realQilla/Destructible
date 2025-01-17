@@ -3,51 +3,52 @@ package net.qilla.destructible.mining.item;
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
 
 public final class DTool extends DItem {
-    private final List<ToolType> toolType;
-    private final int toolStrength;
-    private final int breakingEfficiency;
-    private final int toolDurability;
+    private final Set<ToolType> toolType;
+    private final int strength;
+    private final int efficiency;
+    private final int durability;
 
     private DTool(Builder builder) {
         super(builder.itemBuilder);
         this.toolType = builder.toolType;
-        this.toolStrength = builder.toolStrength;
-        this.breakingEfficiency = builder.breakingEfficiency;
-        this.toolDurability = builder.toolDurability;
+        this.strength = builder.strength;
+        this.efficiency = builder.efficiency;
+        this.durability = builder.durability;
     }
 
     @NotNull
-    public List<ToolType> getToolType() {
-        return this.toolType;
+    public Set<ToolType> getToolType() {
+        return Collections.unmodifiableSet(this.toolType);
     }
 
-    public int getToolStrength() {
-        return this.toolStrength;
+    public int getStrength() {
+        return this.strength;
     }
 
-    public int getBreakingEfficiency() {
-        return this.breakingEfficiency;
+    public int getEfficiency() {
+        return this.efficiency;
     }
 
-    public int getToolDurability() {
-        return this.toolDurability;
+    public int getDurability() {
+        return this.durability;
     }
 
     public static class Builder extends DItem.Builder {
         private DItem.Builder itemBuilder;
-        private List<ToolType> toolType;
-        private int toolStrength;
-        private int breakingEfficiency;
-        private int toolDurability;
+        private Set<ToolType> toolType;
+        private int strength;
+        private int efficiency;
+        private int durability;
 
         public Builder() {
-            this.toolType = List.of();
-            this.toolStrength = 0;
-            this.breakingEfficiency = 1;
-            this.toolDurability = -1;
+            this.toolType = Set.of();
+            this.strength = 0;
+            this.efficiency = 1;
+            this.durability = -1;
         }
 
         public Builder item(DItem.Builder dItemBuilder) {
@@ -63,7 +64,7 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public Builder toolType(List<ToolType> type) {
+        public Builder toolType(Set<ToolType> type) {
             Preconditions.checkArgument(type != null, "Tool type cannot be null");
             this.toolType = type;
             return this;
@@ -76,8 +77,8 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public Builder toolStrength(int amount) {
-            this.toolStrength = Math.max(0, amount);
+        public Builder strength(int amount) {
+            this.strength = Math.max(0, amount);
             return this;
         }
 
@@ -88,18 +89,13 @@ public final class DTool extends DItem {
          *
          * @return
          */
-        public Builder toolEfficiency(int amount) {
-            this.breakingEfficiency = Math.max(0, amount);
+        public Builder efficiency(int amount) {
+            this.efficiency = Math.max(0, amount);
             return this;
         }
 
-        public Builder toolDurability(int amount) {
-            this.toolDurability = Math.max(-1, amount);
-            return this;
-        }
-
-        public Builder noToolDurability() {
-            this.toolDurability = -1;
+        public Builder durability(int amount) {
+            this.durability = Math.max(-1, amount);
             return this;
         }
 

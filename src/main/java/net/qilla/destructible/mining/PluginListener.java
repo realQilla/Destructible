@@ -2,20 +2,17 @@ package net.qilla.destructible.mining;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.mining.block.DBlocks;
 import net.qilla.destructible.player.DBlockEdit;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.DBlockUtil;
+import net.qilla.destructible.util.DestructibleUtil;
 import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -138,7 +135,7 @@ public class PluginListener implements Listener {
         }
 
         BlockPos blockPos = CoordUtil.locToBlockPos(event.getBlock().getLocation());
-        Optional<DBlock> optional = DBlockUtil.getDBlock(blockPos);
+        Optional<DBlock> optional = DestructibleUtil.getDBlock(blockPos);
 
         if(optional.isEmpty()) return;
 

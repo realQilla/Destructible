@@ -41,15 +41,15 @@ public class ItemDrop {
         private double chance;
 
         public Builder() {
-            this.item = DItems.DEFAULT;
+            this.item = DItems.MISSING_ITEM;
             this.minAmount = 1;
             this.maxAmount = 1;
             this.chance = 1.0f;
         }
 
         public Builder dItem(@NotNull String id) {
-            Preconditions.checkArgument(Registries.DESTRUCTIBLE_ITEMS.containsKey(id), "DItem ID: " + id + " does not exist");
-            this.item = Registries.DESTRUCTIBLE_ITEMS.get(id);
+            //Preconditions.checkArgument(Registries.DESTRUCTIBLE_ITEMS.containsKey(id), "DItem ID: " + id + " does not exist");
+            this.item = Registries.DESTRUCTIBLE_ITEMS.getOrDefault(id, DItems.MISSING_ITEM);
             return this;
         }
 

@@ -24,6 +24,7 @@ public class CorrectToolMenu extends DynamicMenu<ToolType> {
         super(dPlayer, Arrays.stream(ToolType.values()).toList());
         this.correctTools = correctTools;
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override
@@ -55,6 +56,10 @@ public class CorrectToolMenu extends DynamicMenu<ToolType> {
         return new Socket(4, Slot.of(builder -> builder
                 .material(Material.BLACK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Tool Settings"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Set which tooltypes apply to"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>the current function")
+                )))
         ));
     }
 

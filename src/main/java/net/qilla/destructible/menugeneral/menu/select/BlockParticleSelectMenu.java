@@ -29,6 +29,7 @@ public class BlockParticleSelectMenu extends SearchMenu<Material> {
                 .toList());
         this.future = future;
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override
@@ -42,6 +43,8 @@ public class BlockParticleSelectMenu extends SearchMenu<Material> {
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
             future.complete(item);
             return this.returnMenu();
         });

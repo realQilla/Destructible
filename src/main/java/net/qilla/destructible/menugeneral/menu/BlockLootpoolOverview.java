@@ -41,6 +41,7 @@ public class BlockLootpoolOverview extends DynamicMenu<ItemDrop> {
                 .glow(true)
         )), 0);
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override

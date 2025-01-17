@@ -19,22 +19,24 @@ public abstract class StaticMenu implements InventoryHolder {
     private final Inventory inventory;
     private final DPlayer dPlayer;
     private final Map<Integer, Socket> socketHolder;
-    private final List<Integer> staticSlots;
+    private final List<Integer> totalIndexes;
 
     public StaticMenu(@NotNull DPlayer dPlayer) {
         Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
         this.inventory = Bukkit.createInventory(this, staticConfig().menuSize().getSize(), staticConfig().title());
         this.dPlayer = dPlayer;
         this.socketHolder = new HashMap<>(staticConfig().menuSize().getSize());
-        this.staticSlots = IntStream.range(0, staticConfig().menuSize().getSize()).boxed().toList();
+        this.totalIndexes = IntStream.range(0, staticConfig().menuSize().getSize()).boxed().toList();
 
+        totalIndexes.forEach(index -> inventory.setItem(index, Slots.FILLER.getItem()));
         this.addSocket(menuSocket(), 0);
         this.addSocket(returnSocket(), 0);
-        this.finalizeMenu();
     }
 
     public void finalizeMenu() {
-        //staticSlots.forEach(index -> inventory.setItem(index, Slots.FILLER.getItem()));
+        this.totalIndexes.stream()
+                .filter(index -> !this.socketHolder.containsKey(index))
+                .forEach(index -> this.inventory.addItem(Slots.FILLER.getItem()));
     }
 
     public void open(boolean toHistory) {
@@ -97,8 +99,8 @@ public abstract class StaticMenu implements InventoryHolder {
                 } catch(InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+                Bukkit.getScheduler().runTask(dPlayer.getPlugin(), runnable);
             });
-            Bukkit.getScheduler().runTask(dPlayer.getPlugin(), runnable);
         } else runnable.run();
         return socket;
     }
@@ -125,7 +127,7 @@ public abstract class StaticMenu implements InventoryHolder {
     }
 
     public Socket removeSocket(int index) {
-        inventory.clear(index);
+        inventory.setItem(index, Slots.FILLER.getItem());
         return socketHolder.remove(index);
     }
 
@@ -160,6 +162,10 @@ public abstract class StaticMenu implements InventoryHolder {
     @Override
     public Inventory getInventory() {
         return this.inventory;
+    }
+
+    public List<Integer> getTotalIndexes() {
+        return this.totalIndexes;
     }
 
     public abstract void refreshSockets();

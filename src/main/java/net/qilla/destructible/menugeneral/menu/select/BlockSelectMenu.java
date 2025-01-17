@@ -14,16 +14,17 @@ import org.bukkit.Registry;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class MaterialSelectMenu extends SearchMenu<Material> {
+public class BlockSelectMenu extends SearchMenu<Material> {
 
     private final CompletableFuture<Material> future;
 
-    public MaterialSelectMenu(DPlayer dPlayer, CompletableFuture<Material> future) {
+    public BlockSelectMenu(DPlayer dPlayer, CompletableFuture<Material> future) {
         super(dPlayer, Registry.MATERIAL.stream()
                 .filter(Material::isSolid)
                 .toList());
         this.future = future;
         super.populateModular();
+        super.finalizeMenu();
     }
 
     @Override
