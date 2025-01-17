@@ -64,7 +64,7 @@ public final class Destructible extends JavaPlugin {
             Commands commands = event.registrar();
             new DestructibleCommand(this, commands).register();
             new OverflowCommand(this, commands).register();
-            new TestCommand(this, commands).register();
+            //new TestCommand(this, commands).register();
         });
     }
 
