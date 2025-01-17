@@ -66,25 +66,21 @@ public class CorrectToolMenu extends DynamicMenu<ToolType> {
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuSize.THREE)
                 .title(Component.text("Tool Settings"))
                 .menuIndex(4)
-                .returnIndex(49));
+                .returnIndex(22));
     }
 
     @Override
     public DynamicConfig dynamicConfig() {
-        return DynamicConfig.of(
-                builder -> builder
-                        .dynamicSlots(List.of(
-                                9, 10, 11, 12, 13, 14, 15, 16, 17,
-                                18, 19, 20, 21, 22, 23, 24, 25, 26,
-                                27, 28, 29, 30, 31, 32, 33, 34, 35,
-                                36, 37, 38, 39, 40, 41, 42, 43, 44
-                        ))
-                        .nextIndex(52)
-                        .previousIndex(7)
-                        .shiftAmount(9)
+        return DynamicConfig.of(builder -> builder
+                .dynamicSlots(List.of(
+                        10, 11, 12, 13, 14, 15, 16
+                ))
+                .nextIndex(25)
+                .previousIndex(19)
+                .shiftAmount(1)
         );
     }
 }
