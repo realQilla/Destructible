@@ -66,8 +66,8 @@ public class RaritySelectMenu extends DynamicMenu<Rarity> {
                 .dynamicSlots(List.of(
                         10, 11, 12, 13, 14, 15, 16
                 ))
-                .nextIndex(19)
-                .previousIndex(25)
+                .nextIndex(25)
+                .previousIndex(19)
                 .shiftAmount(1)
         );
     }
