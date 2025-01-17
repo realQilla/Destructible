@@ -466,7 +466,7 @@ public class ToolModificationMenu extends StaticMenu {
         new SignInput(super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 if(!result.isEmpty()) {
-                    durability = Math.max(1, Integer.parseInt(result));
+                    durability = Math.max(-1, Integer.parseInt(result));
                     super.addSocket(this.durabilitySocket());
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 }
