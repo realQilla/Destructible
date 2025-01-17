@@ -58,6 +58,7 @@ public class CustomToolsFile extends DestructibleFile {
             for(DTool dTool : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dTool.getId(), dTool);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
+            Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
         }
     }
 

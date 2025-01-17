@@ -57,6 +57,7 @@ public class CustomBlocksFile extends DestructibleFile {
             for(DBlock dBlock : dBlockList) Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
+            Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
         }
     }
 

@@ -46,7 +46,6 @@ public abstract class DestructibleFile {
             } catch(IOException exception) {
                 LOGGER.severe(exception.toString());
             }
-            Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
         }
         createFile();
     }

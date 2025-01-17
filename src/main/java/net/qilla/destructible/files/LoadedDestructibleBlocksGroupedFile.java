@@ -55,6 +55,7 @@ public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
             Registries.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED.putAll(registry);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
+            Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
         }
     }
 

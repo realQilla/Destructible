@@ -118,6 +118,8 @@ public class DestructibleCommand {
                 )
                 .then(Commands.literal(CONFIG)
                         .then(Commands.literal(CONFIG_ITEMS)
+                                .then(Commands.literal(CONFIG_SAVE)
+                                        .executes(this::saveCustomItems))
                                 .then(Commands.literal(CONFIG_LOAD)
                                         .executes(this::loadCustomItems))
                                 .then(Commands.literal(CONFIG_RESET)
@@ -125,6 +127,8 @@ public class DestructibleCommand {
                                 .then(Commands.literal(CONFIG_CLEAR)
                                         .executes(this::clearCustomItems)))
                         .then(Commands.literal(CONFIG_BLOCKS)
+                                .then(Commands.literal(CONFIG_SAVE)
+                                        .executes(this::saveCustomBlocks))
                                 .then(Commands.literal(CONFIG_LOAD)
                                         .executes(this::loadCustomBlocks))
                                 .then(Commands.literal(CONFIG_RESET)
@@ -314,6 +318,14 @@ public class DestructibleCommand {
         return Command.SINGLE_SUCCESS;
     }
 
+    private int saveCustomItems(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomItemsFile().save();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible item changes have been <green><bold>SAVED</green> to config!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
     private int loadCustomItems(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
@@ -337,6 +349,14 @@ public class DestructibleCommand {
 
         this.plugin.getCustomItemsFile().clear();
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible items have been <red><bold>CLEARED</red>!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int saveCustomBlocks(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomBlocksFile().save();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block changes have been <green><bold>SAVED</green> to config!"));
         return Command.SINGLE_SUCCESS;
     }
 

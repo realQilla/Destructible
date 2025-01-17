@@ -59,6 +59,7 @@ public class CustomItemsFile extends DestructibleFile {
             for(DItem dItem : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
+            Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
         }
     }
 
