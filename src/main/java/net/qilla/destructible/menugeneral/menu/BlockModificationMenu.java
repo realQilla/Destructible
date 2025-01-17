@@ -119,11 +119,9 @@ public class BlockModificationMenu extends StaticMenu {
         if(this.dBlock != null) {
             Registries.DESTRUCTIBLE_BLOCKS.remove(this.dBlock.getId());
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully replaced by " + id + "!"));
-        } else
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
+        } else getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
         Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
         getDPlayer().getPlugin().getCustomBlocksFile().save();
-        getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
         return super.returnMenu();
     }
 

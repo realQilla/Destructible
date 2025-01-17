@@ -92,7 +92,6 @@ public class ItemModificationMenu extends StaticMenu {
         } else getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully registered!"));
         Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
         getDPlayer().getPlugin().getCustomItemsFile().save();
-        getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
         return super.returnMenu();
     }
 
