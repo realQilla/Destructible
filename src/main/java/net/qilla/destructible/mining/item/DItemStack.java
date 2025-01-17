@@ -47,8 +47,8 @@ public final class DItemStack {
 
     @NotNull
     private static ItemStack getItemStack(DItem dItem, int amount) {
-        ItemStack itemStack = ItemStack.of(Material.STICK, amount);
-        itemStack.getDataTypes().forEach(dataType -> itemStack.unsetData(dataType));
+        ItemStack itemStack = ItemStack.of(dItem.isResource() ? Material.PAPER : dItem.getMaterial(), amount);
+        itemStack.getDataTypes().forEach(itemStack::unsetData);
         itemStack.editMeta(meta -> {
             meta.getPersistentDataContainer().set(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING, dItem.getId());
         });

@@ -6,7 +6,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_button",
     "ITEM_DROPS": [
       {
@@ -24,7 +24,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_door",
     "ITEM_DROPS": [
       {
@@ -42,7 +42,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_fence",
     "ITEM_DROPS": [
       {
@@ -60,7 +60,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_fence_gate",
     "ITEM_DROPS": [
       {
@@ -78,7 +78,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "acacia_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -96,7 +96,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "acacia_leaves",
     "ITEM_DROPS": [
       {
@@ -114,7 +114,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_log",
     "ITEM_DROPS": [
       {
@@ -132,7 +132,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_planks",
     "ITEM_DROPS": [
       {
@@ -150,7 +150,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -168,7 +168,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "acacia_sapling",
     "ITEM_DROPS": [
       {
@@ -186,7 +186,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_sign",
     "ITEM_DROPS": [
       {
@@ -204,7 +204,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_slab",
     "ITEM_DROPS": [
       {
@@ -222,7 +222,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_stairs",
     "ITEM_DROPS": [
       {
@@ -240,7 +240,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_trapdoor",
     "ITEM_DROPS": [
       {
@@ -258,7 +258,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "acacia_wood",
     "ITEM_DROPS": [
       {
@@ -276,7 +276,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "activator_rail",
     "ITEM_DROPS": [
       {
@@ -312,7 +312,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "allium",
     "ITEM_DROPS": [
       {
@@ -330,7 +330,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.amethyst_block.break",
     "BREAK_PARTICLE": "amethyst_block",
     "ITEM_DROPS": [
       {
@@ -348,7 +348,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.amethyst_cluster.break",
     "BREAK_PARTICLE": "amethyst_cluster",
     "ITEM_DROPS": [
       {
@@ -366,7 +366,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.ancient_debris.break",
     "BREAK_PARTICLE": "ancient_debris",
     "ITEM_DROPS": [
       {
@@ -456,7 +456,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.anvil.break",
     "BREAK_PARTICLE": "anvil",
     "ITEM_DROPS": [
       {
@@ -474,7 +474,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.azalea.break",
     "BREAK_PARTICLE": "azalea",
     "ITEM_DROPS": [
       {
@@ -492,7 +492,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.azalea_leaves.break",
     "BREAK_PARTICLE": "azalea_leaves",
     "ITEM_DROPS": [
       {
@@ -510,7 +510,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "azure_bluet",
     "ITEM_DROPS": [
       {
@@ -528,7 +528,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo.break",
     "BREAK_PARTICLE": "bamboo",
     "ITEM_DROPS": [
       {
@@ -546,7 +546,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_block",
     "ITEM_DROPS": [
       {
@@ -564,7 +564,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_button",
     "ITEM_DROPS": [
       {
@@ -582,7 +582,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_door",
     "ITEM_DROPS": [
       {
@@ -600,7 +600,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_fence",
     "ITEM_DROPS": [
       {
@@ -618,7 +618,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_fence_gate",
     "ITEM_DROPS": [
       {
@@ -636,7 +636,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood_hanging_sign.break",
     "BREAK_PARTICLE": "bamboo_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -654,7 +654,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_mosaic",
     "ITEM_DROPS": [
       {
@@ -672,7 +672,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_mosaic_slab",
     "ITEM_DROPS": [
       {
@@ -690,7 +690,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_mosaic_stairs",
     "ITEM_DROPS": [
       {
@@ -708,7 +708,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_planks",
     "ITEM_DROPS": [
       {
@@ -726,7 +726,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -744,7 +744,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_sign",
     "ITEM_DROPS": [
       {
@@ -762,7 +762,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_slab",
     "ITEM_DROPS": [
       {
@@ -780,7 +780,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_stairs",
     "ITEM_DROPS": [
       {
@@ -798,7 +798,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "bamboo_trapdoor",
     "ITEM_DROPS": [
       {
@@ -816,7 +816,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "barrel",
     "ITEM_DROPS": [
       {
@@ -852,7 +852,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.basalt.break",
     "BREAK_PARTICLE": "basalt",
     "ITEM_DROPS": [
       {
@@ -906,7 +906,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "beehive",
     "ITEM_DROPS": [
       {
@@ -924,7 +924,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "bee_nest",
     "ITEM_DROPS": [
       {
@@ -942,7 +942,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.anvil.break",
     "BREAK_PARTICLE": "bell",
     "ITEM_DROPS": [
       {
@@ -960,7 +960,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.big_dripleaf.break",
     "BREAK_PARTICLE": "big_dripleaf",
     "ITEM_DROPS": [
       {
@@ -978,7 +978,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_button",
     "ITEM_DROPS": [
       {
@@ -996,7 +996,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_door",
     "ITEM_DROPS": [
       {
@@ -1014,7 +1014,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_fence",
     "ITEM_DROPS": [
       {
@@ -1032,7 +1032,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_fence_gate",
     "ITEM_DROPS": [
       {
@@ -1050,7 +1050,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "birch_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -1068,7 +1068,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "birch_leaves",
     "ITEM_DROPS": [
       {
@@ -1086,7 +1086,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_log",
     "ITEM_DROPS": [
       {
@@ -1104,7 +1104,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_planks",
     "ITEM_DROPS": [
       {
@@ -1122,7 +1122,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -1140,7 +1140,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "birch_sapling",
     "ITEM_DROPS": [
       {
@@ -1158,7 +1158,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_sign",
     "ITEM_DROPS": [
       {
@@ -1176,7 +1176,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_slab",
     "ITEM_DROPS": [
       {
@@ -1194,7 +1194,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_stairs",
     "ITEM_DROPS": [
       {
@@ -1212,7 +1212,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_trapdoor",
     "ITEM_DROPS": [
       {
@@ -1230,7 +1230,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "birch_wood",
     "ITEM_DROPS": [
       {
@@ -1320,7 +1320,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "black_banner",
     "ITEM_DROPS": [
       {
@@ -1338,7 +1338,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "black_bed",
     "ITEM_DROPS": [
       {
@@ -1356,7 +1356,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "black_candle",
     "ITEM_DROPS": [
       {
@@ -1374,7 +1374,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "black_carpet",
     "ITEM_DROPS": [
       {
@@ -1410,7 +1410,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "black_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -1464,7 +1464,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "black_stained_glass",
     "ITEM_DROPS": [
       {
@@ -1482,7 +1482,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "black_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -1518,7 +1518,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "black_wool",
     "ITEM_DROPS": [
       {
@@ -1554,7 +1554,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "blue_banner",
     "ITEM_DROPS": [
       {
@@ -1572,7 +1572,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "blue_bed",
     "ITEM_DROPS": [
       {
@@ -1590,7 +1590,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "blue_candle",
     "ITEM_DROPS": [
       {
@@ -1608,7 +1608,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "blue_carpet",
     "ITEM_DROPS": [
       {
@@ -1644,7 +1644,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "blue_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -1680,7 +1680,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "blue_ice",
     "ITEM_DROPS": [
       {
@@ -1698,7 +1698,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "blue_orchid",
     "ITEM_DROPS": [
       {
@@ -1734,7 +1734,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "blue_stained_glass",
     "ITEM_DROPS": [
       {
@@ -1752,7 +1752,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "blue_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -1788,7 +1788,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "blue_wool",
     "ITEM_DROPS": [
       {
@@ -1806,7 +1806,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bone_block.break",
     "BREAK_PARTICLE": "bone_block",
     "ITEM_DROPS": [
       {
@@ -1824,7 +1824,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "bookshelf",
     "ITEM_DROPS": [
       {
@@ -1842,7 +1842,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "brain_coral",
     "ITEM_DROPS": [
       {
@@ -1860,7 +1860,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.coral_block.break",
     "BREAK_PARTICLE": "brain_coral_block",
     "ITEM_DROPS": [
       {
@@ -1878,7 +1878,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "brain_coral_fan",
     "ITEM_DROPS": [
       {
@@ -1986,7 +1986,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "brown_banner",
     "ITEM_DROPS": [
       {
@@ -2004,7 +2004,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "brown_bed",
     "ITEM_DROPS": [
       {
@@ -2022,7 +2022,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "brown_candle",
     "ITEM_DROPS": [
       {
@@ -2040,7 +2040,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "brown_carpet",
     "ITEM_DROPS": [
       {
@@ -2076,7 +2076,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "brown_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -2112,7 +2112,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "brown_mushroom",
     "ITEM_DROPS": [
       {
@@ -2130,7 +2130,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "brown_mushroom_block",
     "ITEM_DROPS": [
       {
@@ -2166,7 +2166,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "brown_stained_glass",
     "ITEM_DROPS": [
       {
@@ -2184,7 +2184,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "brown_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -2220,7 +2220,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "brown_wool",
     "ITEM_DROPS": [
       {
@@ -2238,7 +2238,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "bubble_coral",
     "ITEM_DROPS": [
       {
@@ -2256,7 +2256,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.coral_block.break",
     "BREAK_PARTICLE": "bubble_coral_block",
     "ITEM_DROPS": [
       {
@@ -2274,7 +2274,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "bubble_coral_fan",
     "ITEM_DROPS": [
       {
@@ -2292,7 +2292,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.amethyst_block.break",
     "BREAK_PARTICLE": "budding_amethyst",
     "ITEM_DROPS": [
       {
@@ -2310,7 +2310,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "cactus",
     "ITEM_DROPS": [
       {
@@ -2328,7 +2328,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "cake",
     "ITEM_DROPS": [
       {
@@ -2346,7 +2346,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.calcite.break",
     "BREAK_PARTICLE": "calcite",
     "ITEM_DROPS": [
       {
@@ -2364,7 +2364,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sculk_sensor.break",
     "BREAK_PARTICLE": "calibrated_sculk_sensor",
     "ITEM_DROPS": [
       {
@@ -2382,7 +2382,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "campfire",
     "ITEM_DROPS": [
       {
@@ -2400,7 +2400,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "candle",
     "ITEM_DROPS": [
       {
@@ -2418,7 +2418,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "cartography_table",
     "ITEM_DROPS": [
       {
@@ -2436,7 +2436,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "carved_pumpkin",
     "ITEM_DROPS": [
       {
@@ -2472,7 +2472,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.chain.break",
     "BREAK_PARTICLE": "chain",
     "ITEM_DROPS": [
       {
@@ -2508,7 +2508,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_button",
     "ITEM_DROPS": [
       {
@@ -2526,7 +2526,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_door",
     "ITEM_DROPS": [
       {
@@ -2544,7 +2544,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_fence",
     "ITEM_DROPS": [
       {
@@ -2562,7 +2562,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_fence_gate",
     "ITEM_DROPS": [
       {
@@ -2580,7 +2580,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood_hanging_sign.break",
     "BREAK_PARTICLE": "cherry_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -2598,7 +2598,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_leaves.break",
     "BREAK_PARTICLE": "cherry_leaves",
     "ITEM_DROPS": [
       {
@@ -2616,7 +2616,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_log",
     "ITEM_DROPS": [
       {
@@ -2634,7 +2634,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_planks",
     "ITEM_DROPS": [
       {
@@ -2652,7 +2652,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -2670,7 +2670,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_sapling.break",
     "BREAK_PARTICLE": "cherry_sapling",
     "ITEM_DROPS": [
       {
@@ -2688,7 +2688,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_sign",
     "ITEM_DROPS": [
       {
@@ -2706,7 +2706,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_slab",
     "ITEM_DROPS": [
       {
@@ -2724,7 +2724,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_stairs",
     "ITEM_DROPS": [
       {
@@ -2742,7 +2742,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_trapdoor",
     "ITEM_DROPS": [
       {
@@ -2760,7 +2760,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "cherry_wood",
     "ITEM_DROPS": [
       {
@@ -2778,7 +2778,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "chest",
     "ITEM_DROPS": [
       {
@@ -2796,7 +2796,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.anvil.break",
     "BREAK_PARTICLE": "chipped_anvil",
     "ITEM_DROPS": [
       {
@@ -2814,7 +2814,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.chiseled_bookshelf.break",
     "BREAK_PARTICLE": "chiseled_bookshelf",
     "ITEM_DROPS": [
       {
@@ -2832,7 +2832,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -2850,7 +2850,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_bricks.break",
     "BREAK_PARTICLE": "chiseled_deepslate",
     "ITEM_DROPS": [
       {
@@ -2868,7 +2868,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "chiseled_nether_bricks",
     "ITEM_DROPS": [
       {
@@ -2940,7 +2940,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.resin_bricks.break",
     "BREAK_PARTICLE": "chiseled_resin_bricks",
     "ITEM_DROPS": [
       {
@@ -2994,7 +2994,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff.break",
     "BREAK_PARTICLE": "chiseled_tuff",
     "ITEM_DROPS": [
       {
@@ -3012,7 +3012,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff_bricks.break",
     "BREAK_PARTICLE": "chiseled_tuff_bricks",
     "ITEM_DROPS": [
       {
@@ -3030,7 +3030,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "chorus_flower",
     "ITEM_DROPS": [
       {
@@ -3048,7 +3048,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "chorus_plant",
     "ITEM_DROPS": [
       {
@@ -3066,7 +3066,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.gravel.break",
     "BREAK_PARTICLE": "clay",
     "ITEM_DROPS": [
       {
@@ -3084,7 +3084,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "closed_eyeblossom",
     "ITEM_DROPS": [
       {
@@ -3138,7 +3138,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.gravel.break",
     "BREAK_PARTICLE": "coarse_dirt",
     "ITEM_DROPS": [
       {
@@ -3156,7 +3156,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "cobbled_deepslate",
     "ITEM_DROPS": [
       {
@@ -3174,7 +3174,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "cobbled_deepslate_slab",
     "ITEM_DROPS": [
       {
@@ -3192,7 +3192,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "cobbled_deepslate_stairs",
     "ITEM_DROPS": [
       {
@@ -3210,7 +3210,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "cobbled_deepslate_wall",
     "ITEM_DROPS": [
       {
@@ -3300,7 +3300,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cobweb.break",
     "BREAK_PARTICLE": "cobweb",
     "ITEM_DROPS": [
       {
@@ -3354,7 +3354,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "composter",
     "ITEM_DROPS": [
       {
@@ -3390,7 +3390,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "copper_block",
     "ITEM_DROPS": [
       {
@@ -3408,7 +3408,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "copper_bulb",
     "ITEM_DROPS": [
       {
@@ -3426,7 +3426,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "copper_door",
     "ITEM_DROPS": [
       {
@@ -3444,7 +3444,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "copper_grate",
     "ITEM_DROPS": [
       {
@@ -3480,7 +3480,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -3498,7 +3498,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "cornflower",
     "ITEM_DROPS": [
       {
@@ -3516,7 +3516,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_bricks.break",
     "BREAK_PARTICLE": "cracked_deepslate_bricks",
     "ITEM_DROPS": [
       {
@@ -3534,7 +3534,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_tiles.break",
     "BREAK_PARTICLE": "cracked_deepslate_tiles",
     "ITEM_DROPS": [
       {
@@ -3552,7 +3552,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "cracked_nether_bricks",
     "ITEM_DROPS": [
       {
@@ -3624,7 +3624,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "crafting_table",
     "ITEM_DROPS": [
       {
@@ -3642,7 +3642,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.creaking_heart.break",
     "BREAK_PARTICLE": "creaking_heart",
     "ITEM_DROPS": [
       {
@@ -3678,7 +3678,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_button",
     "ITEM_DROPS": [
       {
@@ -3696,7 +3696,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_door",
     "ITEM_DROPS": [
       {
@@ -3714,7 +3714,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_fence",
     "ITEM_DROPS": [
       {
@@ -3732,7 +3732,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_fence_gate",
     "ITEM_DROPS": [
       {
@@ -3750,7 +3750,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.fungus.break",
     "BREAK_PARTICLE": "crimson_fungus",
     "ITEM_DROPS": [
       {
@@ -3768,7 +3768,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood_hanging_sign.break",
     "BREAK_PARTICLE": "crimson_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -3786,7 +3786,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "crimson_hyphae",
     "ITEM_DROPS": [
       {
@@ -3804,7 +3804,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nylium.break",
     "BREAK_PARTICLE": "crimson_nylium",
     "ITEM_DROPS": [
       {
@@ -3822,7 +3822,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_planks",
     "ITEM_DROPS": [
       {
@@ -3840,7 +3840,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -3858,7 +3858,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.roots.break",
     "BREAK_PARTICLE": "crimson_roots",
     "ITEM_DROPS": [
       {
@@ -3876,7 +3876,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_sign",
     "ITEM_DROPS": [
       {
@@ -3894,7 +3894,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_slab",
     "ITEM_DROPS": [
       {
@@ -3912,7 +3912,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_stairs",
     "ITEM_DROPS": [
       {
@@ -3930,7 +3930,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "crimson_stem",
     "ITEM_DROPS": [
       {
@@ -3948,7 +3948,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "crimson_trapdoor",
     "ITEM_DROPS": [
       {
@@ -3984,7 +3984,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "cut_copper",
     "ITEM_DROPS": [
       {
@@ -4002,7 +4002,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -4020,7 +4020,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -4110,7 +4110,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "cyan_banner",
     "ITEM_DROPS": [
       {
@@ -4128,7 +4128,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "cyan_bed",
     "ITEM_DROPS": [
       {
@@ -4146,7 +4146,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "cyan_candle",
     "ITEM_DROPS": [
       {
@@ -4164,7 +4164,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "cyan_carpet",
     "ITEM_DROPS": [
       {
@@ -4200,7 +4200,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "cyan_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -4254,7 +4254,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "cyan_stained_glass",
     "ITEM_DROPS": [
       {
@@ -4272,7 +4272,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "cyan_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -4308,7 +4308,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "cyan_wool",
     "ITEM_DROPS": [
       {
@@ -4326,7 +4326,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.anvil.break",
     "BREAK_PARTICLE": "damaged_anvil",
     "ITEM_DROPS": [
       {
@@ -4344,7 +4344,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "dandelion",
     "ITEM_DROPS": [
       {
@@ -4362,7 +4362,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_button",
     "ITEM_DROPS": [
       {
@@ -4380,7 +4380,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_door",
     "ITEM_DROPS": [
       {
@@ -4398,7 +4398,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_fence",
     "ITEM_DROPS": [
       {
@@ -4416,7 +4416,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_fence_gate",
     "ITEM_DROPS": [
       {
@@ -4434,7 +4434,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "dark_oak_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -4452,7 +4452,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "dark_oak_leaves",
     "ITEM_DROPS": [
       {
@@ -4470,7 +4470,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_log",
     "ITEM_DROPS": [
       {
@@ -4488,7 +4488,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_planks",
     "ITEM_DROPS": [
       {
@@ -4506,7 +4506,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -4524,7 +4524,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "dark_oak_sapling",
     "ITEM_DROPS": [
       {
@@ -4542,7 +4542,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_sign",
     "ITEM_DROPS": [
       {
@@ -4560,7 +4560,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_slab",
     "ITEM_DROPS": [
       {
@@ -4578,7 +4578,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_stairs",
     "ITEM_DROPS": [
       {
@@ -4596,7 +4596,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_trapdoor",
     "ITEM_DROPS": [
       {
@@ -4614,7 +4614,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "dark_oak_wood",
     "ITEM_DROPS": [
       {
@@ -4686,7 +4686,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "daylight_detector",
     "ITEM_DROPS": [
       {
@@ -4812,7 +4812,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "dead_bush",
     "ITEM_DROPS": [
       {
@@ -4992,7 +4992,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.decorated_pot.break",
     "BREAK_PARTICLE": "decorated_pot",
     "ITEM_DROPS": [
       {
@@ -5010,7 +5010,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate",
     "ITEM_DROPS": [
       {
@@ -5028,7 +5028,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_bricks.break",
     "BREAK_PARTICLE": "deepslate_bricks",
     "ITEM_DROPS": [
       {
@@ -5046,7 +5046,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_bricks.break",
     "BREAK_PARTICLE": "deepslate_brick_slab",
     "ITEM_DROPS": [
       {
@@ -5064,7 +5064,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_bricks.break",
     "BREAK_PARTICLE": "deepslate_brick_stairs",
     "ITEM_DROPS": [
       {
@@ -5082,7 +5082,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_bricks.break",
     "BREAK_PARTICLE": "deepslate_brick_wall",
     "ITEM_DROPS": [
       {
@@ -5100,7 +5100,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_coal_ore",
     "ITEM_DROPS": [
       {
@@ -5118,7 +5118,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_copper_ore",
     "ITEM_DROPS": [
       {
@@ -5136,7 +5136,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_diamond_ore",
     "ITEM_DROPS": [
       {
@@ -5154,7 +5154,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_emerald_ore",
     "ITEM_DROPS": [
       {
@@ -5172,7 +5172,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_gold_ore",
     "ITEM_DROPS": [
       {
@@ -5190,7 +5190,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_iron_ore",
     "ITEM_DROPS": [
       {
@@ -5208,7 +5208,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_lapis_ore",
     "ITEM_DROPS": [
       {
@@ -5226,7 +5226,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "deepslate_redstone_ore",
     "ITEM_DROPS": [
       {
@@ -5244,7 +5244,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_tiles.break",
     "BREAK_PARTICLE": "deepslate_tiles",
     "ITEM_DROPS": [
       {
@@ -5262,7 +5262,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_tiles.break",
     "BREAK_PARTICLE": "deepslate_tile_slab",
     "ITEM_DROPS": [
       {
@@ -5280,7 +5280,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_tiles.break",
     "BREAK_PARTICLE": "deepslate_tile_stairs",
     "ITEM_DROPS": [
       {
@@ -5298,7 +5298,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate_tiles.break",
     "BREAK_PARTICLE": "deepslate_tile_wall",
     "ITEM_DROPS": [
       {
@@ -5316,7 +5316,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "detector_rail",
     "ITEM_DROPS": [
       {
@@ -5334,7 +5334,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "diamond_block",
     "ITEM_DROPS": [
       {
@@ -5442,7 +5442,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.gravel.break",
     "BREAK_PARTICLE": "dirt",
     "ITEM_DROPS": [
       {
@@ -5460,7 +5460,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "dirt_path",
     "ITEM_DROPS": [
       {
@@ -5532,7 +5532,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "dried_kelp_block",
     "ITEM_DROPS": [
       {
@@ -5550,7 +5550,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.dripstone_block.break",
     "BREAK_PARTICLE": "dripstone_block",
     "ITEM_DROPS": [
       {
@@ -5586,7 +5586,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "emerald_block",
     "ITEM_DROPS": [
       {
@@ -5658,7 +5658,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "end_portal_frame",
     "ITEM_DROPS": [
       {
@@ -5676,7 +5676,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "end_rod",
     "ITEM_DROPS": [
       {
@@ -5784,7 +5784,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "exposed_chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -5802,7 +5802,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "exposed_copper",
     "ITEM_DROPS": [
       {
@@ -5820,7 +5820,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "exposed_copper_bulb",
     "ITEM_DROPS": [
       {
@@ -5838,7 +5838,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "exposed_copper_door",
     "ITEM_DROPS": [
       {
@@ -5856,7 +5856,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "exposed_copper_grate",
     "ITEM_DROPS": [
       {
@@ -5874,7 +5874,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "exposed_copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -5892,7 +5892,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "exposed_cut_copper",
     "ITEM_DROPS": [
       {
@@ -5910,7 +5910,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "exposed_cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -5928,7 +5928,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "exposed_cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -5946,7 +5946,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.gravel.break",
     "BREAK_PARTICLE": "farmland",
     "ITEM_DROPS": [
       {
@@ -5964,7 +5964,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "fern",
     "ITEM_DROPS": [
       {
@@ -5982,7 +5982,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "fire_coral",
     "ITEM_DROPS": [
       {
@@ -6000,7 +6000,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.coral_block.break",
     "BREAK_PARTICLE": "fire_coral_block",
     "ITEM_DROPS": [
       {
@@ -6018,7 +6018,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "fire_coral_fan",
     "ITEM_DROPS": [
       {
@@ -6036,7 +6036,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "fletching_table",
     "ITEM_DROPS": [
       {
@@ -6054,7 +6054,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.flowering_azalea.break",
     "BREAK_PARTICLE": "flowering_azalea",
     "ITEM_DROPS": [
       {
@@ -6072,7 +6072,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.azalea_leaves.break",
     "BREAK_PARTICLE": "flowering_azalea_leaves",
     "ITEM_DROPS": [
       {
@@ -6108,7 +6108,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.frogspawn.break",
     "BREAK_PARTICLE": "frogspawn",
     "ITEM_DROPS": [
       {
@@ -6144,7 +6144,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.gilded_blackstone.break",
     "BREAK_PARTICLE": "gilded_blackstone",
     "ITEM_DROPS": [
       {
@@ -6162,7 +6162,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "glass",
     "ITEM_DROPS": [
       {
@@ -6180,7 +6180,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "glass_pane",
     "ITEM_DROPS": [
       {
@@ -6198,7 +6198,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "glowstone",
     "ITEM_DROPS": [
       {
@@ -6216,7 +6216,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "glow_lichen",
     "ITEM_DROPS": [
       {
@@ -6234,7 +6234,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "gold_block",
     "ITEM_DROPS": [
       {
@@ -6342,7 +6342,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "grass_block",
     "ITEM_DROPS": [
       {
@@ -6360,7 +6360,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.gravel.break",
     "BREAK_PARTICLE": "gravel",
     "ITEM_DROPS": [
       {
@@ -6378,7 +6378,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "gray_banner",
     "ITEM_DROPS": [
       {
@@ -6396,7 +6396,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "gray_bed",
     "ITEM_DROPS": [
       {
@@ -6414,7 +6414,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "gray_candle",
     "ITEM_DROPS": [
       {
@@ -6432,7 +6432,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "gray_carpet",
     "ITEM_DROPS": [
       {
@@ -6468,7 +6468,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "gray_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -6522,7 +6522,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "gray_stained_glass",
     "ITEM_DROPS": [
       {
@@ -6540,7 +6540,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "gray_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -6576,7 +6576,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "gray_wool",
     "ITEM_DROPS": [
       {
@@ -6594,7 +6594,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "green_banner",
     "ITEM_DROPS": [
       {
@@ -6612,7 +6612,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "green_bed",
     "ITEM_DROPS": [
       {
@@ -6630,7 +6630,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "green_candle",
     "ITEM_DROPS": [
       {
@@ -6648,7 +6648,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "green_carpet",
     "ITEM_DROPS": [
       {
@@ -6684,7 +6684,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "green_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -6738,7 +6738,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "green_stained_glass",
     "ITEM_DROPS": [
       {
@@ -6756,7 +6756,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "green_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -6792,7 +6792,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "green_wool",
     "ITEM_DROPS": [
       {
@@ -6828,7 +6828,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_roots.break",
     "BREAK_PARTICLE": "hanging_roots",
     "ITEM_DROPS": [
       {
@@ -6846,7 +6846,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "hay_block",
     "ITEM_DROPS": [
       {
@@ -6864,7 +6864,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.heavy_core.break",
     "BREAK_PARTICLE": "heavy_core",
     "ITEM_DROPS": [
       {
@@ -6882,7 +6882,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "heavy_weighted_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -6900,7 +6900,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.coral_block.break",
     "BREAK_PARTICLE": "honeycomb_block",
     "ITEM_DROPS": [
       {
@@ -6918,7 +6918,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.honey_block.break",
     "BREAK_PARTICLE": "honey_block",
     "ITEM_DROPS": [
       {
@@ -6936,7 +6936,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "hopper",
     "ITEM_DROPS": [
       {
@@ -6954,7 +6954,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "horn_coral",
     "ITEM_DROPS": [
       {
@@ -6972,7 +6972,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.coral_block.break",
     "BREAK_PARTICLE": "horn_coral_block",
     "ITEM_DROPS": [
       {
@@ -6990,7 +6990,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "horn_coral_fan",
     "ITEM_DROPS": [
       {
@@ -7008,7 +7008,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "ice",
     "ITEM_DROPS": [
       {
@@ -7080,7 +7080,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "infested_deepslate",
     "ITEM_DROPS": [
       {
@@ -7152,7 +7152,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "iron_bars",
     "ITEM_DROPS": [
       {
@@ -7170,7 +7170,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "iron_block",
     "ITEM_DROPS": [
       {
@@ -7188,7 +7188,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "iron_door",
     "ITEM_DROPS": [
       {
@@ -7224,7 +7224,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "iron_trapdoor",
     "ITEM_DROPS": [
       {
@@ -7242,7 +7242,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jack_o_lantern",
     "ITEM_DROPS": [
       {
@@ -7278,7 +7278,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jukebox",
     "ITEM_DROPS": [
       {
@@ -7296,7 +7296,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_button",
     "ITEM_DROPS": [
       {
@@ -7314,7 +7314,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_door",
     "ITEM_DROPS": [
       {
@@ -7332,7 +7332,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_fence",
     "ITEM_DROPS": [
       {
@@ -7350,7 +7350,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_fence_gate",
     "ITEM_DROPS": [
       {
@@ -7368,7 +7368,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "jungle_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -7386,7 +7386,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "jungle_leaves",
     "ITEM_DROPS": [
       {
@@ -7404,7 +7404,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_log",
     "ITEM_DROPS": [
       {
@@ -7422,7 +7422,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_planks",
     "ITEM_DROPS": [
       {
@@ -7440,7 +7440,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -7458,7 +7458,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "jungle_sapling",
     "ITEM_DROPS": [
       {
@@ -7476,7 +7476,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_sign",
     "ITEM_DROPS": [
       {
@@ -7494,7 +7494,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_slab",
     "ITEM_DROPS": [
       {
@@ -7512,7 +7512,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_stairs",
     "ITEM_DROPS": [
       {
@@ -7530,7 +7530,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_trapdoor",
     "ITEM_DROPS": [
       {
@@ -7548,7 +7548,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "jungle_wood",
     "ITEM_DROPS": [
       {
@@ -7566,7 +7566,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "kelp",
     "ITEM_DROPS": [
       {
@@ -7584,7 +7584,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.ladder.break",
     "BREAK_PARTICLE": "ladder",
     "ITEM_DROPS": [
       {
@@ -7602,7 +7602,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.lantern.break",
     "BREAK_PARTICLE": "lantern",
     "ITEM_DROPS": [
       {
@@ -7656,7 +7656,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.medium_amethyst_bud.break",
     "BREAK_PARTICLE": "large_amethyst_bud",
     "ITEM_DROPS": [
       {
@@ -7674,7 +7674,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "large_fern",
     "ITEM_DROPS": [
       {
@@ -7692,7 +7692,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "lectern",
     "ITEM_DROPS": [
       {
@@ -7746,7 +7746,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "lightning_rod",
     "ITEM_DROPS": [
       {
@@ -7764,7 +7764,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "light_blue_banner",
     "ITEM_DROPS": [
       {
@@ -7782,7 +7782,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "light_blue_bed",
     "ITEM_DROPS": [
       {
@@ -7800,7 +7800,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "light_blue_candle",
     "ITEM_DROPS": [
       {
@@ -7818,7 +7818,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "light_blue_carpet",
     "ITEM_DROPS": [
       {
@@ -7854,7 +7854,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "light_blue_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -7908,7 +7908,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "light_blue_stained_glass",
     "ITEM_DROPS": [
       {
@@ -7926,7 +7926,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "light_blue_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -7962,7 +7962,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "light_blue_wool",
     "ITEM_DROPS": [
       {
@@ -7980,7 +7980,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "light_gray_banner",
     "ITEM_DROPS": [
       {
@@ -7998,7 +7998,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "light_gray_bed",
     "ITEM_DROPS": [
       {
@@ -8016,7 +8016,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "light_gray_candle",
     "ITEM_DROPS": [
       {
@@ -8034,7 +8034,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "light_gray_carpet",
     "ITEM_DROPS": [
       {
@@ -8070,7 +8070,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "light_gray_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -8124,7 +8124,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "light_gray_stained_glass",
     "ITEM_DROPS": [
       {
@@ -8142,7 +8142,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "light_gray_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -8178,7 +8178,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "light_gray_wool",
     "ITEM_DROPS": [
       {
@@ -8196,7 +8196,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "light_weighted_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -8214,7 +8214,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "lilac",
     "ITEM_DROPS": [
       {
@@ -8232,7 +8232,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "lily_of_the_valley",
     "ITEM_DROPS": [
       {
@@ -8250,7 +8250,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.big_dripleaf.break",
     "BREAK_PARTICLE": "lily_pad",
     "ITEM_DROPS": [
       {
@@ -8268,7 +8268,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "lime_banner",
     "ITEM_DROPS": [
       {
@@ -8286,7 +8286,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "lime_bed",
     "ITEM_DROPS": [
       {
@@ -8304,7 +8304,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "lime_candle",
     "ITEM_DROPS": [
       {
@@ -8322,7 +8322,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "lime_carpet",
     "ITEM_DROPS": [
       {
@@ -8358,7 +8358,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "lime_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -8412,7 +8412,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "lime_stained_glass",
     "ITEM_DROPS": [
       {
@@ -8430,7 +8430,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "lime_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -8466,7 +8466,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "lime_wool",
     "ITEM_DROPS": [
       {
@@ -8484,7 +8484,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.lodestone.break",
     "BREAK_PARTICLE": "lodestone",
     "ITEM_DROPS": [
       {
@@ -8502,7 +8502,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "loom",
     "ITEM_DROPS": [
       {
@@ -8520,7 +8520,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "magenta_banner",
     "ITEM_DROPS": [
       {
@@ -8538,7 +8538,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "magenta_bed",
     "ITEM_DROPS": [
       {
@@ -8556,7 +8556,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "magenta_candle",
     "ITEM_DROPS": [
       {
@@ -8574,7 +8574,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "magenta_carpet",
     "ITEM_DROPS": [
       {
@@ -8610,7 +8610,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "magenta_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -8664,7 +8664,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "magenta_stained_glass",
     "ITEM_DROPS": [
       {
@@ -8682,7 +8682,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "magenta_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -8718,7 +8718,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "magenta_wool",
     "ITEM_DROPS": [
       {
@@ -8754,7 +8754,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_button",
     "ITEM_DROPS": [
       {
@@ -8772,7 +8772,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_door",
     "ITEM_DROPS": [
       {
@@ -8790,7 +8790,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_fence",
     "ITEM_DROPS": [
       {
@@ -8808,7 +8808,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_fence_gate",
     "ITEM_DROPS": [
       {
@@ -8826,7 +8826,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "mangrove_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -8844,7 +8844,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "mangrove_leaves",
     "ITEM_DROPS": [
       {
@@ -8862,7 +8862,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_log",
     "ITEM_DROPS": [
       {
@@ -8880,7 +8880,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_planks",
     "ITEM_DROPS": [
       {
@@ -8898,7 +8898,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -8916,7 +8916,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "mangrove_propagule",
     "ITEM_DROPS": [
       {
@@ -8934,7 +8934,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.mangrove_roots.break",
     "BREAK_PARTICLE": "mangrove_roots",
     "ITEM_DROPS": [
       {
@@ -8952,7 +8952,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_sign",
     "ITEM_DROPS": [
       {
@@ -8970,7 +8970,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_slab",
     "ITEM_DROPS": [
       {
@@ -8988,7 +8988,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_stairs",
     "ITEM_DROPS": [
       {
@@ -9006,7 +9006,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_trapdoor",
     "ITEM_DROPS": [
       {
@@ -9024,7 +9024,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mangrove_wood",
     "ITEM_DROPS": [
       {
@@ -9042,7 +9042,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.large_amethyst_bud.break",
     "BREAK_PARTICLE": "medium_amethyst_bud",
     "ITEM_DROPS": [
       {
@@ -9060,7 +9060,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "melon",
     "ITEM_DROPS": [
       {
@@ -9222,7 +9222,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.moss.break",
     "BREAK_PARTICLE": "moss_block",
     "ITEM_DROPS": [
       {
@@ -9240,7 +9240,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.moss_carpet.break",
     "BREAK_PARTICLE": "moss_carpet",
     "ITEM_DROPS": [
       {
@@ -9258,7 +9258,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.mud.break",
     "BREAK_PARTICLE": "mud",
     "ITEM_DROPS": [
       {
@@ -9276,7 +9276,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.muddy_mangrove_roots.break",
     "BREAK_PARTICLE": "muddy_mangrove_roots",
     "ITEM_DROPS": [
       {
@@ -9294,7 +9294,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.mud_bricks.break",
     "BREAK_PARTICLE": "mud_bricks",
     "ITEM_DROPS": [
       {
@@ -9312,7 +9312,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.mud_bricks.break",
     "BREAK_PARTICLE": "mud_brick_slab",
     "ITEM_DROPS": [
       {
@@ -9330,7 +9330,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.mud_bricks.break",
     "BREAK_PARTICLE": "mud_brick_stairs",
     "ITEM_DROPS": [
       {
@@ -9348,7 +9348,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.mud_bricks.break",
     "BREAK_PARTICLE": "mud_brick_wall",
     "ITEM_DROPS": [
       {
@@ -9366,7 +9366,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "mushroom_stem",
     "ITEM_DROPS": [
       {
@@ -9384,7 +9384,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "mycelium",
     "ITEM_DROPS": [
       {
@@ -9402,7 +9402,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.netherite_block.break",
     "BREAK_PARTICLE": "netherite_block",
     "ITEM_DROPS": [
       {
@@ -9420,7 +9420,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.netherrack.break",
     "BREAK_PARTICLE": "netherrack",
     "ITEM_DROPS": [
       {
@@ -9438,7 +9438,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "nether_bricks",
     "ITEM_DROPS": [
       {
@@ -9456,7 +9456,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "nether_brick_fence",
     "ITEM_DROPS": [
       {
@@ -9474,7 +9474,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "nether_brick_slab",
     "ITEM_DROPS": [
       {
@@ -9492,7 +9492,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "nether_brick_stairs",
     "ITEM_DROPS": [
       {
@@ -9510,7 +9510,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "nether_brick_wall",
     "ITEM_DROPS": [
       {
@@ -9528,7 +9528,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_gold_ore.break",
     "BREAK_PARTICLE": "nether_gold_ore",
     "ITEM_DROPS": [
       {
@@ -9546,7 +9546,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_ore.break",
     "BREAK_PARTICLE": "nether_quartz_ore",
     "ITEM_DROPS": [
       {
@@ -9564,7 +9564,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_sprouts.break",
     "BREAK_PARTICLE": "nether_sprouts",
     "ITEM_DROPS": [
       {
@@ -9582,7 +9582,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wart.break",
     "BREAK_PARTICLE": "nether_wart",
     "ITEM_DROPS": [
       {
@@ -9600,7 +9600,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wart_block.break",
     "BREAK_PARTICLE": "nether_wart_block",
     "ITEM_DROPS": [
       {
@@ -9618,7 +9618,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "note_block",
     "ITEM_DROPS": [
       {
@@ -9636,7 +9636,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_button",
     "ITEM_DROPS": [
       {
@@ -9654,7 +9654,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_door",
     "ITEM_DROPS": [
       {
@@ -9672,7 +9672,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_fence",
     "ITEM_DROPS": [
       {
@@ -9690,7 +9690,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_fence_gate",
     "ITEM_DROPS": [
       {
@@ -9708,7 +9708,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "oak_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -9726,7 +9726,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "oak_leaves",
     "ITEM_DROPS": [
       {
@@ -9744,7 +9744,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_log",
     "ITEM_DROPS": [
       {
@@ -9762,7 +9762,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_planks",
     "ITEM_DROPS": [
       {
@@ -9780,7 +9780,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -9798,7 +9798,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "oak_sapling",
     "ITEM_DROPS": [
       {
@@ -9816,7 +9816,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_sign",
     "ITEM_DROPS": [
       {
@@ -9834,7 +9834,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_slab",
     "ITEM_DROPS": [
       {
@@ -9852,7 +9852,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_stairs",
     "ITEM_DROPS": [
       {
@@ -9870,7 +9870,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_trapdoor",
     "ITEM_DROPS": [
       {
@@ -9888,7 +9888,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "oak_wood",
     "ITEM_DROPS": [
       {
@@ -9942,7 +9942,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.froglight.break",
     "BREAK_PARTICLE": "ochre_froglight",
     "ITEM_DROPS": [
       {
@@ -9960,7 +9960,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "open_eyeblossom",
     "ITEM_DROPS": [
       {
@@ -9978,7 +9978,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "orange_banner",
     "ITEM_DROPS": [
       {
@@ -9996,7 +9996,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "orange_bed",
     "ITEM_DROPS": [
       {
@@ -10014,7 +10014,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "orange_candle",
     "ITEM_DROPS": [
       {
@@ -10032,7 +10032,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "orange_carpet",
     "ITEM_DROPS": [
       {
@@ -10068,7 +10068,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "orange_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -10122,7 +10122,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "orange_stained_glass",
     "ITEM_DROPS": [
       {
@@ -10140,7 +10140,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "orange_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -10176,7 +10176,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "orange_tulip",
     "ITEM_DROPS": [
       {
@@ -10194,7 +10194,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "orange_wool",
     "ITEM_DROPS": [
       {
@@ -10212,7 +10212,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "oxeye_daisy",
     "ITEM_DROPS": [
       {
@@ -10230,7 +10230,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "oxidized_chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -10248,7 +10248,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "oxidized_copper",
     "ITEM_DROPS": [
       {
@@ -10266,7 +10266,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "oxidized_copper_bulb",
     "ITEM_DROPS": [
       {
@@ -10284,7 +10284,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "oxidized_copper_door",
     "ITEM_DROPS": [
       {
@@ -10302,7 +10302,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "oxidized_copper_grate",
     "ITEM_DROPS": [
       {
@@ -10320,7 +10320,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "oxidized_copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -10338,7 +10338,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "oxidized_cut_copper",
     "ITEM_DROPS": [
       {
@@ -10356,7 +10356,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "oxidized_cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -10374,7 +10374,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "oxidized_cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -10392,7 +10392,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "packed_ice",
     "ITEM_DROPS": [
       {
@@ -10410,7 +10410,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.packed_mud.break",
     "BREAK_PARTICLE": "packed_mud",
     "ITEM_DROPS": [
       {
@@ -10428,7 +10428,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.moss_carpet.break",
     "BREAK_PARTICLE": "pale_hanging_moss",
     "ITEM_DROPS": [
       {
@@ -10446,7 +10446,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.moss.break",
     "BREAK_PARTICLE": "pale_moss_block",
     "ITEM_DROPS": [
       {
@@ -10464,7 +10464,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.moss_carpet.break",
     "BREAK_PARTICLE": "pale_moss_carpet",
     "ITEM_DROPS": [
       {
@@ -10482,7 +10482,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_button",
     "ITEM_DROPS": [
       {
@@ -10500,7 +10500,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_door",
     "ITEM_DROPS": [
       {
@@ -10518,7 +10518,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_fence",
     "ITEM_DROPS": [
       {
@@ -10536,7 +10536,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_fence_gate",
     "ITEM_DROPS": [
       {
@@ -10554,7 +10554,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "pale_oak_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -10572,7 +10572,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "pale_oak_leaves",
     "ITEM_DROPS": [
       {
@@ -10590,7 +10590,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_log",
     "ITEM_DROPS": [
       {
@@ -10608,7 +10608,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_planks",
     "ITEM_DROPS": [
       {
@@ -10626,7 +10626,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -10644,7 +10644,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "pale_oak_sapling",
     "ITEM_DROPS": [
       {
@@ -10662,7 +10662,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_sign",
     "ITEM_DROPS": [
       {
@@ -10680,7 +10680,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_slab",
     "ITEM_DROPS": [
       {
@@ -10698,7 +10698,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_stairs",
     "ITEM_DROPS": [
       {
@@ -10716,7 +10716,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_trapdoor",
     "ITEM_DROPS": [
       {
@@ -10734,7 +10734,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pale_oak_wood",
     "ITEM_DROPS": [
       {
@@ -10752,7 +10752,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.froglight.break",
     "BREAK_PARTICLE": "pearlescent_froglight",
     "ITEM_DROPS": [
       {
@@ -10770,7 +10770,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "peony",
     "ITEM_DROPS": [
       {
@@ -10824,7 +10824,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pink_banner",
     "ITEM_DROPS": [
       {
@@ -10842,7 +10842,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pink_bed",
     "ITEM_DROPS": [
       {
@@ -10860,7 +10860,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "pink_candle",
     "ITEM_DROPS": [
       {
@@ -10878,7 +10878,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "pink_carpet",
     "ITEM_DROPS": [
       {
@@ -10914,7 +10914,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "pink_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -10950,7 +10950,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.pink_petals.break",
     "BREAK_PARTICLE": "pink_petals",
     "ITEM_DROPS": [
       {
@@ -10986,7 +10986,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "pink_stained_glass",
     "ITEM_DROPS": [
       {
@@ -11004,7 +11004,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "pink_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -11040,7 +11040,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "pink_tulip",
     "ITEM_DROPS": [
       {
@@ -11058,7 +11058,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "pink_wool",
     "ITEM_DROPS": [
       {
@@ -11094,7 +11094,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.crop.break",
     "BREAK_PARTICLE": "pitcher_plant",
     "ITEM_DROPS": [
       {
@@ -11130,7 +11130,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.gravel.break",
     "BREAK_PARTICLE": "podzol",
     "ITEM_DROPS": [
       {
@@ -11148,7 +11148,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.pointed_dripstone.break",
     "BREAK_PARTICLE": "pointed_dripstone",
     "ITEM_DROPS": [
       {
@@ -11220,7 +11220,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.basalt.break",
     "BREAK_PARTICLE": "polished_basalt",
     "ITEM_DROPS": [
       {
@@ -11418,7 +11418,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_deepslate.break",
     "BREAK_PARTICLE": "polished_deepslate",
     "ITEM_DROPS": [
       {
@@ -11436,7 +11436,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_deepslate.break",
     "BREAK_PARTICLE": "polished_deepslate_slab",
     "ITEM_DROPS": [
       {
@@ -11454,7 +11454,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_deepslate.break",
     "BREAK_PARTICLE": "polished_deepslate_stairs",
     "ITEM_DROPS": [
       {
@@ -11472,7 +11472,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_deepslate.break",
     "BREAK_PARTICLE": "polished_deepslate_wall",
     "ITEM_DROPS": [
       {
@@ -11598,7 +11598,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_tuff.break",
     "BREAK_PARTICLE": "polished_tuff",
     "ITEM_DROPS": [
       {
@@ -11616,7 +11616,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_tuff.break",
     "BREAK_PARTICLE": "polished_tuff_slab",
     "ITEM_DROPS": [
       {
@@ -11634,7 +11634,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_tuff.break",
     "BREAK_PARTICLE": "polished_tuff_stairs",
     "ITEM_DROPS": [
       {
@@ -11652,7 +11652,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.polished_tuff.break",
     "BREAK_PARTICLE": "polished_tuff_wall",
     "ITEM_DROPS": [
       {
@@ -11670,7 +11670,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "poppy",
     "ITEM_DROPS": [
       {
@@ -11688,7 +11688,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "powered_rail",
     "ITEM_DROPS": [
       {
@@ -11832,7 +11832,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "pumpkin",
     "ITEM_DROPS": [
       {
@@ -11850,7 +11850,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "purple_banner",
     "ITEM_DROPS": [
       {
@@ -11868,7 +11868,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "purple_bed",
     "ITEM_DROPS": [
       {
@@ -11886,7 +11886,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "purple_candle",
     "ITEM_DROPS": [
       {
@@ -11904,7 +11904,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "purple_carpet",
     "ITEM_DROPS": [
       {
@@ -11940,7 +11940,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "purple_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -11994,7 +11994,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "purple_stained_glass",
     "ITEM_DROPS": [
       {
@@ -12012,7 +12012,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "purple_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -12048,7 +12048,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "purple_wool",
     "ITEM_DROPS": [
       {
@@ -12228,7 +12228,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "rail",
     "ITEM_DROPS": [
       {
@@ -12300,7 +12300,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "redstone_block",
     "ITEM_DROPS": [
       {
@@ -12318,7 +12318,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "redstone_lamp",
     "ITEM_DROPS": [
       {
@@ -12354,7 +12354,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "redstone_torch",
     "ITEM_DROPS": [
       {
@@ -12372,7 +12372,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "red_banner",
     "ITEM_DROPS": [
       {
@@ -12390,7 +12390,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "red_bed",
     "ITEM_DROPS": [
       {
@@ -12408,7 +12408,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "red_candle",
     "ITEM_DROPS": [
       {
@@ -12426,7 +12426,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "red_carpet",
     "ITEM_DROPS": [
       {
@@ -12462,7 +12462,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "red_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -12498,7 +12498,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "red_mushroom",
     "ITEM_DROPS": [
       {
@@ -12516,7 +12516,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "red_mushroom_block",
     "ITEM_DROPS": [
       {
@@ -12534,7 +12534,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "red_nether_bricks",
     "ITEM_DROPS": [
       {
@@ -12552,7 +12552,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "red_nether_brick_slab",
     "ITEM_DROPS": [
       {
@@ -12570,7 +12570,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "red_nether_brick_stairs",
     "ITEM_DROPS": [
       {
@@ -12588,7 +12588,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_bricks.break",
     "BREAK_PARTICLE": "red_nether_brick_wall",
     "ITEM_DROPS": [
       {
@@ -12606,7 +12606,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "red_sand",
     "ITEM_DROPS": [
       {
@@ -12714,7 +12714,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "red_stained_glass",
     "ITEM_DROPS": [
       {
@@ -12732,7 +12732,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "red_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -12768,7 +12768,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "red_tulip",
     "ITEM_DROPS": [
       {
@@ -12786,7 +12786,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "red_wool",
     "ITEM_DROPS": [
       {
@@ -12804,7 +12804,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.deepslate.break",
     "BREAK_PARTICLE": "reinforced_deepslate",
     "ITEM_DROPS": [
       {
@@ -12858,7 +12858,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.resin.break",
     "BREAK_PARTICLE": "resin_block",
     "ITEM_DROPS": [
       {
@@ -12876,7 +12876,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.resin_bricks.break",
     "BREAK_PARTICLE": "resin_bricks",
     "ITEM_DROPS": [
       {
@@ -12894,7 +12894,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.resin_bricks.break",
     "BREAK_PARTICLE": "resin_brick_slab",
     "ITEM_DROPS": [
       {
@@ -12912,7 +12912,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.resin_bricks.break",
     "BREAK_PARTICLE": "resin_brick_stairs",
     "ITEM_DROPS": [
       {
@@ -12930,7 +12930,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.resin_bricks.break",
     "BREAK_PARTICLE": "resin_brick_wall",
     "ITEM_DROPS": [
       {
@@ -12948,7 +12948,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.resin.break",
     "BREAK_PARTICLE": "resin_clump",
     "ITEM_DROPS": [
       {
@@ -12984,7 +12984,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.rooted_dirt.break",
     "BREAK_PARTICLE": "rooted_dirt",
     "ITEM_DROPS": [
       {
@@ -13002,7 +13002,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "rose_bush",
     "ITEM_DROPS": [
       {
@@ -13020,7 +13020,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "sand",
     "ITEM_DROPS": [
       {
@@ -13110,7 +13110,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.scaffolding.break",
     "BREAK_PARTICLE": "scaffolding",
     "ITEM_DROPS": [
       {
@@ -13128,7 +13128,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sculk.break",
     "BREAK_PARTICLE": "sculk",
     "ITEM_DROPS": [
       {
@@ -13146,7 +13146,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sculk_catalyst.break",
     "BREAK_PARTICLE": "sculk_catalyst",
     "ITEM_DROPS": [
       {
@@ -13164,7 +13164,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sculk_sensor.break",
     "BREAK_PARTICLE": "sculk_sensor",
     "ITEM_DROPS": [
       {
@@ -13182,7 +13182,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sculk_shrieker.break",
     "BREAK_PARTICLE": "sculk_shrieker",
     "ITEM_DROPS": [
       {
@@ -13200,7 +13200,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sculk_vein.break",
     "BREAK_PARTICLE": "sculk_vein",
     "ITEM_DROPS": [
       {
@@ -13218,7 +13218,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "seagrass",
     "ITEM_DROPS": [
       {
@@ -13236,7 +13236,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "sea_lantern",
     "ITEM_DROPS": [
       {
@@ -13254,7 +13254,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.slime_block.break",
     "BREAK_PARTICLE": "sea_pickle",
     "ITEM_DROPS": [
       {
@@ -13272,7 +13272,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "short_grass",
     "ITEM_DROPS": [
       {
@@ -13290,7 +13290,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.shroomlight.break",
     "BREAK_PARTICLE": "shroomlight",
     "ITEM_DROPS": [
       {
@@ -13344,7 +13344,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.slime_block.break",
     "BREAK_PARTICLE": "slime_block",
     "ITEM_DROPS": [
       {
@@ -13362,7 +13362,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.small_amethyst_bud.break",
     "BREAK_PARTICLE": "small_amethyst_bud",
     "ITEM_DROPS": [
       {
@@ -13380,7 +13380,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.small_dripleaf.break",
     "BREAK_PARTICLE": "small_dripleaf",
     "ITEM_DROPS": [
       {
@@ -13398,7 +13398,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "smithing_table",
     "ITEM_DROPS": [
       {
@@ -13434,7 +13434,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.basalt.break",
     "BREAK_PARTICLE": "smooth_basalt",
     "ITEM_DROPS": [
       {
@@ -13650,7 +13650,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "sniffer_egg",
     "ITEM_DROPS": [
       {
@@ -13668,7 +13668,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.snow.break",
     "BREAK_PARTICLE": "snow",
     "ITEM_DROPS": [
       {
@@ -13686,7 +13686,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.snow.break",
     "BREAK_PARTICLE": "snow_block",
     "ITEM_DROPS": [
       {
@@ -13704,7 +13704,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "soul_campfire",
     "ITEM_DROPS": [
       {
@@ -13722,7 +13722,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.lantern.break",
     "BREAK_PARTICLE": "soul_lantern",
     "ITEM_DROPS": [
       {
@@ -13740,7 +13740,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.soul_sand.break",
     "BREAK_PARTICLE": "soul_sand",
     "ITEM_DROPS": [
       {
@@ -13758,7 +13758,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.soul_soil.break",
     "BREAK_PARTICLE": "soul_soil",
     "ITEM_DROPS": [
       {
@@ -13776,7 +13776,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "soul_torch",
     "ITEM_DROPS": [
       {
@@ -13794,7 +13794,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.spawner.break",
     "BREAK_PARTICLE": "spawner",
     "ITEM_DROPS": [
       {
@@ -13812,7 +13812,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sponge.break",
     "BREAK_PARTICLE": "sponge",
     "ITEM_DROPS": [
       {
@@ -13830,7 +13830,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.spore_blossom.break",
     "BREAK_PARTICLE": "spore_blossom",
     "ITEM_DROPS": [
       {
@@ -13848,7 +13848,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_button",
     "ITEM_DROPS": [
       {
@@ -13866,7 +13866,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_door",
     "ITEM_DROPS": [
       {
@@ -13884,7 +13884,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_fence",
     "ITEM_DROPS": [
       {
@@ -13902,7 +13902,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_fence_gate",
     "ITEM_DROPS": [
       {
@@ -13920,7 +13920,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.hanging_sign.break",
     "BREAK_PARTICLE": "spruce_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -13938,7 +13938,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "spruce_leaves",
     "ITEM_DROPS": [
       {
@@ -13956,7 +13956,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_log",
     "ITEM_DROPS": [
       {
@@ -13974,7 +13974,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_planks",
     "ITEM_DROPS": [
       {
@@ -13992,7 +13992,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -14010,7 +14010,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "spruce_sapling",
     "ITEM_DROPS": [
       {
@@ -14028,7 +14028,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_sign",
     "ITEM_DROPS": [
       {
@@ -14046,7 +14046,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_slab",
     "ITEM_DROPS": [
       {
@@ -14064,7 +14064,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_stairs",
     "ITEM_DROPS": [
       {
@@ -14082,7 +14082,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_trapdoor",
     "ITEM_DROPS": [
       {
@@ -14100,7 +14100,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "spruce_wood",
     "ITEM_DROPS": [
       {
@@ -14316,7 +14316,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_acacia_log",
     "ITEM_DROPS": [
       {
@@ -14334,7 +14334,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_acacia_wood",
     "ITEM_DROPS": [
       {
@@ -14352,7 +14352,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.bamboo_wood.break",
     "BREAK_PARTICLE": "stripped_bamboo_block",
     "ITEM_DROPS": [
       {
@@ -14370,7 +14370,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_birch_log",
     "ITEM_DROPS": [
       {
@@ -14388,7 +14388,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_birch_wood",
     "ITEM_DROPS": [
       {
@@ -14406,7 +14406,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "stripped_cherry_log",
     "ITEM_DROPS": [
       {
@@ -14424,7 +14424,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.cherry_wood.break",
     "BREAK_PARTICLE": "stripped_cherry_wood",
     "ITEM_DROPS": [
       {
@@ -14442,7 +14442,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "stripped_crimson_hyphae",
     "ITEM_DROPS": [
       {
@@ -14460,7 +14460,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "stripped_crimson_stem",
     "ITEM_DROPS": [
       {
@@ -14478,7 +14478,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_dark_oak_log",
     "ITEM_DROPS": [
       {
@@ -14496,7 +14496,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_dark_oak_wood",
     "ITEM_DROPS": [
       {
@@ -14514,7 +14514,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_jungle_log",
     "ITEM_DROPS": [
       {
@@ -14532,7 +14532,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_jungle_wood",
     "ITEM_DROPS": [
       {
@@ -14550,7 +14550,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_mangrove_log",
     "ITEM_DROPS": [
       {
@@ -14568,7 +14568,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_mangrove_wood",
     "ITEM_DROPS": [
       {
@@ -14586,7 +14586,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_oak_log",
     "ITEM_DROPS": [
       {
@@ -14604,7 +14604,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_oak_wood",
     "ITEM_DROPS": [
       {
@@ -14622,7 +14622,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_pale_oak_log",
     "ITEM_DROPS": [
       {
@@ -14640,7 +14640,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_pale_oak_wood",
     "ITEM_DROPS": [
       {
@@ -14658,7 +14658,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_spruce_log",
     "ITEM_DROPS": [
       {
@@ -14676,7 +14676,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "stripped_spruce_wood",
     "ITEM_DROPS": [
       {
@@ -14694,7 +14694,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "stripped_warped_hyphae",
     "ITEM_DROPS": [
       {
@@ -14712,7 +14712,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "stripped_warped_stem",
     "ITEM_DROPS": [
       {
@@ -14766,7 +14766,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "sugar_cane",
     "ITEM_DROPS": [
       {
@@ -14784,7 +14784,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "sunflower",
     "ITEM_DROPS": [
       {
@@ -14802,7 +14802,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.suspicious_gravel.break",
     "BREAK_PARTICLE": "suspicious_gravel",
     "ITEM_DROPS": [
       {
@@ -14820,7 +14820,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.suspicious_sand.break",
     "BREAK_PARTICLE": "suspicious_sand",
     "ITEM_DROPS": [
       {
@@ -14838,7 +14838,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "tall_grass",
     "ITEM_DROPS": [
       {
@@ -14856,7 +14856,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "target",
     "ITEM_DROPS": [
       {
@@ -14892,7 +14892,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "tinted_glass",
     "ITEM_DROPS": [
       {
@@ -14910,7 +14910,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "tnt",
     "ITEM_DROPS": [
       {
@@ -14928,7 +14928,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "torch",
     "ITEM_DROPS": [
       {
@@ -14946,7 +14946,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "torchflower",
     "ITEM_DROPS": [
       {
@@ -14964,7 +14964,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "trapped_chest",
     "ITEM_DROPS": [
       {
@@ -14982,7 +14982,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.trial_spawner.break",
     "BREAK_PARTICLE": "trial_spawner",
     "ITEM_DROPS": [
       {
@@ -15000,7 +15000,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "tripwire_hook",
     "ITEM_DROPS": [
       {
@@ -15018,7 +15018,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "tube_coral",
     "ITEM_DROPS": [
       {
@@ -15036,7 +15036,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.coral_block.break",
     "BREAK_PARTICLE": "tube_coral_block",
     "ITEM_DROPS": [
       {
@@ -15054,7 +15054,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_grass.break",
     "BREAK_PARTICLE": "tube_coral_fan",
     "ITEM_DROPS": [
       {
@@ -15072,7 +15072,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff.break",
     "BREAK_PARTICLE": "tuff",
     "ITEM_DROPS": [
       {
@@ -15090,7 +15090,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff_bricks.break",
     "BREAK_PARTICLE": "tuff_bricks",
     "ITEM_DROPS": [
       {
@@ -15108,7 +15108,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff_bricks.break",
     "BREAK_PARTICLE": "tuff_brick_slab",
     "ITEM_DROPS": [
       {
@@ -15126,7 +15126,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff_bricks.break",
     "BREAK_PARTICLE": "tuff_brick_stairs",
     "ITEM_DROPS": [
       {
@@ -15144,7 +15144,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff_bricks.break",
     "BREAK_PARTICLE": "tuff_brick_wall",
     "ITEM_DROPS": [
       {
@@ -15162,7 +15162,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff.break",
     "BREAK_PARTICLE": "tuff_slab",
     "ITEM_DROPS": [
       {
@@ -15180,7 +15180,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff.break",
     "BREAK_PARTICLE": "tuff_stairs",
     "ITEM_DROPS": [
       {
@@ -15198,7 +15198,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.tuff.break",
     "BREAK_PARTICLE": "tuff_wall",
     "ITEM_DROPS": [
       {
@@ -15216,7 +15216,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.metal.break",
     "BREAK_PARTICLE": "turtle_egg",
     "ITEM_DROPS": [
       {
@@ -15234,7 +15234,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.weeping_vines.break",
     "BREAK_PARTICLE": "twisting_vines",
     "ITEM_DROPS": [
       {
@@ -15252,7 +15252,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.vault.break",
     "BREAK_PARTICLE": "vault",
     "ITEM_DROPS": [
       {
@@ -15270,7 +15270,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.froglight.break",
     "BREAK_PARTICLE": "verdant_froglight",
     "ITEM_DROPS": [
       {
@@ -15288,7 +15288,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.vine.break",
     "BREAK_PARTICLE": "vine",
     "ITEM_DROPS": [
       {
@@ -15306,7 +15306,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_button",
     "ITEM_DROPS": [
       {
@@ -15324,7 +15324,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_door",
     "ITEM_DROPS": [
       {
@@ -15342,7 +15342,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_fence",
     "ITEM_DROPS": [
       {
@@ -15360,7 +15360,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_fence_gate",
     "ITEM_DROPS": [
       {
@@ -15378,7 +15378,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.fungus.break",
     "BREAK_PARTICLE": "warped_fungus",
     "ITEM_DROPS": [
       {
@@ -15396,7 +15396,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood_hanging_sign.break",
     "BREAK_PARTICLE": "warped_hanging_sign",
     "ITEM_DROPS": [
       {
@@ -15414,7 +15414,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "warped_hyphae",
     "ITEM_DROPS": [
       {
@@ -15432,7 +15432,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nylium.break",
     "BREAK_PARTICLE": "warped_nylium",
     "ITEM_DROPS": [
       {
@@ -15450,7 +15450,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_planks",
     "ITEM_DROPS": [
       {
@@ -15468,7 +15468,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_pressure_plate",
     "ITEM_DROPS": [
       {
@@ -15486,7 +15486,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.roots.break",
     "BREAK_PARTICLE": "warped_roots",
     "ITEM_DROPS": [
       {
@@ -15504,7 +15504,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_sign",
     "ITEM_DROPS": [
       {
@@ -15522,7 +15522,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_slab",
     "ITEM_DROPS": [
       {
@@ -15540,7 +15540,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_stairs",
     "ITEM_DROPS": [
       {
@@ -15558,7 +15558,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.stem.break",
     "BREAK_PARTICLE": "warped_stem",
     "ITEM_DROPS": [
       {
@@ -15576,7 +15576,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.nether_wood.break",
     "BREAK_PARTICLE": "warped_trapdoor",
     "ITEM_DROPS": [
       {
@@ -15594,7 +15594,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wart_block.break",
     "BREAK_PARTICLE": "warped_wart_block",
     "ITEM_DROPS": [
       {
@@ -15612,7 +15612,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -15630,7 +15630,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_copper_block",
     "ITEM_DROPS": [
       {
@@ -15648,7 +15648,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "waxed_copper_bulb",
     "ITEM_DROPS": [
       {
@@ -15666,7 +15666,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_copper_door",
     "ITEM_DROPS": [
       {
@@ -15684,7 +15684,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "waxed_copper_grate",
     "ITEM_DROPS": [
       {
@@ -15702,7 +15702,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -15720,7 +15720,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_cut_copper",
     "ITEM_DROPS": [
       {
@@ -15738,7 +15738,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -15756,7 +15756,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -15774,7 +15774,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_exposed_chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -15792,7 +15792,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_exposed_copper",
     "ITEM_DROPS": [
       {
@@ -15810,7 +15810,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "waxed_exposed_copper_bulb",
     "ITEM_DROPS": [
       {
@@ -15828,7 +15828,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_exposed_copper_door",
     "ITEM_DROPS": [
       {
@@ -15846,7 +15846,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "waxed_exposed_copper_grate",
     "ITEM_DROPS": [
       {
@@ -15864,7 +15864,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_exposed_copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -15882,7 +15882,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_exposed_cut_copper",
     "ITEM_DROPS": [
       {
@@ -15900,7 +15900,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_exposed_cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -15918,7 +15918,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_exposed_cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -15936,7 +15936,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_oxidized_chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -15954,7 +15954,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_oxidized_copper",
     "ITEM_DROPS": [
       {
@@ -15972,7 +15972,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "waxed_oxidized_copper_bulb",
     "ITEM_DROPS": [
       {
@@ -15990,7 +15990,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_oxidized_copper_door",
     "ITEM_DROPS": [
       {
@@ -16008,7 +16008,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "waxed_oxidized_copper_grate",
     "ITEM_DROPS": [
       {
@@ -16026,7 +16026,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_oxidized_copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -16044,7 +16044,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_oxidized_cut_copper",
     "ITEM_DROPS": [
       {
@@ -16062,7 +16062,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_oxidized_cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -16080,7 +16080,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_oxidized_cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -16098,7 +16098,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_weathered_chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -16116,7 +16116,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_weathered_copper",
     "ITEM_DROPS": [
       {
@@ -16134,7 +16134,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "waxed_weathered_copper_bulb",
     "ITEM_DROPS": [
       {
@@ -16152,7 +16152,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_weathered_copper_door",
     "ITEM_DROPS": [
       {
@@ -16170,7 +16170,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "waxed_weathered_copper_grate",
     "ITEM_DROPS": [
       {
@@ -16188,7 +16188,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_weathered_copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -16206,7 +16206,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_weathered_cut_copper",
     "ITEM_DROPS": [
       {
@@ -16224,7 +16224,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_weathered_cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -16242,7 +16242,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "waxed_weathered_cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -16260,7 +16260,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "weathered_chiseled_copper",
     "ITEM_DROPS": [
       {
@@ -16278,7 +16278,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "weathered_copper",
     "ITEM_DROPS": [
       {
@@ -16296,7 +16296,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_bulb.break",
     "BREAK_PARTICLE": "weathered_copper_bulb",
     "ITEM_DROPS": [
       {
@@ -16314,7 +16314,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "weathered_copper_door",
     "ITEM_DROPS": [
       {
@@ -16332,7 +16332,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper_grate.break",
     "BREAK_PARTICLE": "weathered_copper_grate",
     "ITEM_DROPS": [
       {
@@ -16350,7 +16350,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "weathered_copper_trapdoor",
     "ITEM_DROPS": [
       {
@@ -16368,7 +16368,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "weathered_cut_copper",
     "ITEM_DROPS": [
       {
@@ -16386,7 +16386,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "weathered_cut_copper_slab",
     "ITEM_DROPS": [
       {
@@ -16404,7 +16404,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.copper.break",
     "BREAK_PARTICLE": "weathered_cut_copper_stairs",
     "ITEM_DROPS": [
       {
@@ -16422,7 +16422,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.weeping_vines.break",
     "BREAK_PARTICLE": "weeping_vines",
     "ITEM_DROPS": [
       {
@@ -16440,7 +16440,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wet_sponge.break",
     "BREAK_PARTICLE": "wet_sponge",
     "ITEM_DROPS": [
       {
@@ -16458,7 +16458,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.crop.break",
     "BREAK_PARTICLE": "wheat",
     "ITEM_DROPS": [
       {
@@ -16476,7 +16476,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "white_banner",
     "ITEM_DROPS": [
       {
@@ -16494,7 +16494,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "white_bed",
     "ITEM_DROPS": [
       {
@@ -16512,7 +16512,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "white_candle",
     "ITEM_DROPS": [
       {
@@ -16530,7 +16530,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "white_carpet",
     "ITEM_DROPS": [
       {
@@ -16566,7 +16566,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "white_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -16620,7 +16620,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "white_stained_glass",
     "ITEM_DROPS": [
       {
@@ -16638,7 +16638,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "white_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -16674,7 +16674,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "white_tulip",
     "ITEM_DROPS": [
       {
@@ -16692,7 +16692,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "white_wool",
     "ITEM_DROPS": [
       {
@@ -16710,7 +16710,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.grass.break",
     "BREAK_PARTICLE": "wither_rose",
     "ITEM_DROPS": [
       {
@@ -16746,7 +16746,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "yellow_banner",
     "ITEM_DROPS": [
       {
@@ -16764,7 +16764,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wood.break",
     "BREAK_PARTICLE": "yellow_bed",
     "ITEM_DROPS": [
       {
@@ -16782,7 +16782,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.candle.break",
     "BREAK_PARTICLE": "yellow_candle",
     "ITEM_DROPS": [
       {
@@ -16800,7 +16800,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "yellow_carpet",
     "ITEM_DROPS": [
       {
@@ -16836,7 +16836,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.sand.break",
     "BREAK_PARTICLE": "yellow_concrete_powder",
     "ITEM_DROPS": [
       {
@@ -16890,7 +16890,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "yellow_stained_glass",
     "ITEM_DROPS": [
       {
@@ -16908,7 +16908,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.glass.break",
     "BREAK_PARTICLE": "yellow_stained_glass_pane",
     "ITEM_DROPS": [
       {
@@ -16944,7 +16944,7 @@
     "BLOCK_DURABILITY": 240,
     "BLOCK_COOLDOWN": 300000,
     "CORRECT_TOOLS": [],
-    "BREAK_SOUND": "block.stone.break",
+    "BREAK_SOUND": "block.wool.break",
     "BREAK_PARTICLE": "yellow_wool",
     "ITEM_DROPS": [
       {

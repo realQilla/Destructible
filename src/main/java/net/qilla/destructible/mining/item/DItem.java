@@ -17,6 +17,7 @@ public class DItem {
     private final ItemLore lore;
     private final int stackSize;
     private final Rarity rarity;
+    private final boolean resource;
 
     protected DItem(@NotNull Builder builder) {
         this.id = builder.id;
@@ -25,6 +26,7 @@ public class DItem {
         this.lore = builder.lore;
         this.stackSize = builder.stackSize;
         this.rarity = builder.rarity;
+        this.resource = builder.resource;
     }
 
     public String getId() {
@@ -51,6 +53,10 @@ public class DItem {
         return this.rarity;
     }
 
+    public boolean isResource() {
+        return this.resource;
+    }
+
     public static class Builder {
         private String id;
         private Material material;
@@ -58,6 +64,7 @@ public class DItem {
         private ItemLore lore;
         private int stackSize;
         private Rarity rarity;
+        private boolean resource;
 
         public Builder() {
             this.id = UUID.randomUUID().toString();
@@ -66,6 +73,7 @@ public class DItem {
             this.lore = ItemLore.lore().build();
             this.stackSize = 1;
             this.rarity = Rarity.NONE;
+            this.resource = true;
         }
 
         public Builder id(String id) {
@@ -109,6 +117,11 @@ public class DItem {
         public Builder rarity(Rarity rarity) {
             Preconditions.checkArgument(rarity != null, "Rarity cannot be null");
             this.rarity = rarity;
+            return this;
+        }
+
+        public Builder resource(boolean resource) {
+            this.resource = resource;
             return this;
         }
 

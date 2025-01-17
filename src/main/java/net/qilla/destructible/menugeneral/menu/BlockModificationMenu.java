@@ -67,7 +67,8 @@ public class BlockModificationMenu extends StaticMenu {
         List<Socket> socketList = new ArrayList<>(List.of(
                 idSocket(), strengthSocket(),
                 durabilitySocket(), lootpoolSocket(), correctToolSocket(),
-                cooldownSocket(), breakParticleSocket(), breakSoundSocket()));
+                cooldownSocket(), breakParticleSocket(), breakSoundSocket()
+        ));
         Collections.shuffle(socketList);
         socketList.add(buildSocket());
         socketList.add(removeSocket());
@@ -434,7 +435,8 @@ public class BlockModificationMenu extends StaticMenu {
             super.addSocket(List.of(
                     materialSocket(), idSocket(), strengthSocket(), durabilitySocket(),
                     lootpoolSocket(), correctToolSocket(), cooldownSocket(), breakParticleSocket(),
-                    breakSoundSocket(), buildSocket(), removeSocket()));
+                    breakSoundSocket(), buildSocket(), removeSocket()
+            ));
         }
     }
 

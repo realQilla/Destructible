@@ -69,7 +69,8 @@ public class ToolModificationMenu extends StaticMenu {
     private void populateSettings() {
         List<Socket> socketList = new ArrayList<>(List.of(
                 idSocket(), displayNameSocket(), loreSocket(), raritySocket(),
-                toolTypesSocket(), strengthSocket(), efficiencySocket(), durabilitySocket()));
+                toolTypesSocket(), strengthSocket(), efficiencySocket(), durabilitySocket()
+        ));
         Collections.shuffle(socketList);
         socketList.add(buildSocket());
         socketList.add(removeSocket());
@@ -86,12 +87,14 @@ public class ToolModificationMenu extends StaticMenu {
         if(!clickType.isLeftClick()) return false;
         DTool dItem = new DTool.Builder()
                 .item(new DItem.Builder()
-                .id(id)
-                .material(material)
-                .displayName(displayName)
-                .lore(lore)
-                .stackSize(1)
-                .rarity(rarity))
+                        .id(id)
+                        .material(material)
+                        .displayName(displayName)
+                        .lore(lore)
+                        .stackSize(1)
+                        .rarity(rarity)
+                        .resource(true)
+                )
                 .toolType(toolType)
                 .strength(strength)
                 .efficiency(efficiency)
@@ -100,7 +103,8 @@ public class ToolModificationMenu extends StaticMenu {
         if(this.dTool != null) {
             Registries.DESTRUCTIBLE_ITEMS.remove(this.dTool.getId());
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully replaced by " + id + "!"));
-        } else getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully registered!"));
+        } else
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully registered!"));
         Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
         getDPlayer().getPlugin().getCustomToolsFile().save();
         return super.returnMenu();
@@ -331,7 +335,7 @@ public class ToolModificationMenu extends StaticMenu {
         if(rarity == null) rarity = Rarity.NONE;
         return new Socket(19, Slot.of(builder -> builder
                 .material(Material.LAPIS_LAZULI)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Rarity"))
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Rarity"))
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value ").append(rarity.getComponent()),
                         Component.empty(),

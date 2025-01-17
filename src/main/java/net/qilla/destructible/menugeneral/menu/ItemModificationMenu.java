@@ -41,6 +41,7 @@ public class ItemModificationMenu extends StaticMenu {
     private int loreCycle = 0;
     private Integer stackSize;
     private Rarity rarity;
+    private Boolean resource;
 
     public ItemModificationMenu(@NotNull DPlayer dPlayer, DItem dItem) {
         super(dPlayer);
@@ -54,6 +55,7 @@ public class ItemModificationMenu extends StaticMenu {
             this.lore = dItem.getLore();
             this.stackSize = dItem.getStackSize();
             this.rarity = dItem.getRarity();
+            this.resource = dItem.isResource();
             this.populateSettings();
         }
         super.addSocket(materialSocket(), 50);
@@ -63,7 +65,8 @@ public class ItemModificationMenu extends StaticMenu {
     private void populateSettings() {
         List<Socket> socketList = new ArrayList<>(List.of(
                 idSocket(), displayNameSocket(), loreSocket(), stackSizeSocket(),
-                raritySocket()));
+                raritySocket(), resourceSocket()
+        ));
         Collections.shuffle(socketList);
         socketList.add(buildSocket());
         socketList.add(removeSocket());
@@ -85,6 +88,7 @@ public class ItemModificationMenu extends StaticMenu {
                 .lore(lore)
                 .stackSize(stackSize)
                 .rarity(rarity)
+                .resource(resource)
                 .build();
         if(this.dItem != null) {
             Registries.DESTRUCTIBLE_ITEMS.remove(this.dItem.getId());
@@ -357,7 +361,7 @@ public class ItemModificationMenu extends StaticMenu {
         if(rarity == null) rarity = Rarity.NONE;
         return new Socket(20, Slot.of(builder -> builder
                 .material(Material.LAPIS_LAZULI)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Rarity"))
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Rarity"))
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value ").append(rarity.getComponent()),
                         Component.empty(),
@@ -371,6 +375,30 @@ public class ItemModificationMenu extends StaticMenu {
             CompletableFuture<Rarity> future = new CompletableFuture<>();
             new RaritySelectMenu(getDPlayer(), future).open(true);
             future.thenAccept(rarity -> this.rarity = rarity);
+            return true;
+        });
+    }
+
+    public Socket resourceSocket() {
+        if(resource == null) resource = true;
+        return new Socket(28, Slot.of(builder -> builder
+                .material(Material.DIAMOND)
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Resource"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Toggle for if an item should should lose its"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>unique properties, ability to be placed, etc."),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(resource.toString())),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .appearSound(Sounds.MENU_ITEM_APPEAR)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
+            resource = !resource;
+            super.addSocket(this.resourceSocket());
             return true;
         });
     }
@@ -391,8 +419,8 @@ public class ItemModificationMenu extends StaticMenu {
         } else if(material != null) {
             super.addSocket(List.of(
                     materialSocket(), idSocket(), displayNameSocket(), loreSocket(),
-                    stackSizeSocket(), raritySocket())
-            );
+                    stackSizeSocket(), raritySocket(), resourceSocket()
+            ));
         }
     }
 

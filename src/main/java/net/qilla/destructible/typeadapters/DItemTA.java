@@ -20,15 +20,16 @@ public class DItemTA extends TypeAdapter<DItem> {
     public void write(JsonWriter out, DItem value) throws IOException {
         out.beginObject();
         out.name("ID").value(value.getId());
-        out.name("ITEM_MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
-        out.name("ITEM_NAME").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
-        out.name("ITEM_LORE").beginArray();
+        out.name("MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
+        out.name("NAME").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));
+        out.name("LORE").beginArray();
         for (Component component : value.getLore().lines()) {
             out.value(MiniMessage.miniMessage().serialize(component));
         }
         out.endArray();
-        out.name("ITEM_STACK_SIZE").value(value.getStackSize());
-        out.name("ITEM_RARITY").value(value.getRarity().toString());
+        out.name("STACK_SIZE").value(value.getStackSize());
+        out.name("RARITY").value(value.getRarity().toString());
+        out.name("RESOURCE").value(value.isResource());
         out.endObject();
     }
 
@@ -37,31 +38,33 @@ public class DItemTA extends TypeAdapter<DItem> {
         DItem.Builder builder = new DItem.Builder();
         in.beginObject();
         while (in.hasNext()) {
-            switch (in.nextName()) {
+            switch(in.nextName()) {
                 case "ID":
                     builder.id(in.nextString());
                     break;
-                case "ITEM_MATERIAL":
+                case "MATERIAL":
                     builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
-                case "ITEM_NAME":
+                case "NAME":
                     builder.displayName(MiniMessage.miniMessage().deserialize(in.nextString()));
                     break;
-                case "ITEM_LORE":
+                case "LORE":
                     ItemLore.Builder lore = ItemLore.lore();
                     in.beginArray();
-                    while (in.hasNext()) {
+                    while(in.hasNext()) {
                         lore.addLine(MiniMessage.miniMessage().deserialize(in.nextString()));
                     }
                     builder.lore(lore.build());
                     in.endArray();
                     break;
-                case "ITEM_STACK_SIZE":
+                case "STACK_SIZE":
                     builder.stackSize(in.nextInt());
                     break;
-                case "ITEM_RARITY":
+                case "RARITY":
                     builder.rarity(Rarity.valueOf(in.nextString()));
                     break;
+                case "RESOURCE":
+                    builder.resource(in.nextBoolean());
             }
         }
         in.endObject();
