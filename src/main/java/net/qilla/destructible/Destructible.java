@@ -6,7 +6,6 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
-import net.qilla.destructible.command.TestCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
 import net.qilla.destructible.player.PlayerPacketListener;
@@ -64,7 +63,6 @@ public final class Destructible extends JavaPlugin {
             Commands commands = event.registrar();
             new DestructibleCommand(this, commands).register();
             new OverflowCommand(this, commands).register();
-            new TestCommand(this, commands).register();
         });
     }
 

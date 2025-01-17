@@ -36,11 +36,7 @@ public class OverflowCommand {
     public void register() {
         this.commands.register(Commands.literal(COMMAND)
                 .requires(source -> source.getSender() instanceof Player)
-                .executes(this::openMenu)
-                //.then(Commands.literal(COLLECT)
-                //.executes(this::collect))
-                .then(Commands.literal(CLEAR)
-                        .executes(this::clear)).build(), ALIAS);
+                .executes(this::openMenu).build(), ALIAS);
     }
 
     private int openMenu(CommandContext<CommandSourceStack> context) {
