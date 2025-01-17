@@ -3,7 +3,6 @@ package net.qilla.destructible.mining.item;
 import org.bukkit.Material;
 
 public enum ToolType {
-    HAND(Material.BARRIER),
     PICKAXE(Material.IRON_PICKAXE),
     DRILL(Material.ARMOR_STAND),
     AXE(Material.IRON_AXE),

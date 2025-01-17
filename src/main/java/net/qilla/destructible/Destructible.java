@@ -10,7 +10,7 @@ import net.qilla.destructible.command.TestCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
 import net.qilla.destructible.player.PlayerPacketListener;
-import net.qilla.destructible.mining.PluginListener;
+import net.qilla.destructible.mining.MiningListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
@@ -55,7 +55,7 @@ public final class Destructible extends JavaPlugin {
     }
 
     private void initListener() {
-        getServer().getPluginManager().registerEvents(new PluginListener(this), this);
+        getServer().getPluginManager().registerEvents(new MiningListener(this), this);
         getServer().getPluginManager().registerEvents(new MenuListener(this), this);
     }
 

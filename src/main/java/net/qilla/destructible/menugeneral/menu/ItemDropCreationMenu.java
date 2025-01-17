@@ -138,19 +138,15 @@ public class ItemDropCreationMenu extends StaticMenu {
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
-
             if(clickType.isLeftClick()) {
-                return this.setMinAmount(event);
+                return this.setMinAmount();
             } else if(clickType.isRightClick()) {
-                return this.setMaxAmount(event);
+                return this.setMaxAmount();
             } else return false;
         });
     }
 
-    private boolean setMinAmount(InventoryClickEvent event) {
-        ClickType clickType = event.getClick();
-        if(!clickType.isLeftClick()) return false;
-
+    private boolean setMinAmount() {
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
                 "Minimum amount",
@@ -173,10 +169,7 @@ public class ItemDropCreationMenu extends StaticMenu {
         return true;
     }
 
-    private boolean setMaxAmount(InventoryClickEvent event) {
-        ClickType clickType = event.getClick();
-        if(!clickType.isLeftClick()) return false;
-
+    private boolean setMaxAmount() {
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
                 "Maximum amount",

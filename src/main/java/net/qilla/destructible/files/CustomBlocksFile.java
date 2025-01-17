@@ -59,4 +59,10 @@ public class CustomBlocksFile extends DestructibleFile {
             super.reset();
         }
     }
+
+    @Override
+    public void clear() {
+        Registries.DESTRUCTIBLE_BLOCKS.clear();
+        save();
+    }
 }

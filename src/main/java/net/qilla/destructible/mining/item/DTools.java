@@ -9,17 +9,11 @@ import java.util.Set;
 import java.util.function.Function;
 
 public final class DTools {
-    public static final DTool MISSING_TOOL = new DTool.Builder()
-            .item(new DItem.Builder()
-                    .id("DEFAULT")
-                    .material(Material.WOODEN_PICKAXE)
-                    .displayName(MiniMessage.miniMessage().deserialize("<red>Missing Tool"))
-                    .noLore()
-                    .stackSize(1)
-                    .rarity(Rarity.NONE))
-            .toolType(Set.of())
+    public static final DTool HAND = new DTool.Builder()
+            .item(new DItem.Builder())
+            .durability(-1)
             .strength(0)
-            .efficiency(0)
+            .efficiency(1)
             .build();
 
     private static DItem register(@NotNull String id, @NotNull Function<DTool.Builder, @NotNull DTool> factory, DTool.Builder builder) {

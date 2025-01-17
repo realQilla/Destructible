@@ -4,19 +4,17 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.DynamicMenu;
+import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Socket;
-import net.qilla.destructible.menugeneral.DynamicConfig;
-import net.qilla.destructible.menugeneral.MenuSize;
-import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
 import net.qilla.destructible.util.ComponentUtil;
+import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,12 +22,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
+public class OverflowMenu extends SearchMenu<Map.Entry<DItem, Integer>> {
 
     public OverflowMenu(DPlayer dPlayer) {
         super(dPlayer, dPlayer.getOverflow().getOverflow());
 
-        super.addSocket(new Socket(45, Slot.of(builder -> builder
+        super.addSocket(new Socket(8, Slot.of(builder -> builder
                 .material(Material.BARRIER)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
                 .lore(ItemLore.lore(List.of(
@@ -159,6 +157,19 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
                 .nextIndex(52)
                 .previousIndex(7)
                 .shiftAmount(9)
+        );
+    }
+
+    @Override
+    public String getString(Map.Entry<DItem, Integer> item) {
+        return FormatUtil.toName(item.getKey().getId());
+    }
+
+    @Override
+    public SearchConfig searchConfig() {
+        return SearchConfig.of(builder -> builder
+                .searchIndex(47)
+                .resetSearchIndex(46)
         );
     }
 }

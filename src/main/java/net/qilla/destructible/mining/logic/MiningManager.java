@@ -9,6 +9,7 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.item.DTool;
+import net.qilla.destructible.mining.item.DTools;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.CoordUtil;
 import net.qilla.destructible.util.DestructibleUtil;
@@ -47,10 +48,8 @@ public class MiningManager {
         if(blockInstance == null || !interactionHand.equals(InteractionHand.MAIN_HAND)) return;
 
         ItemStack itemStack = dPlayer.getCraftPlayer().getEquipment().getItemInMainHand();
-        Optional<DItem> optional = DItemStack.getDItem(itemStack);
-
-        if(optional.isEmpty()) return;
-        if(!(optional.get() instanceof DTool dTool)) return;
+        Optional<DTool> optional = DItemStack.getDTool(itemStack);
+        DTool dTool = optional.orElse(DTools.HAND);
 
         if(!toolManager.canMine(dTool, blockInstance)) return;
         if(toolManager.isToolBroken(itemStack)) return;

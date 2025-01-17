@@ -57,4 +57,10 @@ public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
             super.reset();
         }
     }
+
+    @Override
+    public void clear() {
+        Registries.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED.clear();
+        save();
+    }
 }

@@ -52,4 +52,10 @@ public class LoadedDestructibleBlocksFile extends DestructibleFile {
             super.reset();
         }
     }
+
+    @Override
+    public void clear() {
+        Registries.LOADED_DESTRUCTIBLE_BLOCKS.clear();
+        save();
+    }
 }

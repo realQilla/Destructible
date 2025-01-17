@@ -61,4 +61,10 @@ public class CustomItemsFile extends DestructibleFile {
             super.reset();
         }
     }
+
+    @Override
+    public void clear() {
+        Registries.DESTRUCTIBLE_ITEMS.clear();
+        save();
+    }
 }

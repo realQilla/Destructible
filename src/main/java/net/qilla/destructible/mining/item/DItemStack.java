@@ -30,10 +30,19 @@ public final class DItemStack {
 
     @NotNull
     public static Optional<DItem> getDItem(ItemStack itemStack) {
-        Preconditions.checkArgument(itemStack != null, "ItemStack cannot be null");
+        if(itemStack == null) return Optional.empty();
         String id = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
         if(id == null) return Optional.empty();
         return Optional.ofNullable(Registries.DESTRUCTIBLE_ITEMS.get(id));
+    }
+
+    @NotNull
+    public static Optional<DTool> getDTool(ItemStack itemStack) {
+        if(itemStack == null) return Optional.empty();
+        String id = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
+        if(id == null) return Optional.empty();
+        if(!(Registries.DESTRUCTIBLE_ITEMS.get(id) instanceof DTool dTool)) return Optional.empty();
+        return Optional.of(dTool);
     }
 
     @NotNull

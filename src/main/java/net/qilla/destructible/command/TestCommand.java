@@ -7,12 +7,20 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.item.DItem;
+import net.qilla.destructible.mining.item.ItemDrop;
+import net.qilla.destructible.mining.item.Rarity;
+import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -24,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
 
 public class TestCommand {
 
@@ -47,7 +56,38 @@ public class TestCommand {
     private int test(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            Registry.MATERIAL.stream().filter(material -> material.isItem()).forEach(material -> {
+                DItem dItem = new DItem.Builder()
+                        .id(material.toString())
+                        .displayName(Component.text(FormatUtil.toName(material.toString())))
+                        .material(material)
+                        .stackSize(64)
+                        .rarity(Rarity.COMMON)
+                        .build();
+                Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
+            });
+
+            Registry.MATERIAL.stream().filter(material -> material.isBlock() && material.isItem()).forEach(material -> {
+                ItemDrop itemDrop = new ItemDrop.Builder()
+                        .dItem(Registries.DESTRUCTIBLE_ITEMS.get(material.toString()))
+                        .chance(1)
+                        .amount(1)
+                        .build();
+
+                DBlock dBlock = new DBlock.Builder()
+                        .id(material.toString())
+                        .material(material)
+                        .strength(1)
+                        .durability(240)
+                        .cooldown(300000)
+                        .lootpool(List.of(itemDrop))
+                        //.breakSound(material.createBlockData().getSoundGroup().getBreakSound())
+                        .breakParticle(material)
+                    .build();
+                Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
+            });
+        });
         return Command.SINGLE_SUCCESS;
     }
 }

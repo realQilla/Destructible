@@ -28,11 +28,11 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class PluginListener implements Listener {
+public class MiningListener implements Listener {
 
     private final Destructible plugin;
 
-    public PluginListener(Destructible plugin) {
+    public MiningListener(Destructible plugin) {
         this.plugin = plugin;
     }
 
@@ -43,25 +43,26 @@ public class PluginListener implements Listener {
 
         if(!dPlayer.hasDBlockEdit()) return;
         DBlockEdit dBlockEdit = dPlayer.getDBlockEdit();
-
-        Location location = event.getBlock().getLocation();
+        DBlock dBlock = dBlockEdit.getDblock();
+        Block block = event.getBlock();
+        Location location = block.getLocation();
         BlockPos blockPos = CoordUtil.locToBlockPos(location);
 
         if(dBlockEdit.getDblock() == null) return;
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-
             if(!dBlockEdit.isRecursive()) {
-                dBlockEdit.loadBlock(blockPos, dBlockEdit.getDblock().getId());
+                dBlockEdit.loadBlock(blockPos, dBlock.getId());
                 Bukkit.getScheduler().runTask(plugin, () -> {
-                    Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer2 -> {
-                        dPlayer2.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlockEdit.getDblock().getId());
+                    Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(curPlayer -> {
+                        curPlayer.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
                     });
-                    player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + dBlockEdit.getDblock().getId() + "</gold> has been <green><bold>LOADED</green>!"));
+                    if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
+                    player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Destructible block <gold><bold>" + dBlock.getId() + "</gold> has been <green><bold>LOADED</green>!"));
                     player.playSound(player, Sound.ENTITY_PLAYER_BURP, 0.40f, 2.0f);
                 });
             } else {
-                Set<BlockPos> recursiveBlocks = getRecursiveBlocks(blockPos, location.getWorld(), event.getBlock().getType(), dBlockEdit.getRecursionSize());
+                Set<BlockPos> recursiveBlocks = getRecursiveBlocks(blockPos, location.getWorld(), block.getType(), dBlockEdit.getRecursionSize());
                 int originalSize = recursiveBlocks.size();
                 AtomicInteger currentSize = new AtomicInteger(recursiveBlocks.size());
 
@@ -71,9 +72,13 @@ public class PluginListener implements Listener {
                 }, 0, 40);
 
                 for(BlockPos curBlockPos : recursiveBlocks) {
-                    dBlockEdit.loadBlock(curBlockPos, dBlockEdit.getDblock().getId());
-                    Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer2 -> {
-                        dPlayer2.getDBlockEdit().getBlockHighlight().createHighlight(curBlockPos, dBlockEdit.getDblock().getId());
+                    dBlockEdit.loadBlock(curBlockPos, dBlock.getId());
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        Block curBlock = location.getWorld().getBlockAt(curBlockPos.getX(), curBlockPos.getY(), curBlockPos.getZ());
+                        if(curBlock.getType() != dBlock.getMaterial()) curBlock.setType(dBlock.getMaterial(), false);
+                        Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(curPlayer -> {
+                            curPlayer.getDBlockEdit().getBlockHighlight().createHighlight(curBlockPos, dBlockEdit.getDblock().getId());
+                        });
                     });
                     try {
                         Thread.sleep(1);

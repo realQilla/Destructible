@@ -45,7 +45,7 @@ public class BlockSelectMenu extends SearchMenu<Material> {
 
     @Override
     public String getString(Material item) {
-        return item.toString();
+        return FormatUtil.toName(item.toString());
     }
 
     @Override

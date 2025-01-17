@@ -5,14 +5,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.menugeneral.DynamicMenu;
+import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
-import net.qilla.destructible.menugeneral.DynamicConfig;
-import net.qilla.destructible.menugeneral.MenuSize;
-import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
@@ -20,6 +17,7 @@ import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.DestructibleUtil;
+import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Registry;
@@ -29,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ItemOverviewMenu extends DynamicMenu<DItem> {
+public class ItemOverviewMenu extends SearchMenu<DItem> {
 
     List<Material> materials = Registry.MATERIAL.stream().filter(material -> material.isItem() && !material.isBlock()).toList();
 
@@ -53,7 +51,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                 .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to view destructible weapons"))))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         )));
-        super.addSocket(new Socket(46, Slots.CREATE_NEW, event -> {
+        super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new ItemModificationMenu(super.getDPlayer(), null).open(true);
@@ -155,6 +153,19 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                         .nextIndex(52)
                         .previousIndex(7)
                         .shiftAmount(9)
+        );
+    }
+
+    @Override
+    public String getString(DItem item) {
+        return item.getId();
+    }
+
+    @Override
+    public SearchConfig searchConfig() {
+        return SearchConfig.of(builder -> builder
+                .searchIndex(47)
+                .resetSearchIndex(46)
         );
     }
 }

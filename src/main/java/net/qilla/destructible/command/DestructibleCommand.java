@@ -121,19 +121,22 @@ public class DestructibleCommand {
                                 .then(Commands.literal(CONFIG_LOAD)
                                         .executes(this::loadCustomItems))
                                 .then(Commands.literal(CONFIG_RESET)
-                                        .executes(this::resetCustomItems)))
+                                        .executes(this::resetCustomItems))
+                                .then(Commands.literal(CONFIG_CLEAR)
+                                        .executes(this::clearCustomItems)))
                         .then(Commands.literal(CONFIG_BLOCKS)
                                 .then(Commands.literal(CONFIG_LOAD)
                                         .executes(this::loadCustomBlocks))
                                 .then(Commands.literal(CONFIG_RESET)
-                                        .executes(this::resetCustomBlocks)))
+                                        .executes(this::resetCustomBlocks))
+                                .then(Commands.literal(CONFIG_CLEAR)
+                                        .executes(this::clearCustomBlocks)))
                         .then(Commands.literal(CONFIG_LOADED_BLOCKS)
                                 .then(Commands.literal(CONFIG_SAVE)
                                         .executes(this::saveLoadedBlocks))
                                 .then(Commands.literal(CONFIG_CLEAR)
-                                        .executes(this::clearLoadedBlocks)))
-                )
-                .build(), ALIAS);
+                                        .executes(this::clearLoadedBlocks))
+                        )).build(), ALIAS);
     }
 
     private int item(CommandContext<CommandSourceStack> context) {
@@ -303,8 +306,8 @@ public class DestructibleCommand {
         Player player = (Player) context.getSource().getSender();
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            Registries.LOADED_DESTRUCTIBLE_BLOCKS.clear();
-            Registries.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED.clear();
+            this.plugin.getLoadedBlocksFile().clear();
+            this.plugin.getLoadedBlocksGroupedFile().clear();
             Registries.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer -> dPlayer.getDBlockEdit().getBlockHighlight().removeAllHighlights());
         });
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All cached Destructible blocks have been <red><bold>CLEARED</red>!"));
@@ -329,6 +332,14 @@ public class DestructibleCommand {
         return Command.SINGLE_SUCCESS;
     }
 
+    private int clearCustomItems(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomItemsFile().clear();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible items have been <red><bold>CLEARED</red>!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
     private int loadCustomBlocks(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
@@ -341,6 +352,14 @@ public class DestructibleCommand {
         Player player = (Player) context.getSource().getSender();
 
         this.plugin.getCustomBlocksFile().reset();
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible blocks have been <red><bold>RESET</red>!"));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int clearCustomBlocks(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+
+        this.plugin.getCustomBlocksFile().clear();
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>All custom Destructible blocks have been <red><bold>CLEARED</red>!"));
         return Command.SINGLE_SUCCESS;
     }
@@ -348,7 +367,9 @@ public class DestructibleCommand {
     private int info(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>There are currently <gold>" + FormatUtil.numberComma(Registries.LOADED_DESTRUCTIBLE_BLOCKS.values().stream().mapToInt(Map::size).sum()) + "</gold> Destructible blocks spread across <gold>" + FormatUtil.numberComma(Registries.LOADED_DESTRUCTIBLE_BLOCKS.size()) + "</gold> chunks."));
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>There are currently <gold>" +
+                FormatUtil.numberComma(Registries.LOADED_DESTRUCTIBLE_BLOCKS.values().stream().mapToInt(Map::size).sum()) + "</gold> Destructible blocks spread across <gold>" +
+                FormatUtil.numberComma(Registries.LOADED_DESTRUCTIBLE_BLOCKS.size()) + "</gold> chunks."));
         return Command.SINGLE_SUCCESS;
     }
 }

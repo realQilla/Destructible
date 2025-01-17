@@ -19,11 +19,11 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import java.util.*;
 
-public class ToolOverviewMenu extends DynamicMenu<DTool> {
+public class ToolOverviewMenu extends SearchMenu<DTool> {
 
     public ToolOverviewMenu(DPlayer dPlayer) {
         super(dPlayer, Registries.getDestructibleItem(DTool.class));
-        super.addSocket(new Socket(46, Slots.CREATE_NEW, event -> {
+        super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new ToolModificationMenu(super.getDPlayer(), null).open(true);
@@ -129,6 +129,19 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                 .nextIndex(52)
                 .previousIndex(7)
                 .shiftAmount(9)
+        );
+    }
+
+    @Override
+    public String getString(DTool item) {
+        return item.getId();
+    }
+
+    @Override
+    public SearchConfig searchConfig() {
+        return SearchConfig.of(builder -> builder
+                .searchIndex(47)
+                .resetSearchIndex(46)
         );
     }
 }

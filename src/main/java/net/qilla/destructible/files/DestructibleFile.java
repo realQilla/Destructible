@@ -54,4 +54,6 @@ public abstract class DestructibleFile {
     public abstract void save();
 
     public abstract void load();
+
+    public abstract void clear();
 }

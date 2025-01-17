@@ -3,6 +3,7 @@ package net.qilla.destructible.mining.logic;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.BlockInstance;
+import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.DPlayer;
@@ -26,11 +27,13 @@ public class ToolManager {
     }
 
     public boolean canMine(@NotNull DTool dTool, @NotNull BlockInstance blockInstance) {
+        DBlock dBlock = blockInstance.getDBlock();
         if(blockInstance.getDBlockData().isLocked() ||
                 blockInstance.getDBlockData().isOnCooldown() ||
-                blockInstance.getDBlock().getStrength() > dTool.getStrength() ||
-                blockInstance.getDBlock().getDurability() < 0) return false;
-        return blockInstance.getDBlock().getCorrectTools().stream().anyMatch(dToolType -> dToolType.equals(ToolType.HAND) || dTool.getToolType().contains(dToolType));
+                dBlock.getStrength() > dTool.getStrength() ||
+                dBlock.getDurability() < 0) return false;
+        if(dBlock.getStrength() <= 0) return true;
+        return dBlock.getCorrectTools().stream().anyMatch(dToolType -> dTool.getToolType().contains(dToolType));
     }
 
     public void damageTool(@NotNull DTool dTool, int amount) {

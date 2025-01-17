@@ -27,7 +27,8 @@ public class CustomToolsFile extends DestructibleFile {
 
     public CustomToolsFile() {
         super(DEFAULT_RESOURCE, FILE_PATH);
-        this.type = new TypeToken<List<DTool>>() {}.getType();
+        this.type = new TypeToken<List<DTool>>() {
+        }.getType();
         this.gson = new GsonBuilder()
                 .registerTypeAdapter(DTool.class, new DToolTA())
                 .setPrettyPrinting()
@@ -58,5 +59,11 @@ public class CustomToolsFile extends DestructibleFile {
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
         }
+    }
+
+    @Override
+    public void clear() {
+        Registries.DESTRUCTIBLE_ITEMS.clear();
+        save();
     }
 }

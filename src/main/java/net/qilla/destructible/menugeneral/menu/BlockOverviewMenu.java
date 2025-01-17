@@ -5,13 +5,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.data.Registries;
-import net.qilla.destructible.menugeneral.DynamicMenu;
+import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
-import net.qilla.destructible.menugeneral.DynamicConfig;
-import net.qilla.destructible.menugeneral.MenuSize;
-import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.FormatUtil;
@@ -21,11 +18,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
-public class BlockOverviewMenu extends DynamicMenu<DBlock> {
+public class BlockOverviewMenu extends SearchMenu<DBlock> {
 
     public BlockOverviewMenu(@NotNull DPlayer dPlayer) {
         super(dPlayer, Registries.DESTRUCTIBLE_BLOCKS.values());
-        super.addSocket(new Socket(46, Slots.CREATE_NEW, event -> {
+        super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new BlockModificationMenu(super.getDPlayer(), null).open(true);
@@ -98,6 +95,19 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         .nextIndex(52)
                         .previousIndex(7)
                         .shiftAmount(9)
+        );
+    }
+
+    @Override
+    public String getString(DBlock item) {
+        return item.getId();
+    }
+
+    @Override
+    public SearchConfig searchConfig() {
+        return SearchConfig.of(builder -> builder
+                .searchIndex(47)
+                .resetSearchIndex(46)
         );
     }
 }
