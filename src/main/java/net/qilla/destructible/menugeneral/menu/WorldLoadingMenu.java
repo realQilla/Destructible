@@ -159,8 +159,10 @@ public class WorldLoadingMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                PLUGIN.getLoadedBlocksFile().clear();
-                PLUGIN.getLoadedBlocksGroupedFile().clear();
+                Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
+                    PLUGIN.getLoadedBlocksFile().clear();
+                    PLUGIN.getLoadedBlocksGroupedFile().clear();
+                });
                 DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer -> dPlayer.getDBlockEdit().getBlockHighlight().removeHighlightsAll());
                 dPlayer.sendMessage("<yellow>All loaded custom blocks have been <red><bold>CLEARED</red>!");
                 dPlayer.playSound(Sounds.GENERAL_SUCCESS_2, true);
@@ -181,8 +183,10 @@ public class WorldLoadingMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                PLUGIN.getLoadedBlocksFile().save();
-                PLUGIN.getLoadedBlocksGroupedFile().save();
+                Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
+                    PLUGIN.getLoadedBlocksFile().save();
+                    PLUGIN.getLoadedBlocksGroupedFile().save();
+                });
                 dPlayer.sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
                 dPlayer.playSound(Sounds.GENERAL_SUCCESS, true);
                 return true;
@@ -202,8 +206,10 @@ public class WorldLoadingMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                PLUGIN.getLoadedBlocksFile().load();
-                PLUGIN.getLoadedBlocksGroupedFile().load();
+                Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
+                    PLUGIN.getLoadedBlocksFile().load();
+                    PLUGIN.getLoadedBlocksGroupedFile().load();
+                });
                 dPlayer.sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RE-LOADED</aqua>!");
                 dPlayer.playSound(Sounds.GENERAL_SUCCESS, true);
                 return true;
