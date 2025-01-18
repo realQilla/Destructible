@@ -78,8 +78,8 @@ public final class DestructibleUtil {
         builder.addLines(item.getLore().lines());
         builder.addLine(Component.empty());
         if(item.getEfficiency() > 0)
-            builder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + FormatUtil.romanNumeral(item.getEfficiency())));
-        builder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + FormatUtil.romanNumeral(item.getStrength())));
+            builder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency " + NumberUtil.romanNumeral(item.getEfficiency())));
+        builder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Strength " + NumberUtil.romanNumeral(item.getStrength())));
         if(item.getRarity() != Rarity.NONE) {
             builder.addLines(List.of(
                     Component.empty(),

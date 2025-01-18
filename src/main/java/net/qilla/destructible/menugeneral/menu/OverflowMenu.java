@@ -14,7 +14,6 @@ import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
 import net.qilla.destructible.util.ComponentUtil;
-import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -89,8 +88,8 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
                 return false;
             }
 
-            super.getDPlayer().give(takenItemStack);
-            super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You claimed ").append(ComponentUtil.getItem(takenItemStack)).append(MiniMessage.miniMessage().deserialize("!")));
+            super.getDPlayer().give(takenItemStack.clone());
+            super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You claimed ").append(ComponentUtil.getItemAmountAndType(takenItemStack)).append(MiniMessage.miniMessage().deserialize("!")));
             getDPlayer().playSound(Sounds.MENU_CLAIM_ITEM, true);
         }
         super.refreshSockets();

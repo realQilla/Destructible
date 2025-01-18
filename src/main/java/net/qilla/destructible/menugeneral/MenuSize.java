@@ -10,6 +10,7 @@ public enum MenuSize {
     SIX(54);
 
     private final int size;
+
     MenuSize(int size) {
         this.size = size;
     }

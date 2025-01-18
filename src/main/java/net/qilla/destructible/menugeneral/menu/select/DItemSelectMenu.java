@@ -9,8 +9,9 @@ import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.ComponentUtil;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -46,6 +47,8 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
                 )
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
             future.complete(item);
             return this.returnMenu();
         });
@@ -53,7 +56,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
 
     @Override
     public String getString(DItem item) {
-        return FormatUtil.cleanComponent(item.getDisplayName());
+        return ComponentUtil.cleanComponent(item.getDisplayName());
     }
 
     @Override

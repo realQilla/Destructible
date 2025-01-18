@@ -1,13 +1,13 @@
 package net.qilla.destructible.util;
 
 import net.minecraft.core.BlockPos;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +23,7 @@ public class RegistryUtil {
                 existingDPlayer.resetCraftPlayer(craftPlayer);
                 return existingDPlayer;
             }
-            return new DPlayer(craftPlayer);
+            return new DPlayer(craftPlayer, Destructible.getInstance());
         });
 
         return true;

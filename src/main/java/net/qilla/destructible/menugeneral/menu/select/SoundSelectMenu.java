@@ -10,7 +10,7 @@ import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
@@ -58,7 +58,7 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
 
     @Override
     public String getString(Sound item) {
-        return FormatUtil.toName(item.toString());
+        return StringUtil.toName(item.toString());
     }
 
     @Override

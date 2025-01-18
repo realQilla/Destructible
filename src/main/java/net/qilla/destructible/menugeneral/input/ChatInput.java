@@ -27,7 +27,8 @@ public class ChatInput extends PlayerInput {
 
     public void openMenu() {
         Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
-            getDPlayer().sendPacket(new ClientboundContainerClosePacket(getDPlayer().getCraftPlayer().getHandle().containerMenu.containerId));
+            getDPlayer().getCraftPlayer().closeInventory();
+            //getDPlayer().sendPacket(new ClientboundContainerClosePacket(getDPlayer().getCraftPlayer().getHandle().containerMenu.containerId));
             getDPlayer().sendMessage(chatMessage);
         });
     }

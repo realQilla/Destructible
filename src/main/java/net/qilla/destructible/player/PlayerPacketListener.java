@@ -62,7 +62,7 @@ public final class PlayerPacketListener {
                 return true;
             }
         } else if(packet instanceof ServerboundSignUpdatePacket signPacket) {
-            return dPlayer.getMenuData().fulfillInput(signPacket.getLines()[0]);
+            return dPlayer.getMenuHolder().fulfillInput(signPacket.getLines()[0]);
         }
         return false;
     }

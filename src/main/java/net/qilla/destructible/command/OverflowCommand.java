@@ -49,7 +49,7 @@ public class OverflowCommand {
         }
         dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
 
-        new OverflowMenu(dPlayer).open(true);
+        dPlayer.getMenuHolder().newMenu(new OverflowMenu(dPlayer));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -94,7 +94,7 @@ public class OverflowCommand {
 
         itemStacks.forEach(dPlayer::give);
         dPlayer.sendMessage("<yellow>You have successfully claimed: ");
-        itemStacks.forEach(item -> dPlayer.getCraftPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+").append(ComponentUtil.getItem(item))));
+        itemStacks.forEach(item -> dPlayer.getCraftPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>+").append(ComponentUtil.getItemAmountAndType(item))));
         dPlayer.getCraftPlayer().playSound(dPlayer.getCraftPlayer().getLocation(), Sound.ENTITY_HORSE_SADDLE, 1.0f, 1.0f);
         return Command.SINGLE_SUCCESS;
     }

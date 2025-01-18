@@ -3,9 +3,6 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.Sounds;
@@ -21,7 +18,7 @@ import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.DBlockEdit;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -94,7 +91,7 @@ public class WorldLoadingMenu extends StaticMenu {
                 Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                     if(!result.isBlank()) {
                         try {
-                            dBlockEdit.setRecursionSize(FormatUtil.minMax(0, 128000, Integer.parseInt(result)));
+                            dBlockEdit.setRecursionSize(NumberUtil.minMax(0, 128000, Integer.parseInt(result)));
                         } catch(NumberFormatException ignored) {
                         }
                     } else dBlockEdit.setRecursionSize(0);

@@ -10,7 +10,9 @@ import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.BlockHighlight;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.NumberUtil;
+import net.qilla.destructible.util.StringUtil;
+import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.Material;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +31,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
     @Override
     public Socket createSocket(int index, String item) {
         DBlock dBlock = DRegistry.DESTRUCTIBLE_BLOCKS.get(item);
-        String toolList = dBlock.getCorrectTools().isEmpty() ? "<red>None" : FormatUtil.toNameList(dBlock.getCorrectTools().stream().toList());
+        String toolList = dBlock.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(dBlock.getCorrectTools().stream().toList());
         String visible = highlights.contains(item) ? "<green><bold>VISIBLE" : "<red><bold>NOT VISIBLE";
 
         return new Socket(index, Slot.of(builder -> builder
@@ -37,14 +39,14 @@ public class HighlightSelectMenu extends SearchMenu<String> {
                 .displayName(Component.text(dBlock.getId()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + FormatUtil.romanNumeral(dBlock.getStrength())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + NumberUtil.romanNumeral(dBlock.getStrength())),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Durability <white>" + dBlock.getDurability()),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + FormatUtil.getTime(dBlock.getCooldown(), true)),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + TimeUtil.getTime(dBlock.getCooldown(), true)),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Correct Tools:"),
                         MiniMessage.miniMessage().deserialize("<!italic><white>" + toolList),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <white>" + dBlock.getLootpool().size()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + FormatUtil.toName(dBlock.getBreakParticle().toString())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(dBlock.getBreakParticle().toString())),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Currently " + visible)
                 )))

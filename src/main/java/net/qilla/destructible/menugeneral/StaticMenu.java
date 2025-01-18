@@ -21,7 +21,7 @@ public abstract class StaticMenu implements InventoryHolder {
     private final Map<Integer, Socket> socketHolder;
     private final List<Integer> totalIndexes;
 
-    public StaticMenu(@NotNull DPlayer dPlayer) {
+    protected StaticMenu(@NotNull DPlayer dPlayer) {
         Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
         this.inventory = Bukkit.createInventory(this, staticConfig().menuSize().getSize(), staticConfig().title());
         this.dPlayer = dPlayer;
@@ -41,7 +41,7 @@ public abstract class StaticMenu implements InventoryHolder {
 
     public void open(boolean toHistory) {
         dPlayer.getCraftPlayer().openInventory(this.inventory);
-        if(toHistory) dPlayer.getMenuData().pushToHistory(this);
+        if(toHistory) dPlayer.getMenuHolder().pushToHistory(this);
     }
 
     public void close() {
@@ -61,7 +61,7 @@ public abstract class StaticMenu implements InventoryHolder {
         if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) return false;
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        Optional<StaticMenu> optional = dPlayer.getMenuData().popFromHistory();
+        Optional<StaticMenu> optional = dPlayer.getMenuHolder().popFromHistory();
 
         if(optional.isEmpty()) {
             this.close();
@@ -139,10 +139,6 @@ public abstract class StaticMenu implements InventoryHolder {
     }
 
     public void inventoryCloseEvent(InventoryCloseEvent event) {
-        if(!event.getReason().equals(InventoryCloseEvent.Reason.OPEN_NEW)) {
-            dPlayer.getMenuData().clearHistory();
-            inventory.clear();
-        }
     }
 
     private Socket returnSocket() {

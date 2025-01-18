@@ -12,8 +12,9 @@ import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
 import net.qilla.destructible.util.ComponentUtil;
+import net.qilla.destructible.util.NumberUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -36,7 +37,7 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
 
     @Override
     public Socket createSocket(int index, DTool item) {
-        String toolList = item.getToolType().isEmpty() ? "<red>None" : FormatUtil.toNameList(item.getToolType().stream().toList());
+        String toolList = item.getToolType().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getToolType().stream().toList());
 
         return new Socket(index, Slot.of(builder -> builder
                 .material(item.getMaterial())
@@ -49,7 +50,7 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                         .addLines(item.getLore().lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Strength <white>" + FormatUtil.romanNumeral(item.getStrength())),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Strength <white>" + NumberUtil.romanNumeral(item.getStrength())),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency <white>" + item.getEfficiency()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Durability <white>" + item.getDurability()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Type: <white>"),
@@ -91,7 +92,7 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                         int value = Integer.parseInt(result);
 
                         getDPlayer().give(DItemStack.of(dTool, value));
-                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dTool, value)).append(MiniMessage.miniMessage().deserialize("!")));
+                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dTool, value)).append(MiniMessage.miniMessage().deserialize("!")));
                     } catch(NumberFormatException ignored) {
                     }
                     super.open(false);
@@ -100,7 +101,7 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
             return true;
         } else if(clickType.isLeftClick()) {
             getDPlayer().give(DItemStack.of(dTool, 1));
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dTool, 1)).append(MiniMessage.miniMessage().deserialize("!")));
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dTool, 1)).append(MiniMessage.miniMessage().deserialize("!")));
             return true;
         } else return false;
     }

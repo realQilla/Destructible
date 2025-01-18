@@ -15,7 +15,7 @@ public abstract class DynamicMenu<T> extends StaticMenu {
     private final Collection<T> itemPopulation;
     private int shiftIndex;
 
-    public DynamicMenu(@NotNull DPlayer dPlayer, @NotNull Collection<T> itemPopulation) {
+    protected DynamicMenu(@NotNull DPlayer dPlayer, @NotNull Collection<T> itemPopulation) {
         super(dPlayer);
         this.itemPopulation = itemPopulation;
         this.dynamicSlots = dynamicConfig().dynamicIndexes();

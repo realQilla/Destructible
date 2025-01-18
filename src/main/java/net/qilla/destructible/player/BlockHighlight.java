@@ -6,6 +6,7 @@ import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.util.CoordUtil;
@@ -28,6 +29,7 @@ import java.util.logging.Level;
 
 public class BlockHighlight {
 
+    private static Destructible PLUGIN = Destructible.getInstance();
     private final DPlayer dPlayer;
     private Set<String> visibleBlocks;
     private final ConcurrentHashMap<String, ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, Integer>>> highlight = new ConcurrentHashMap<>();
@@ -45,13 +47,13 @@ public class BlockHighlight {
 
     private void processingQueue() {
         if(isProcessing.compareAndSet(false, true)) {
-            Bukkit.getScheduler().runTaskAsynchronously(this.dPlayer.getPlugin(), () -> {
+            Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
                 while(!taskQueue.isEmpty()) {
                     try {
                         Runnable nextAsk = taskQueue.poll();
                         if(nextAsk != null) nextAsk.run();
                     } catch(Exception e) {
-                        dPlayer.getPlugin().getLogger().log(Level.SEVERE, "Error while processing task queue", e);
+                        PLUGIN.getLogger().log(Level.SEVERE, "Error while processing task queue", e);
                     }
                 }
                 isProcessing.set(false);

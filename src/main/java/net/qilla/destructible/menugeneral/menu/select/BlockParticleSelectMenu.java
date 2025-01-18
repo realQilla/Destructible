@@ -9,7 +9,7 @@ import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.event.inventory.ClickType;
@@ -36,7 +36,7 @@ public class BlockParticleSelectMenu extends SearchMenu<Material> {
     public Socket createSocket(int index, Material item) {
         return new Socket(index, Slot.of(builder -> builder
                 .material(item)
-                .displayName(MiniMessage.miniMessage().deserialize(FormatUtil.toName(item.toString())))
+                .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select particle")
@@ -52,7 +52,7 @@ public class BlockParticleSelectMenu extends SearchMenu<Material> {
 
     @Override
     public String getString(Material item) {
-        return FormatUtil.toName(item.toString());
+        return StringUtil.toName(item.toString());
     }
 
     @Override

@@ -13,7 +13,9 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.NumberUtil;
+import net.qilla.destructible.util.StringUtil;
+import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
@@ -29,11 +31,11 @@ public class BlockLootpoolOverview extends DynamicMenu<ItemDrop> {
                 .displayName(Component.text(dBlock.getId()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + FormatUtil.romanNumeral(dBlock.getStrength())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + NumberUtil.romanNumeral(dBlock.getStrength())),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Durability <white>" + dBlock.getDurability()),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + FormatUtil.getTime(dBlock.getCooldown(), true)),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + TimeUtil.getTime(dBlock.getCooldown(), true)),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Correct Tools:"),
-                        MiniMessage.miniMessage().deserialize("<!italic><white>" + FormatUtil.toNameList(dBlock.getCorrectTools().stream().toList())),
+                        MiniMessage.miniMessage().deserialize("<!italic><white>" + StringUtil.toNameList(dBlock.getCorrectTools().stream().toList())),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <yellow>" + "[Currently viewing]"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())
@@ -57,7 +59,7 @@ public class BlockLootpoolOverview extends DynamicMenu<ItemDrop> {
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Amount <white>" +
                                         item.getMinAmount() + " - " + item.getMaxAmount()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" +
-                                        FormatUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + FormatUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")")
+                                        NumberUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")")
                         )).build()
                 )
         ));

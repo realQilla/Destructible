@@ -18,7 +18,7 @@ public abstract class PlayerInput {
 
     public String awaitResponse() {
         try {
-            return dPlayer.getMenuData().requestInput().get(SEC_TIMEOUT, TimeUnit.SECONDS);
+            return dPlayer.getMenuHolder().requestInput().get(SEC_TIMEOUT, TimeUnit.SECONDS);
         } catch(TimeoutException e) {
             return "";
         } catch(ExecutionException | InterruptedException e) {

@@ -15,7 +15,7 @@ import java.util.List;
 public abstract class SearchMenu<T> extends DynamicMenu<T> {
     private List<T> localPopulation;
 
-    public SearchMenu(DPlayer dPlayer, Collection<T> itemPopulation) {
+    protected SearchMenu(DPlayer dPlayer, Collection<T> itemPopulation) {
         super(dPlayer, itemPopulation);
         this.localPopulation = new ArrayList<>(itemPopulation);
 

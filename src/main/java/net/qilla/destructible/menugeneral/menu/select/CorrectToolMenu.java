@@ -11,7 +11,7 @@ import net.qilla.destructible.menugeneral.MenuSize;
 import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import java.util.*;
@@ -33,7 +33,7 @@ public class CorrectToolMenu extends DynamicMenu<ToolType> {
 
         return new Socket(index, Slot.of(builder -> builder
                 .material(item.getMaterial())
-                .displayName(MiniMessage.miniMessage().deserialize(FormatUtil.toName(item.toString())))
+                .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize(contains ? "<!italic><green><bold>SELECTED" : "<!italic><red><bold>NOT SELECTED")

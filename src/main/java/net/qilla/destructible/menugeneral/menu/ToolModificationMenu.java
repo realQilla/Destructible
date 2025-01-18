@@ -21,7 +21,7 @@ import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -154,7 +154,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .material(material)
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Item Material"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(material.toString())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(material.toString())),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either an item or nothing to set a material")
                 )))
@@ -228,7 +228,7 @@ public class ToolModificationMenu extends StaticMenu {
 
     public Socket displayNameSocket() {
         if(displayName == null)
-            displayName = MiniMessage.miniMessage().deserialize("<white>" + FormatUtil.toName(material.toString()));
+            displayName = MiniMessage.miniMessage().deserialize("<white>" + StringUtil.toName(material.toString()));
         return new Socket(10, Slot.of(builder -> builder
                 .material(Material.GOLDEN_APPLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Item Name"))
@@ -361,7 +361,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Tool Type"))
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current list:"),
-                        MiniMessage.miniMessage().deserialize("<!italic><white>" + (toolType.isEmpty() ? "<red>None" : FormatUtil.toNameList(new ArrayList<>(toolType)))),
+                        MiniMessage.miniMessage().deserialize("<!italic><white>" + (toolType.isEmpty() ? "<red>None" : StringUtil.toNameList(new ArrayList<>(toolType)))),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))

@@ -9,6 +9,7 @@ public class Sounds {
     public static final SoundSettings RETURN_MENU = SoundSettings.of(Sound.BLOCK_NOTE_BLOCK_BELL, 0.25f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER);
     public static final SoundSettings MENU_ITEM_APPEAR = SoundSettings.of(Sound.ENTITY_CHICKEN_EGG, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
     public static final SoundSettings MENU_CLAIM_ITEM = SoundSettings.of(Sound.ENTITY_HORSE_SADDLE, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
+    public static final SoundSettings GET_ITEM = SoundSettings.of(Sound.ENTITY_HORSE_SADDLE, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
     public static final SoundSettings SIGN_INPUT = SoundSettings.of(Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
     public static final SoundSettings GENERAL_ERROR = SoundSettings.of(Sound.ENTITY_VILLAGER_NO, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
     public static final SoundSettings GENERAL_SUCCESS = SoundSettings.of(Sound.ENTITY_VILLAGER_YES, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);

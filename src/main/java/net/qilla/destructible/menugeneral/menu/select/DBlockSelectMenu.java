@@ -9,8 +9,11 @@ import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.NumberUtil;
+import net.qilla.destructible.util.StringUtil;
+import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +31,7 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
 
     @Override
     public Socket createSocket(int index, DBlock item) {
-        String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : FormatUtil.toNameList(item.getCorrectTools().stream().toList());
+        String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList());
 
 
         return new Socket(index, Slot.of(builder -> builder
@@ -36,19 +39,21 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
                 .displayName(Component.text(item.getId()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + FormatUtil.romanNumeral(item.getStrength())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + NumberUtil.romanNumeral(item.getStrength())),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Durability <white>" + item.getDurability()),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + FormatUtil.getTime(item.getCooldown(), true)),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + TimeUtil.getTime(item.getCooldown(), true)),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Correct Tools:"),
                         MiniMessage.miniMessage().deserialize("<!italic><white>" + toolList),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <white>" + item.getLootpool().size()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + FormatUtil.toName(item.getBreakParticle().toString())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(item.getBreakParticle().toString())),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select custom block")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
             future.complete(item);
             return this.returnMenu();
         });

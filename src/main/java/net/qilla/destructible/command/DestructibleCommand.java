@@ -14,6 +14,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.menugeneral.menu.BlockMenu;
+import net.qilla.destructible.menugeneral.menu.BlockOverviewMenu;
 import net.qilla.destructible.menugeneral.menu.ItemOverviewMenu;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
@@ -164,7 +165,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        new ItemOverviewMenu(dPlayer).open(true);
+        dPlayer.getMenuHolder().newMenu(new ItemOverviewMenu(dPlayer));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -178,7 +179,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        new BlockMenu(dPlayer).open(true);
+        dPlayer.getMenuHolder().newMenu(new BlockMenu(dPlayer));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -381,8 +382,8 @@ public class DestructibleCommand {
         Player player = (Player) context.getSource().getSender();
 
         player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>There are currently <gold>" +
-                FormatUtil.numberComma(DRegistry.LOADED_DESTRUCTIBLE_BLOCKS.values().stream().mapToInt(Map::size).sum()) + "</gold> Destructible blocks spread across <gold>" +
-                FormatUtil.numberComma(DRegistry.LOADED_DESTRUCTIBLE_BLOCKS.size()) + "</gold> chunks."));
+                NumberUtil.numberComma(DRegistry.LOADED_DESTRUCTIBLE_BLOCKS.values().stream().mapToInt(Map::size).sum()) + "</gold> Destructible blocks spread across <gold>" +
+                NumberUtil.numberComma(DRegistry.LOADED_DESTRUCTIBLE_BLOCKS.size()) + "</gold> chunks."));
         return Command.SINGLE_SUCCESS;
     }
 }

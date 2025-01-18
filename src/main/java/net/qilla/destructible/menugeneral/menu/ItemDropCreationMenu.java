@@ -16,7 +16,7 @@ import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -194,7 +194,7 @@ public class ItemDropCreationMenu extends StaticMenu {
 
     private Socket chanceSocket() {
         if(chance == null) this.chance = 100.0;
-        String string = (FormatUtil.decimalTruncation(this.chance, 17)) + "% (1/" + FormatUtil.numberComma((long) Math.ceil(100 / this.chance)) + ")";
+        String string = (NumberUtil.decimalTruncation(this.chance, 17)) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(100 / this.chance)) + ")";
         return new Socket(24, Slot.of(builder -> builder
                 .material(Material.ENCHANTED_BOOK)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Drop Chance"))

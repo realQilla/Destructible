@@ -18,7 +18,7 @@ import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -142,7 +142,7 @@ public class ItemModificationMenu extends StaticMenu {
                 .material(material)
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Item Material"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(material.toString())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(material.toString())),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either an item or nothing to set a material")
                 )))
@@ -216,7 +216,7 @@ public class ItemModificationMenu extends StaticMenu {
 
     public Socket displayNameSocket() {
         if(displayName == null)
-            displayName = MiniMessage.miniMessage().deserialize("<white>" + FormatUtil.toName(material.toString()));
+            displayName = MiniMessage.miniMessage().deserialize("<white>" + StringUtil.toName(material.toString()));
         return new Socket(10, Slot.of(builder -> builder
                 .material(Material.GOLDEN_APPLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Item Name"))
@@ -288,10 +288,8 @@ public class ItemModificationMenu extends StaticMenu {
         ClickType clickType = event.getClick();
 
         if(clickType == ClickType.MIDDLE) {
-            Component chatText = MiniMessage.miniMessage().deserialize(
-                    "<gold>Type the item's lore for line <white>" + (loreCycle + 1) + "</white> using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. You may cancel by typing \"return\".");
-
-            new ChatInput(super.getDPlayer(), chatText).init(result -> {
+            String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) +"</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. You may cancel by typing RETURN." + (lore.lines().isEmpty() ? "" : " <gold><insert:'" + MiniMessage.miniMessage().serialize(lore.lines().get(loreCycle)) + "'>Shift-Click Here</insert></gold> get the previous lore.");
+            new ChatInput(super.getDPlayer(),  MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
                 Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                     if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
                         applyLine(MiniMessage.miniMessage().deserialize(result));
@@ -388,7 +386,7 @@ public class ItemModificationMenu extends StaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Toggle for if an item should should lose its"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>unique properties, ability to be placed, etc."),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(resource.toString())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(resource.toString())),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))

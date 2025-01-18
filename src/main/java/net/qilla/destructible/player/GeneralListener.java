@@ -6,10 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.util.CoordUtil;
-import net.qilla.destructible.util.DestructibleUtil;
-import net.qilla.destructible.util.FormatUtil;
-import net.qilla.destructible.util.RegistryUtil;
+import net.qilla.destructible.util.*;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
@@ -109,8 +106,8 @@ public class GeneralListener implements Listener {
         List<BlockPos> blocks = new ArrayList<>(blockPosSet);
 
         BukkitTask progressTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            String operationString = "<yellow>Operation is <gold>" + FormatUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed" +
-                    (taskQueue.isEmpty() ? "" : ", <gold>" + taskQueue.size() + "</gold> " + FormatUtil.pluralizer("operation", taskQueue.size()) + " remaining");
+            String operationString = "<yellow>Operation is <gold>" + NumberUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed" +
+                    (taskQueue.isEmpty() ? "" : ", <gold>" + taskQueue.size() + "</gold> " + StringUtil.pluralizer("operation", taskQueue.size()) + " remaining");
             dPlayer.sendActionBar(operationString);
             dPlayer.playSound(Sounds.LARGE_OPERATION_UPDATE, true);
         }, 0, 40);
@@ -136,8 +133,8 @@ public class GeneralListener implements Listener {
         progressTask.cancel();
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Operation completed, <gold>" + FormatUtil.numberChar(blockPosSet.size(), false) + "</gold> block(s) cached as <gold>" + dBlock.getId() + "</gold>!"));
-            dPlayer.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Operation <gold>" + FormatUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed"));
+            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Operation completed, <gold>" + NumberUtil.numberChar(blockPosSet.size(), false) + "</gold> block(s) cached as <gold>" + dBlock.getId() + "</gold>!"));
+            dPlayer.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Operation <gold>" + NumberUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed"));
             dPlayer.playSound(Sounds.LARGE_OPERATION_COMPLETE, true);
         });
 
@@ -230,7 +227,7 @@ public class GeneralListener implements Listener {
     @EventHandler
     private void onChatEvent(AsyncChatEvent event) {
         DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
-        if(dPlayer.getMenuData().fulfillInput(FormatUtil.cleanComponent(event.message()))) {
+        if(dPlayer.getMenuHolder().fulfillInput(ComponentUtil.cleanComponent(event.message()))) {
             event.setCancelled(true);
         }
     }

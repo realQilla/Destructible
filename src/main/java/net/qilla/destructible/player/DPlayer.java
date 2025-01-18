@@ -7,17 +7,21 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.SoundSettings;
+import net.qilla.destructible.data.Sounds;
+import net.qilla.destructible.menugeneral.MenuHolder;
+import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.logic.MiningManager;
+import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -25,32 +29,38 @@ import java.util.stream.Collectors;
 
 public class DPlayer {
 
-    private static final Random RANDOM = new Random();
-    private static final Destructible PLUGIN = Destructible.getInstance();
+    private final Destructible plugin;
+    private final Random random;
     private CraftPlayer craftPlayer;
-    private Overflow overflow;
-    private MiningManager minerData;
+    private final Overflow overflow;
+    private final MiningManager minerData;
     private DBlockEdit dBlockEdit;
-    private Cooldown cooldown;
-    private MenuData menuData;
+    private final Cooldown cooldown;
+    private final MenuHolder<StaticMenu> menuHolder;
 
-    public DPlayer(CraftPlayer craftPlayer) {
+    public DPlayer(CraftPlayer craftPlayer, Destructible plugin) {
+        this.plugin = plugin;
+        this.random = new Random();
         this.craftPlayer = craftPlayer;
+        this.overflow = new Overflow(this);
+        this.minerData = new MiningManager(this);
+        this.cooldown = new Cooldown();
+        this.menuHolder = new MenuHolder<>();
     }
 
-    public void sendMessage(String message) {
-        craftPlayer.sendMessage(MiniMessage.miniMessage().deserialize(message));
+    public void sendMessage(@NotNull String message) {
+        this.sendMessage(MiniMessage.miniMessage().deserialize(message));
     }
 
-    public void sendMessage(Component component) {
+    public void sendMessage(@NotNull Component component) {
         craftPlayer.sendMessage(component);
     }
 
-    public void sendActionBar(String message) {
-        craftPlayer.sendActionBar(MiniMessage.miniMessage().deserialize(message));
+    public void sendActionBar(@NotNull String message) {
+        this.sendActionBar(MiniMessage.miniMessage().deserialize(message));
     }
 
-    public void sendActionBar(Component component) {
+    public void sendActionBar(@NotNull Component component) {
         craftPlayer.sendActionBar(component);
     }
 
@@ -63,7 +73,7 @@ public class DPlayer {
         }
     }
 
-    public void playSound(SoundSettings soundSettings, boolean randomPitch) {
+    public void playSound(@Nullable SoundSettings soundSettings, boolean randomPitch) {
         if(soundSettings == null) return;
         float pitch = soundSettings.getPitch();
         this.playSound(soundSettings.getSound(), soundSettings.getVolume(),
@@ -81,38 +91,33 @@ public class DPlayer {
 
     public int getSpace(ItemStack itemStack) {
         int maxStackSize = itemStack.getMaxStackSize();
-        int preExisting = Arrays.stream(craftPlayer.getInventory().getStorageContents())
-                .filter(i -> i != null && i.isSimilar(itemStack))
-                .mapToInt(i -> maxStackSize - i.getAmount())
-                .sum();
-        int empty = (int) Arrays.stream(craftPlayer.getInventory().getStorageContents())
-                .filter(Objects::isNull)
-                .count() * maxStackSize;
-        return preExisting + empty;
+        int space = 0;
+
+        for (ItemStack stack : craftPlayer.getInventory().getStorageContents()) {
+            if (stack == null) {
+                space += maxStackSize; // Empty slot
+            } else if (stack.isSimilar(itemStack)) {
+                space += maxStackSize - stack.getAmount(); // Partial stack space
+            }
+        }
+        return space;
     }
 
     public void give(ItemStack itemStack) {
-        ItemStack clone = itemStack.clone();
-        int space = getSpace(clone);
-        if(space >= clone.getAmount()) {
-            craftPlayer.getInventory().addItem(clone);
+        int space = getSpace(itemStack);
+        if(space >= itemStack.getAmount()) {
+            craftPlayer.getInventory().addItem(itemStack);
             return;
         }
+        int overflowAmount = itemStack.getAmount() - space;
 
-        ItemStack splitItem = clone.clone();
-        splitItem.setAmount(space);
-        craftPlayer.getInventory().addItem(splitItem);
-        int remaining = clone.getAmount() - space;
-        if(remaining <= 0) return;
-        clone.setAmount(remaining);
-        Overflow overflow = DRegistry.DESTRUCTIBLE_PLAYERS.get(craftPlayer.getUniqueId()).getOverflow();
-        overflow.put(clone);
+        ItemStack overflowItemStack = itemStack.clone();
+        overflowItemStack.setAmount(overflowAmount);
+        craftPlayer.getInventory().addItem(itemStack);
 
-        craftPlayer.getWorld().playSound(craftPlayer.getLocation(), Sound.ENTITY_HORSE_SADDLE, 0.25f, 1);
-
-        craftPlayer.sendActionBar(MiniMessage.miniMessage().deserialize("<green>+" + clone.getAmount() + " ")
-                .append(clone.getData(DataComponentTypes.ITEM_NAME))
-                .append(MiniMessage.miniMessage().deserialize(" added to stash!")));
+        overflow.put(overflowItemStack);
+        this.playSound(Sounds.GET_ITEM, true);
+        this.sendActionBar(ComponentUtil.getItemAmountAndType(overflowItemStack).append(MiniMessage.miniMessage().deserialize("<green> added to stash")));
     }
 
     public Map<DItem, Integer> calculateItemDrops(List<ItemDrop> itemDrops) {
@@ -127,11 +132,11 @@ public class DPlayer {
 
     private boolean hasChanceToDrop(ItemDrop itemDrop) {
         double dropChance = itemDrop.getChance();
-        return RANDOM.nextDouble() < dropChance;
+        return random.nextDouble() < dropChance;
     }
 
     private int calculateAmount(ItemDrop itemDrop) {
-        return RANDOM.nextInt(itemDrop.getMaxAmount() - itemDrop.getMinAmount() + 1) + itemDrop.getMinAmount();
+        return random.nextInt(itemDrop.getMaxAmount() - itemDrop.getMinAmount() + 1) + itemDrop.getMinAmount();
     }
 
     public void resetCraftPlayer(CraftPlayer craftPlayer) {
@@ -155,12 +160,10 @@ public class DPlayer {
     }
 
     public MiningManager getMinerData() {
-        if(this.minerData == null) this.minerData = new MiningManager(this);
         return this.minerData;
     }
 
     public synchronized Overflow getOverflow() {
-        if(this.overflow == null) this.overflow = new Overflow(this);
         return this.overflow;
     }
 
@@ -179,16 +182,14 @@ public class DPlayer {
     }
 
     public synchronized Cooldown getCooldown() {
-        if(this.cooldown == null) this.cooldown = new Cooldown();
         return this.cooldown;
     }
 
-    public synchronized MenuData getMenuData() {
-        if(this.menuData == null) this.menuData = new MenuData();
-        return this.menuData;
+    public synchronized MenuHolder<StaticMenu> getMenuHolder() {
+        return this.menuHolder;
     }
 
     public Destructible getPlugin() {
-        return PLUGIN;
+        return plugin;
     }
 }

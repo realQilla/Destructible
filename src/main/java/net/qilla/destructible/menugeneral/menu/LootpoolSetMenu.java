@@ -12,7 +12,7 @@ import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.NumberUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +48,7 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Amount <white>" + item.getMinAmount() + " - " + item.getMaxAmount()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" +
-                                FormatUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + FormatUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")"),
+                                NumberUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")"),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to modify"),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Right Click to remove"))

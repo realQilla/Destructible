@@ -20,7 +20,9 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.NumberUtil;
+import net.qilla.destructible.util.StringUtil;
+import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -170,7 +172,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(material)
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(material.toString())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(material.toString())),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either a block or nothing to set a material")
                 )))
@@ -323,7 +325,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Correct Tools"))
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current list:"),
-                        MiniMessage.miniMessage().deserialize("<!italic><white>" + (correctTools.isEmpty() ? "<red>None" : FormatUtil.toNameList(new ArrayList<>(correctTools)))),
+                        MiniMessage.miniMessage().deserialize("<!italic><white>" + (correctTools.isEmpty() ? "<red>None" : StringUtil.toNameList(new ArrayList<>(correctTools)))),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
@@ -343,7 +345,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.GOLD_INGOT)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Block Cooldown"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.getTime(cooldown, true)),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + TimeUtil.getTime(cooldown, true)),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))
@@ -364,7 +366,7 @@ public class BlockModificationMenu extends StaticMenu {
         new SignInput(super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 try {
-                    cooldown = FormatUtil.stringToMs(result);
+                    cooldown = TimeUtil.stringToMillis(result);
                     super.addSocket(this.cooldownSocket());
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
@@ -381,7 +383,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.HEART_OF_THE_SEA)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Break Particle"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + FormatUtil.toName(breakParticle.toString())),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(breakParticle.toString())),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
                 )))

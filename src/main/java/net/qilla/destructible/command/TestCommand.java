@@ -10,7 +10,7 @@ import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.destructible.data.DRegistry;
-import net.qilla.destructible.util.FormatUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Registry;
@@ -40,7 +40,7 @@ public class TestCommand {
             Registry.MATERIAL.stream().filter(Material::isItem).forEach(material -> {
                 DItem dItem = new DItem.Builder()
                         .id(material.toString())
-                        .displayName(Component.text(FormatUtil.toName(material.toString())))
+                        .displayName(Component.text(StringUtil.toName(material.toString())))
                         .material(material)
                         .stackSize(64)
                         .rarity(Rarity.COMMON)

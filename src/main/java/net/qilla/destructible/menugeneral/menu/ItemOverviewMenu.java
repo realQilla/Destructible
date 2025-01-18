@@ -18,7 +18,6 @@ import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.DestructibleUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Registry;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -106,7 +105,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                         int value = Integer.parseInt(result);
 
                         getDPlayer().give(DItemStack.of(dItem, value));
-                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dItem, value)).append(MiniMessage.miniMessage().deserialize("!")));
+                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, value)).append(MiniMessage.miniMessage().deserialize("!")));
                         getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                     } catch(NumberFormatException ignored) {
                     }
@@ -116,7 +115,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
             return true;
         } else if(clickType.isLeftClick()) {
             getDPlayer().give(DItemStack.of(dItem, 1));
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItem(dItem, 1)).append(MiniMessage.miniMessage().deserialize("!")));
+            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, 1)).append(MiniMessage.miniMessage().deserialize("!")));
             return true;
         } else return false;
     }
