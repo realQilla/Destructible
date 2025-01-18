@@ -245,10 +245,9 @@ public class ToolModificationMenu extends StaticMenu {
     private boolean inputDisplayName(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        Component chatText = MiniMessage.miniMessage().deserialize(
-                "<gold>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. You may cancel by typing \"return\".");
+        String chatText = "<yellow>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. <gold>Shift-Click <bold><insert:'" + MiniMessage.miniMessage().serialize(displayName) + "'>HERE</insert></gold> get the previous name. You may cancel by typing RETURN.";
 
-        new ChatInput(super.getDPlayer(), chatText).init(result -> {
+        new ChatInput(super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
                     displayName = MiniMessage.miniMessage().deserialize(result);
@@ -300,10 +299,9 @@ public class ToolModificationMenu extends StaticMenu {
         ClickType clickType = event.getClick();
 
         if(clickType == ClickType.MIDDLE) {
-            Component chatText = MiniMessage.miniMessage().deserialize(
-                    "<gold>Type the item's lore for line <white>" + (loreCycle + 1) + "</white> using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. You may cancel by typing \"return\".");
+            String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) +"</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. You may cancel by typing RETURN.";
 
-            new ChatInput(super.getDPlayer(), chatText).init(result -> {
+            new ChatInput(super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
                 Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                     if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
                         applyLine(MiniMessage.miniMessage().deserialize(result));
