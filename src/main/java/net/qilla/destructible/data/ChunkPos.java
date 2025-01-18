@@ -26,6 +26,18 @@ public class ChunkPos {
         this.z = loc.getBlockZ() >> 4;
     }
 
+    public static ChunkPos of(int x, int y, int z) {
+        return new ChunkPos(x, y, z);
+    }
+
+    public static ChunkPos of(BlockPos blockPos) {
+        return new ChunkPos(blockPos);
+    }
+
+    public static ChunkPos of(Location loc) {
+        return new ChunkPos(loc);
+    }
+
     public int getX() {
         return this.x;
     }

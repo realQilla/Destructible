@@ -1,7 +1,7 @@
 package net.qilla.destructible.mining.item;
 
 import com.google.common.base.Preconditions;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemDrop {
@@ -49,7 +49,7 @@ public class ItemDrop {
 
         public Builder dItem(@NotNull String id) {
             //Preconditions.checkArgument(Registries.DESTRUCTIBLE_ITEMS.containsKey(id), "DItem ID: " + id + " does not exist");
-            this.item = Registries.DESTRUCTIBLE_ITEMS.getOrDefault(id, DItems.MISSING_ITEM);
+            this.item = DRegistry.DESTRUCTIBLE_ITEMS.getOrDefault(id, DItems.MISSING_ITEM);
             return this;
         }
 

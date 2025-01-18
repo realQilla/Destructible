@@ -8,13 +8,14 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-public final class Registries {
-    private Registries() {
+public final class DRegistry {
+    private DRegistry() {
     }
 
     public static final java.util.concurrent.ConcurrentHashMap<UUID, DPlayer> DESTRUCTIBLE_PLAYERS = new ConcurrentHashMap<>();
 
     public static final ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, String>> LOADED_DESTRUCTIBLE_BLOCKS = new ConcurrentHashMap<>();
+
     public static final ConcurrentHashMap<String, ConcurrentHashMap<ChunkPos, Set<Integer>>> LOADED_DESTRUCTIBLE_BLOCKS_GROUPED = new ConcurrentHashMap<>();
     public static final ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, BlockMemory>> DESTRUCTIBLE_BLOCK_DATA = new ConcurrentHashMap<>();
 

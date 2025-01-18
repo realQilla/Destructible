@@ -40,8 +40,8 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
     protected boolean searchFor() {
         List<String> signText = List.of(
                 "^^^^^^^^^^^^^^^",
-                "Searched item",
-                "name"
+                "Keywords to",
+                "narrow search"
         );
         new SignInput(super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {

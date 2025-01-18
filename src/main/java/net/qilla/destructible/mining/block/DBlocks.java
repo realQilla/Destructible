@@ -1,7 +1,7 @@
 package net.qilla.destructible.mining.block;
 
 
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
@@ -17,6 +17,6 @@ public final class DBlocks {
             .breakParticle(Material.BEDROCK).build();
 
     private static DBlock register(String id, Function<DBlock.Builder, DBlock> factory, DBlock.Builder builder) {
-        return Registries.DESTRUCTIBLE_BLOCKS.put(id, factory.apply(builder.id(id)));
+        return DRegistry.DESTRUCTIBLE_BLOCKS.put(id, factory.apply(builder.id(id)));
     }
 }

@@ -135,4 +135,12 @@ public class FormatUtil {
     public static String cleanComponent(Component component) {
         return PlainTextComponentSerializer.plainText().serialize(component);
     }
+
+    public static int minMax(int min, int max, int value) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    public static String pluralizer(String string, int amount) {
+        return amount == 1 ? string : string + "s";
+    }
 }

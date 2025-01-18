@@ -6,7 +6,6 @@ import net.minecraft.world.InteractionHand;
 import net.qilla.destructible.mining.BlockInstance;
 import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.mining.item.DTools;
@@ -40,7 +39,7 @@ public class MiningManager {
 
             if(optional.isEmpty()) return;
 
-            blockInstance = new BlockInstance(dPlayer.getCraftPlayer().getWorld(), blockPos, new ChunkPos(blockPos), CoordUtil.posToChunkLocalPos(blockPos), optional.get(), direction);
+            blockInstance = new BlockInstance(dPlayer.getCraftPlayer().getWorld(), blockPos, new ChunkPos(blockPos), CoordUtil.toChunkInt(blockPos), optional.get(), direction);
         }
     }
 

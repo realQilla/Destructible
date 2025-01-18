@@ -3,7 +3,7 @@ package net.qilla.destructible.menugeneral.menu.select;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
@@ -20,7 +20,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
     private final CompletableFuture<DItem> future;
 
     public DItemSelectMenu(DPlayer dPlayer, CompletableFuture<DItem> future) {
-        super(dPlayer, Registries.DESTRUCTIBLE_ITEMS.values().stream().toList());
+        super(dPlayer, DRegistry.DESTRUCTIBLE_ITEMS.values().stream().toList());
         this.future = future;
         super.populateModular();
         super.finalizeMenu();
@@ -39,7 +39,9 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
                         .addLines(item.getLore().lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent())
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
+                                Component.empty(),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click to select custom item")
                         )).build()
                 )
                 .clickSound(Sounds.MENU_CLICK_ITEM)
@@ -57,13 +59,8 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
     @Override
     public Socket menuSocket() {
         return new Socket(4, Slot.of(builder -> builder
-                .material(Material.PINK_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Make lootpool modifications to"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>the selected destructible block")
-                )))
+                .material(Material.DIAMOND_PICKAXE)
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Search"))
         ));
     }
 
@@ -71,7 +68,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuSize.SIX)
-                .title(Component.text("Item Search"))
+                .title(Component.text("Custom Item Search"))
                 .menuIndex(4)
                 .returnIndex(49));
     }

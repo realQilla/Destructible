@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DTool;
@@ -21,11 +21,11 @@ public final class DestructibleUtil {
 
     public static Optional<DBlock> getDBlock(@NotNull BlockPos blockPos) {
         ChunkPos chunkPos = new ChunkPos(blockPos);
-        int chunkInt = CoordUtil.posToChunkLocalPos(blockPos);
+        int chunkInt = CoordUtil.toChunkInt(blockPos);
 
-        var chunkIntMap = Registries.LOADED_DESTRUCTIBLE_BLOCKS.get(chunkPos);
+        var chunkIntMap = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS.get(chunkPos);
         if(chunkIntMap == null || !chunkIntMap.containsKey(chunkInt)) return Optional.empty();
-        return Optional.ofNullable(Registries.DESTRUCTIBLE_BLOCKS.get(chunkIntMap.get(chunkInt)));
+        return Optional.ofNullable(DRegistry.DESTRUCTIBLE_BLOCKS.get(chunkIntMap.get(chunkInt)));
     }
 
     public static Vec3 getCenterFaceParticle(@NotNull final Direction dir) {

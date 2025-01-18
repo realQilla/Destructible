@@ -4,7 +4,7 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.*;
@@ -22,7 +22,7 @@ import java.util.*;
 public class ToolOverviewMenu extends DynamicMenu<DTool> {
 
     public ToolOverviewMenu(DPlayer dPlayer) {
-        super(dPlayer, Registries.getDestructibleItem(DTool.class));
+        super(dPlayer, DRegistry.getDestructibleItem(DTool.class));
         super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -107,14 +107,14 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slots.TOOL_MENU);
+        return new Socket(4, Slots.TOOL_OVERVIEW_MENU);
     }
 
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuSize.SIX)
-                .title(Component.text("Tool Overview"))
+                .title(Component.text("Custom Tool Overview"))
                 .menuIndex(4)
                 .returnIndex(49));
     }

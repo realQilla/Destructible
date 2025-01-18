@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import org.bukkit.Bukkit;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -34,7 +34,7 @@ public class LoadedDestructibleBlocksFile extends DestructibleFile {
 
     @Override
     public void save() {
-        String jsonString = this.gson.toJson(Registries.LOADED_DESTRUCTIBLE_BLOCKS);
+        String jsonString = this.gson.toJson(DRegistry.LOADED_DESTRUCTIBLE_BLOCKS);
 
         try(BufferedWriter bufferedWriter = Files.newWriter(super.newFile, StandardCharsets.UTF_8)) {
             bufferedWriter.write(jsonString);
@@ -47,7 +47,7 @@ public class LoadedDestructibleBlocksFile extends DestructibleFile {
     public void load() {
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
             ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, String>> registry = this.gson.fromJson(bufferedReader, type);
-            Registries.LOADED_DESTRUCTIBLE_BLOCKS.putAll(registry);
+            DRegistry.LOADED_DESTRUCTIBLE_BLOCKS.putAll(registry);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
             Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
@@ -56,7 +56,6 @@ public class LoadedDestructibleBlocksFile extends DestructibleFile {
 
     @Override
     public void clear() {
-        Registries.LOADED_DESTRUCTIBLE_BLOCKS.clear();
-        save();
+        DRegistry.LOADED_DESTRUCTIBLE_BLOCKS.clear();
     }
 }

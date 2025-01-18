@@ -52,7 +52,7 @@ public class ItemSelectMenu extends SearchMenu<Material> {
     public Socket menuSocket() {
         return new Socket(4, Slot.of(builder -> builder
                 .material(Material.IRON_INGOT)
-                .displayName(MiniMessage.miniMessage().deserialize("<blue>Item Search"))
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Search"))
         ));
     }
 

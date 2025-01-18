@@ -4,11 +4,12 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.menu.select.BlockParticleSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.BlockSelectMenu;
+import net.qilla.destructible.menugeneral.menu.select.CorrectToolMenu;
 import net.qilla.destructible.menugeneral.menu.select.SoundSelectMenu;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
@@ -118,10 +119,10 @@ public class BlockModificationMenu extends StaticMenu {
                 .breakParticle(breakParticle)
                 .build();
         if(this.dBlock != null) {
-            Registries.DESTRUCTIBLE_BLOCKS.remove(this.dBlock.getId());
+            DRegistry.DESTRUCTIBLE_BLOCKS.remove(this.dBlock.getId());
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully replaced by " + id + "!"));
         } else getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
-        Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
+        DRegistry.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
         getDPlayer().getPlugin().getCustomBlocksFile().save();
         return super.returnMenu();
     }
@@ -146,7 +147,7 @@ public class BlockModificationMenu extends StaticMenu {
         }
 
         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
-        Registries.DESTRUCTIBLE_BLOCKS.remove(dBlock.getId());
+        DRegistry.DESTRUCTIBLE_BLOCKS.remove(dBlock.getId());
         getDPlayer().getPlugin().getCustomBlocksFile().save();
         getDPlayer().playSound(Sounds.RESET, true);
         return super.returnMenu();
@@ -204,7 +205,7 @@ public class BlockModificationMenu extends StaticMenu {
         new SignInput(super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 if(!result.isEmpty()) {
-                    if(Registries.DESTRUCTIBLE_BLOCKS.containsKey(result)) {
+                    if(DRegistry.DESTRUCTIBLE_BLOCKS.containsKey(result)) {
                         super.getDPlayer().sendMessage("<red>Block ID already exists.");
                         super.getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
                     } else {

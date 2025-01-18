@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.qilla.destructible.data.DataKey;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.util.DestructibleUtil;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +25,7 @@ public final class DItemStack {
 
     @NotNull
     public static ItemStack of(String id, int amount) {
-        return of(Registries.DESTRUCTIBLE_ITEMS.get(id), amount);
+        return of(DRegistry.DESTRUCTIBLE_ITEMS.get(id), amount);
     }
 
     @NotNull
@@ -33,7 +33,7 @@ public final class DItemStack {
         if(itemStack == null) return Optional.empty();
         String id = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
         if(id == null) return Optional.empty();
-        return Optional.ofNullable(Registries.DESTRUCTIBLE_ITEMS.get(id));
+        return Optional.ofNullable(DRegistry.DESTRUCTIBLE_ITEMS.get(id));
     }
 
     @NotNull
@@ -41,7 +41,7 @@ public final class DItemStack {
         if(itemStack == null) return Optional.empty();
         String id = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ID, PersistentDataType.STRING);
         if(id == null) return Optional.empty();
-        if(!(Registries.DESTRUCTIBLE_ITEMS.get(id) instanceof DTool dTool)) return Optional.empty();
+        if(!(DRegistry.DESTRUCTIBLE_ITEMS.get(id) instanceof DTool dTool)) return Optional.empty();
         return Optional.of(dTool);
     }
 

@@ -4,7 +4,7 @@ import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.typeadapters.DToolTA;
 import org.bukkit.Bukkit;
@@ -37,7 +37,7 @@ public class CustomToolsFile extends DestructibleFile {
 
     @Override
     public void save() {
-        List<DTool> dBlockList = Registries.DESTRUCTIBLE_ITEMS.values().stream()
+        List<DTool> dBlockList = DRegistry.DESTRUCTIBLE_ITEMS.values().stream()
                 .filter(item -> item instanceof DTool)
                 .map(item -> (DTool) item)
                 .toList();
@@ -55,7 +55,7 @@ public class CustomToolsFile extends DestructibleFile {
     public void load() {
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
             List<DTool> dBlockList = this.gson.fromJson(bufferedReader, type);
-            for(DTool dTool : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dTool.getId(), dTool);
+            for(DTool dTool : dBlockList) DRegistry.DESTRUCTIBLE_ITEMS.put(dTool.getId(), dTool);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
             Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
@@ -64,7 +64,6 @@ public class CustomToolsFile extends DestructibleFile {
 
     @Override
     public void clear() {
-        Registries.DESTRUCTIBLE_ITEMS.clear();
-        save();
+        DRegistry.DESTRUCTIBLE_ITEMS.clear();
     }
 }

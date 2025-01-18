@@ -65,7 +65,7 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
     public Socket menuSocket() {
         return new Socket(4, Slot.of(builder -> builder
                 .material(Material.NAUTILUS_SHELL)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Sound Search"))
+                .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Search"))
         ));
     }
 

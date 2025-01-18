@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.typeadapters.DItemTA;
@@ -39,7 +39,7 @@ public class CustomItemsFile extends DestructibleFile {
 
     @Override
     public void save() {
-        List<DItem> dBlockList = Registries.DESTRUCTIBLE_ITEMS.values().stream()
+        List<DItem> dBlockList = DRegistry.DESTRUCTIBLE_ITEMS.values().stream()
                 .filter(item -> !(item instanceof DTool)).toList();
 
         String jsonString = this.gson.toJson(dBlockList, type);
@@ -53,10 +53,10 @@ public class CustomItemsFile extends DestructibleFile {
 
     @Override
     public void load() {
-        Registries.DESTRUCTIBLE_ITEMS.clear();
+        DRegistry.DESTRUCTIBLE_ITEMS.clear();
         try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
             List<DItem> dBlockList = this.gson.fromJson(bufferedReader, type);
-            for(DItem dItem : dBlockList) Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
+            for(DItem dItem : dBlockList) DRegistry.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
         } catch(IOException | JsonSyntaxException exception) {
             super.reset();
             Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
@@ -65,7 +65,6 @@ public class CustomItemsFile extends DestructibleFile {
 
     @Override
     public void clear() {
-        Registries.DESTRUCTIBLE_ITEMS.clear();
-        save();
+        DRegistry.DESTRUCTIBLE_ITEMS.clear();
     }
 }

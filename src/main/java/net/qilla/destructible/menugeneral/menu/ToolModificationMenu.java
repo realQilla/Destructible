@@ -3,13 +3,14 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.MenuSize;
 import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.menugeneral.input.ChatInput;
 import net.qilla.destructible.menugeneral.input.SignInput;
+import net.qilla.destructible.menugeneral.menu.select.CorrectToolMenu;
 import net.qilla.destructible.menugeneral.menu.select.ItemSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.RaritySelectMenu;
 import net.qilla.destructible.menugeneral.slot.Slot;
@@ -101,11 +102,11 @@ public class ToolModificationMenu extends StaticMenu {
                 .durability(durability)
                 .build();
         if(this.dTool != null) {
-            Registries.DESTRUCTIBLE_ITEMS.remove(this.dTool.getId());
+            DRegistry.DESTRUCTIBLE_ITEMS.remove(this.dTool.getId());
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully replaced by " + id + "!"));
         } else
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully registered!"));
-        Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
+        DRegistry.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
         getDPlayer().getPlugin().getCustomToolsFile().save();
         return super.returnMenu();
     }
@@ -130,7 +131,7 @@ public class ToolModificationMenu extends StaticMenu {
         }
 
         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dTool.getId() + " has been successfully unregistered."));
-        Registries.DESTRUCTIBLE_ITEMS.remove(dTool.getId());
+        DRegistry.DESTRUCTIBLE_ITEMS.remove(dTool.getId());
         getDPlayer().getPlugin().getCustomItemsFile().save();
         getDPlayer().playSound(Sounds.RESET, true);
         return super.returnMenu();
@@ -210,7 +211,7 @@ public class ToolModificationMenu extends StaticMenu {
         new SignInput(super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
                 if(!result.isEmpty()) {
-                    if(Registries.DESTRUCTIBLE_ITEMS.containsKey(result)) {
+                    if(DRegistry.DESTRUCTIBLE_ITEMS.containsKey(result)) {
                         super.getDPlayer().sendMessage("<red>Item ID already exists.");
                         super.getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
                     } else {

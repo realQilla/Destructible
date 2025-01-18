@@ -1,37 +1,52 @@
 package net.qilla.destructible.util;
 
+import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.qilla.destructible.data.ChunkPos;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public final class CoordUtil {
 
-    public static int posToChunkLocalPos(int x, int y, int z) {
-        return ((x & 15) << 8) | ((z & 15) << 4) | (y & 15);
-    }
-
-    public static int posToChunkLocalPos(final Location loc) {
-        return ((loc.getBlockX() & 15) << 8) | ((loc.getBlockZ() & 15) << 4) | (loc.getBlockY() & 15);
-    }
-
-    public static int posToChunkLocalPos(final BlockPos blockPos) {
+    public static int toChunkInt(@NotNull BlockPos blockPos) {
+        Preconditions.checkNotNull(blockPos, "BlockPos cannot be null");
         return ((blockPos.getX() & 15) << 8) | ((blockPos.getZ() & 15) << 4) | (blockPos.getY() & 15);
     }
 
-    public static BlockPos chunkIntToPos(ChunkPos chunkPos, int chunkInt) {
+    @NotNull
+    public static BlockPos toBlockPos(@NotNull ChunkPos chunkPos, int chunkInt) {
+        Preconditions.checkNotNull(chunkPos, "ChunkPos cannot be null");
         int x = (chunkInt >> 8) & 15;
         int z = (chunkInt >> 4) & 15;
         int y = chunkInt & 15;
         return new BlockPos(chunkPos.getX() * 16 + x, chunkPos.getY() * 16 + y, chunkPos.getZ() * 16 + z);
     }
 
-    public static BlockPos locToBlockPos(@NotNull final Location loc) {
+    @NotNull
+    public static BlockPos toBlockPos(@NotNull Location loc) {
+        Preconditions.checkNotNull(loc, "Location cannot be null");
         return new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 
-    public static Location blockPosToLoc(@NotNull BlockPos blockPos, @NotNull World world) {
+    @NotNull
+    public static BlockPos toBlockPos(@NotNull Block block) {
+        Preconditions.checkNotNull(block, "Block cannot be null");
+        return new BlockPos(block.getX(), block.getY(), block.getZ());
+    }
+
+    @NotNull
+    public static Location toLoc(@NotNull BlockPos blockPos, @NotNull World world) {
+        Preconditions.checkNotNull(blockPos, "BlockPos cannot be null");
+        Preconditions.checkNotNull(world, "World cannot be null");
         return new Location(world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
+    @NotNull
+    public static Block toBlock(@NotNull BlockPos blockPos, @NotNull World world) {
+        Preconditions.checkNotNull(blockPos, "BlockPos cannot be null");
+        Preconditions.checkNotNull(world, "World cannot be null");
+        return world.getBlockAt(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 }

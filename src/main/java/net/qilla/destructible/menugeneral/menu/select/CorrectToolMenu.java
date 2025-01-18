@@ -1,4 +1,4 @@
-package net.qilla.destructible.menugeneral.menu;
+package net.qilla.destructible.menugeneral.menu.select;
 
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;

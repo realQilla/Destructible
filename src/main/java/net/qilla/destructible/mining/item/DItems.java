@@ -1,7 +1,7 @@
 package net.qilla.destructible.mining.item;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
@@ -18,6 +18,6 @@ public final class DItems {
             .build();
 
     private static DItem register(@NotNull String id, @NotNull Function<DItem.Builder, DItem> factory, @NotNull DItem.Builder builder) {
-        return Registries.DESTRUCTIBLE_ITEMS.put(id, factory.apply(builder.id(id)));
+        return DRegistry.DESTRUCTIBLE_ITEMS.put(id, factory.apply(builder.id(id)));
     }
 }

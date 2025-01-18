@@ -10,7 +10,7 @@ import net.qilla.destructible.menugeneral.menu.OverflowMenu;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.util.ComponentUtil;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class OverflowCommand {
 
     private int openMenu(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
-        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
         if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
             dPlayer.sendMessage("<red>Please wait a bit before accessing this menu.");
@@ -56,7 +56,7 @@ public class OverflowCommand {
     private int clear(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
 
         if(dPlayer.getOverflow().isEmpty()) {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Your overflow stash is already empty."));
@@ -72,7 +72,7 @@ public class OverflowCommand {
     private int collect(CommandContext<CommandSourceStack> context) {
         Player player = (Player) context.getSource().getSender();
 
-        DPlayer dPlayer = Registries.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
+        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId());
         Overflow overflow = dPlayer.getOverflow();
 
         if(overflow.isEmpty()) {

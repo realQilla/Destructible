@@ -4,35 +4,30 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
-import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.DestructibleUtil;
-import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class ItemOverviewMenu extends DynamicMenu<DItem> {
 
-    List<Material> materials = Registry.MATERIAL.stream().filter(material -> material.isItem() && !material.isBlock()).toList();
-
     public ItemOverviewMenu(DPlayer dPlayer) {
-        super(dPlayer, Registries.getDestructibleItem(DItem.class));
+        super(dPlayer, DRegistry.getDestructibleItem(DItem.class));
 
         super.addSocket(new Socket(1, Slot.of(builder -> builder
                 .material(Material.IRON_PICKAXE)
@@ -135,7 +130,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuSize.SIX)
-                .title(Component.text("Item Overview"))
+                .title(Component.text("Custom Item Overview"))
                 .menuIndex(4)
                 .returnIndex(49));
     }

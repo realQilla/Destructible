@@ -7,7 +7,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.SoundSettings;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
@@ -46,6 +46,14 @@ public class DPlayer {
         craftPlayer.sendMessage(component);
     }
 
+    public void sendActionBar(String message) {
+        craftPlayer.sendActionBar(MiniMessage.miniMessage().deserialize(message));
+    }
+
+    public void sendActionBar(Component component) {
+        craftPlayer.sendActionBar(component);
+    }
+
     public void playSound(Sound sound, float volume, float pitch, SoundCategory category, PlayType playType) {
         switch(playType) {
             case PlayType.BROADCAST_CUR_LOC ->
@@ -57,7 +65,10 @@ public class DPlayer {
 
     public void playSound(SoundSettings soundSettings, boolean randomPitch) {
         if(soundSettings == null) return;
-        this.playSound(soundSettings.getSound(), soundSettings.getVolume(),  randomPitch ? RandomUtil.between(0.75f, 1.25f) : soundSettings.getPitch(), soundSettings.getCategory(), soundSettings.getPlayType());
+        float pitch = soundSettings.getPitch();
+        this.playSound(soundSettings.getSound(), soundSettings.getVolume(),
+                randomPitch ? RandomUtil.between(Math.max(0, pitch - 0.25f), Math.min(2, pitch + 0.25f)) : pitch,
+                soundSettings.getCategory(), soundSettings.getPlayType());
     }
 
     public void sendPacket(Packet<?> packet) {
@@ -94,7 +105,7 @@ public class DPlayer {
         int remaining = clone.getAmount() - space;
         if(remaining <= 0) return;
         clone.setAmount(remaining);
-        Overflow overflow = Registries.DESTRUCTIBLE_PLAYERS.get(craftPlayer.getUniqueId()).getOverflow();
+        Overflow overflow = DRegistry.DESTRUCTIBLE_PLAYERS.get(craftPlayer.getUniqueId()).getOverflow();
         overflow.put(clone);
 
         craftPlayer.getWorld().playSound(craftPlayer.getLocation(), Sound.ENTITY_HORSE_SADDLE, 0.25f, 1);

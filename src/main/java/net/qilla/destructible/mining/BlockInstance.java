@@ -5,7 +5,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.qilla.destructible.data.ChunkPos;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.util.CoordUtil;
@@ -31,13 +31,13 @@ public final class BlockInstance {
 
     public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, @NotNull ChunkPos chunkPos, int chunkInt, @NotNull DBlock dBlock, @NotNull Direction direction) {
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
-        this.location = CoordUtil.blockPosToLoc(blockPos, world);
+        this.location = CoordUtil.toLoc(blockPos, world);
         this.blockPos = blockPos;
         this.chunkPos = chunkPos;
         this.chunkInt = chunkInt;
         this.dBlock = dBlock;
         this.direction = direction;
-        this.blockMemory = Registries.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
+        this.blockMemory = DRegistry.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
                 new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());
         this.totalDurability = new AtomicDouble(dBlock.getDurability());

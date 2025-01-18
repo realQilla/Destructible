@@ -20,14 +20,12 @@ public class ChatInput extends PlayerInput {
 
     @Override
     public void init(Consumer<String> onComplete) {
-        CompletableFuture.runAsync(this::openMenu, super.getExecutor())
-                .thenCompose(v -> CompletableFuture.supplyAsync(this::awaitResponse, super.getExecutor()))
-                .thenAccept(onComplete).thenRun(super::shutDown);
+        this.openMenu();
+        CompletableFuture.supplyAsync(super::awaitResponse, super.getExecutor())
+                .thenAccept(onComplete);
     }
 
     public void openMenu() {
-        getDPlayer().getPlugin().addThread(Thread.currentThread());
-
         Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
             getDPlayer().sendPacket(new ClientboundContainerClosePacket(getDPlayer().getCraftPlayer().getHandle().containerMenu.containerId));
             getDPlayer().sendMessage(chatMessage);

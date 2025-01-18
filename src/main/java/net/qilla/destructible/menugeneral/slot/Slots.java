@@ -105,24 +105,38 @@ public class Slots {
 
     public static final Slot ITEM_MENU = Slot.of(consumer -> consumer
             .material(Material.QUARTZ)
-            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Item Overview"))
+            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Overview"))
             .lore(ItemLore.lore(List.of(
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Select any item to view more"),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>details or make changes")
             )))
     );
 
-    public static final Slot TOOL_MENU = Slot.of(consumer -> consumer
+    public static final Slot TOOL_OVERVIEW_MENU = Slot.of(consumer -> consumer
             .material(Material.IRON_PICKAXE)
-            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Tool Overview"))
+            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Overview"))
             .lore(ItemLore.lore(List.of(
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Select any tool to view more details or make changes")
             )))
     );
 
     public static final Slot BLOCK_MENU = Slot.of(consumer -> consumer
+            .material(Material.DECORATED_POT)
+            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Settings"))
+    );
+
+    public static final Slot LOAD_BLOCK_MENU = Slot.of(consumer -> consumer
+            .material(Material.COMMAND_BLOCK)
+            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Load Blocks"))
+            .lore(ItemLore.lore(List.of(
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>Settings for loading, viewing, etc."),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray>custom blocks into the world")
+            )))
+    );
+
+    public static final Slot BLOCK_OVERVIEW_MENU = Slot.of(consumer -> consumer
             .material(Material.CHEST)
-            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Modification"))
+            .displayName(MiniMessage.miniMessage().deserialize("<yellow>Overview"))
             .lore(ItemLore.lore(List.of(
                     MiniMessage.miniMessage().deserialize("<!italic><gray>Select any block to view more"),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>details or make changes")

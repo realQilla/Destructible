@@ -9,7 +9,7 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.Rarity;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.util.FormatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,11 +46,11 @@ public class TestCommand {
                         .rarity(Rarity.COMMON)
                         .resource(!material.isBlock())
                         .build();
-                Registries.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
+                DRegistry.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
             });
             Registry.MATERIAL.stream().filter(material -> material.isBlock() && material.isItem()).forEach(material -> {
                 ItemDrop itemDrop = new ItemDrop.Builder()
-                        .dItem(Registries.DESTRUCTIBLE_ITEMS.get(material.toString()))
+                        .dItem(DRegistry.DESTRUCTIBLE_ITEMS.get(material.toString()))
                         .chance(1)
                         .amount(1)
                         .build();
@@ -64,7 +64,7 @@ public class TestCommand {
                         .breakSound(material.createBlockData().getSoundGroup().getBreakSound())
                         .breakParticle(material)
                         .build();
-                Registries.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
+                DRegistry.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
             });
         });
         return Command.SINGLE_SUCCESS;

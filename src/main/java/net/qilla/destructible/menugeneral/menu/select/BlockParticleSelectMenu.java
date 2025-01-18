@@ -59,7 +59,7 @@ public class BlockParticleSelectMenu extends SearchMenu<Material> {
     public Socket menuSocket() {
         return new Socket(4, Slot.of((builder -> builder
                 .material(Material.HEART_OF_THE_SEA)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Particle Search"))
+                .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Search"))
         )));
     }
 

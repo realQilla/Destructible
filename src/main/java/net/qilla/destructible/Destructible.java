@@ -6,25 +6,23 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
-import net.qilla.destructible.command.TestCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
 import net.qilla.destructible.player.PlayerPacketListener;
-import net.qilla.destructible.mining.MiningListener;
+import net.qilla.destructible.player.GeneralListener;
+import net.qilla.destructible.util.DExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public final class Destructible extends JavaPlugin {
 
     private LifecycleEventManager<Plugin> lifecycleMan;
-    private List<Thread> activeThreads;
+    private DExecutor dExecutor;
     private PlayerPacketListener packetListener;
     private CustomItemsFile customItemsFile;
     private CustomToolsFile customToolsFile;
@@ -35,7 +33,7 @@ public final class Destructible extends JavaPlugin {
     @Override
     public void onEnable() {
         this.lifecycleMan = this.getLifecycleManager();
-        this.activeThreads = new ArrayList<>();
+        this.dExecutor = new DExecutor(this, 4);
 
         this.packetListener = new PlayerPacketListener();
         this.customItemsFile = new CustomItemsFile();
@@ -55,7 +53,7 @@ public final class Destructible extends JavaPlugin {
     }
 
     private void initListener() {
-        getServer().getPluginManager().registerEvents(new MiningListener(this), this);
+        getServer().getPluginManager().registerEvents(new GeneralListener(this), this);
         getServer().getPluginManager().registerEvents(new MenuListener(this), this);
     }
 
@@ -67,19 +65,14 @@ public final class Destructible extends JavaPlugin {
             //new TestCommand(this, commands).register();
         });
     }
-
-    public void addThread(Thread thread) {
-        this.activeThreads.add(thread);
-    }
-
-    public void removeThread(Thread thread) {
-        this.activeThreads.remove(thread);
-    }
-
     @Override
     public void onDisable() {
         Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Server Reloaded.")));
-        this.activeThreads.forEach(Thread::interrupt);
+        if(dExecutor != null) dExecutor.shutdown();
+    }
+
+    public DExecutor getdExecutor() {
+        return this.dExecutor;
     }
 
     public CustomItemsFile getCustomItemsFile() {

@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Registries;
+import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.BlockInstance;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemStack;
@@ -127,7 +127,7 @@ public class BlockMiner {
                     dPlayer.getCraftPlayer().getEntityId(),
                     itemDrop.getValue()
             ));
-            if(!Registries.DESTRUCTIBLE_ITEMS.containsKey(itemDrop.getKey().getId())) return;
+            if(!DRegistry.DESTRUCTIBLE_ITEMS.containsKey(itemDrop.getKey().getId())) return;
             dPlayer.give(DItemStack.of(itemDrop.getKey(), itemDrop.getValue()));
         }, ITEM_MAGNET_DELAY);
 
