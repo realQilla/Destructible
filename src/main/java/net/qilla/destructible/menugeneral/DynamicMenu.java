@@ -1,5 +1,7 @@
 package net.qilla.destructible.menugeneral;
 
+import com.google.common.base.Preconditions;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.player.DPlayer;
@@ -15,8 +17,9 @@ public abstract class DynamicMenu<T> extends StaticMenu {
     private final Collection<T> itemPopulation;
     private int shiftIndex;
 
-    protected DynamicMenu(@NotNull DPlayer dPlayer, @NotNull Collection<T> itemPopulation) {
-        super(dPlayer);
+    protected DynamicMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Collection<T> itemPopulation) {
+        super(plugin, dPlayer);
+        Preconditions.checkNotNull(itemPopulation, "Collection cannot be null");
         this.itemPopulation = itemPopulation;
         this.dynamicSlots = dynamicConfig().dynamicIndexes();
         this.shiftIndex = 0;

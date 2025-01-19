@@ -1,11 +1,18 @@
 package net.qilla.destructible.menugeneral;
 
 import com.google.common.base.Preconditions;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
+import net.qilla.destructible.data.Sounds;
+import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
+import net.qilla.destructible.mining.item.DItem;
+import net.qilla.destructible.mining.item.DItemStack;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.util.ComponentUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
@@ -16,17 +23,20 @@ import java.util.stream.IntStream;
 
 public abstract class StaticMenu implements InventoryHolder {
 
+    private final Destructible plugin;
     private final Inventory inventory;
+    private final StaticConfig staticConfig;
     private final DPlayer dPlayer;
-    private final Map<Integer, Socket> socketHolder;
-    private final List<Integer> totalIndexes;
+    private final Map<Integer, Socket> socketHolder = new HashMap<>();
+    private final List<Integer> totalIndexes = IntStream.range(0, staticConfig().menuSize().getSize()).boxed().toList();
 
-    protected StaticMenu(@NotNull DPlayer dPlayer) {
+    protected StaticMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        Preconditions.checkNotNull(plugin, "Plugin cannot be null");
         Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
+        this.plugin = plugin;
         this.inventory = Bukkit.createInventory(this, staticConfig().menuSize().getSize(), staticConfig().title());
+        this.staticConfig = staticConfig();
         this.dPlayer = dPlayer;
-        this.socketHolder = new HashMap<>(staticConfig().menuSize().getSize());
-        this.totalIndexes = IntStream.range(0, staticConfig().menuSize().getSize()).boxed().toList();
 
         totalIndexes.forEach(index -> inventory.setItem(index, Slots.FILLER.getItem()));
         this.addSocket(menuSocket());
@@ -34,13 +44,13 @@ public abstract class StaticMenu implements InventoryHolder {
     }
 
     public void finalizeMenu() {
-        this.totalIndexes.stream()
-                .filter(index -> !this.socketHolder.containsKey(index))
-                .forEach(index -> this.inventory.addItem(Slots.FILLER.getItem()));
+        totalIndexes.stream()
+                .filter(index -> !socketHolder.containsKey(index))
+                .forEach(index -> inventory.setItem(index, Slots.FILLER.getItem()));
     }
 
     public void open(boolean toHistory) {
-        dPlayer.getCraftPlayer().openInventory(this.inventory);
+        dPlayer.getCraftPlayer().openInventory(inventory);
         if(toHistory) dPlayer.getMenuHolder().pushToHistory(this);
     }
 
@@ -62,7 +72,6 @@ public abstract class StaticMenu implements InventoryHolder {
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
         Optional<StaticMenu> optional = dPlayer.getMenuHolder().popFromHistory();
-
         if(optional.isEmpty()) {
             this.close();
             return true;
@@ -93,14 +102,7 @@ public abstract class StaticMenu implements InventoryHolder {
         };
 
         if(delayMillis > 0) {
-            Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
-                try {
-                    Thread.sleep(delayMillis);
-                } catch(InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                Bukkit.getScheduler().runTask(dPlayer.getPlugin(), runnable);
-            });
+                Bukkit.getScheduler().runTaskLater(plugin, runnable, delayMillis / 50);
         } else runnable.run();
         return socket;
     }
@@ -113,14 +115,14 @@ public abstract class StaticMenu implements InventoryHolder {
     public List<Socket> addSocket(@NotNull List<Socket> sockets, int delayMillis) {
         Preconditions.checkNotNull(sockets, "Socket list cannot be null");
 
-        Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             sockets.forEach(socket -> {
                 try {
                     Thread.sleep(delayMillis);
                 } catch(InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> addSocket(socket, 0));
+                Bukkit.getScheduler().runTask(plugin, () -> addSocket(socket, 0));
             });
         });
         return sockets;
@@ -133,21 +135,50 @@ public abstract class StaticMenu implements InventoryHolder {
 
     public void inventoryClickEvent(InventoryClickEvent event) {
         event.setCancelled(true);
+        this.handleClick(event);
     }
 
     public void inventoryOpenEvent(InventoryOpenEvent event) {
+        //Optional
     }
 
     public void inventoryCloseEvent(InventoryCloseEvent event) {
+        //Optional
     }
 
     private Socket returnSocket() {
-        return new Socket(staticConfig().returnIndex(), Slots.RETURN, event -> {
+        return new Socket(staticConfig.returnIndex(), Slots.RETURN, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 return this.returnMenu();
             } else return false;
         });
+    }
+
+    public void getItem(@NotNull DItem dItem) {
+        getDPlayer().give(DItemStack.of(dItem, 1));
+        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, 1)).append(MiniMessage.miniMessage().deserialize("!")));
+    }
+
+    public void getItemAmount(@NotNull List<String> signText, @NotNull DItem dItem) {
+        SignInput signInput = new SignInput(plugin, getDPlayer(), signText);
+        signInput.init(result -> {
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                try {
+                    int value = Integer.parseInt(result);
+
+                    getDPlayer().give(DItemStack.of(dItem, value));
+                    getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, value)).append(MiniMessage.miniMessage().deserialize("!")));
+                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                } catch(NumberFormatException ignored) {
+                }
+                this.open(false);
+            });
+        });
+    }
+
+    public Destructible getPlugin() {
+        return this.plugin;
     }
 
     public DPlayer getDPlayer() {

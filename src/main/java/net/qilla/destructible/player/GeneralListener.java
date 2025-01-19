@@ -1,5 +1,7 @@
 package net.qilla.destructible.player;
 
+import io.papermc.paper.event.packet.PlayerChunkLoadEvent;
+import io.papermc.paper.event.packet.PlayerChunkUnloadEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
@@ -79,7 +81,7 @@ public class GeneralListener implements Listener {
             }
         } else {
             event.setCancelled(true);
-            Set<BlockPos> recursiveBlocks = this.findConnectedBlocks(CoordUtil.toBlockPos(block), block.getWorld(), block.getType(), edit.getRecursionSize());
+            Set<BlockPos> recursiveBlocks = this.findConnectedBlocks(CoordUtil.getBlockPos(block), block.getWorld(), block.getType(), edit.getRecursionSize());
             if(!this.scheduleTask(() -> {
                 this.registerBlock(dPlayer, dBlock, recursiveBlocks);
             })) {
@@ -90,7 +92,7 @@ public class GeneralListener implements Listener {
     }
 
     private boolean registerBlock(DBlock dBlock, Block block) {
-        BlockPos blockPos = CoordUtil.toBlockPos(block);
+        BlockPos blockPos = CoordUtil.getBlockPos(block);
 
         if(!RegistryUtil.registerBlock(blockPos, dBlock)) return false;
         if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
@@ -112,7 +114,7 @@ public class GeneralListener implements Listener {
             dPlayer.playSound(Sounds.LARGE_OPERATION_UPDATE, true);
         }, 0, 40);
         for(BlockPos blockPos : blocks) {
-            Block block = CoordUtil.toBlock(blockPos, world);
+            Block block = CoordUtil.getBlock(blockPos, world);
             RegistryUtil.registerBlock(blockPos, dBlock);
 
             Bukkit.getScheduler().runTask(plugin, () -> {
@@ -153,7 +155,7 @@ public class GeneralListener implements Listener {
             for (BlockPos newPos : getNeighboringPositions(currentPos)) {
                 if (blockPosSet.size() >= recursionSize || blockPosSet.contains(newPos) || newPos.equals(origin)) continue;
 
-                if (CoordUtil.toBlock(newPos, world).getType().equals(material)) {
+                if (CoordUtil.getBlock(newPos, world).getType().equals(material)) {
                     blockPosSet.add(newPos);
                     blockQueue.add(newPos);
                 }
@@ -180,7 +182,7 @@ public class GeneralListener implements Listener {
 
         if(!dPlayer.getCraftPlayer().isOp()) return;
 
-        BlockPos blockPos = CoordUtil.toBlockPos(block);
+        BlockPos blockPos = CoordUtil.getBlockPos(block);
         Optional<DBlock> optional = DestructibleUtil.getDBlock(blockPos);
 
         if(optional.isEmpty()) return;
@@ -188,13 +190,43 @@ public class GeneralListener implements Listener {
 
         if(RegistryUtil.unregisterBlock(blockPos)) {
             DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer2 -> {
-                dPlayer2.getDBlockEdit().getBlockHighlight().removeBlockHighlight(blockPos);
+                dPlayer2.getDBlockEdit().getBlockHighlight().removeHighlight(blockPos);
             });
             dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <red><bold>UNLOADED</red>!"));
             dPlayer.playSound(Sounds.TINY_OPERATION_COMPLETE, true);
         } else {
             dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>UNLOADED</red>!"));
             dPlayer.playSound(Sounds.GENERAL_ERROR, true);
+        }
+    }
+
+    @EventHandler
+    private void onChunkLoad(PlayerChunkLoadEvent event) {
+        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
+        if(!DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.contains(dPlayer)) return;
+
+        BlockHighlight blockHighlight = dPlayer.getDBlockEdit().getBlockHighlight();
+        var loadedBlocks = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS;
+        Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
+
+        for(long chunkKey : chunkKeys) {
+            if(!loadedBlocks.containsKey(chunkKey)) continue;
+            blockHighlight.createHighlights(chunkKey);
+        }
+    }
+
+    @EventHandler
+    private void onChunkUnload(PlayerChunkUnloadEvent event) {
+        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
+        if(!DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.contains(dPlayer)) return;
+
+        BlockHighlight blockHighlight = dPlayer.getDBlockEdit().getBlockHighlight();
+        var loadedBlocks = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS;
+        Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
+
+        for(long chunkKey : chunkKeys) {
+            if(!loadedBlocks.containsKey(chunkKey)) continue;
+            blockHighlight.removeHighlights(chunkKey);
         }
     }
 

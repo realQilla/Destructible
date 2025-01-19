@@ -1,8 +1,10 @@
 package net.qilla.destructible.menugeneral.menu.select;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
@@ -11,6 +13,7 @@ import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.event.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -19,10 +22,11 @@ public class ItemSelectMenu extends SearchMenu<Material> {
 
     private final CompletableFuture<Material> future;
 
-    public ItemSelectMenu(DPlayer dPlayer, CompletableFuture<Material> future) {
-        super(dPlayer, Registry.MATERIAL.stream()
+    public ItemSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Material> future) {
+        super(plugin, dPlayer, Registry.MATERIAL.stream()
                 .filter(Material::isItem)
                 .toList());
+        Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
         super.finalizeMenu();

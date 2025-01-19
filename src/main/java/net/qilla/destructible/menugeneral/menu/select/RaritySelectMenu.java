@@ -1,8 +1,10 @@
 package net.qilla.destructible.menugeneral.menu.select;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
@@ -10,6 +12,8 @@ import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -18,8 +22,9 @@ public class RaritySelectMenu extends DynamicMenu<Rarity> {
 
     private final CompletableFuture<Rarity> future;
 
-    public RaritySelectMenu(DPlayer dPlayer, CompletableFuture<Rarity> future) {
-        super(dPlayer, Arrays.stream(Rarity.values()).toList());
+    public RaritySelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Rarity> future) {
+        super(plugin, dPlayer, Arrays.stream(Rarity.values()).toList());
+        Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
         super.finalizeMenu();

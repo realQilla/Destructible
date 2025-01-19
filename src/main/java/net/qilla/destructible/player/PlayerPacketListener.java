@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.logic.MiningManager;
@@ -54,9 +53,9 @@ public final class PlayerPacketListener {
             miningManager.tickBlock(swingPacket.getHand());
         } else if(packet instanceof ServerboundUseItemOnPacket usePacket) {
             BlockPos blockPos = usePacket.getHitResult().getBlockPos();
-            ChunkPos chunkPos = new ChunkPos(blockPos);
-            int chunkInt = CoordUtil.toChunkInt(blockPos);
-            if(DRegistry.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, v ->
+            long chunkKey = CoordUtil.getChunkKey(blockPos);
+            int chunkInt = CoordUtil.getBlockIndexInChunk(blockPos);
+            if(DRegistry.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkKey, v ->
                     new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, v ->
                     new BlockMemory()).isOnCooldown()) {
                 return true;

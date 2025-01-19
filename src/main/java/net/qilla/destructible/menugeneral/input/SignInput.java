@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.game.ClientboundOpenSignEditorPacket;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.CoordUtil;
 import org.bukkit.Bukkit;
@@ -24,8 +25,9 @@ public class SignInput extends PlayerInput {
     private final List<String> signText;
     private final BlockPos blockPos;
 
-    public SignInput(DPlayer dPlayer, List<String> signText) {
-        super(dPlayer);
+    public SignInput(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull List<String> signText) {
+        super(plugin, dPlayer);
+        Preconditions.checkNotNull(signText, "List cannot be null");
         this.signText = signText;
         this.blockPos = calcBlockPos(dPlayer);
     }
@@ -38,7 +40,7 @@ public class SignInput extends PlayerInput {
     }
 
     public void resetBlockState() {
-        Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
+        Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
             getDPlayer().sendPacket(new ClientboundBlockUpdatePacket(blockPos, getDPlayer().getServerLevel().getBlockState(blockPos)));
         });
     }
@@ -46,7 +48,7 @@ public class SignInput extends PlayerInput {
     public void openMenu() {
         CraftSign<SignBlockEntity> sign = createSign(signText);
 
-        Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
+        Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
             getDPlayer().sendPacket(new ClientboundBlockUpdatePacket(blockPos, sign.getHandle()));
             getDPlayer().sendPacket(new ClientboundBlockEntityDataPacket(blockPos, BlockEntityType.SIGN, sign.getUpdateNBT()));
             getDPlayer().sendPacket(new ClientboundOpenSignEditorPacket(blockPos, true));
@@ -64,6 +66,6 @@ public class SignInput extends PlayerInput {
     }
 
     private BlockPos calcBlockPos(DPlayer dPlayer) {
-        return CoordUtil.toBlockPos(dPlayer.getCraftPlayer().getLocation()).offset(0, BLOCK_Y_OFFSET, 0);
+        return CoordUtil.getBlockPos(dPlayer.getCraftPlayer().getLocation()).offset(0, BLOCK_Y_OFFSET, 0);
     }
 }

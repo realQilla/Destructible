@@ -49,7 +49,7 @@ public class OverflowCommand {
         }
         dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
 
-        dPlayer.getMenuHolder().newMenu(new OverflowMenu(dPlayer));
+        dPlayer.getMenuHolder().newMenu(new OverflowMenu(plugin, dPlayer));
         return Command.SINGLE_SUCCESS;
     }
 

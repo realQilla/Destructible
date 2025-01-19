@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.input.SignInput;
@@ -18,14 +19,14 @@ import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
 
-    public OverflowMenu(DPlayer dPlayer) {
-        super(dPlayer, dPlayer.getOverflow().getOverflow());
-
+    public OverflowMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        super(plugin, dPlayer, dPlayer.getOverflow().getOverflow());
         super.addSocket(new Socket(53, Slot.of(builder -> builder
                 .material(Material.BARRIER)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
@@ -112,9 +113,9 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
                     "to clear stash"
             );
 
-            SignInput signInput = new SignInput(getDPlayer(), signText);
+            SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
             signInput.init(result -> {
-                Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
+                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                     if(result.equals("CONFIRM")) {
                         getDPlayer().getOverflow().clear();
                         getDPlayer().playSound(Sounds.RESET, true);

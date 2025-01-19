@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.qilla.destructible.data.ChunkPos;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
@@ -20,7 +19,7 @@ public final class BlockInstance {
 
     private final Location location;
     private final BlockPos blockPos;
-    private final ChunkPos chunkPos;
+    private final Long chunkKey;
     private final int chunkInt;
     private final Direction direction;
     private volatile DBlock dBlock;
@@ -29,15 +28,15 @@ public final class BlockInstance {
     private final AtomicDouble currentDurability;
     private final AtomicInteger crackLevel;
 
-    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, @NotNull ChunkPos chunkPos, int chunkInt, @NotNull DBlock dBlock, @NotNull Direction direction) {
+    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, @NotNull Long chunkKey, int chunkInt, @NotNull DBlock dBlock, @NotNull Direction direction) {
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
-        this.location = CoordUtil.toLoc(blockPos, world);
+        this.location = CoordUtil.getLoc(blockPos, world);
         this.blockPos = blockPos;
-        this.chunkPos = chunkPos;
+        this.chunkKey = chunkKey;
         this.chunkInt = chunkInt;
         this.dBlock = dBlock;
         this.direction = direction;
-        this.blockMemory = DRegistry.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkPos, k ->
+        this.blockMemory = DRegistry.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkKey, k ->
                 new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, k ->
                 new BlockMemory());
         this.totalDurability = new AtomicDouble(dBlock.getDurability());
@@ -56,8 +55,8 @@ public final class BlockInstance {
     }
 
     @NotNull
-    public ChunkPos getChunkPos() {
-        return this.chunkPos;
+    public Long getChunkKey() {
+        return this.chunkKey;
     }
 
     public int getChunkInt() {

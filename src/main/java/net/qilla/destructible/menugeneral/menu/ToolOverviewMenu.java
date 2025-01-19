@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.menugeneral.*;
@@ -18,16 +19,18 @@ import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 public class ToolOverviewMenu extends DynamicMenu<DTool> {
 
-    public ToolOverviewMenu(DPlayer dPlayer) {
-        super(dPlayer, DRegistry.getDestructibleItem(DTool.class));
+    public ToolOverviewMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        super(plugin, dPlayer, DRegistry.getDestructibleItem(DTool.class));
         super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new ToolModificationMenu(super.getDPlayer(), null).open(true);
+                new ToolModificationMenu(super.getPlugin(), dPlayer, null).open(true);
                 return true;
             } else return false;
         }));
@@ -68,7 +71,7 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
             if(clickType.isLeftClick()) {
                 return this.getItem(event, item);
             } else if(clickType == ClickType.MIDDLE) {
-                new ToolModificationMenu(getDPlayer(), item).open(true);
+                new ToolModificationMenu(super.getPlugin(), getDPlayer(), item).open(true);
                 return true;
             } else return false;
         });
@@ -85,9 +88,9 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                     "Amount to receive",
                     "");
 
-            SignInput signInput = new SignInput(getDPlayer(), signText);
+            SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
             signInput.init(result -> {
-                Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
+                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                     try {
                         int value = Integer.parseInt(result);
 

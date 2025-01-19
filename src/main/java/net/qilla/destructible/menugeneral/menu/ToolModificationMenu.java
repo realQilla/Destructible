@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.MenuSize;
@@ -27,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -46,10 +48,9 @@ public class ToolModificationMenu extends StaticMenu {
     private Integer efficiency;
     private Integer durability;
 
-    public ToolModificationMenu(@NotNull DPlayer dPlayer, DTool dTool) {
-        super(dPlayer);
+    public ToolModificationMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @Nullable DTool dTool) {
+        super(plugin, dPlayer);
         this.dTool = dTool;
-
         if(dTool != null) {
             this.fullMenu = true;
             this.id = dTool.getId();
@@ -107,7 +108,7 @@ public class ToolModificationMenu extends StaticMenu {
         } else
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully registered!"));
         DRegistry.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
-        getDPlayer().getPlugin().getCustomToolsFile().save();
+        super.getPlugin().getCustomToolsFile().save();
         return super.returnMenu();
     }
 
@@ -132,8 +133,8 @@ public class ToolModificationMenu extends StaticMenu {
 
         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dTool.getId() + " has been successfully unregistered."));
         DRegistry.DESTRUCTIBLE_ITEMS.remove(dTool.getId());
-        getDPlayer().getPlugin().getCustomItemsFile().save();
-        getDPlayer().playSound(Sounds.RESET, true);
+        super.getPlugin().getCustomItemsFile().save();
+        super.getDPlayer().playSound(Sounds.RESET, true);
         return super.returnMenu();
     }
 
@@ -169,7 +170,7 @@ public class ToolModificationMenu extends StaticMenu {
         Material cursorMaterial = event.getCursor().getType();
         if(cursorMaterial.isEmpty()) {
             CompletableFuture<Material> future = new CompletableFuture<>();
-            new ItemSelectMenu(super.getDPlayer(), future).open(true);
+            new ItemSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(material -> {
                 if(material != null) this.material = material;
             });
@@ -208,8 +209,8 @@ public class ToolModificationMenu extends StaticMenu {
                 "Unique identifier",
                 "for this tool");
 
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
                     if(DRegistry.DESTRUCTIBLE_ITEMS.containsKey(result)) {
                         super.getDPlayer().sendMessage("<red>Item ID already exists.");
@@ -247,8 +248,8 @@ public class ToolModificationMenu extends StaticMenu {
         if(!clickType.isLeftClick()) return false;
         String chatText = "<yellow>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. <gold>Shift-Click <bold><insert:'" + MiniMessage.miniMessage().serialize(displayName) + "'>HERE</insert></gold> get the previous name. You may cancel by typing RETURN.";
 
-        new ChatInput(super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new ChatInput(super.getPlugin(), super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
                     displayName = MiniMessage.miniMessage().deserialize(result);
                     super.addSocket(this.displayNameSocket());
@@ -301,8 +302,8 @@ public class ToolModificationMenu extends StaticMenu {
         if(clickType == ClickType.MIDDLE) {
             String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) +"</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. You may cancel by typing RETURN.";
 
-            new ChatInput(super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
-                Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+            new ChatInput(super.getPlugin(), super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
+                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                     if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
                         applyLine(MiniMessage.miniMessage().deserialize(result));
                         super.addSocket(this.loreSocket());
@@ -346,7 +347,7 @@ public class ToolModificationMenu extends StaticMenu {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
             CompletableFuture<Rarity> future = new CompletableFuture<>();
-            new RaritySelectMenu(getDPlayer(), future).open(true);
+            new RaritySelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(rarity -> this.rarity = rarity);
             return true;
         });
@@ -368,7 +369,7 @@ public class ToolModificationMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
-            new CorrectToolMenu(getDPlayer(), toolType).open(true);
+            new CorrectToolMenu(super.getPlugin(), super.getDPlayer(), toolType).open(true);
             return true;
         });
     }
@@ -395,8 +396,8 @@ public class ToolModificationMenu extends StaticMenu {
                 "^^^^^^^^^^^^^^^",
                 "Tool's strength",
                 "value");
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
                     strength = Math.max(0, Integer.parseInt(result));
                     super.addSocket(this.strengthSocket());
@@ -430,8 +431,8 @@ public class ToolModificationMenu extends StaticMenu {
                 "^^^^^^^^^^^^^^^",
                 "Tool's breaking",
                 "efficiency");
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
                     efficiency = Math.max(0, Integer.parseInt(result));
                     super.addSocket(this.efficiencySocket());
@@ -465,8 +466,8 @@ public class ToolModificationMenu extends StaticMenu {
                 "^^^^^^^^^^^^^^^",
                 "Tool's total",
                 "durability");
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
                     durability = Math.max(-1, Integer.parseInt(result));
                     super.addSocket(this.durabilitySocket());
@@ -480,9 +481,8 @@ public class ToolModificationMenu extends StaticMenu {
 
     @Override
     public void inventoryClickEvent(InventoryClickEvent event) {
-        if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
-            event.setCancelled(true);
-        }
+        if(event.getClickedInventory().getHolder() instanceof StaticMenu) event.setCancelled(true);
+        super.handleClick(event);
     }
 
     @Override

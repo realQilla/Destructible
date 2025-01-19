@@ -1,8 +1,10 @@
 package net.qilla.destructible.menugeneral.menu.select;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.DynamicMenu;
 import net.qilla.destructible.menugeneral.slot.*;
@@ -14,14 +16,17 @@ import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 public class CorrectToolMenu extends DynamicMenu<ToolType> {
 
     private final Set<ToolType> correctTools;
 
-    public CorrectToolMenu(DPlayer dPlayer, Set<ToolType> correctTools) {
-        super(dPlayer, Arrays.stream(ToolType.values()).toList());
+    public CorrectToolMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Set<ToolType> correctTools) {
+        super(plugin, dPlayer, Arrays.stream(ToolType.values()).toList());
+        Preconditions.checkNotNull(correctTools, "Set cannot be null");
         this.correctTools = correctTools;
         super.populateModular();
         super.finalizeMenu();

@@ -14,10 +14,9 @@ public final class DRegistry {
 
     public static final java.util.concurrent.ConcurrentHashMap<UUID, DPlayer> DESTRUCTIBLE_PLAYERS = new ConcurrentHashMap<>();
 
-    public static final ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, String>> LOADED_DESTRUCTIBLE_BLOCKS = new ConcurrentHashMap<>();
-
-    public static final ConcurrentHashMap<String, ConcurrentHashMap<ChunkPos, Set<Integer>>> LOADED_DESTRUCTIBLE_BLOCKS_GROUPED = new ConcurrentHashMap<>();
-    public static final ConcurrentHashMap<ChunkPos, ConcurrentHashMap<Integer, BlockMemory>> DESTRUCTIBLE_BLOCK_DATA = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Long, ConcurrentHashMap<Integer, String>> LOADED_DESTRUCTIBLE_BLOCKS = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<String, ConcurrentHashMap<Long, Set<Integer>>> LOADED_DESTRUCTIBLE_BLOCKS_GROUPED = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Long, ConcurrentHashMap<Integer, BlockMemory>> DESTRUCTIBLE_BLOCK_DATA = new ConcurrentHashMap<>();
 
     public static final ConcurrentSkipListMap<String, DItem> DESTRUCTIBLE_ITEMS = new ConcurrentSkipListMap<>();
 

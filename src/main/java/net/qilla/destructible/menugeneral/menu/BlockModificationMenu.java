@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.menugeneral.StaticMenu;
@@ -20,7 +21,6 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.NumberUtil;
 import net.qilla.destructible.util.StringUtil;
 import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.*;
@@ -45,8 +45,8 @@ public class BlockModificationMenu extends StaticMenu {
     private Sound breakSound;
     private Material breakParticle;
 
-    public BlockModificationMenu(@NotNull DPlayer dPlayer, @Nullable DBlock dBlock) {
-        super(dPlayer);
+    public BlockModificationMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @Nullable DBlock dBlock) {
+        super(plugin, dPlayer);
         this.dBlock = dBlock;
 
         if(dBlock != null) {
@@ -85,7 +85,7 @@ public class BlockModificationMenu extends StaticMenu {
             Material cursorMaterial = event.getCursor().getType();
             if(cursorMaterial.isEmpty()) {
                 CompletableFuture<Material> future = new CompletableFuture<>();
-                new BlockSelectMenu(super.getDPlayer(), future).open(true);
+                new BlockSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
                 future.thenAccept(material -> {
                     if(material != null) this.material = material;
                 });
@@ -125,7 +125,7 @@ public class BlockModificationMenu extends StaticMenu {
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully replaced by " + id + "!"));
         } else getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
         DRegistry.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
-        getDPlayer().getPlugin().getCustomBlocksFile().save();
+        super.getPlugin().getCustomBlocksFile().save();
         return super.returnMenu();
     }
 
@@ -150,7 +150,7 @@ public class BlockModificationMenu extends StaticMenu {
 
         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
         DRegistry.DESTRUCTIBLE_BLOCKS.remove(dBlock.getId());
-        getDPlayer().getPlugin().getCustomBlocksFile().save();
+        super.getPlugin().getCustomBlocksFile().save();
         getDPlayer().playSound(Sounds.RESET, true);
         return super.returnMenu();
     }
@@ -204,8 +204,8 @@ public class BlockModificationMenu extends StaticMenu {
                 "Unique identifier",
                 "for this block");
 
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
                     if(DRegistry.DESTRUCTIBLE_BLOCKS.containsKey(result)) {
                         super.getDPlayer().sendMessage("<red>Block ID already exists.");
@@ -246,8 +246,8 @@ public class BlockModificationMenu extends StaticMenu {
                 "Block durability",
                 "value");
 
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 try {
                     durability = Math.max(-1, Long.parseLong(result));
                     super.addSocket(this.durabilitySocket());
@@ -284,8 +284,8 @@ public class BlockModificationMenu extends StaticMenu {
                 "Block strength",
                 "value");
 
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 try {
                     strength = Integer.parseInt(result);
                     super.addSocket(this.strengthSocket());
@@ -313,7 +313,7 @@ public class BlockModificationMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
-            new LootpoolSetMenu(getDPlayer(), lootpool).open(true);
+            new LootpoolSetMenu(super.getPlugin(), super.getDPlayer(), lootpool).open(true);
             return true;
         });
     }
@@ -334,7 +334,7 @@ public class BlockModificationMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
-            new CorrectToolMenu(getDPlayer(), correctTools).open(true);
+            new CorrectToolMenu(super.getPlugin(), super.getDPlayer(), correctTools).open(true);
             return true;
         });
     }
@@ -363,8 +363,8 @@ public class BlockModificationMenu extends StaticMenu {
                 "Block cooldown",
                 "value");
 
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 try {
                     cooldown = TimeUtil.stringToMillis(result);
                     super.addSocket(this.cooldownSocket());
@@ -393,7 +393,7 @@ public class BlockModificationMenu extends StaticMenu {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
             CompletableFuture<Material> future = new CompletableFuture<>();
-            new BlockParticleSelectMenu(getDPlayer(), future).open(true);
+            new BlockParticleSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(breakParticle -> this.breakParticle = breakParticle);
             return true;
         });
@@ -415,7 +415,7 @@ public class BlockModificationMenu extends StaticMenu {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
             CompletableFuture<Sound> future = new CompletableFuture<>();
-            new SoundSelectMenu(getDPlayer(), future).open(true);
+            new SoundSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(sound -> this.breakSound = sound);
             return true;
         });
@@ -423,9 +423,8 @@ public class BlockModificationMenu extends StaticMenu {
 
     @Override
     public void inventoryClickEvent(InventoryClickEvent event) {
-        if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
-            event.setCancelled(true);
-        }
+        if(event.getClickedInventory().getHolder() instanceof StaticMenu) event.setCancelled(true);
+        super.handleClick(event);
     }
 
     @Override

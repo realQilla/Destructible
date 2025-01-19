@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.menugeneral.*;
@@ -20,14 +21,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class ItemOverviewMenu extends DynamicMenu<DItem> {
 
-    public ItemOverviewMenu(DPlayer dPlayer) {
-        super(dPlayer, DRegistry.getDestructibleItem(DItem.class));
-
+    public ItemOverviewMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        super(plugin, dPlayer, DRegistry.getDestructibleItem(DItem.class));
         super.addSocket(new Socket(1, Slot.of(builder -> builder
                 .material(Material.IRON_PICKAXE)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Destructible Tools"))
@@ -35,7 +36,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             if(event.getClick().isLeftClick()) {
-                new ToolOverviewMenu(this.getDPlayer()).open(true);
+                new ToolOverviewMenu(super.getPlugin(), this.getDPlayer()).open(true);
                 return true;
             } else return false;
         }));
@@ -48,7 +49,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
         super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new ItemModificationMenu(super.getDPlayer(), null).open(true);
+                new ItemModificationMenu(super.getPlugin(), super.getDPlayer(), null).open(true);
                 return true;
             } else return false;
         }));
@@ -78,46 +79,21 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                return this.getItem(event, item);
+                if(super.getDPlayer().getCooldown().has(CooldownType.GET_ITEM)) return false;
+                super.getDPlayer().getCooldown().set(CooldownType.GET_ITEM);
+                if(clickType.isShiftClick()) {
+                    List<String> signText = List.of(
+                            "^^^^^^^^^^^^^^^",
+                            "Amount to receive",
+                            "");
+                    super.getItemAmount(signText, item);
+                } else super.getItem(item);
+                return true;
             } else if(clickType == ClickType.MIDDLE) {
-                new ItemModificationMenu(getDPlayer(), item).open(true);
+                new ItemModificationMenu(super.getPlugin(), super.getDPlayer(), item).open(true);
                 return true;
             } else return false;
         });
-    }
-
-    private boolean getItem(InventoryClickEvent event, DItem dItem) {
-        if(getDPlayer().getCooldown().has(CooldownType.GET_ITEM)) return false;
-        getDPlayer().getCooldown().set(CooldownType.GET_ITEM);
-
-        ClickType clickType = event.getClick();
-
-        if(clickType.isShiftClick() && clickType.isLeftClick()) {
-            List<String> signText = List.of(
-                    "^^^^^^^^^^^^^^^",
-                    "Amount to receive",
-                    "");
-
-            SignInput signInput = new SignInput(getDPlayer(), signText);
-            signInput.init(result -> {
-                Bukkit.getScheduler().runTask(getDPlayer().getPlugin(), () -> {
-                    try {
-                        int value = Integer.parseInt(result);
-
-                        getDPlayer().give(DItemStack.of(dItem, value));
-                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, value)).append(MiniMessage.miniMessage().deserialize("!")));
-                        getDPlayer().playSound(Sounds.SIGN_INPUT, true);
-                    } catch(NumberFormatException ignored) {
-                    }
-                    super.open(false);
-                });
-            });
-            return true;
-        } else if(clickType.isLeftClick()) {
-            getDPlayer().give(DItemStack.of(dItem, 1));
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, 1)).append(MiniMessage.miniMessage().deserialize("!")));
-            return true;
-        } else return false;
     }
 
     @Override

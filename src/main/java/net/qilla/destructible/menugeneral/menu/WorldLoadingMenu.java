@@ -29,13 +29,10 @@ import java.util.concurrent.CompletableFuture;
 
 public class WorldLoadingMenu extends StaticMenu {
 
-    private static final Destructible PLUGIN = Destructible.getInstance();
-    private final DPlayer dPlayer;
     private final DBlockEdit dBlockEdit = getDPlayer().getDBlockEdit();
 
-    public WorldLoadingMenu(@NotNull DPlayer dPlayer) {
-        super(dPlayer);
-        this.dPlayer = dPlayer;
+    public WorldLoadingMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        super(plugin, dPlayer);
         this.loadSettings();
     }
 
@@ -71,13 +68,13 @@ public class WorldLoadingMenu extends StaticMenu {
         ClickType clickType = event.getClick();
         if(clickType.isLeftClick()) {
             CompletableFuture<DBlock> future = new CompletableFuture<>();
-            new DBlockSelectMenu(dPlayer, future).open(true);
+            new DBlockSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(dBlock -> {
                 dBlockEdit.setDblock(dBlock);
-                DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.add(dPlayer);
+                DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.add(super.getDPlayer());
 
-                dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getId() + "</gold>."));
-                dPlayer.playSound(Sounds.ENABLE_SETTING, true);
+                super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getId() + "</gold>."));
+                super.getDPlayer().playSound(Sounds.ENABLE_SETTING, true);
             });
             return true;
         } else if(clickType.isRightClick()) {
@@ -87,8 +84,8 @@ public class WorldLoadingMenu extends StaticMenu {
                     "Total block",
                     "recursion size");
 
-            new SignInput(super.getDPlayer(), signText).init(result -> {
-                Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+            new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                     if(!result.isBlank()) {
                         try {
                             dBlockEdit.setRecursionSize(NumberUtil.minMax(0, 128000, Integer.parseInt(result)));
@@ -138,7 +135,7 @@ public class WorldLoadingMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new HighlightSelectMenu(dPlayer, dBlockEdit.getBlockHighlight().getVisibleBlocks()).open(true);
+                new HighlightSelectMenu(super.getPlugin(), super.getDPlayer(), dBlockEdit.getBlockHighlight().getVisibleDBlocks()).open(true);
                 return true;
             } else return false;
         });
@@ -156,13 +153,13 @@ public class WorldLoadingMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
-                    PLUGIN.getLoadedBlocksFile().clear();
-                    PLUGIN.getLoadedBlocksGroupedFile().clear();
+                Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                    super.getPlugin().getLoadedBlocksFile().clear();
+                    super.getPlugin().getLoadedBlocksGroupedFile().clear();
                 });
                 DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer -> dPlayer.getDBlockEdit().getBlockHighlight().removeHighlightsAll());
-                dPlayer.sendMessage("<yellow>All loaded custom blocks have been <red><bold>CLEARED</red>!");
-                dPlayer.playSound(Sounds.GENERAL_SUCCESS_2, true);
+                super.getDPlayer().sendMessage("<yellow>All loaded custom blocks have been <red><bold>CLEARED</red>!");
+                super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS_2, true);
                 return true;
             } else return false;
         });
@@ -180,12 +177,12 @@ public class WorldLoadingMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
-                    PLUGIN.getLoadedBlocksFile().save();
-                    PLUGIN.getLoadedBlocksGroupedFile().save();
+                Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                    super.getPlugin().getLoadedBlocksFile().save();
+                    super.getPlugin().getLoadedBlocksGroupedFile().save();
                 });
-                dPlayer.sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
-                dPlayer.playSound(Sounds.GENERAL_SUCCESS, true);
+                super.getDPlayer().sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
+                super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
                 return true;
             } else return false;
         });
@@ -203,12 +200,12 @@ public class WorldLoadingMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                Bukkit.getScheduler().runTaskAsynchronously(PLUGIN, () -> {
-                    PLUGIN.getLoadedBlocksFile().load();
-                    PLUGIN.getLoadedBlocksGroupedFile().load();
+                Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                    super.getPlugin().getLoadedBlocksFile().load();
+                    super.getPlugin().getLoadedBlocksGroupedFile().load();
                 });
-                dPlayer.sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RE-LOADED</aqua>!");
-                dPlayer.playSound(Sounds.GENERAL_SUCCESS, true);
+                super.getDPlayer().sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RE-LOADED</aqua>!");
+                super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
                 return true;
             } else return false;
         });

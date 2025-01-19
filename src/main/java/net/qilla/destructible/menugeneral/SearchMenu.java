@@ -1,5 +1,7 @@
 package net.qilla.destructible.menugeneral;
 
+import com.google.common.base.Preconditions;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slots;
@@ -7,6 +9,8 @@ import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,8 +19,9 @@ import java.util.List;
 public abstract class SearchMenu<T> extends DynamicMenu<T> {
     private List<T> localPopulation;
 
-    protected SearchMenu(DPlayer dPlayer, Collection<T> itemPopulation) {
-        super(dPlayer, itemPopulation);
+    protected SearchMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Collection<T> itemPopulation) {
+        super(plugin, dPlayer, itemPopulation);
+        Preconditions.checkNotNull(itemPopulation, "Item Population cannot be null");
         this.localPopulation = new ArrayList<>(itemPopulation);
 
         super.addSocket(searchSocket());
@@ -43,8 +48,8 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
                 "Keywords to",
                 "narrow search"
         );
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isBlank()) {
                     this.localPopulation = getItemPopulation().stream()
                             .filter(item -> matchSearchCriteria(item, result))

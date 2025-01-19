@@ -1,8 +1,10 @@
 package net.qilla.destructible.menugeneral.menu.select;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
@@ -14,7 +16,7 @@ import net.qilla.destructible.util.StringUtil;
 import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
-
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,8 +24,9 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
 
     private final CompletableFuture<DBlock> future;
 
-    public DBlockSelectMenu(DPlayer dPlayer, CompletableFuture<DBlock> future) {
-        super(dPlayer, DRegistry.DESTRUCTIBLE_BLOCKS.values().stream().toList());
+    public DBlockSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<DBlock> future) {
+        super(plugin, dPlayer, DRegistry.DESTRUCTIBLE_BLOCKS.values().stream().toList());
+        Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
         super.finalizeMenu();
@@ -67,8 +70,8 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
     @Override
     public Socket menuSocket() {
         return new Socket(4, Slot.of(builder -> builder
-                .material(Material.DIAMOND_BLOCK)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Search"))
+                .material(Material.GRAY_GLAZED_TERRACOTTA)
+                .displayName(MiniMessage.miniMessage().deserialize("<gold>Search"))
         ));
     }
 

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.menugeneral.input.SignInput;
@@ -38,9 +39,9 @@ public class ItemDropCreationMenu extends StaticMenu {
     private Integer maxAmount;
     private Double chance;
 
-    public ItemDropCreationMenu(DPlayer dPlayer, @NotNull List<ItemDrop> lootpool, @Nullable ItemDrop itemDrop) {
-        super(dPlayer);
-        Preconditions.checkNotNull(lootpool, "Lootpool cannot be null");
+    public ItemDropCreationMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull List<ItemDrop> lootpool, @Nullable ItemDrop itemDrop) {
+        super(plugin, dPlayer);
+        Preconditions.checkNotNull(lootpool, "List cannot be null");
         this.lootpool = lootpool;
         this.itemDrop = itemDrop;
 
@@ -116,7 +117,7 @@ public class ItemDropCreationMenu extends StaticMenu {
         ClickType clickType = event.getClick();
         if(clickType.isLeftClick()) {
             CompletableFuture<DItem> future = new CompletableFuture<>();
-            new DItemSelectMenu(getDPlayer(), future).open(true);
+            new DItemSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(dItem -> this.dItem = dItem);
             return true;
         } else return false;
@@ -152,9 +153,9 @@ public class ItemDropCreationMenu extends StaticMenu {
                 "Minimum amount",
                 "that can drop");
 
-        SignInput signInput = new SignInput(super.getDPlayer(), signText);
+        SignInput signInput = new SignInput(super.getPlugin(), super.getDPlayer(), signText);
         signInput.init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
 
                 try {
                     this.minAmount = Math.max(1, Integer.parseInt(result));
@@ -175,9 +176,9 @@ public class ItemDropCreationMenu extends StaticMenu {
                 "Maximum amount",
                 "that can drop");
 
-        SignInput signInput = new SignInput(super.getDPlayer(), signText);
+        SignInput signInput = new SignInput(super.getPlugin(), super.getDPlayer(), signText);
         signInput.init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
 
                 try {
                     this.maxAmount = Math.max(1, Integer.parseInt(result));
@@ -217,9 +218,9 @@ public class ItemDropCreationMenu extends StaticMenu {
                 "Chance that this",
                 "item can drop");
 
-        SignInput signInput = new SignInput(super.getDPlayer(), signText);
+        SignInput signInput = new SignInput(super.getPlugin(), super.getDPlayer(), signText);
         signInput.init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
 
                 try {
                     this.chance = Math.max(0, Math.min(100, Double.parseDouble(result)));

@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.MenuSize;
@@ -23,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,8 +45,8 @@ public class ItemModificationMenu extends StaticMenu {
     private Rarity rarity;
     private Boolean resource;
 
-    public ItemModificationMenu(@NotNull DPlayer dPlayer, DItem dItem) {
-        super(dPlayer);
+    public ItemModificationMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @Nullable DItem dItem) {
+        super(plugin, dPlayer);
         this.dItem = dItem;
 
         if(dItem != null) {
@@ -95,7 +97,7 @@ public class ItemModificationMenu extends StaticMenu {
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully replaced by " + id + "!"));
         } else getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully registered!"));
         DRegistry.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
-        getDPlayer().getPlugin().getCustomItemsFile().save();
+        super.getPlugin().getCustomItemsFile().save();
         return super.returnMenu();
     }
 
@@ -120,7 +122,7 @@ public class ItemModificationMenu extends StaticMenu {
 
         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dItem.getId() + " has been successfully unregistered."));
         DRegistry.DESTRUCTIBLE_ITEMS.remove(dItem.getId());
-        getDPlayer().getPlugin().getCustomItemsFile().save();
+        super.getPlugin().getCustomItemsFile().save();
         getDPlayer().playSound(Sounds.RESET, true);
         return super.returnMenu();
     }
@@ -157,7 +159,7 @@ public class ItemModificationMenu extends StaticMenu {
         Material cursorMaterial = event.getCursor().getType();
         if(cursorMaterial.isEmpty()) {
             CompletableFuture<Material> future = new CompletableFuture<>();
-            new ItemSelectMenu(super.getDPlayer(), future).open(true);
+            new ItemSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(material -> {
                 if(material != null) this.material = material;
             });
@@ -196,8 +198,8 @@ public class ItemModificationMenu extends StaticMenu {
                 "Unique identifier",
                 "for this item");
 
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
                     if(DRegistry.DESTRUCTIBLE_ITEMS.containsKey(result)) {
                         super.getDPlayer().sendMessage("<red>Item ID already exists.");
@@ -235,8 +237,8 @@ public class ItemModificationMenu extends StaticMenu {
         if(!clickType.isLeftClick()) return false;
         String chatText = "<yellow>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. <gold>Shift-Click <bold><insert:'" + MiniMessage.miniMessage().serialize(displayName) + "'>HERE</insert></gold> get the previous name. You may cancel by typing RETURN.";
 
-        new ChatInput(super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new ChatInput(super.getPlugin(), super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
                     displayName = MiniMessage.miniMessage().deserialize(result);
                     super.addSocket(this.displayNameSocket());
@@ -289,8 +291,8 @@ public class ItemModificationMenu extends StaticMenu {
         if(clickType == ClickType.MIDDLE) {
             String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) +"</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. You may cancel by typing RETURN.";
 
-            new ChatInput(super.getDPlayer(),  MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
-                Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+            new ChatInput(super.getPlugin(), super.getDPlayer(),  MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
+                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                     if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
                         applyLine(MiniMessage.miniMessage().deserialize(result));
                         super.addSocket(this.loreSocket());
@@ -342,8 +344,8 @@ public class ItemModificationMenu extends StaticMenu {
                 "Item's maximum",
                 "stack size");
 
-        new SignInput(super.getDPlayer(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getDPlayer().getPlugin(), () -> {
+        new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
+            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
                     this.stackSize = Math.max(1, Math.min(99, Integer.parseInt(result)));
                     super.addSocket(this.stackSizeSocket());
@@ -371,7 +373,7 @@ public class ItemModificationMenu extends StaticMenu {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
             CompletableFuture<Rarity> future = new CompletableFuture<>();
-            new RaritySelectMenu(getDPlayer(), future).open(true);
+            new RaritySelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(rarity -> this.rarity = rarity);
             return true;
         });
@@ -403,9 +405,8 @@ public class ItemModificationMenu extends StaticMenu {
 
     @Override
     public void inventoryClickEvent(InventoryClickEvent event) {
-        if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
-            event.setCancelled(true);
-        }
+        if(event.getClickedInventory().getHolder() instanceof StaticMenu) event.setCancelled(true);
+        super.handleClick(event);
     }
 
     @Override

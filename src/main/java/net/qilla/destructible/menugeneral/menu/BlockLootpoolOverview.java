@@ -1,8 +1,10 @@
 package net.qilla.destructible.menugeneral.menu;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.menugeneral.DynamicMenu;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Socket;
@@ -22,10 +24,11 @@ import java.util.*;
 
 public class BlockLootpoolOverview extends DynamicMenu<ItemDrop> {
 
-    public BlockLootpoolOverview(@NotNull DPlayer dPlayer, @NotNull DBlock dBlock) {
-        super(dPlayer, dBlock.getLootpool().stream()
+    public BlockLootpoolOverview(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull DBlock dBlock) {
+        super(plugin, dPlayer, dBlock.getLootpool().stream()
                 .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
                 .toList());
+        Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
         super.addSocket(new Socket(31, Slot.of(consumer -> consumer
                 .material(dBlock.getMaterial())
                 .displayName(Component.text(dBlock.getId()))

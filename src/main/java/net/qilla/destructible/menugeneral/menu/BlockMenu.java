@@ -2,6 +2,7 @@ package net.qilla.destructible.menugeneral.menu;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.MenuSize;
 import net.qilla.destructible.menugeneral.StaticConfig;
@@ -15,8 +16,9 @@ import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockMenu extends StaticMenu {
-    public BlockMenu(@NotNull DPlayer dPlayer) {
-        super(dPlayer);
+
+    public BlockMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        super(plugin, dPlayer);
         super.addSocket(new Socket(21, Slot.of(builder -> builder
                 .material(Material.COMMAND_BLOCK_MINECART)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>World Loading"))
@@ -24,7 +26,7 @@ public class BlockMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new WorldLoadingMenu(dPlayer).open(true);
+                new WorldLoadingMenu(super.getPlugin(), dPlayer).open(true);
                 return true;
             } else return false;
         }), 0);
@@ -36,7 +38,7 @@ public class BlockMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new BlockOverviewMenu(dPlayer).open(true);
+                new BlockOverviewMenu(super.getPlugin(), super.getDPlayer()).open(true);
                 return true;
             } else return false;
         }), 0);

@@ -1,5 +1,6 @@
 package net.qilla.destructible.player;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -20,6 +21,7 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +40,9 @@ public class DPlayer {
     private final Cooldown cooldown;
     private final MenuHolder<StaticMenu> menuHolder;
 
-    public DPlayer(CraftPlayer craftPlayer, Destructible plugin) {
+    public DPlayer(@NotNull Destructible plugin, @NotNull CraftPlayer craftPlayer) {
+        Preconditions.checkNotNull(plugin, "Plugin cannot be null");
+        Preconditions.checkNotNull(craftPlayer, "CraftPlayer cannot be null");
         this.plugin = plugin;
         this.random = new Random();
         this.craftPlayer = craftPlayer;
@@ -89,7 +93,8 @@ public class DPlayer {
         craftPlayer.getHandle().serverLevel().getChunkSource().broadcastAndSend(craftPlayer.getHandle(), packet);
     }
 
-    public int getSpace(ItemStack itemStack) {
+    public int getSpace(@NotNull ItemStack itemStack) {
+        Preconditions.checkNotNull(itemStack, "ItemStack cannot be null");
         int maxStackSize = itemStack.getMaxStackSize();
         int space = 0;
 
@@ -103,7 +108,8 @@ public class DPlayer {
         return space;
     }
 
-    public void give(ItemStack itemStack) {
+    public void give(@NotNull ItemStack itemStack) {
+        Preconditions.checkNotNull(itemStack, "ItemStack cannot be null");
         int space = getSpace(itemStack);
         if(space >= itemStack.getAmount()) {
             craftPlayer.getInventory().addItem(itemStack);
@@ -143,6 +149,10 @@ public class DPlayer {
         this.craftPlayer = craftPlayer;
     }
 
+    public Player getPlayer() {
+        return this.craftPlayer.getPlayer();
+    }
+
     public CraftPlayer getCraftPlayer() {
         return this.craftPlayer;
     }
@@ -169,7 +179,7 @@ public class DPlayer {
 
     @NotNull
     public synchronized DBlockEdit getDBlockEdit() {
-        if(this.dBlockEdit == null) this.dBlockEdit = new DBlockEdit(this);
+        if(this.dBlockEdit == null) this.dBlockEdit = new DBlockEdit(plugin, this);
         return this.dBlockEdit;
     }
 

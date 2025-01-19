@@ -1,8 +1,10 @@
 package net.qilla.destructible.menugeneral.menu;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.DynamicMenu;
 import net.qilla.destructible.menugeneral.slot.*;
@@ -22,16 +24,16 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
 
     private final List<ItemDrop> lootpool;
 
-    public LootpoolSetMenu(@NotNull DPlayer dPlayer, @NotNull List<ItemDrop> lootpool) {
-        super(dPlayer, lootpool);
+    public LootpoolSetMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull List<ItemDrop> lootpool) {
+        super(plugin, dPlayer, lootpool);
+        Preconditions.checkNotNull(lootpool, "List cannot be null");
         this.lootpool = lootpool;
-
         super.addSocket(new Socket(47, Slot.of(builder -> builder
                 .material(Material.LIME_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<green>Add new item drop"))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
-            new ItemDropCreationMenu(getDPlayer(), lootpool, null).open(true);
+            new ItemDropCreationMenu(super.getPlugin(), getDPlayer(), lootpool, null).open(true);
             return true;
         }), 0);
         super.populateModular();
@@ -57,7 +59,7 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType == ClickType.MIDDLE) {
-                new ItemDropCreationMenu(getDPlayer(), lootpool, item).open(true);
+                new ItemDropCreationMenu(super.getPlugin(), super.getDPlayer(), lootpool, item).open(true);
                 return true;
             } else if(clickType.isShiftClick() && clickType.isLeftClick()) {
                 lootpool.remove(item);

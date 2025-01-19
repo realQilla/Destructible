@@ -1,8 +1,10 @@
 package net.qilla.destructible.menugeneral.menu.select;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
@@ -14,6 +16,8 @@ import net.qilla.destructible.util.NumberUtil;
 import net.qilla.destructible.util.StringUtil;
 import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Set;
 
@@ -21,8 +25,9 @@ public class HighlightSelectMenu extends SearchMenu<String> {
 
     private final Set<String> highlights;
 
-    public HighlightSelectMenu(DPlayer dPlayer, Set<String> highlights) {
-        super(dPlayer, DRegistry.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED.keySet().stream().toList());
+    public HighlightSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Set<String> highlights) {
+        super(plugin, dPlayer, DRegistry.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED.keySet().stream().toList());
+        Preconditions.checkNotNull(highlights, "Set cannot be null");
         this.highlights = highlights;
         super.populateModular();
         super.finalizeMenu();
@@ -77,7 +82,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
     @Override
     public Socket menuSocket() {
         return new Socket(4, Slot.of(builder -> builder
-                .material(Material.ICE)
+                .material(Material.BLUE_ICE)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Search"))
         ));
     }

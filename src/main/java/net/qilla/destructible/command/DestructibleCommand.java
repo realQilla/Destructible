@@ -165,7 +165,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        dPlayer.getMenuHolder().newMenu(new ItemOverviewMenu(dPlayer));
+        dPlayer.getMenuHolder().newMenu(new ItemOverviewMenu(plugin, dPlayer));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -179,7 +179,7 @@ public class DestructibleCommand {
         }
         dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
 
-        dPlayer.getMenuHolder().newMenu(new BlockMenu(dPlayer));
+        dPlayer.getMenuHolder().newMenu(new BlockMenu(plugin, dPlayer));
         return Command.SINGLE_SUCCESS;
     }
 

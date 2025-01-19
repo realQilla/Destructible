@@ -32,13 +32,6 @@ public class MenuListener implements Listener {
         if(event.getInventory().getHolder() instanceof StaticMenu menu) {
             menu.inventoryClickEvent(event);
         }
-
-        InventoryHolder holder = event.getClickedInventory().getHolder();
-
-        if(holder instanceof StaticMenu menu) {
-            menu.inventoryClickEvent(event);
-            menu.handleClick(event);
-        }
     }
 
     @EventHandler

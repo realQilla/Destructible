@@ -1,9 +1,10 @@
 package net.qilla.destructible.menugeneral.menu.select;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.MenuMetadata;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.SoundSettings;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
@@ -16,6 +17,7 @@ import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -24,9 +26,10 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
 
     private final CompletableFuture<Sound> future;
 
-    public SoundSelectMenu(DPlayer dPlayer, CompletableFuture<Sound> future) {
-        super(dPlayer, Registry.SOUNDS.stream()
+    public SoundSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Sound> future) {
+        super(plugin, dPlayer, Registry.SOUNDS.stream()
                 .toList());
+        Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
         super.finalizeMenu();

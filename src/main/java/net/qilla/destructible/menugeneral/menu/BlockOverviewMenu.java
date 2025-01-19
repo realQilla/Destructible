@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.menugeneral.*;
@@ -21,12 +22,12 @@ import java.util.*;
 
 public class BlockOverviewMenu extends DynamicMenu<DBlock> {
 
-    public BlockOverviewMenu(@NotNull DPlayer dPlayer) {
-        super(dPlayer, DRegistry.DESTRUCTIBLE_BLOCKS.values());
+    public BlockOverviewMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        super(plugin, dPlayer, DRegistry.DESTRUCTIBLE_BLOCKS.values());
         super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new BlockModificationMenu(super.getDPlayer(), null).open(true);
+                new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), null).open(true);
                 return true;
             } else return false;
         }), 0);
@@ -63,10 +64,10 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
         ClickType clickType = event.getClick();
 
         if(clickType.isLeftClick()) {
-            new BlockLootpoolOverview(getDPlayer(), dBlock).open(true);
+            new BlockLootpoolOverview(super.getPlugin(), super.getDPlayer(), dBlock).open(true);
             return true;
         } else if(clickType == ClickType.MIDDLE) {
-            new BlockModificationMenu(getDPlayer(), dBlock).open(true);
+            new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), dBlock).open(true);
             return true;
         } else return false;
     }

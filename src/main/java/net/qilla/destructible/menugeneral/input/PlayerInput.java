@@ -1,18 +1,24 @@
 package net.qilla.destructible.menugeneral.input;
 
+import com.google.common.base.Preconditions;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.player.DPlayer;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public abstract class PlayerInput {
 
     private static final int SEC_TIMEOUT = 15;
-    private final Destructible plugin = Destructible.getInstance();
+    private final Destructible plugin;
     private final DPlayer dPlayer;
     private final ExecutorService executorService;
 
-    public PlayerInput(DPlayer dPlayer) {
+    public PlayerInput(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+        Preconditions.checkNotNull(plugin, "Plugin cannot be null");
+        Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
+        this.plugin = plugin;
         this.dPlayer = dPlayer;
         this.executorService = Destructible.getInstance().getdExecutor().getExecutor();}
 
