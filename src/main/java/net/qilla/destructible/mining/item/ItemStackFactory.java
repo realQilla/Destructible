@@ -38,7 +38,7 @@ public final class ItemStackFactory {
     private static @NotNull ItemStack getItemStack(@NotNull DItem item, int amount) {
         Preconditions.checkNotNull(item, "DItem cannot be null");
 
-        ItemStack itemStack = ItemStack.of(Material.STICK, amount);
+        ItemStack itemStack = ItemStack.of(item.isResource() ? Material.STICK : item.getMaterial(), amount);
         ItemData itemData = new ItemData(item);
 
         itemStack.getDataTypes().forEach(itemStack::unsetData);

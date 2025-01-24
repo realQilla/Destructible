@@ -33,6 +33,8 @@ public final class Destructible extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Rejoin to revalidate your player information.")));
+
         new AttributeTypes();
         this.lifecycleMan = this.getLifecycleManager();
 
