@@ -1,10 +1,10 @@
 package net.qilla.destructible.player;
 
 public enum CooldownType {
-    DEFAULT(1000),
     OPEN_MENU(250),
-    MENU_CLICK(250),
-    GET_ITEM(200);
+    MENU_CLICK(100),
+    MENU_ROTATE(100),
+    GET_ITEM(100);
 
     final long cooldown;
 

@@ -8,6 +8,8 @@ import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
+import net.qilla.destructible.mining.item.attributes.AttributeType;
+import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.player.PlayerPacketListener;
 import net.qilla.destructible.player.GeneralListener;
 import net.qilla.destructible.util.DExecutor;
@@ -22,28 +24,19 @@ import java.util.logging.Logger;
 public final class Destructible extends JavaPlugin {
 
     private LifecycleEventManager<Plugin> lifecycleMan;
-    private DExecutor dExecutor;
-    private PlayerPacketListener packetListener;
-    private CustomItemsFile customItemsFile;
-    private CustomToolsFile customToolsFile;
-    private CustomBlocksFile customBlocksFile;
-    private LoadedDestructibleBlocksFile loadedDestructibleBlocksFile;
-    private LoadedDestructibleBlocksGroupedFile loadedDestructibleBlocksGroupedFile;
+    private final DExecutor dExecutor = new DExecutor(this, 4);
+    private final PlayerPacketListener packetListener = new PlayerPacketListener();
+    private final CustomItemsFile customItemsFile = new CustomItemsFile();
+    private final CustomBlocksFile customBlocksFile = new CustomBlocksFile();
+    private final LoadedDestructibleBlocksFile loadedDestructibleBlocksFile = new LoadedDestructibleBlocksFile();
+    private final LoadedDestructibleBlocksGroupedFile loadedDestructibleBlocksGroupedFile = new LoadedDestructibleBlocksGroupedFile();
 
     @Override
     public void onEnable() {
+        new AttributeTypes();
         this.lifecycleMan = this.getLifecycleManager();
-        this.dExecutor = new DExecutor(this, 4);
-
-        this.packetListener = new PlayerPacketListener();
-        this.customItemsFile = new CustomItemsFile();
-        this.customToolsFile = new CustomToolsFile();
-        this.customBlocksFile = new CustomBlocksFile();
-        this.loadedDestructibleBlocksFile = new LoadedDestructibleBlocksFile();
-        this.loadedDestructibleBlocksGroupedFile = new LoadedDestructibleBlocksGroupedFile();
 
         this.customItemsFile.load();
-        this.customToolsFile.load();
         this.customBlocksFile.load();
         this.loadedDestructibleBlocksFile.load();
         this.loadedDestructibleBlocksGroupedFile.load();
@@ -62,7 +55,6 @@ public final class Destructible extends JavaPlugin {
             Commands commands = event.registrar();
             new DestructibleCommand(this, commands).register();
             new OverflowCommand(this, commands).register();
-            //new TestCommand(this, commands).register();
         });
     }
     @Override
@@ -77,10 +69,6 @@ public final class Destructible extends JavaPlugin {
 
     public CustomItemsFile getCustomItemsFile() {
         return this.customItemsFile;
-    }
-
-    public CustomToolsFile getCustomToolsFile() {
-        return this.customToolsFile;
     }
 
     public CustomBlocksFile getCustomBlocksFile() {

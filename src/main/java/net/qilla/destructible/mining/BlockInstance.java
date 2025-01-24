@@ -4,22 +4,21 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.qilla.destructible.data.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.util.CoordUtil;
+import net.qilla.destructible.util.RegistryUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class BlockInstance {
 
     private final Location location;
     private final BlockPos blockPos;
-    private final Long chunkKey;
+    private final long chunkKey;
     private final int chunkInt;
     private final Direction direction;
     private volatile DBlock dBlock;
@@ -28,17 +27,18 @@ public final class BlockInstance {
     private final AtomicDouble currentDurability;
     private final AtomicInteger crackLevel;
 
-    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, @NotNull Long chunkKey, int chunkInt, @NotNull DBlock dBlock, @NotNull Direction direction) {
+    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, long chunkKey, int chunkInt, @NotNull DBlock dBlock, @NotNull Direction direction) {
+        Preconditions.checkNotNull(world, "World cannot be null");
+        Preconditions.checkNotNull(blockPos, "BlockPos cannot be null");
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
+        Preconditions.checkNotNull(direction, "Direction cannot be null");
         this.location = CoordUtil.getLoc(blockPos, world);
         this.blockPos = blockPos;
         this.chunkKey = chunkKey;
         this.chunkInt = chunkInt;
         this.dBlock = dBlock;
         this.direction = direction;
-        this.blockMemory = DRegistry.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkKey, k ->
-                new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, k ->
-                new BlockMemory());
+        this.blockMemory = RegistryUtil.getBlockMemory(chunkKey, chunkInt);
         this.totalDurability = new AtomicDouble(dBlock.getDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());
         this.crackLevel = new AtomicInteger(0);

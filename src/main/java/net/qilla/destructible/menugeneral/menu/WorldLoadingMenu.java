@@ -4,7 +4,8 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
+import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.MenuSize;
 import net.qilla.destructible.menugeneral.StaticConfig;
@@ -16,6 +17,7 @@ import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DBlockEdit;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.NumberUtil;
@@ -25,10 +27,15 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldLoadingMenu extends StaticMenu {
 
+    private static final Set<DPlayer> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
+    private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
     private final DBlockEdit dBlockEdit = getDPlayer().getDBlockEdit();
 
     public WorldLoadingMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
@@ -37,12 +44,11 @@ public class WorldLoadingMenu extends StaticMenu {
     }
 
     private void loadSettings() {
-        super.addSocket(this.loadBlockSocket());
+        super.addSocket(List.of(
+                this.loadBlockSocket(), this.viewBlockSocket(), this.clearLoadedBlocksSocket(), this.saveLoadedBlocksSocket(),
+                this.reloadLoadedBlocksSocket(), infoSocket()
+        ));
         if(dBlockEdit.getDblock() != null) super.addSocket(this.disableLoadBlockSocket());
-        super.addSocket(this.viewBlockSocket());
-        super.addSocket(this.clearLoadedBlocksSocket());
-        super.addSocket(this.saveLoadedBlocksSocket());
-        super.addSocket(this.reloadLoadedBlocksSocket());
     }
 
     private Socket loadBlockSocket() {
@@ -51,7 +57,7 @@ public class WorldLoadingMenu extends StaticMenu {
 
         return new Socket(20, Slot.of(builder -> builder
                 .material((dBlockEdit.getRecursionSize() > 0 && dBlockEdit.getDblock() != null) ? Material.HONEY_BOTTLE : Material.POTION)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Load block"))
+                .displayName(MiniMessage.miniMessage().deserialize("<red>Load Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Loading block " + dBlock),
@@ -61,7 +67,7 @@ public class WorldLoadingMenu extends StaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Right Click to set a recursion size, or nothing to disable")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
-        ), this::clickLoadBlock);
+        ), this::clickLoadBlock, CooldownType.MENU_CLICK);
     }
 
     private boolean clickLoadBlock(InventoryClickEvent event) {
@@ -71,7 +77,7 @@ public class WorldLoadingMenu extends StaticMenu {
             new DBlockSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(dBlock -> {
                 dBlockEdit.setDblock(dBlock);
-                DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.add(super.getDPlayer());
+                BLOCK_EDITOR_SET.add(super.getDPlayer());
 
                 super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getId() + "</gold>."));
                 super.getDPlayer().playSound(Sounds.ENABLE_SETTING, true);
@@ -120,7 +126,7 @@ public class WorldLoadingMenu extends StaticMenu {
                 super.removeSocket(this.disableLoadBlockSocket().index());
                 return true;
             } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     private Socket viewBlockSocket() {
@@ -138,77 +144,130 @@ public class WorldLoadingMenu extends StaticMenu {
                 new HighlightSelectMenu(super.getPlugin(), super.getDPlayer(), dBlockEdit.getBlockHighlight().getVisibleDBlocks()).open(true);
                 return true;
             } else return false;
-        });
-    }
-
-    private Socket clearLoadedBlocksSocket() {
-        return new Socket(16, Slot.of(builder -> builder
-                .material(Material.FIRE_CHARGE)
-                .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Loaded Blocks"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to clear all loaded blocks within the world")
-                )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-        ), event -> {
-            ClickType clickType = event.getClick();
-            if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                    super.getPlugin().getLoadedBlocksFile().clear();
-                    super.getPlugin().getLoadedBlocksGroupedFile().clear();
-                });
-                DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer -> dPlayer.getDBlockEdit().getBlockHighlight().removeHighlightsAll());
-                super.getDPlayer().sendMessage("<yellow>All loaded custom blocks have been <red><bold>CLEARED</red>!");
-                super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS_2, true);
-                return true;
-            } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     private Socket saveLoadedBlocksSocket() {
-        return new Socket(25, Slot.of(builder -> builder
+        return new Socket(0, Slot.of(builder -> builder
                 .material(Material.SLIME_BALL)
                 .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Loaded Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to save all loaded blocks within the world")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to save all loaded blocks within the world")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                    super.getPlugin().getLoadedBlocksFile().save();
-                    super.getPlugin().getLoadedBlocksGroupedFile().save();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to save"
+                );
+
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                                super.getPlugin().getLoadedBlocksFile().save();
+                                super.getPlugin().getLoadedBlocksGroupedFile().save();
+                            });
+                            super.getDPlayer().sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                        }
+                        super.open(false);
+                    });
                 });
-                super.getDPlayer().sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
-                super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
                 return true;
             } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     private Socket reloadLoadedBlocksSocket() {
-        return new Socket(34, Slot.of(builder -> builder
+        return new Socket(1, Slot.of(builder -> builder
                 .material(Material.SNOWBALL)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RE-LOAD</bold> Loaded Blocks"))
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Loaded Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to reload the config, undoing any unsaved changes.")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to load the config, undoing any unsaved changes.")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isShiftClick() && clickType.isLeftClick()) {
-                Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                    super.getPlugin().getLoadedBlocksFile().load();
-                    super.getPlugin().getLoadedBlocksGroupedFile().load();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to reload"
+                );
+
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                                super.getPlugin().getLoadedBlocksFile().load();
+                                super.getPlugin().getLoadedBlocksGroupedFile().load();
+                            });
+                            super.getDPlayer().sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RELOADED</aqua>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                        }
+                        super.open(false);
+                    });
                 });
-                super.getDPlayer().sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RE-LOADED</aqua>!");
-                super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
                 return true;
             } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
+    }
+
+    private Socket clearLoadedBlocksSocket() {
+        return new Socket(2, Slot.of(builder -> builder
+                .material(Material.FIRE_CHARGE)
+                .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Loaded Blocks"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to clear all loaded blocks within the world")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to clear"
+                );
+
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                                super.getPlugin().getLoadedBlocksFile().clear();
+                                super.getPlugin().getLoadedBlocksGroupedFile().clear();
+                            });
+                            BLOCK_EDITOR_SET.forEach(dPlayer -> dPlayer.getDBlockEdit().getBlockHighlight().removeHighlightsAll());
+                            super.getDPlayer().sendMessage("<yellow>Loaded custom blocks have been <red><bold>CLEARED</red>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS_2, true);
+                        }
+                        super.open(false);
+                    });
+                });
+                return true;
+            } else return false;
+        }, CooldownType.MENU_CLICK);
+    }
+
+    private Socket infoSocket() {
+        return new Socket(44, Slot.of(builder -> builder
+                .material(Material.ENDER_EYE)
+                .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Loaded Block Info"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray><white>" + NumberUtil.numberChar(LOADED_BLOCK_MAP.values().stream().mapToInt(Map::size).sum(), false) + "</white> loaded blocks within <white>" + NumberUtil.numberChar(LOADED_BLOCK_MAP.size(), false) + "</white> chunks")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ));
     }
 
     @Override
@@ -224,9 +283,9 @@ public class WorldLoadingMenu extends StaticMenu {
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuSize.FIVE)
                 .title(Component.text("Load Blocks"))
                 .menuIndex(4)
-                .returnIndex(49));
+                .returnIndex(40));
     }
 }

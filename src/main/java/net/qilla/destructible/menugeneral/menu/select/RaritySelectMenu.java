@@ -9,21 +9,21 @@ import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.item.Rarity;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class RaritySelectMenu extends DynamicMenu<Rarity> {
 
+    private static final List<Rarity> RARITY_SET = List.of(Rarity.values());
     private final CompletableFuture<Rarity> future;
 
     public RaritySelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Rarity> future) {
-        super(plugin, dPlayer, Arrays.stream(Rarity.values()).toList());
+        super(plugin, dPlayer, RARITY_SET);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -33,7 +33,7 @@ public class RaritySelectMenu extends DynamicMenu<Rarity> {
     @Override
     public Socket createSocket(int index, Rarity item) {
         return new Socket(index, Slot.of(builder -> builder
-                .material(item.getMaterial())
+                .material(item.getRepresentation())
                 .displayName(item.getComponent())
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
@@ -45,7 +45,7 @@ public class RaritySelectMenu extends DynamicMenu<Rarity> {
             if(!clickType.isLeftClick()) return false;
             future.complete(item);
             return this.returnMenu();
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override

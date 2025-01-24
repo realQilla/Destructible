@@ -9,6 +9,7 @@ import net.qilla.destructible.data.SoundSettings;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
 import net.qilla.destructible.util.StringUtil;
@@ -18,17 +19,18 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class SoundSelectMenu extends SearchMenu<Sound> {
 
+    private static final List<Sound> SOUND_SET = Registry.SOUNDS.stream()
+            .collect(Collectors.toList());
     private final CompletableFuture<Sound> future;
 
     public SoundSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Sound> future) {
-        super(plugin, dPlayer, Registry.SOUNDS.stream()
-                .toList());
+        super(plugin, dPlayer, SOUND_SET);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -56,7 +58,7 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
                 getDPlayer().playSound(SoundSettings.of(item, 0.5f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
             }
             return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override

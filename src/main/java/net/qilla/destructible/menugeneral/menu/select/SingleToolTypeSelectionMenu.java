@@ -12,48 +12,48 @@ import net.qilla.destructible.menugeneral.DynamicConfig;
 import net.qilla.destructible.menugeneral.MenuSize;
 import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.ToolType;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
-public class CorrectToolMenu extends DynamicMenu<ToolType> {
+public class SingleToolTypeSelectionMenu extends DynamicMenu<ToolType> {
 
-    private final Set<ToolType> correctTools;
+    private static final List<ToolType> TOOL_TYPES = Arrays.stream(ToolType.values())
+            .collect(Collectors.toList());
 
-    public CorrectToolMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Set<ToolType> correctTools) {
-        super(plugin, dPlayer, Arrays.stream(ToolType.values()).toList());
-        Preconditions.checkNotNull(correctTools, "Set cannot be null");
-        this.correctTools = correctTools;
+    private final CompletableFuture<ToolType> future;
+
+    public SingleToolTypeSelectionMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<ToolType> future) {
+        super(plugin, dPlayer, TOOL_TYPES);
+        Preconditions.checkNotNull(future, "Future cannot be null");
+        this.future = future;
         super.populateModular();
         super.finalizeMenu();
     }
 
     @Override
     public Socket createSocket(int index, ToolType item) {
-        boolean contains = correctTools.contains(item);
-
         return new Socket(index, Slot.of(builder -> builder
-                .material(item.getMaterial())
+                .material(item.getRepresentation())
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize(contains ? "<!italic><green><bold>SELECTED" : "<!italic><red><bold>NOT SELECTED")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click to select")
                 )))
-                .glow(contains)
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                if(correctTools.contains(item)) correctTools.remove(item);
-                else correctTools.add(item);
-                super.refreshSockets();
-                return true;
+                future.complete(item);
+                return this.returnMenu();
             } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override

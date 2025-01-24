@@ -7,7 +7,9 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
+import net.qilla.destructible.data.registry.DRegistryMaster;
+import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.util.CoordUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -18,6 +20,8 @@ import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
 public class BlockHighlight {
 
     private static final int HIGHLIGHT_CREATION_BATCH_SIZE = 1000;
+    private static final Map<String, DBlock> DBLOCK_MAP = DRegistry.BLOCKS;
 
     private final Destructible plugin;
     private final DPlayer dPlayer;
@@ -80,7 +85,7 @@ public class BlockHighlight {
     }
 
     public void addVisibleDBlockAll() {
-        this.getVisibleDBlocks().addAll(DRegistry.DESTRUCTIBLE_BLOCKS.keySet());
+        this.getVisibleDBlocks().addAll(DBLOCK_MAP.keySet());
     }
 
     public void removeVisibleDBlock(@NotNull String blockId) {
@@ -125,7 +130,7 @@ public class BlockHighlight {
     public void createHighlights(@NotNull String blockId) {
         this.scheduleTask(() -> {
             if(!this.isDBlockVisible(blockId)) return;
-            var loadedBlocksGrouped = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED;
+            var loadedBlocksGrouped = DRegistry.LOADED_BLOCKS_GROUPED;
 
             loadedBlocksGrouped.computeIfPresent(blockId, (blockId2, chunkKeyMap) -> {
                 chunkKeyMap.forEach((chunkKey, chunkIntSet) -> {
@@ -155,7 +160,8 @@ public class BlockHighlight {
 
     public void createHighlights(long chunkKey) {
         this.scheduleTask(() -> {
-            var loadedBlocks = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS;
+            var loadedBlocks =  DRegistry.LOADED_BLOCKS;
+
             loadedBlocks.get(chunkKey).forEach((index, blockId) -> {
                 BlockPos blockPos = CoordUtil.getBlockPos(chunkKey, index);
                 this.createHighlight(blockPos, blockId);
@@ -178,10 +184,10 @@ public class BlockHighlight {
 
     public void createVisibleHighlights() {
         this.scheduleTask(() -> {
-            var loadedBlocks = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED;
+            var loadedBlocksGrouped =  DRegistry.LOADED_BLOCKS_GROUPED;
 
             visibleDBlocks.forEach(blockId -> {
-                loadedBlocks.computeIfPresent(blockId, (id, chunkKeyMap) -> {
+                loadedBlocksGrouped.computeIfPresent(blockId, (id, chunkKeyMap) -> {
                     chunkKeyMap.entrySet().stream()
                             .flatMap(entry -> entry.getValue().stream().map(chunkInt -> CoordUtil.getBlockPos(entry.getKey(), chunkInt)))
                             .collect(Collectors.groupingBy(pos -> pos.hashCode() % HIGHLIGHT_CREATION_BATCH_SIZE))

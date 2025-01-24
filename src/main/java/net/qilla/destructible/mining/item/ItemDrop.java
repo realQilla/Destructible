@@ -1,7 +1,7 @@
 package net.qilla.destructible.mining.item;
 
 import com.google.common.base.Preconditions;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemDrop {
@@ -12,6 +12,8 @@ public class ItemDrop {
     private final double chance;
 
     protected ItemDrop(@NotNull Builder builder) {
+        Preconditions.checkNotNull(builder, "Builder cannot be null");
+
         this.item = builder.item;
         this.minAmount = builder.minAmount;
         this.maxAmount = builder.maxAmount;
@@ -34,7 +36,7 @@ public class ItemDrop {
         return this.chance;
     }
 
-    public static class Builder {
+    public static class Builder implements ItemBuilder<ItemDrop> {
         private DItem item;
         private int minAmount;
         private int maxAmount;
@@ -48,8 +50,7 @@ public class ItemDrop {
         }
 
         public Builder dItem(@NotNull String id) {
-            //Preconditions.checkArgument(Registries.DESTRUCTIBLE_ITEMS.containsKey(id), "DItem ID: " + id + " does not exist");
-            this.item = DRegistry.DESTRUCTIBLE_ITEMS.getOrDefault(id, DItems.MISSING_ITEM);
+            this.item = DRegistry.ITEMS.getOrDefault(id, DItems.MISSING_ITEM);
             return this;
         }
 
@@ -60,6 +61,7 @@ public class ItemDrop {
 
         public Builder amount(int minAmount, int maxAmount) {
             Preconditions.checkArgument(minAmount > 0, "Minimum amount must be greater than 0");
+
             this.minAmount = minAmount;
             this.maxAmount = maxAmount;
             return this;
@@ -67,6 +69,7 @@ public class ItemDrop {
 
         public Builder amount(int amount) {
             Preconditions.checkArgument(amount > 0, "Amount must be greater than 0");
+
             this.minAmount = amount;
             this.maxAmount = amount;
             return this;
@@ -74,22 +77,26 @@ public class ItemDrop {
 
         public Builder minAmount(int amount) {
             Preconditions.checkArgument(amount > 0, "Minimum amount must be greater than 0");
+
             this.minAmount = amount;
             return this;
         }
 
         public Builder maxAmount(int amount) {
             Preconditions.checkArgument(amount > 0, "Maximum amount must be greater than 0");
+
             this.maxAmount = amount;
             return this;
         }
 
         public Builder chance(double chance) {
             Preconditions.checkArgument(chance >= 0.0 && chance <= 1.0, "Drop chance must be between 0.0 and 1.0");
+
             this.chance = chance;
             return this;
         }
 
+        @Override
         public ItemDrop build() {
             return new ItemDrop(this);
         }

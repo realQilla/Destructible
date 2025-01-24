@@ -5,26 +5,30 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
+import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.item.DItem;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.ComponentUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DItemSelectMenu extends SearchMenu<DItem> {
 
+    private static final Collection<DItem> DITEMS = DRegistry.ITEMS.values();
     private final CompletableFuture<DItem> future;
 
     public DItemSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<DItem> future) {
-        super(plugin, dPlayer, DRegistry.DESTRUCTIBLE_ITEMS.values().stream().toList());
+        super(plugin, dPlayer, DITEMS);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -55,7 +59,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
             if(!clickType.isLeftClick()) return false;
             future.complete(item);
             return this.returnMenu();
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override

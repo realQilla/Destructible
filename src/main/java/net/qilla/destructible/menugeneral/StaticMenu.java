@@ -9,7 +9,8 @@ import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.DItemStack;
+import net.qilla.destructible.mining.item.DItems;
+import net.qilla.destructible.mining.item.ItemStackFactory;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.ComponentUtil;
@@ -60,17 +61,13 @@ public abstract class StaticMenu implements InventoryHolder {
 
     public void handleClick(@NotNull InventoryClickEvent event) {
         Preconditions.checkNotNull(event, "InventoryClickEvent cannot be null");
-        if(dPlayer.getCooldown().has(CooldownType.MENU_CLICK)) return;
-        dPlayer.getCooldown().set(CooldownType.MENU_CLICK);
-
         Socket socket = socketHolder.get(event.getSlot());
-        if(socket != null) socket.onClick(dPlayer, event);
+        if(socket != null) {
+            socket.onClick(dPlayer, event);
+        }
     }
 
     public boolean returnMenu() {
-        if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) return false;
-        dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
-
         Optional<StaticMenu> optional = dPlayer.getMenuHolder().popFromHistory();
         if(optional.isEmpty()) {
             this.close();
@@ -139,11 +136,9 @@ public abstract class StaticMenu implements InventoryHolder {
     }
 
     public void inventoryOpenEvent(InventoryOpenEvent event) {
-        //Optional
     }
 
     public void inventoryCloseEvent(InventoryCloseEvent event) {
-        //Optional
     }
 
     private Socket returnSocket() {
@@ -152,12 +147,12 @@ public abstract class StaticMenu implements InventoryHolder {
             if(clickType.isLeftClick()) {
                 return this.returnMenu();
             } else return false;
-        });
+        }, CooldownType.OPEN_MENU);
     }
 
-    public void getItem(@NotNull DItem dItem) {
-        getDPlayer().give(DItemStack.of(dItem, 1));
-        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, 1)).append(MiniMessage.miniMessage().deserialize("!")));
+    public void getItem(@NotNull DItem item) {
+        getDPlayer().give(ItemStackFactory.of(item, 1));
+        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(item, 1)).append(MiniMessage.miniMessage().deserialize("!")));
     }
 
     public void getItemAmount(@NotNull List<String> signText, @NotNull DItem dItem) {
@@ -167,7 +162,7 @@ public abstract class StaticMenu implements InventoryHolder {
                 try {
                     int value = Integer.parseInt(result);
 
-                    getDPlayer().give(DItemStack.of(dItem, value));
+                    getDPlayer().give(ItemStackFactory.of(dItem, value));
                     getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dItem, value)).append(MiniMessage.miniMessage().deserialize("!")));
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {

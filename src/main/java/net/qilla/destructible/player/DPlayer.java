@@ -1,21 +1,24 @@
 package net.qilla.destructible.player;
 
 import com.google.common.base.Preconditions;
-import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.data.DataKey;
 import net.qilla.destructible.data.SoundSettings;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.MenuHolder;
 import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.mining.item.DItem;
+import net.qilla.destructible.mining.item.ItemData;
+import net.qilla.destructible.mining.item.ItemDataType;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.ComponentUtil;
+import net.qilla.destructible.util.DUtil;
 import net.qilla.destructible.util.RandomUtil;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -110,26 +113,32 @@ public class DPlayer {
 
     public void give(@NotNull ItemStack itemStack) {
         Preconditions.checkNotNull(itemStack, "ItemStack cannot be null");
-        int space = getSpace(itemStack);
+
+        int space = this.getSpace(itemStack);
+        this.playSound(Sounds.GET_ITEM, true);
         if(space >= itemStack.getAmount()) {
             craftPlayer.getInventory().addItem(itemStack);
             return;
         }
-        int overflowAmount = itemStack.getAmount() - space;
+        ItemData itemData = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM);
 
-        ItemStack overflowItemStack = itemStack.clone();
-        overflowItemStack.setAmount(overflowAmount);
-        craftPlayer.getInventory().addItem(itemStack);
+        if(itemData != null) {
+            DItem dItem = DUtil.getDItem(itemData.getItemID());
+            int overflowAmount = itemStack.getAmount() - space;
+            itemStack.setAmount(space);
 
-        overflow.put(overflowItemStack);
-        this.playSound(Sounds.GET_ITEM, true);
-        this.sendActionBar(ComponentUtil.getItemAmountAndType(overflowItemStack).append(MiniMessage.miniMessage().deserialize("<green> added to stash")));
+            overflow.put(itemData, overflowAmount);
+            craftPlayer.getInventory().addItem(itemStack);
+
+            this.sendActionBar(ComponentUtil.getItemAmountAndType(dItem, overflowAmount).append(MiniMessage.miniMessage().deserialize("<green> added to stash")));
+        } else this.sendActionBar("<red>There was a problem adding an item to your stash!");
     }
 
-    public Map<DItem, Integer> calculateItemDrops(List<ItemDrop> itemDrops) {
+    public Map<DItem, Integer> calcItemDrops(List<ItemDrop> itemDrops) {
         return itemDrops.stream()
                 .filter(this::hasChanceToDrop)
-                .collect(Collectors.toMap(
+                .sorted(Comparator.comparing(ItemDrop::getChance).reversed())
+                .collect(Collectors.toUnmodifiableMap(
                         ItemDrop::getDItem,
                         this::calculateAmount,
                         Integer::sum

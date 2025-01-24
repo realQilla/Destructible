@@ -1,23 +1,24 @@
 package net.qilla.destructible.mining.item;
 
+import io.papermc.paper.datacomponent.item.ItemLore;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.DRegistry;
 import org.bukkit.Material;
-import org.jetbrains.annotations.NotNull;
-import java.util.function.Function;
+
+import java.util.List;
 
 public final class DItems {
 
-    public static final DItem MISSING_ITEM = new DItem.Builder()
+    public static final DItem MISSING_ITEM = DItem.of(builder -> builder
             .id("MISSING_ITEM")
             .material(Material.BARRIER)
             .displayName(MiniMessage.miniMessage().deserialize("<red>Missing Item"))
-            .noLore()
-            .stackSize(1)
+            .stackSize(99)
+            .lore(ItemLore.lore(List.of(
+                    Component.empty(),
+                    MiniMessage.miniMessage().deserialize("<!italic><red>You should never have this item...")
+            )))
             .rarity(Rarity.NONE)
-            .build();
-
-    private static DItem register(@NotNull String id, @NotNull Function<DItem.Builder, DItem> factory, @NotNull DItem.Builder builder) {
-        return DRegistry.DESTRUCTIBLE_ITEMS.put(id, factory.apply(builder.id(id)));
-    }
+            .version(-1)
+    );
 }

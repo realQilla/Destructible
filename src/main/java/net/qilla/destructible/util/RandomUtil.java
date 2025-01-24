@@ -26,6 +26,10 @@ public class RandomUtil {
         return between(value - offset, value + offset);
     }
 
+    public static float offset(float value, float offset) {
+        return between(value - offset, value + offset);
+    }
+
     public static <T> Optional<T> getRandomItem(Collection<T> collection) {
         if(collection.isEmpty()) return Optional.empty();
         return collection.stream().skip(between(0, collection.size() - 1)).findFirst();

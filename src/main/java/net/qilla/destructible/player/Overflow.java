@@ -1,16 +1,15 @@
 package net.qilla.destructible.player;
 
 import com.google.common.base.Preconditions;
-import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.DItemStack;
+import net.qilla.destructible.mining.item.*;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Overflow {
 
-    private final Map<DItem, Integer> overflowItems = new LinkedHashMap<>();
+    private final Map<String, OverflowEntry> overflowItems = new LinkedHashMap<>();
 
     private final DPlayer dPlayer;
 
@@ -26,81 +25,68 @@ public class Overflow {
         return this.overflowItems.isEmpty();
     }
 
-    public boolean put(DItem dItem, int amount) {
-        Preconditions.checkNotNull(dItem, "DItem cannot be null");
+    public boolean put(@NotNull OverflowEntry overflowEntry) {
+        Preconditions.checkNotNull(overflowEntry, "OverflowEntry cannot be null");
 
-        this.overflowItems.merge(dItem, amount, Integer::sum);
+        this.overflowItems.merge(overflowEntry.getData().getItemID(), overflowEntry, (oldValue, newValue) -> {
+           newValue.addAmount(oldValue.getAmount());
+           return newValue;
+        });
         return true;
     }
 
-    public boolean put(ItemStack itemStack) {
-        Preconditions.checkNotNull(itemStack, "ItemStack cannot be null");
+    public boolean put(@NotNull DItem item, int amount) {
+        Preconditions.checkNotNull(item, "Item cannot be null");
 
-        Optional<DItem> optional = DItemStack.getDItem(itemStack);
-
-        if(optional.isEmpty()) {
-            return false;
-        }
-
-        DItem dItem = optional.get();
-
-        this.overflowItems.merge(dItem, itemStack.getAmount(), Integer::sum);
+        this.overflowItems.merge(item.getId(), new OverflowEntry(new ItemData(item), amount), (oldValue, newValue) -> {
+            newValue.addAmount(amount);
+            return newValue;
+        });
         return true;
     }
 
-    public ItemStack take(DItem dItem) {
-        Preconditions.checkNotNull(dItem, "DItem cannot be null");
-        if(!this.overflowItems.containsKey(dItem)) return null;
+    public boolean put(@NotNull ItemData itemData, int amount) {
+        Preconditions.checkNotNull(itemData, "ItemData cannot be null");
 
-        ItemStack itemStack = DItemStack.of(dItem, this.overflowItems.get(dItem));
+        this.overflowItems.merge(itemData.getItemID(), new OverflowEntry(itemData, amount), (oldValue, newValue) -> {
+            newValue.setAmount(oldValue.getAmount() + amount);
+            return newValue;
+        });
+        return true;
+    }
+
+    public Optional<ItemStack> take(@NotNull String itemId) {
+        Preconditions.checkNotNull(itemId, "String cannot be null");
+
+        if(!this.overflowItems.containsKey(itemId)) return Optional.empty();
+
+        OverflowEntry overflowEntry = this.overflowItems.get(itemId);
+        ItemData itemData = overflowEntry.getData();
+        int amount = overflowEntry.getAmount();
+
+        ItemStack itemStack = ItemStackFactory.of(itemData, amount);
 
         int space = dPlayer.getSpace(itemStack);
-        if(space == 0) return null;
+        if(space == 0) return Optional.empty();
 
-        if(space >= itemStack.getAmount()) {
-            this.overflowItems.remove(dItem);
-        } else {
-            this.overflowItems.computeIfPresent(dItem, (key, value) -> value - space);
+        if(space >= itemStack.getAmount()) this.overflowItems.remove(itemId);
+        else {
+            this.overflowItems.get(itemId).subtractAmount(space);
             itemStack.setAmount(space);
         }
-        return itemStack;
+        return Optional.of(itemStack);
     }
 
-    public List<ItemStack> take() {
-        List<ItemStack> itemStacks = new LinkedList<>();
-
-        Iterator<Map.Entry<DItem, Integer>> iterator = this.overflowItems.entrySet().iterator();
-
-        while(iterator.hasNext()) {
-            Map.Entry<DItem, Integer> entry = iterator.next();
-            ItemStack itemStack = DItemStack.of(entry.getKey(), entry.getValue());
-            int space = dPlayer.getSpace(itemStack);
-            if(space == 0) break;
-
-            if(space >= itemStack.getAmount()) {
-                itemStacks.add(itemStack);
-                iterator.remove();
-            } else {
-                this.overflowItems.computeIfPresent(entry.getKey(), (key, value) -> value - space);
-                itemStack.setAmount(space);
-                itemStack.setAmount(space);
-                itemStacks.add(itemStack);
-                break;
-            }
-        }
-        return itemStacks;
-    }
-
-    public Set<Map.Entry<DItem, Integer>> getOverflow() {
+    public Set<Map.Entry<String, OverflowEntry>> getOverflow() {
         return this.overflowItems.entrySet();
     }
 
-    public boolean contains(DItem dItem) {
-        return this.overflowItems.containsKey(dItem);
+    public boolean contains(String itemID) {
+        return this.overflowItems.containsKey(itemID);
     }
 
-    public void remove(DItem dItem) {
-        this.overflowItems.remove(dItem);
+    public void remove(String itemID) {
+        this.overflowItems.remove(itemID);
     }
 
     public void clear() {

@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 public class DBlock {
     private final String id;
@@ -22,7 +24,15 @@ public class DBlock {
     private final Sound breakSound;
     private final Material breakParticle;
 
-    public DBlock(Builder builder) {
+    private DBlock(Builder builder) {
+        Preconditions.checkNotNull(builder, "Builder cannot be null");
+        Preconditions.checkNotNull(builder.id, "ID cannot be null");
+        Preconditions.checkNotNull(builder.material, "Material cannot be null");
+        Preconditions.checkNotNull(builder.correctTools, "Set cannot be null");
+        Preconditions.checkNotNull(builder.lootpool, "List cannot be null");
+        Preconditions.checkNotNull(builder.breakSound, "Sound cannot be null");
+        Preconditions.checkNotNull(builder.breakParticle, "Particle cannot be null");
+
         this.id = builder.id;
         this.material = builder.material;
         this.strength = builder.strength;
@@ -34,13 +44,21 @@ public class DBlock {
         this.breakParticle = builder.breakParticle;
     }
 
-    @NotNull
-    public String getId() {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static DBlock of(Consumer<Builder> builder) {
+        Builder newBuilder = new Builder();
+        builder.accept(newBuilder);
+        return newBuilder.build();
+    }
+
+    public @NotNull String getId() {
         return this.id;
     }
 
-    @NotNull
-    public Material getMaterial() {
+    public @NotNull Material getMaterial() {
         return this.material;
     }
 
@@ -56,8 +74,7 @@ public class DBlock {
         return this.cooldown;
     }
 
-    @NotNull
-    public Set<ToolType> getCorrectTools() {
+    public @NotNull Set<ToolType> getCorrectTools() {
         return Collections.unmodifiableSet(this.correctTools);
     }
 
@@ -65,23 +82,19 @@ public class DBlock {
         return !this.correctTools.isEmpty();
     }
 
-    @NotNull
-    public List<ItemDrop> getLootpool() {
+    public @NotNull List<ItemDrop> getLootpool() {
         return Collections.unmodifiableList(this.lootpool);
     }
 
-    @NotNull
-    public Sound getBreakSound() {
+    public @NotNull Sound getBreakSound() {
         return this.breakSound;
     }
 
-    @NotNull
-    public Material getBreakParticle() {
+    public @NotNull Material getBreakParticle() {
         return this.breakParticle;
     }
 
-    @NotNull
-    public static Builder getBuilder(DBlock dBlock) {
+    public static @NotNull Builder getBuilder(DBlock dBlock) {
         return new Builder()
                 .id(dBlock.getId())
                 .material(dBlock.getMaterial())
@@ -94,126 +107,61 @@ public class DBlock {
                 .breakParticle(dBlock.getBreakParticle());
     }
 
-    public static class Builder {
-        private String id;
-        private Material material;
-        private int strength;
-        private long durability;
-        private long cooldown;
-        private Set<ToolType> correctTools;
-        private List<ItemDrop> lootpool;
-        private Sound breakSound;
-        private Material breakParticle;
+    public static final class Builder {
+        private String id = UUID.randomUUID().toString();
+        private Material material = Material.AIR;
+        private int strength = 0;
+        private long durability = -1;
+        private long cooldown = 5000;
+        private Set<ToolType> correctTools = Set.of();
+        private List<ItemDrop> lootpool = List.of();
+        private Sound breakSound = Sound.BLOCK_STONE_BREAK;
+        private Material breakParticle = Material.STONE;
 
-        public Builder() {
-            this.material = Material.AIR;
-            this.strength = 0;
-            this.durability = -1;
-            this.cooldown = 1000;
-            this.correctTools = Set.of();
-            this.lootpool = List.of();
-            this.breakSound = Sound.BLOCK_STONE_BREAK;
-            this.breakParticle = Material.BEDROCK;
+        private Builder() {
         }
 
         public Builder id(@NotNull String id) {
-            Preconditions.checkNotNull(id, "ID cannot be null");
             this.id = id;
             return this;
         }
 
         public Builder material(@NotNull Material material) {
-            Preconditions.checkNotNull(material, "Material cannot be null");
             this.material = material;
             return this;
         }
 
-        /**
-         * Tool strength requirement to destroy block
-         *
-         * @param strength
-         *
-         * @return
-         */
         public Builder strength(int strength) {
             this.strength = strength;
             return this;
         }
 
-        /**
-         * Ticks taken to destroy block, base damage efficiency is 1
-         *
-         * @param durability
-         *
-         * @return
-         */
         public Builder durability(long durability) {
             this.durability = Math.max(0, durability);
             return this;
         }
 
-
-        /**
-         * Milliseconds cooldown the block will have after being destroyed
-         *
-         * @param ms
-         *
-         * @return
-         */
         public Builder cooldown(long ms) {
             this.cooldown = Math.max(1000, ms);
             return this;
         }
 
-        /**
-         * Set of tools that can destroy this block
-         *
-         * @param toolTypes
-         *
-         * @return
-         */
         public Builder correctTools(@NotNull Set<ToolType> toolTypes) {
-            Preconditions.checkNotNull(toolTypes, "ToolTypes cannot be null");
-
             this.correctTools = toolTypes;
             return this;
         }
 
-        /**
-         * Array of ItemDrop objects that will drop when block is destroyed
-         *
-         * @param lootpool
-         *
-         * @return
-         */
         public Builder lootpool(@NotNull List<ItemDrop> lootpool) {
-            Preconditions.checkNotNull(lootpool, "Lootpool cannot be null");
             this.lootpool = lootpool;
             return this;
         }
 
-        /**
-         * Sound played when block is destroyed
-         *
-         * @param sound
-         *
-         * @return
-         */
         public Builder breakSound(@NotNull Sound sound) {
-            Preconditions.checkNotNull(sound, "Sound cannot be null");
             this.breakSound = sound;
             return this;
         }
 
-        /**
-         * Block particle played when block is destroyed
-         *
-         * @param particle
-         *
-         * @return
-         */
         public Builder breakParticle(@NotNull Material particle) {
-            Preconditions.checkNotNull(particle, "Particle cannot be null");
             this.breakParticle = particle;
             return this;
         }

@@ -13,6 +13,7 @@ import net.qilla.destructible.menugeneral.MenuSize;
 import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.NumberUtil;
 import org.bukkit.Material;
@@ -35,7 +36,7 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
         ), event -> {
             new ItemDropCreationMenu(super.getPlugin(), getDPlayer(), lootpool, null).open(true);
             return true;
-        }), 0);
+        }, CooldownType.OPEN_MENU), 0);
         super.populateModular();
         super.finalizeMenu();
     }
@@ -53,7 +54,7 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
                                 NumberUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")"),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to modify"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Right Click to remove"))
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to remove"))
                 ))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -66,7 +67,7 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
                 super.refreshSockets();
                 return true;
             } else return false;
-        });
+        }, CooldownType.OPEN_MENU);
     }
 
     @Override

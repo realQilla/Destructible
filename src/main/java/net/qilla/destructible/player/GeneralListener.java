@@ -7,7 +7,9 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
+import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.mining.item.*;
 import net.qilla.destructible.util.*;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -18,23 +20,35 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
 public class GeneralListener implements Listener {
 
+    private static final Set<DPlayer> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
+    private static final Map<UUID, DPlayer> DPLAYER_MAP = DRegistry.DPLAYERS;
+    private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
+    private static final Map<String, DItem> DITEM_MAP = DRegistry.ITEMS;
     private final Destructible plugin;
     private final BlockingQueue<Runnable> taskQueue = new ArrayBlockingQueue<>(16);
     private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
-    public GeneralListener(Destructible plugin) {
+    public GeneralListener(@NotNull Destructible plugin) {
         this.plugin = plugin;
     }
 
@@ -62,7 +76,8 @@ public class GeneralListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     private void onBlockPlace(BlockPlaceEvent event) {
-        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+        DPlayer dPlayer = DPLAYER_MAP.get(uuid);
 
         if(!dPlayer.hasDBlockEdit()) return;
         DBlockEdit edit = dPlayer.getDBlockEdit();
@@ -94,9 +109,9 @@ public class GeneralListener implements Listener {
     private boolean registerBlock(DBlock dBlock, Block block) {
         BlockPos blockPos = CoordUtil.getBlockPos(block);
 
-        if(!RegistryUtil.registerBlock(blockPos, dBlock)) return false;
+        if(!RegistryUtil.loadBlock(blockPos, dBlock.getId())) return false;
         if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
-        DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.forEach(curPlayer -> {
+        BLOCK_EDITOR_SET.forEach(curPlayer -> {
             curPlayer.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
         });
         return true;
@@ -109,16 +124,16 @@ public class GeneralListener implements Listener {
 
         BukkitTask progressTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             String operationString = "<yellow>Operation is <gold>" + NumberUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed" +
-                    (taskQueue.isEmpty() ? "" : ", <gold>" + taskQueue.size() + "</gold> " + StringUtil.pluralizer("operation", taskQueue.size()) + " remaining");
+                    (taskQueue.isEmpty() ? "" : ", <gold>" + taskQueue.size() + "</gold> " + StringUtil.pluralize("operation", taskQueue.size()) + " remaining");
             dPlayer.sendActionBar(operationString);
             dPlayer.playSound(Sounds.LARGE_OPERATION_UPDATE, true);
         }, 0, 40);
         for(BlockPos blockPos : blocks) {
             Block block = CoordUtil.getBlock(blockPos, world);
-            RegistryUtil.registerBlock(blockPos, dBlock);
+            RegistryUtil.loadBlock(blockPos, dBlock.getId());
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.forEach(curPlayer -> {
+                BLOCK_EDITOR_SET.forEach(curPlayer -> {
                     curPlayer.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
                 });
 
@@ -149,13 +164,14 @@ public class GeneralListener implements Listener {
 
         blockQueue.add(origin);
 
-        while (!blockQueue.isEmpty() && blockPosSet.size() < recursionSize) {
+        while(!blockQueue.isEmpty() && blockPosSet.size() < recursionSize) {
             BlockPos currentPos = blockQueue.poll();
 
-            for (BlockPos newPos : getNeighboringPositions(currentPos)) {
-                if (blockPosSet.size() >= recursionSize || blockPosSet.contains(newPos) || newPos.equals(origin)) continue;
+            for(BlockPos newPos : getNeighboringPositions(currentPos)) {
+                if(blockPosSet.size() >= recursionSize || blockPosSet.contains(newPos) || newPos.equals(origin))
+                    continue;
 
-                if (CoordUtil.getBlock(newPos, world).getType().equals(material)) {
+                if(CoordUtil.getBlock(newPos, world).getType().equals(material)) {
                     blockPosSet.add(newPos);
                     blockQueue.add(newPos);
                 }
@@ -177,19 +193,20 @@ public class GeneralListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     private void onBlockBreak(final BlockBreakEvent event) {
-        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+        DPlayer dPlayer = DPLAYER_MAP.get(uuid);
         Block block = event.getBlock();
 
         if(!dPlayer.getCraftPlayer().isOp()) return;
 
         BlockPos blockPos = CoordUtil.getBlockPos(block);
-        Optional<DBlock> optional = DestructibleUtil.getDBlock(blockPos);
+        Optional<DBlock> optional = DUtil.getDBlock(blockPos);
 
         if(optional.isEmpty()) return;
         DBlock dBlock = optional.get();
 
-        if(RegistryUtil.unregisterBlock(blockPos)) {
-            DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.forEach(dPlayer2 -> {
+        if(RegistryUtil.unloadBlock(blockPos)) {
+            BLOCK_EDITOR_SET.forEach(dPlayer2 -> {
                 dPlayer2.getDBlockEdit().getBlockHighlight().removeHighlight(blockPos);
             });
             dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <red><bold>UNLOADED</red>!"));
@@ -202,30 +219,29 @@ public class GeneralListener implements Listener {
 
     @EventHandler
     private void onChunkLoad(PlayerChunkLoadEvent event) {
-        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
-        if(!DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.contains(dPlayer)) return;
+        UUID uuid = event.getPlayer().getUniqueId();
+        DPlayer dPlayer = DPLAYER_MAP.get(uuid);
+        if(!BLOCK_EDITOR_SET.contains(dPlayer)) return;
 
         BlockHighlight blockHighlight = dPlayer.getDBlockEdit().getBlockHighlight();
-        var loadedBlocks = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS;
         Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
 
         for(long chunkKey : chunkKeys) {
-            if(!loadedBlocks.containsKey(chunkKey)) continue;
+            if(!LOADED_BLOCK_MAP.containsKey(chunkKey)) continue;
             blockHighlight.createHighlights(chunkKey);
         }
     }
 
     @EventHandler
     private void onChunkUnload(PlayerChunkUnloadEvent event) {
-        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
-        if(!DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.contains(dPlayer)) return;
+        DPlayer dPlayer = DPLAYER_MAP.get(event.getPlayer().getUniqueId());
+        if(!BLOCK_EDITOR_SET.contains(dPlayer)) return;
 
         BlockHighlight blockHighlight = dPlayer.getDBlockEdit().getBlockHighlight();
-        var loadedBlocks = DRegistry.LOADED_DESTRUCTIBLE_BLOCKS;
         Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
 
         for(long chunkKey : chunkKeys) {
-            if(!loadedBlocks.containsKey(chunkKey)) continue;
+            if(!LOADED_BLOCK_MAP.containsKey(chunkKey)) continue;
             blockHighlight.removeHighlights(chunkKey);
         }
     }
@@ -234,7 +250,8 @@ public class GeneralListener implements Listener {
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        initPlayer(player);
+        this.initPlayer(player);
+        this.updatePlayer(player);
     }
 
     @EventHandler
@@ -244,23 +261,95 @@ public class GeneralListener implements Listener {
         removePlayer(player);
     }
 
-    public void initPlayer(Player player) {
+    public void initPlayer(@NotNull Player player) {
         RegistryUtil.registerPlayer(player);
-        plugin.getPlayerPacketListener().addListener(DRegistry.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()));
+        DPlayer dPlayer = DPLAYER_MAP.get(player.getUniqueId());
+        plugin.getPlayerPacketListener().addListener(dPlayer);
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
     }
 
-    public void removePlayer(Player player) {
+    public void removePlayer(@NotNull Player player) {
+        DPlayer dPlayer = DPLAYER_MAP.get(player.getUniqueId());
+        plugin.getPlayerPacketListener().removeListener(dPlayer);
         //RegistryUtil.unregisterPlayer(player);
-        plugin.getPlayerPacketListener().removeListener(DRegistry.DESTRUCTIBLE_PLAYERS.get(player.getUniqueId()));
     }
 
     @EventHandler
     private void onChatEvent(AsyncChatEvent event) {
-        DPlayer dPlayer = DRegistry.DESTRUCTIBLE_PLAYERS.get(event.getPlayer().getUniqueId());
+        DPlayer dPlayer = DPLAYER_MAP.get(event.getPlayer().getUniqueId());
+
         if(dPlayer.getMenuHolder().fulfillInput(ComponentUtil.cleanComponent(event.message()))) {
             event.setCancelled(true);
         }
+    }
+
+    private void updatePlayer(@NotNull Player player) {
+        for(int slot = 0; slot < player.getInventory().getSize(); slot++) {
+            ItemStack itemStack = player.getInventory().getItem(slot);
+
+            if(itemStack == null) continue;
+            if(validateItemVersion(itemStack)) continue;
+
+            player.getInventory().setItem(slot, ItemStackFactory.ofUpdated(itemStack));
+        }
+    }
+
+    @EventHandler
+    private void onInventoryMoveEvent(InventoryMoveItemEvent event) {
+        ItemStack itemStack = event.getItem();
+        ItemData itemData = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM);
+
+        if(itemData == null) return;
+        if(validateItemVersion(itemStack)) return;
+
+        event.setItem(ItemStackFactory.ofUpdated(itemStack));
+    }
+
+    @EventHandler
+    private void onInventoryClickEvent(InventoryClickEvent event) {
+        ItemStack itemStack = event.getCurrentItem();
+        if(itemStack == null) return;
+        if(validateItemVersion(itemStack)) return;
+
+        event.setCurrentItem(ItemStackFactory.ofUpdated(itemStack));
+    }
+
+    @EventHandler
+    private void onItemDropEvent(PlayerDropItemEvent event) {
+        ItemStack itemStack = event.getItemDrop().getItemStack();
+        ItemData itemData = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM);
+
+        if(itemData == null) return;
+        if(validateItemVersion(itemStack)) return;
+
+        event.getItemDrop().setItemStack(ItemStackFactory.ofUpdated(itemStack));
+    }
+
+    //@EventHandler
+    private void itemPickupItemEvent(PlayerAttemptPickupItemEvent event) {
+        DPlayer dPlayer = DPLAYER_MAP.get(event.getPlayer().getUniqueId());
+
+        event.setCancelled(true);
+        event.getItem().remove();
+        ItemStack itemStack = event.getItem().getItemStack();
+
+        dPlayer.give(itemStack);
+    }
+
+    private boolean validateItemVersion(@NotNull ItemStack itemStack) {
+        ItemData itemData = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM);
+
+        if(itemData == null) return true;
+
+        DItem dItem = DUtil.getDItem(itemData.getItemID());
+
+        long itemVersion = itemData.getVersion();
+        long registryVersion = DITEM_MAP.getOrDefault(dItem.getId(), DItems.MISSING_ITEM).getVersion();
+
+        if(itemVersion == registryVersion) return true;
+
+        plugin.getLogger().log(Level.INFO, "Updating item " + dItem.getId() + " for a player as there is a version mismatch. (" + itemVersion + " != " + registryVersion + ")");
+        return false;
     }
 }

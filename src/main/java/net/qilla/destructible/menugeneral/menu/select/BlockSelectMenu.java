@@ -8,6 +8,7 @@ import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
@@ -16,16 +17,20 @@ import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class BlockSelectMenu extends SearchMenu<Material> {
+
+    private static final List<Material> SOLID_BLOCKS = Registry.MATERIAL.stream()
+            .filter(Material::isSolid)
+            .collect(Collectors.toList());
 
     private final CompletableFuture<Material> future;
 
     public BlockSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Material> future) {
-        super(plugin, dPlayer, Registry.MATERIAL.stream()
-                .filter(Material::isSolid)
-                .toList());
+        super(plugin, dPlayer, SOLID_BLOCKS);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -47,7 +52,7 @@ public class BlockSelectMenu extends SearchMenu<Material> {
             if(!clickType.isLeftClick()) return false;
             this.future.complete(item);
             return this.returnMenu();
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override

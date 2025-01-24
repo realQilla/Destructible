@@ -5,42 +5,44 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.*;
-import net.qilla.destructible.mining.item.DItemStack;
-import net.qilla.destructible.mining.item.DTool;
+import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.ComponentUtil;
-import net.qilla.destructible.util.NumberUtil;
 import net.qilla.destructible.util.StringUtil;
+import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class ToolOverviewMenu extends DynamicMenu<DTool> {
+public class ToolOverviewMenu {
+
+    /*private static final Collection<DItem> DITEM_COLLECTION = DRegistry.ITEMS.values();
 
     public ToolOverviewMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
-        super(plugin, dPlayer, DRegistry.getDestructibleItem(DTool.class));
-        super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
+        super(plugin, dPlayer, DITEM_COLLECTION);
+        super.addSocket(new Socket(0, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new ToolModificationMenu(super.getPlugin(), dPlayer, null).open(true);
                 return true;
             } else return false;
-        }));
+        }, CooldownType.OPEN_MENU));
+        super.addSocket(this.clearItemsSocket());
+        super.addSocket(this.saveItemsSocket());
+        super.addSocket(this.reloadItemsSocket());
         super.populateModular();
         super.finalizeMenu();
     }
 
     @Override
-    public Socket createSocket(int index, DTool item) {
-        String toolList = item.getToolType().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getToolType().stream().toList());
+    public Socket createSocket(int index, DItem item) {
 
         return new Socket(index, Slot.of(builder -> builder
                 .material(item.getMaterial())
@@ -53,12 +55,11 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                         .addLines(item.getLore().lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Strength <white>" + NumberUtil.romanNumeral(item.getStrength())),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Efficiency <white>" + item.getEfficiency()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Durability <white>" + item.getDurability()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Tool Type: <white>"),
                                 MiniMessage.miniMessage().deserialize("<!italic><white>" + toolList),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Last Update <white>" + TimeUtil.timeSince(item.getVersion(), false)),
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount"),
@@ -68,45 +69,130 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                 .clickSound(Sounds.MENU_GET_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                return this.getItem(event, item);
-            } else if(clickType == ClickType.MIDDLE) {
+            if(clickType.isShiftClick() && clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Amount to receive",
+                        "");
+
+                super.getItemAmount(signText, item);
+                return true;
+            } else if(clickType.isLeftClick()) {
+                super.getItem(item);
+                return true;
+            }else if(clickType == ClickType.MIDDLE) {
                 new ToolModificationMenu(super.getPlugin(), getDPlayer(), item).open(true);
                 return true;
             } else return false;
-        });
+        }, CooldownType.GET_ITEM);
     }
 
-    private boolean getItem(InventoryClickEvent event, DTool dTool) {
-        if(getDPlayer().getCooldown().has(CooldownType.GET_ITEM)) return false;
-        getDPlayer().getCooldown().set(CooldownType.GET_ITEM);
-        ClickType clickType = event.getClick();
+    private Socket clearItemsSocket() {
+        return new Socket(45, Slot.of(builder -> builder
+                .material(Material.FIRE_CHARGE)
+                .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Custom Tools"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to clear custom tools")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to clear"
+                );
 
-        if(clickType.isShiftClick() && clickType.isLeftClick()) {
-            List<String> signText = List.of(
-                    "^^^^^^^^^^^^^^^",
-                    "Amount to receive",
-                    "");
-
-            SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
-            signInput.init(result -> {
-                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                    try {
-                        int value = Integer.parseInt(result);
-
-                        getDPlayer().give(DItemStack.of(dTool, value));
-                        getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dTool, value)).append(MiniMessage.miniMessage().deserialize("!")));
-                    } catch(NumberFormatException ignored) {
-                    }
-                    super.open(false);
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
+                            });
+                            this.refreshSockets();
+                            super.getDPlayer().sendMessage("<yellow>Custom tools have been <red><bold>CLEARED</red>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS_2, true);
+                        }
+                        super.open(false);
+                    });
                 });
-            });
-            return true;
-        } else if(clickType.isLeftClick()) {
-            getDPlayer().give(DItemStack.of(dTool, 1));
-            getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You received ").append(ComponentUtil.getItemAmountAndType(dTool, 1)).append(MiniMessage.miniMessage().deserialize("!")));
-            return true;
-        } else return false;
+                return true;
+            } else return false;
+        }, CooldownType.MENU_CLICK);
+    }
+
+    private Socket saveItemsSocket() {
+        return new Socket(46, Slot.of(builder -> builder
+                .material(Material.SLIME_BALL)
+                .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Custom Tools"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to save custom tool changes")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to save"
+                );
+
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                            });
+                            super.getDPlayer().sendMessage("<yellow>Custom tools have been <green><bold>SAVED</green>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                        }
+                        super.open(false);
+                    });
+                });
+                return true;
+            } else return false;
+        }, CooldownType.MENU_CLICK);
+    }
+
+    private Socket reloadItemsSocket() {
+        return new Socket(47, Slot.of(builder -> builder
+                .material(Material.SNOWBALL)
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Custom Tools"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to load the config, undoing any unsaved changes.")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to reload"
+                );
+
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
+                            });
+                            super.getDPlayer().sendMessage("<yellow>Custom tools have been <aqua><bold>RELOADED</aqua>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                        }
+                        super.open(false);
+                    });
+                });
+                return true;
+            } else return false;
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override
@@ -136,5 +222,5 @@ public class ToolOverviewMenu extends DynamicMenu<DTool> {
                 .previousIndex(7)
                 .shiftAmount(9)
         );
-    }
+    }*/
 }

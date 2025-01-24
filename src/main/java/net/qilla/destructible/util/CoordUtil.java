@@ -59,6 +59,7 @@ public final class CoordUtil {
     @NotNull
     public static BlockPos getBlockPos(@NotNull Location loc) {
         Preconditions.checkNotNull(loc, "Location cannot be null");
+
         return new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 

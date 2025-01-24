@@ -55,8 +55,9 @@ public class SignInput extends PlayerInput {
         });
     }
 
-    public CraftSign<SignBlockEntity> createSign(@NotNull List<String> text) {
+    public @NotNull  CraftSign<SignBlockEntity> createSign(@NotNull List<String> text) {
         Preconditions.checkNotNull(text, "Text cannot be null");
+
         CraftSign<SignBlockEntity> sign = new CraftSign<>(getDPlayer().getCraftPlayer().getWorld(), new SignBlockEntity(blockPos, Blocks.OAK_SIGN.defaultBlockState()));
         for(int i = 0; i <= 3 && i < text.size(); i++) {
             sign.setLine(i + 1, text.get(i));
@@ -65,7 +66,9 @@ public class SignInput extends PlayerInput {
         return sign;
     }
 
-    private BlockPos calcBlockPos(DPlayer dPlayer) {
-        return CoordUtil.getBlockPos(dPlayer.getCraftPlayer().getLocation()).offset(0, BLOCK_Y_OFFSET, 0);
+    private @NotNull  BlockPos calcBlockPos(@NotNull DPlayer dPlayer) {
+        Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
+
+        return CoordUtil.getBlockPos(dPlayer.getPlayer().getLocation()).offset(0, BLOCK_Y_OFFSET, 0);
     }
 }

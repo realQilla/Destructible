@@ -5,12 +5,14 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
+import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.BlockHighlight;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.NumberUtil;
 import net.qilla.destructible.util.StringUtil;
@@ -23,10 +25,12 @@ import java.util.Set;
 
 public class HighlightSelectMenu extends SearchMenu<String> {
 
+    private static final List<String> LOADED_BLOCKS = DRegistry.LOADED_BLOCKS_GROUPED.keySet().stream()
+            .toList();
     private final Set<String> highlights;
 
     public HighlightSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Set<String> highlights) {
-        super(plugin, dPlayer, DRegistry.LOADED_DESTRUCTIBLE_BLOCKS_GROUPED.keySet().stream().toList());
+        super(plugin, dPlayer, LOADED_BLOCKS);
         Preconditions.checkNotNull(highlights, "Set cannot be null");
         this.highlights = highlights;
         super.populateModular();
@@ -35,7 +39,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
 
     @Override
     public Socket createSocket(int index, String item) {
-        DBlock dBlock = DRegistry.DESTRUCTIBLE_BLOCKS.get(item);
+        DBlock dBlock = DRegistry.BLOCKS.get(item);
         String toolList = dBlock.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(dBlock.getCorrectTools().stream().toList());
         String visible = highlights.contains(item) ? "<green><bold>VISIBLE" : "<red><bold>NOT VISIBLE";
 
@@ -59,7 +63,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             BlockHighlight blockHighlight = getDPlayer().getDBlockEdit().getBlockHighlight();
-            DRegistry.DESTRUCTIBLE_BLOCK_EDITORS.add(getDPlayer());
+            DRegistry.BLOCK_EDITORS.add(super.getDPlayer());
             if(highlights.contains(item)) {
                 highlights.remove(item);
                 blockHighlight.removeVisibleDBlock(item);
@@ -71,7 +75,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
             }
             super.refreshSockets();
             return true;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override

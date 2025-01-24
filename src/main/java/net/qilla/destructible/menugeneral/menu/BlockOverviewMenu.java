@@ -5,32 +5,41 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
+import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.menugeneral.*;
+import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.NumberUtil;
 import net.qilla.destructible.util.StringUtil;
 import net.qilla.destructible.util.TimeUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class BlockOverviewMenu extends DynamicMenu<DBlock> {
 
+    private static final Collection<DBlock> DBLOCK_COLLECTION = DRegistry.BLOCKS.values();
+
     public BlockOverviewMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
-        super(plugin, dPlayer, DRegistry.DESTRUCTIBLE_BLOCKS.values());
+        super(plugin, dPlayer, DBLOCK_COLLECTION);
         super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), null).open(true);
                 return true;
             } else return false;
-        }), 0);
+        }, CooldownType.MENU_CLICK));
+        super.addSocket(this.clearlocksSocket());
+        super.addSocket(this.saveBlocksSocket());
+        super.addSocket(this.reloadBlocksSocket());
         super.populateModular();
         super.finalizeMenu();
     }
@@ -57,19 +66,124 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to make modifications")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
-        ), event -> blockClickInteraction(event, item));
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                new BlockLootpoolOverview(super.getPlugin(), super.getDPlayer(), item).open(true);
+                return true;
+            } else if(clickType == ClickType.MIDDLE) {
+                new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), item).open(true);
+                return true;
+            } else return false;
+        }, CooldownType.OPEN_MENU);
     }
 
-    private boolean blockClickInteraction(@NotNull InventoryClickEvent event, @NotNull DBlock dBlock) {
-        ClickType clickType = event.getClick();
+    private Socket saveBlocksSocket() {
+        return new Socket(0, Slot.of(builder -> builder
+                .material(Material.SLIME_BALL)
+                .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Custom Blocks"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to save custom block changes")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to save"
+                );
 
-        if(clickType.isLeftClick()) {
-            new BlockLootpoolOverview(super.getPlugin(), super.getDPlayer(), dBlock).open(true);
-            return true;
-        } else if(clickType == ClickType.MIDDLE) {
-            new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), dBlock).open(true);
-            return true;
-        } else return false;
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> super.getPlugin().getCustomBlocksFile().save());
+                            super.getDPlayer().sendMessage("<yellow>Custom blocks have been <green><bold>SAVED</green>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                        }
+                        super.open(false);
+                    });
+                });
+                return true;
+            } else return false;
+        }, CooldownType.MENU_CLICK);
+    }
+
+    private Socket reloadBlocksSocket() {
+        return new Socket(1, Slot.of(builder -> builder
+                .material(Material.SNOWBALL)
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Custom Blocks"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to load the config, undoing any unsaved changes.")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to reload"
+                );
+
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                                super.getPlugin().getCustomBlocksFile().load();
+                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
+                            });
+                            super.getDPlayer().sendMessage("<yellow>Custom blocks have been <aqua><bold>RELOADED</aqua>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                        }
+                        super.open(false);
+                    });
+                });
+                return true;
+            } else return false;
+        }, CooldownType.MENU_CLICK);
+    }
+
+    private Socket clearlocksSocket() {
+        return new Socket(2, Slot.of(builder -> builder
+                .material(Material.FIRE_CHARGE)
+                .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Custom Blocks"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to clear custom blocks")
+                )))
+                .clickSound(Sounds.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of(
+                        "^^^^^^^^^^^^^^^",
+                        "Type CONFIRM",
+                        "to clear"
+                );
+
+                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                signInput.init(result -> {
+                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+                        if(result.equals("CONFIRM")) {
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                                super.getPlugin().getCustomBlocksFile().clear();
+                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
+                            });
+                            super.getDPlayer().sendMessage("<yellow>All custom blocks have been <red><bold>CLEARED</red>!");
+                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS_2, true);
+                        }
+                        super.open(false);
+                    });
+                });
+                return true;
+            } else return false;
+        }, CooldownType.MENU_CLICK);
     }
 
     @Override

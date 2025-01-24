@@ -16,6 +16,7 @@ import net.qilla.destructible.menugeneral.MenuSize;
 import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.NumberUtil;
 import org.bukkit.Bukkit;
@@ -79,7 +80,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                     .chance(chance / 100)
                     .build());
             return super.returnMenu();
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     private Socket dItemSocket() {
@@ -92,7 +93,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                             MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click to set an item")
                     )))
                     .clickSound(Sounds.MENU_CLICK_ITEM)
-            ), this::setDItem);
+            ), this::setDItem, CooldownType.MENU_CLICK);
         } else {
             return new Socket(22, Slot.of(builder -> builder
                     .material(dItem.getMaterial())
@@ -109,7 +110,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                             )).build())
                     .clickSound(Sounds.MENU_CLICK_ITEM)
                     .appearSound(Sounds.MENU_ITEM_APPEAR)
-            ), this::setDItem);
+            ), this::setDItem, CooldownType.MENU_CLICK);
         }
     }
 
@@ -144,7 +145,7 @@ public class ItemDropCreationMenu extends StaticMenu {
             } else if(clickType.isRightClick()) {
                 return this.setMaxAmount();
             } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     private boolean setMinAmount() {
@@ -206,7 +207,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), this::setChance);
+        ), this::setChance, CooldownType.MENU_CLICK);
     }
 
     private boolean setChance(InventoryClickEvent event) {

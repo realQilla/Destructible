@@ -6,6 +6,7 @@ import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
@@ -34,11 +35,14 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
         List<T> shiftedList = new ArrayList<>(this.localPopulation).subList(fromIndex, toIndex);
 
         Iterator<Integer> iterator = dynamicConfig().dynamicIndexes().iterator();
+        List<Socket> socketList = new ArrayList<>();
+
         shiftedList.forEach(item -> {
             if(iterator.hasNext()) {
-                super.addSocket(createSocket(iterator.next(), item), 0);
+                socketList.add((createSocket(iterator.next(), item)));
             }
         });
+        super.addSocket(socketList);
         iterator.forEachRemaining(index -> super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT)));
     }
 
@@ -56,7 +60,7 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
                             .toList();
                     try {
                         super.refreshSockets();
-                        super.addSocket(resetSearchSocket(), 0);
+                        super.addSocket(resetSearchSocket());
                         getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                     } catch(NumberFormatException ignored) {
                     }
@@ -85,7 +89,7 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
             if(clickType.isLeftClick()) {
                 return this.searchFor();
             } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     private Socket resetSearchSocket() {
@@ -94,7 +98,7 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
             if(clickType.isLeftClick()) {
                 return this.resetSearch();
             } else return false;
-        });
+        }, CooldownType.MENU_CLICK);
     }
 
     public abstract String getString(T item);

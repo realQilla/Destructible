@@ -10,6 +10,7 @@ import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -29,7 +30,7 @@ public class BlockMenu extends StaticMenu {
                 new WorldLoadingMenu(super.getPlugin(), dPlayer).open(true);
                 return true;
             } else return false;
-        }), 0);
+        }, CooldownType.OPEN_MENU), 0);
 
         super.addSocket(new Socket(23, Slot.of(builder -> builder
                 .material(Material.CHEST_MINECART)
@@ -41,7 +42,7 @@ public class BlockMenu extends StaticMenu {
                 new BlockOverviewMenu(super.getPlugin(), super.getDPlayer()).open(true);
                 return true;
             } else return false;
-        }), 0);
+        }, CooldownType.OPEN_MENU), 0);
     }
 
     @Override

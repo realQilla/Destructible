@@ -11,8 +11,12 @@ public class StringUtil {
     private StringUtil() {
     }
 
-    public static @NotNull String pluralizer(@NotNull String string, int amount) {
-        return amount == 1 ? string : string + "'s";
+    public static @NotNull String pluralize(@NotNull String baseString, int amount) {
+        return amount == 1 ? baseString : baseString.endsWith("s") ? baseString.concat("'") : baseString.concat("'s");
+    }
+
+    public static @NotNull String pluralizeAppender(@NotNull String baseString, long amount) {
+        return amount == 1 ? baseString : baseString.endsWith("s") ? "'" : "'s";
     }
 
     public static @NotNull String toName(@NotNull String string) {

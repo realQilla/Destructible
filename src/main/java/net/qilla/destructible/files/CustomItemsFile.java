@@ -6,9 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
+import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.DTool;
 import net.qilla.destructible.typeadapters.DItemTA;
 import org.bukkit.Bukkit;
 import java.io.BufferedReader;
@@ -25,46 +25,45 @@ public class CustomItemsFile extends DestructibleFile {
 
     private final static String DEFAULT_RESOURCE = "custom_items_default.json";
     private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "custom_items.json");
-    private final Type type;
-    private final Gson gson;
+    private final Type type = new TypeToken<List<DItem>>() {
+    }.getType();
+    private final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(DItem.class, new DItemTA())
+            .setPrettyPrinting()
+            .create();
 
     public CustomItemsFile() {
         super(DEFAULT_RESOURCE, FILE_PATH);
-        this.type = new TypeToken<List<DItem>>() {}.getType();
-        this.gson = new GsonBuilder()
-                .registerTypeAdapter(DItem.class, new DItemTA())
-                .setPrettyPrinting()
-                .create();
     }
 
     @Override
     public void save() {
-        List<DItem> dBlockList = DRegistry.DESTRUCTIBLE_ITEMS.values().stream()
-                .filter(item -> !(item instanceof DTool)).toList();
+        try(BufferedWriter writer = Files.newWriter(super.newFile, StandardCharsets.UTF_8)) {
+            var registry = DRegistry.ITEMS;
+            List<DItem> list = registry.values().stream().toList();
 
-        String jsonString = this.gson.toJson(dBlockList, type);
-
-        try(BufferedWriter bufferedWriter = Files.newWriter(super.newFile, StandardCharsets.UTF_8)) {
-            bufferedWriter.write(jsonString);
-        } catch(IOException exception) {
-            Bukkit.getLogger().severe("There was a problem saving custom items!" + exception);
+            writer.write(gson.toJson(list, type));
+        } catch(IOException e) {
+            Bukkit.getLogger().severe("Error saving custom items!\n" + e.getMessage());
         }
     }
 
     @Override
     public void load() {
-        DRegistry.DESTRUCTIBLE_ITEMS.clear();
-        try(BufferedReader bufferedReader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
-            List<DItem> dBlockList = this.gson.fromJson(bufferedReader, type);
-            for(DItem dItem : dBlockList) DRegistry.DESTRUCTIBLE_ITEMS.put(dItem.getId(), dItem);
-        } catch(IOException | JsonSyntaxException exception) {
+        this.clear();
+        try(BufferedReader reader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
+            List<DItem> list = gson.fromJson(reader, type);
+            var registry = DRegistry.ITEMS;
+
+            list.forEach(item -> registry.put(item.getId(), item));
+        } catch(IOException | JsonSyntaxException e) {
             super.reset();
-            Bukkit.getLogger().severe("There was a problem loading: \"" + this.newPath + "\"\n The old file has been renamed to \"" + this.newFile.getName() + "\".old");
+            Bukkit.getLogger().severe("Error loading \"" + this.newPath + "\". File has been reset!\n" + e.getMessage());
         }
     }
 
     @Override
     public void clear() {
-        DRegistry.DESTRUCTIBLE_ITEMS.clear();
+        DRegistry.ITEMS.clear();
     }
 }

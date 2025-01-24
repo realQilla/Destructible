@@ -49,7 +49,7 @@ public class DBlockTA extends TypeAdapter<DBlock> {
 
     @Override
     public DBlock read(JsonReader in) throws IOException {
-        DBlock.Builder builder = new DBlock.Builder();
+        DBlock.Builder builder =DBlock.builder();
         in.beginObject();
         while(in.hasNext()) {
             switch(in.nextName()) {

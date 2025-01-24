@@ -2,8 +2,10 @@ package net.qilla.destructible.menugeneral;
 
 import com.google.common.base.Preconditions;
 import net.qilla.destructible.Destructible;
+import net.qilla.destructible.data.Subscriber;
 import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Socket;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class DynamicMenu<T> extends StaticMenu {
+public abstract class DynamicMenu<T> extends StaticMenu implements Subscriber {
 
     private final List<Integer> dynamicSlots;
     private final Collection<T> itemPopulation;
@@ -39,16 +41,20 @@ public abstract class DynamicMenu<T> extends StaticMenu {
         List<T> shiftedList = new ArrayList<>(this.itemPopulation).subList(fromIndex, toIndex);
 
         Iterator<Integer> iterator = dynamicSlots.iterator();
+        List<Socket> socketList = new ArrayList<>();
+
         for(T item : shiftedList) {
             if(iterator.hasNext()) {
-                super.addSocket(createSocket(iterator.next(), item), 0);
+                socketList.add(createSocket(iterator.next(), item));
             }
         }
+        super.addSocket(socketList);
         iterator.forEachRemaining(index -> super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT)));
     }
 
-    public void rotateNext(InventoryClickEvent event, int amount) {
+    public boolean rotateNext(InventoryClickEvent event, int amount) {
         ClickType clickType = event.getClick();
+
         if(clickType.isShiftClick() && clickType.isLeftClick()) {
             for(int i = 0; i < dynamicSlots.size() / amount; i++) {
                 if((shiftIndex += amount) + dynamicSlots.size() > itemPopulation.size()) {
@@ -57,14 +63,13 @@ public abstract class DynamicMenu<T> extends StaticMenu {
                 }
             }
         } else if(clickType.isLeftClick()) shiftIndex += amount;
+        else return false;
 
-        if(shiftIndex > 0) super.addSocket(previousSocket(), 0);
-        else super.removeSocket(previousSocket().index());
-
-        refreshSockets();
+        this.refreshSockets();
+        return true;
     }
 
-    public void rotatePrevious(InventoryClickEvent event, int amount) {
+    public boolean rotatePrevious(InventoryClickEvent event, int amount) {
         ClickType clickType = event.getClick();
         if(clickType.isShiftClick() && clickType.isLeftClick()) {
             for(int i = 0; i < dynamicSlots.size() / amount; i++) {
@@ -72,17 +77,19 @@ public abstract class DynamicMenu<T> extends StaticMenu {
             }
         }
         else if(clickType.isLeftClick()) shiftIndex -= amount;
-        if(shiftIndex < 0) shiftIndex = 0;
+        else return false;
 
-        refreshSockets();
+        this.refreshSockets();
+        return true;
     }
 
     @Override
     public void refreshSockets() {
-        if(shiftIndex + dynamicSlots.size() < itemPopulation.size()) super.addSocket(nextSocket(), 5);
+        if(shiftIndex + dynamicSlots.size() < itemPopulation.size()) super.addSocket(nextSocket());
         else super.removeSocket(nextSocket().index());
-        if(shiftIndex > 0) super.addSocket(previousSocket(), 5);
+        if(shiftIndex > 0) super.addSocket(previousSocket());
         else super.removeSocket(previousSocket().index());
+        if(shiftIndex < 0) shiftIndex = 0;
 
         this.populateModular();
     }
@@ -107,20 +114,23 @@ public abstract class DynamicMenu<T> extends StaticMenu {
         return new Socket(dynamicConfig().nextIndex(), Slots.NEXT, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                this.rotateNext(event, dynamicConfig().shiftAmount());
-                return true;
+                return this.rotateNext(event, dynamicConfig().shiftAmount());
             } else return false;
-        });
+        }, CooldownType.MENU_ROTATE);
     }
 
     protected Socket previousSocket() {
         return new Socket(dynamicConfig().previousIndex(), Slots.PREVIOUS, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                this.rotatePrevious(event, dynamicConfig().shiftAmount());
-                return true;
+                return this.rotatePrevious(event, dynamicConfig().shiftAmount());
             } else return false;
-        });
+    }, CooldownType.MENU_ROTATE);
+    }
+
+    @Override
+    public void update() {
+        refreshSockets();
     }
 
     public abstract DynamicConfig dynamicConfig();

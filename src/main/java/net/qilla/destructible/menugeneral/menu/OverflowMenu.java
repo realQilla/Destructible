@@ -11,10 +11,13 @@ import net.qilla.destructible.menugeneral.slot.Slots;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.DItemStack;
+import net.qilla.destructible.mining.item.ItemStackFactory;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.Overflow;
+import net.qilla.destructible.player.OverflowEntry;
 import net.qilla.destructible.util.ComponentUtil;
+import net.qilla.destructible.util.DUtil;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
+public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> {
 
     public OverflowMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
         super(plugin, dPlayer, dPlayer.getOverflow().getOverflow());
@@ -37,57 +40,60 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<DItem, Integer>> {
         ), event -> {
             this.clearOverflow(event);
             return true;
-        }), 0);
+        }, CooldownType.MENU_CLICK), 0);
         super.populateModular();
         super.finalizeMenu();
     }
 
     @Override
-    public Socket createSocket(int index, Map.Entry<DItem, Integer> item) {
+    public Socket createSocket(int index, Map.Entry<String, OverflowEntry> item) {
+        DItem dItem = DUtil.getDItem(item.getValue().getData().getItemID());
+        int amount = item.getValue().getAmount();
+
         return new Socket(index, Slot.of(builder -> builder
-                .material(item.getKey().getMaterial())
-                .amount(item.getValue())
-                .displayName(item.getKey().getDisplayName().append(MiniMessage.miniMessage().deserialize("<white> x" + item.getValue())))
+                .material(dItem.getMaterial())
+                .amount(amount)
+                .displayName(dItem.getDisplayName().append(MiniMessage.miniMessage().deserialize("<white> x" + amount)))
                 .lore(ItemLore.lore().addLine(MiniMessage.miniMessage().deserialize("<!italic><gold><bold>STASHED<gold>"))
-                        .addLines(item.getKey().getLore().lines())
+                        .addLines(ComponentUtil.getLore(dItem).lines())
                         .addLines(List.of(
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to claim"),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Right Click to remove")
                         )).build()
                 )
-        ), event -> this.claimOverflow(event, item));
+        ), event -> this.claimOverflow(event, dItem, amount), CooldownType.MENU_CLICK);
     }
 
-    private boolean claimOverflow(InventoryClickEvent event, Map.Entry<DItem, Integer> item) {
+    private boolean claimOverflow(InventoryClickEvent event, DItem dItem, int amount) {
         ClickType clickType = event.getClick();
         Overflow overflow = super.getDPlayer().getOverflow();
-        DItem dItem = item.getKey();
 
-        if(!overflow.contains(dItem)) {
+        if(!overflow.contains(dItem.getId())) {
             super.getDPlayer().sendMessage("<red>This item is no longer in your overflow stash!");
             getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
             return false;
         }
 
         if(clickType.isShiftClick() && clickType.isRightClick()) {
-            overflow.remove(dItem);
+            overflow.remove(dItem.getId());
             super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You have <red><bold>REMOVED</red> ").append(dItem.getDisplayName().asComponent()).append(MiniMessage.miniMessage().deserialize(" from your stash!")));
             getDPlayer().playSound(Sounds.ITEM_DELETE, true);
         } else if(clickType.isLeftClick()) {
-            if(super.getDPlayer().getSpace(DItemStack.of(dItem, item.getValue())) <= 0) {
+            if(super.getDPlayer().getSpace(ItemStackFactory.of(dItem, amount)) <= 0) {
                 super.getDPlayer().sendMessage("<red>You do not have enough space in your inventory!");
                 getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
                 return false;
             }
 
-            ItemStack takenItemStack = overflow.take(dItem);
+            Optional<ItemStack> optional = overflow.take(dItem.getId());
 
-            if(takenItemStack == null) {
+            if(optional.isEmpty()) {
                 super.getDPlayer().sendMessage("<red>There was an error claiming this item!");
                 getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
                 return false;
             }
+            ItemStack takenItemStack = optional.get();
 
             super.getDPlayer().give(takenItemStack.clone());
             super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You claimed ").append(ComponentUtil.getItemAmountAndType(takenItemStack)).append(MiniMessage.miniMessage().deserialize("!")));

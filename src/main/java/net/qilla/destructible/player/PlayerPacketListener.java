@@ -8,15 +8,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerPacketListener {
+
+    private static final Map<Long, ConcurrentHashMap<Integer, BlockMemory>> BLOCK_MEMORY_MAP = DRegistry.LOADED_BLOCK_MEMORY;
 
     public void addListener(@NotNull DPlayer dPlayer) {
         Preconditions.checkNotNull(dPlayer, "DPlayer cannot be null");
@@ -55,11 +59,10 @@ public final class PlayerPacketListener {
             BlockPos blockPos = usePacket.getHitResult().getBlockPos();
             long chunkKey = CoordUtil.getChunkKey(blockPos);
             int chunkInt = CoordUtil.getBlockIndexInChunk(blockPos);
-            if(DRegistry.DESTRUCTIBLE_BLOCK_DATA.computeIfAbsent(chunkKey, v ->
+
+            return BLOCK_MEMORY_MAP.computeIfAbsent(chunkKey, v ->
                     new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, v ->
-                    new BlockMemory()).isOnCooldown()) {
-                return true;
-            }
+                    new BlockMemory()).isOnCooldown();
         } else if(packet instanceof ServerboundSignUpdatePacket signPacket) {
             return dPlayer.getMenuHolder().fulfillInput(signPacket.getLines()[0]);
         }

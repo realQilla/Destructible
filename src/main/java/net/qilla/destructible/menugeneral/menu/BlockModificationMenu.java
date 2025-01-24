@@ -5,12 +5,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.data.DRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.menugeneral.StaticMenu;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.menu.select.BlockParticleSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.BlockSelectMenu;
-import net.qilla.destructible.menugeneral.menu.select.CorrectToolMenu;
+import net.qilla.destructible.menugeneral.menu.select.MultiToolTypeSelectionMenu;
 import net.qilla.destructible.menugeneral.menu.select.SoundSelectMenu;
 import net.qilla.destructible.menugeneral.slot.Slot;
 import net.qilla.destructible.menugeneral.slot.Slots;
@@ -20,6 +20,7 @@ import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
+import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.StringUtil;
 import net.qilla.destructible.util.TimeUtil;
@@ -33,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class BlockModificationMenu extends StaticMenu {
 
+    private static final Map<String, DBlock> DBLOCK_MAP = DRegistry.BLOCKS;
     private boolean fullMenu;
     private final DBlock dBlock;
     private String id;
@@ -68,9 +70,8 @@ public class BlockModificationMenu extends StaticMenu {
 
     private void populateSettings() {
         List<Socket> socketList = new ArrayList<>(List.of(
-                idSocket(), strengthSocket(),
-                durabilitySocket(), lootpoolSocket(), correctToolSocket(),
-                cooldownSocket(), breakParticleSocket(), breakSoundSocket()
+                idSocket(), strengthSocket(), durabilitySocket(), lootpoolSocket(),
+                correctToolSocket(), cooldownSocket(), breakParticleSocket(), breakSoundSocket()
         ));
         Collections.shuffle(socketList);
         socketList.add(buildSocket());
@@ -103,13 +104,13 @@ public class BlockModificationMenu extends StaticMenu {
     }
 
     public Socket buildSocket() {
-        return new Socket(31, Slots.CONFIRM, this::build);
+        return new Socket(31, Slots.CONFIRM, this::build, CooldownType.MENU_CLICK);
     }
 
     private boolean build(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        DBlock dBlock = new DBlock.Builder()
+        DBlock dBlock = DBlock.builder()
                 .id(id)
                 .material(material)
                 .strength(strength)
@@ -121,11 +122,10 @@ public class BlockModificationMenu extends StaticMenu {
                 .breakParticle(breakParticle)
                 .build();
         if(this.dBlock != null) {
-            DRegistry.DESTRUCTIBLE_BLOCKS.remove(this.dBlock.getId());
+            DBLOCK_MAP.remove(this.dBlock.getId());
             getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully replaced by " + id + "!"));
         } else getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
-        DRegistry.DESTRUCTIBLE_BLOCKS.put(dBlock.getId(), dBlock);
-        super.getPlugin().getCustomBlocksFile().save();
+        DBLOCK_MAP.put(dBlock.getId(), dBlock);
         return super.returnMenu();
     }
 
@@ -137,7 +137,7 @@ public class BlockModificationMenu extends StaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to permanently"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>delete this block")
                 )))
-        ), this::remove);
+        ), this::remove, CooldownType.MENU_CLICK);
     }
 
     private boolean remove(InventoryClickEvent event) {
@@ -149,8 +149,7 @@ public class BlockModificationMenu extends StaticMenu {
         }
 
         getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
-        DRegistry.DESTRUCTIBLE_BLOCKS.remove(dBlock.getId());
-        super.getPlugin().getCustomBlocksFile().save();
+        DBLOCK_MAP.remove(dBlock.getId());
         getDPlayer().playSound(Sounds.RESET, true);
         return super.returnMenu();
     }
@@ -167,7 +166,7 @@ public class BlockModificationMenu extends StaticMenu {
                     )))
                     .clickSound(Sounds.MENU_CLICK_ITEM)
                     .appearSound(Sounds.MENU_ITEM_APPEAR)
-            ), this::clickMaterial);
+            ), this::clickMaterial, CooldownType.MENU_CLICK);
         } else return new Socket(13, Slot.of(builder -> builder
                 .material(material)
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
@@ -178,7 +177,7 @@ public class BlockModificationMenu extends StaticMenu {
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), this::clickMaterial);
+        ), this::clickMaterial, CooldownType.MENU_CLICK);
     }
 
     public Socket idSocket() {
@@ -193,7 +192,7 @@ public class BlockModificationMenu extends StaticMenu {
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), this::inputID);
+        ), this::inputID, CooldownType.MENU_CLICK);
     }
 
     private boolean inputID(InventoryClickEvent event) {
@@ -207,7 +206,7 @@ public class BlockModificationMenu extends StaticMenu {
         new SignInput(super.getPlugin(), super.getDPlayer(), signText).init(result -> {
             Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                 if(!result.isEmpty()) {
-                    if(DRegistry.DESTRUCTIBLE_BLOCKS.containsKey(result)) {
+                    if(DBLOCK_MAP.containsKey(result)) {
                         super.getDPlayer().sendMessage("<red>Block ID already exists.");
                         super.getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
                     } else {
@@ -234,7 +233,7 @@ public class BlockModificationMenu extends StaticMenu {
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), this::inputDurability);
+        ), this::inputDurability, CooldownType.MENU_CLICK);
     }
 
     private boolean inputDurability(InventoryClickEvent event) {
@@ -272,7 +271,7 @@ public class BlockModificationMenu extends StaticMenu {
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), this::inputStrength);
+        ), this::inputStrength, CooldownType.MENU_CLICK);
     }
 
     private boolean inputStrength(InventoryClickEvent event) {
@@ -315,7 +314,7 @@ public class BlockModificationMenu extends StaticMenu {
             if(!clickType.isLeftClick()) return false;
             new LootpoolSetMenu(super.getPlugin(), super.getDPlayer(), lootpool).open(true);
             return true;
-        });
+        }, CooldownType.OPEN_MENU);
     }
 
     protected Socket correctToolSocket() {
@@ -334,9 +333,9 @@ public class BlockModificationMenu extends StaticMenu {
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
-            new CorrectToolMenu(super.getPlugin(), super.getDPlayer(), correctTools).open(true);
+            new MultiToolTypeSelectionMenu(super.getPlugin(), super.getDPlayer(), correctTools).open(true);
             return true;
-        });
+        }, CooldownType.OPEN_MENU);
     }
 
     protected Socket cooldownSocket() {
@@ -351,7 +350,7 @@ public class BlockModificationMenu extends StaticMenu {
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
-        ), this::inputCooldown);
+        ), this::inputCooldown, CooldownType.MENU_CLICK);
     }
 
     private boolean inputCooldown(InventoryClickEvent event) {
@@ -396,7 +395,7 @@ public class BlockModificationMenu extends StaticMenu {
             new BlockParticleSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(breakParticle -> this.breakParticle = breakParticle);
             return true;
-        });
+        }, CooldownType.OPEN_MENU);
     }
 
     public Socket breakSoundSocket() {
@@ -418,7 +417,7 @@ public class BlockModificationMenu extends StaticMenu {
             new SoundSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
             future.thenAccept(sound -> this.breakSound = sound);
             return true;
-        });
+        }, CooldownType.OPEN_MENU);
     }
 
     @Override

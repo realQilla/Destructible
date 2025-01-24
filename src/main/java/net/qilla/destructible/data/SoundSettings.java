@@ -1,8 +1,16 @@
 package net.qilla.destructible.data;
 
+import com.google.common.base.Preconditions;
 import net.qilla.destructible.player.PlayType;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Represents configurable settings for playing a sound to or around a player.
+ * This class encapsulates details such as the sound to play, its volume, pitch,
+ * category, and the type of playback.
+ */
 
 public class SoundSettings {
 
@@ -12,15 +20,10 @@ public class SoundSettings {
     private final SoundCategory category;
     private final PlayType playType;
 
-    public SoundSettings(Sound sound, float volume, float pitch, PlayType playType) {
-        this.sound = sound;
-        this.volume = volume;
-        this.pitch = pitch;
-        this.category = null;
-        this.playType = playType;
-    }
-
-    public SoundSettings(Sound sound, float volume, float pitch, SoundCategory category, PlayType playType) {
+    private SoundSettings(@NotNull Sound sound, float volume, float pitch, @NotNull SoundCategory category, @NotNull PlayType playType) {
+        Preconditions.checkNotNull(sound, "Sound cannot be null");
+        Preconditions.checkNotNull(category, "SoundCategory cannot be null");
+        Preconditions.checkNotNull(playType, "PlayType cannot be null");
         this.sound = sound;
         this.volume = volume;
         this.pitch = pitch;
@@ -28,14 +31,13 @@ public class SoundSettings {
         this.playType = playType;
     }
 
-    public static SoundSettings of(Sound sound, float volume, float pitch, PlayType playType) {
-        return new SoundSettings(sound, volume, pitch, playType);
-    }
-
-    public static SoundSettings of(Sound sound, float volume, float pitch, SoundCategory soundCategory, PlayType playType) {
+    public static SoundSettings of(@NotNull Sound sound, float volume, float pitch, @NotNull SoundCategory soundCategory, @NotNull PlayType playType) {
         return new SoundSettings(sound, volume, pitch, soundCategory, playType);
     }
 
+    public static SoundSettings of(@NotNull Sound sound, float volume, float pitch, @NotNull PlayType plaType) {
+        return new SoundSettings(sound, volume, pitch, SoundCategory.MASTER, plaType);
+    }
 
     public Sound getSound() {
         return this.sound;
