@@ -1,5 +1,6 @@
 package net.qilla.destructible.menugeneral.menu;
 
+import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
@@ -16,6 +17,8 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class BlockMenu extends StaticMenu {
 
     public BlockMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
@@ -23,6 +26,10 @@ public class BlockMenu extends StaticMenu {
         super.addSocket(new Socket(21, Slot.of(builder -> builder
                 .material(Material.COMMAND_BLOCK_MINECART)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>World Loading"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view options on loading blocks")
+                )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
@@ -34,7 +41,11 @@ public class BlockMenu extends StaticMenu {
 
         super.addSocket(new Socket(23, Slot.of(builder -> builder
                 .material(Material.CHEST_MINECART)
-                .displayName(MiniMessage.miniMessage().deserialize("<yellow>Custom Block Overview"))
+                .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Overview"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view or customize all blocks")
+                )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();

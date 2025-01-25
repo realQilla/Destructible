@@ -9,6 +9,7 @@ import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -45,7 +46,10 @@ public abstract class DynamicMenu<T> extends StaticMenu implements Subscriber {
 
         for(T item : shiftedList) {
             if(iterator.hasNext()) {
-                socketList.add(createSocket(iterator.next(), item));
+                int index = iterator.next();
+                Socket socket = createSocket(index, item);
+                if(socket != null) socketList.add(socket);
+                else super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT));
             }
         }
         super.addSocket(socketList);
@@ -134,5 +138,5 @@ public abstract class DynamicMenu<T> extends StaticMenu implements Subscriber {
     }
 
     public abstract DynamicConfig dynamicConfig();
-    public abstract Socket createSocket(int index, T item);
+    public abstract @Nullable Socket createSocket(int index, T item);
 }

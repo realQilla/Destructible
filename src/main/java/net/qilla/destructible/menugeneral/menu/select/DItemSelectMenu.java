@@ -50,7 +50,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click to select custom item")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select custom item")
                         )).build()
                 )
                 .clickSound(Sounds.MENU_CLICK_ITEM)

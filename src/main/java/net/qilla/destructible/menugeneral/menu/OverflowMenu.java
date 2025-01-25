@@ -34,7 +34,7 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> 
                 .material(Material.BARRIER)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to clear your entire"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to clear your entire"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>overflow stash")
                 )))
         ), event -> {
@@ -58,8 +58,8 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> 
                         .addLines(ComponentUtil.getLore(dItem).lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to claim"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Right Click to remove")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to claim"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.sneak> + <key:key.mouse.left> to remove")
                         )).build()
                 )
         ), event -> this.claimOverflow(event, dItem, amount), CooldownType.MENU_CLICK);

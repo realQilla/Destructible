@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemDrop {
 
     private final DItem item;
+    private final boolean fortuneAffected;
     private final int minAmount;
     private final int maxAmount;
     private final double chance;
@@ -15,6 +16,7 @@ public class ItemDrop {
         Preconditions.checkNotNull(builder, "Builder cannot be null");
 
         this.item = builder.item;
+        this.fortuneAffected = builder.fortuneAffected;
         this.minAmount = builder.minAmount;
         this.maxAmount = builder.maxAmount;
         this.chance = builder.chance;
@@ -22,6 +24,10 @@ public class ItemDrop {
 
     public @NotNull DItem getDItem() {
         return this.item;
+    }
+
+    public boolean isFortuneAffected() {
+        return this.fortuneAffected;
     }
 
     public int getMinAmount() {
@@ -38,12 +44,14 @@ public class ItemDrop {
 
     public static class Builder implements ItemBuilder<ItemDrop> {
         private DItem item;
+        private boolean fortuneAffected;
         private int minAmount;
         private int maxAmount;
         private double chance;
 
         public Builder() {
             this.item = DItems.MISSING_ITEM;
+            this.fortuneAffected = true;
             this.minAmount = 1;
             this.maxAmount = 1;
             this.chance = 1.0f;
@@ -56,6 +64,11 @@ public class ItemDrop {
 
         public Builder dItem(@NotNull DItem item) {
             this.item = item;
+            return this;
+        }
+
+        public Builder fortuneAffected(boolean fortuneAffected) {
+            this.fortuneAffected = fortuneAffected;
             return this;
         }
 

@@ -63,8 +63,8 @@ public class WorldLoadingMenu extends StaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Loading block " + dBlock),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Recursion size " + size),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select a block to be loaded"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Right Click to set a recursion size, or nothing to disable")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select a block to be loaded"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to set a recursion size, or nothing to disable")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), this::clickLoadBlock, CooldownType.MENU_CLICK);
@@ -113,7 +113,7 @@ public class WorldLoadingMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Disable Block Loading"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to disable block loading")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to disable block loading")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -135,7 +135,7 @@ public class WorldLoadingMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Loaded Block View"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to specify blocks to view")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to specify blocks to view")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -153,7 +153,7 @@ public class WorldLoadingMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Loaded Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to save all loaded blocks within the world")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to save all loaded blocks within the world")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -190,7 +190,7 @@ public class WorldLoadingMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Loaded Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to load the config, undoing any unsaved changes.")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to load the config, undoing any unsaved changes.")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -227,7 +227,7 @@ public class WorldLoadingMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Loaded Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to clear all loaded blocks within the world")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to clear all loaded blocks within the world")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

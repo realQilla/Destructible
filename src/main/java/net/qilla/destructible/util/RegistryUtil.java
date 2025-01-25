@@ -53,26 +53,39 @@ public class RegistryUtil {
         return unloadBlock(CoordUtil.getChunkKey(blockPos), CoordUtil.getBlockIndexInChunk(blockPos));
     }
 
-    public static boolean loadBlock(long chunkKey, int chunkInt, @NotNull String blockId) {
+    public synchronized static boolean loadBlock(long chunkKey, int chunkInt, @NotNull String blockId) {
         Preconditions.checkNotNull(blockId, "DBlock cannot be null");
-        var chunkMap = LOADED_BLOCKS.computeIfAbsent(chunkKey, c -> new ConcurrentHashMap<>());
 
-        if(chunkMap.containsKey(chunkInt)) return false;
+        var loadedBlocksChunkIntMap = LOADED_BLOCKS.computeIfAbsent(chunkKey, c -> new ConcurrentHashMap<>());
+        var loadedBlocksGrouped = LOADED_BLOCKS_GROUPED;
 
-        chunkMap.put(chunkInt,blockId);
-        LOADED_BLOCKS_GROUPED.computeIfAbsent(blockId, id -> new ConcurrentHashMap<>())
+        String previousID = loadedBlocksChunkIntMap.put(chunkInt, blockId);
+
+        loadedBlocksGrouped.computeIfAbsent(blockId, id -> new ConcurrentHashMap<>())
                 .computeIfAbsent(chunkKey, pos -> new HashSet<>())
                 .add(chunkInt);
+
+        if(previousID == null) return true;
+
+        loadedBlocksGrouped.computeIfPresent(previousID, (id, chunkKeyMap) -> {
+            chunkKeyMap.computeIfPresent(chunkKey, (chunkKey2, chunkIntSet) -> {
+                chunkIntSet.remove(chunkInt);
+                if(chunkIntSet.isEmpty()) return null;
+                return chunkIntSet;
+            });
+            return chunkKeyMap.isEmpty() ? null : chunkKeyMap;
+        });
         return true;
     }
 
-    public static boolean unloadBlock(long chunkKey, int chunkInt) {
+    public synchronized static boolean unloadBlock(long chunkKey, int chunkInt) {
         var loadedBlocks = LOADED_BLOCKS;
 
         var chunkMap = loadedBlocks.get(chunkKey);
         if(chunkMap == null || !chunkMap.containsKey(chunkInt)) return false;
 
         String blockId = chunkMap.remove(chunkInt);
+
         if(chunkMap.isEmpty()) loadedBlocks.remove(chunkKey);
 
         LOADED_BLOCKS_GROUPED.computeIfPresent(blockId, (id, blockMap) -> {

@@ -39,7 +39,10 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
 
         shiftedList.forEach(item -> {
             if(iterator.hasNext()) {
-                socketList.add((createSocket(iterator.next(), item)));
+                int index = iterator.next();
+                Socket socket = createSocket(index, item);
+                if(socket != null) socketList.add(socket);
+                else super.addSocket(new Socket(index, Slots.EMPTY_MODULAR_SLOT));
             }
         });
         super.addSocket(socketList);

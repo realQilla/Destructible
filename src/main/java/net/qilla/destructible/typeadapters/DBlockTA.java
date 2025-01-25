@@ -20,12 +20,12 @@ public class DBlockTA extends TypeAdapter<DBlock> {
     @Override
     public void write(JsonWriter out, DBlock value) throws IOException {
         out.beginObject();
-        out.name("ID").value(value.getId());
-        out.name("BLOCK_MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
-        out.name("BLOCK_STRENGTH").value(value.getStrength());
-        out.name("BLOCK_DURABILITY").value(value.getDurability());
-        out.name("BLOCK_COOLDOWN").value(value.getCooldown());
-        out.name("CORRECT_TOOLS");
+        out.name("BLOCK_ID").value(value.getId());
+        out.name("MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
+        out.name("STRENGTH").value(value.getStrength());
+        out.name("DURABILITY").value(value.getDurability());
+        out.name("COOLDOWN").value(value.getCooldown());
+        out.name("TOOLS");
         out.beginArray();
         for(ToolType tool : value.getCorrectTools()) {
             out.value(tool.toString());
@@ -37,9 +37,10 @@ public class DBlockTA extends TypeAdapter<DBlock> {
         out.beginArray();
         for(ItemDrop drop : value.getLootpool()) {
             out.beginObject();
-            out.name("DESTRUCTIBLE_ITEM").value(drop.getDItem().getId());
-            out.name("MIN_AMOUNT").value(drop.getMinAmount());
-            out.name("MAX_AMOUNT").value(drop.getMaxAmount());
+            out.name("ITEM_ID").value(drop.getDItem().getId());
+            out.name("FORTUNE").value(drop.isFortuneAffected());
+            out.name("MIN").value(drop.getMinAmount());
+            out.name("MAX").value(drop.getMaxAmount());
             out.name("CHANCE").value(drop.getChance());
             out.endObject();
         }
@@ -53,22 +54,22 @@ public class DBlockTA extends TypeAdapter<DBlock> {
         in.beginObject();
         while(in.hasNext()) {
             switch(in.nextName()) {
-                case "ID":
+                case "BLOCK_ID":
                     builder.id(in.nextString());
                     break;
-                case "BLOCK_MATERIAL":
+                case "MATERIAL":
                     builder.material(Registry.MATERIAL.get(NamespacedKey.fromString(in.nextString())));
                     break;
-                case "BLOCK_STRENGTH":
+                case "STRENGTH":
                     builder.strength(in.nextInt());
                     break;
-                case "BLOCK_DURABILITY":
+                case "DURABILITY":
                     builder.durability(in.nextInt());
                     break;
-                case "BLOCK_COOLDOWN":
+                case "COOLDOWN":
                     builder.cooldown(in.nextLong());
                     break;
-                case "CORRECT_TOOLS":
+                case "TOOLS":
                     Set<ToolType> tools = new HashSet<>();
                     in.beginArray();
                     while(in.hasNext()) {
@@ -91,13 +92,16 @@ public class DBlockTA extends TypeAdapter<DBlock> {
                         ItemDrop.Builder dropBuilder = new ItemDrop.Builder();
                         while(in.hasNext()) {
                             switch(in.nextName()) {
-                                case "DESTRUCTIBLE_ITEM":
+                                case "ITEM_ID":
                                     dropBuilder.dItem(in.nextString());
                                     break;
-                                case "MIN_AMOUNT":
+                                case "FORTUNE":
+                                    dropBuilder.fortuneAffected(in.nextBoolean());
+                                    break;
+                                case "MIN":
                                     dropBuilder.minAmount(in.nextInt());
                                     break;
-                                case "MAX_AMOUNT":
+                                case "MAX":
                                     dropBuilder.maxAmount(in.nextInt());
                                     break;
                                 case "CHANCE":

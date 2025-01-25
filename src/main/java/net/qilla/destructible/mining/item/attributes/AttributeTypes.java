@@ -1,6 +1,5 @@
 package net.qilla.destructible.mining.item.attributes;
 
-import com.google.common.reflect.TypeToken;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.item.ToolType;
 import org.bukkit.Material;
@@ -8,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
-import java.util.Set;
 
 /**
  * A set of predefined attributes that can be utilized by items.
@@ -16,7 +14,7 @@ import java.util.Set;
 
 public class AttributeTypes {
 
-    public AttributeTypes() {
+    private AttributeTypes() {
     }
 
     /**
@@ -35,7 +33,7 @@ public class AttributeTypes {
      * The efficiency at which an item can break a block.
      */
 
-    public static final AttributeType<Integer> MINING_EFFICIENCY = of("mining_efficiency", 1,  Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, int.class);
+    public static final AttributeType<Integer> MINING_EFFICIENCY = of("mining_efficiency", 0,  Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE, int.class);
 
     /**
      * An items strength, this value is used by bocks to determine if they can be damaged/mined.

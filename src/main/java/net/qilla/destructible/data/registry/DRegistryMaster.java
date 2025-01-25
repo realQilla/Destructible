@@ -1,7 +1,7 @@
 package net.qilla.destructible.data.registry;
 
 import com.google.common.base.Preconditions;
-import net.qilla.destructible.data.Subscriber;
+import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +14,7 @@ public final class DRegistryMaster {
 
     private static final Map<DRegistryKey<?>, DRegistryHolder<?>> MASTER_REGISTRY = new ConcurrentHashMap<>();
 
-    public static <T> void addRegistry(@NotNull DRegistryKey<T> key, @NotNull DRegistryHolder<T> registry) {
+    private static <T> void addRegistry(@NotNull DRegistryKey<T> key, @NotNull DRegistryHolder<T> registry) {
         Preconditions.checkNotNull(key, "Key cannot be null");
         Preconditions.checkNotNull(registry, "Registry cannot be null");
 
@@ -25,18 +25,6 @@ public final class DRegistryMaster {
         Preconditions.checkNotNull(key, "RegistryType cannot be null");
 
         return getHolder(key).get();
-    }
-
-    public static void subscribe(@NotNull DRegistryKey<?> key, @NotNull Subscriber subscriber) {
-        Preconditions.checkNotNull(key, "RegistryType cannot be null");
-
-        getHolder(key).subscribe(subscriber);
-    }
-
-    public static void unsubscribe(@NotNull DRegistryKey<?> key, @NotNull Subscriber subscriber) {
-        Preconditions.checkNotNull(key, "RegistryType cannot be null");
-
-        getHolder(key).unsubscribe(subscriber);
     }
 
     @SuppressWarnings("unchecked")

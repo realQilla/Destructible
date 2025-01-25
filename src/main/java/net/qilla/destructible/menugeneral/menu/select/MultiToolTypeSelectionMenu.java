@@ -44,8 +44,9 @@ public class MultiToolTypeSelectionMenu extends DynamicMenu<ToolType> {
                 .material(item.getRepresentation())
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize(contains ? "<!italic><green><bold>SELECTED" : "<!italic><red><bold>NOT SELECTED"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize(contains ? "<!italic><green><bold>SELECTED" : "<!italic><red><bold>NOT SELECTED")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this tool")
                 )))
                 .glow(contains)
                 .clickSound(Sounds.MENU_CLICK_ITEM)

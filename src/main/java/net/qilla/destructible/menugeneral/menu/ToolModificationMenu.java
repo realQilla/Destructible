@@ -2,8 +2,12 @@ package net.qilla.destructible.menugeneral.menu;
 
 import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
+import net.kyori.adventure.text.BuildableComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.KeybindComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.util.Buildable;
+import net.minecraft.network.chat.contents.KeybindContents;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.data.Sounds;
@@ -68,7 +72,7 @@ public class ToolModificationMenu extends StaticMenu {
     public ToolModificationMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
         super(plugin, dPlayer);
 
-        super.addSocket(emptyMaterialSocket(), 25);
+        super.addSocket(emptyMaterialSocket(), 200);
         super.finalizeMenu();
     }
 
@@ -111,7 +115,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .material(Material.BARRIER)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Remove!"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to permanently"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to permanently"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>delete this item")
                 )))
         ), this::remove, CooldownType.MENU_CLICK);
@@ -134,7 +138,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <red>Empty"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either an item or nothing to set a material")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either an item or nothing to set a material")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -148,7 +152,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(material.toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either an item or nothing to set a material")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either an item or nothing to set a material")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -189,7 +193,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + id),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -229,7 +233,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>").append(displayName),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -239,12 +243,15 @@ public class ToolModificationMenu extends StaticMenu {
     private boolean inputDisplayName(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        String chatText = "<yellow>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. <gold>Shift-Click <bold><insert:'" + MiniMessage.miniMessage().serialize(displayName) + "'>HERE</insert></gold> get the previous name. You may cancel by typing RETURN.";
+        String chatText = "<yellow>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. <gold>Shift-Click <bold><insert:'" + MiniMessage.miniMessage().serialize(displayName) + "'>HERE</insert></gold> get the previous name. Create a blank line by typing EMPTY, and CANCEL to return.";
 
         new ChatInput(super.getPlugin(), super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
             Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
-                    displayName = MiniMessage.miniMessage().deserialize(result);
+                if(!result.equalsIgnoreCase("cancel") && !result.isEmpty()) {
+                    if(result.equalsIgnoreCase("empty")) {
+                        displayName = Component.empty();
+                    } else displayName = MiniMessage.miniMessage().deserialize(result);
+
                     super.addSocket(this.displayNameSocket());
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                 }
@@ -281,9 +288,9 @@ public class ToolModificationMenu extends StaticMenu {
         loreBuilder.addLines(loreList);
         loreBuilder.addLines(List.of(
                 Component.empty(),
-                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to cycle down"),
-                MiniMessage.miniMessage().deserialize("<!italic><yellow>Right Click to cycle up"),
-                MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to modify")
+                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to cycle down"),
+                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to cycle up"),
+                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.swapOffhand> to make modifications")
         ));
         return loreBuilder.build();
     }
@@ -291,13 +298,16 @@ public class ToolModificationMenu extends StaticMenu {
     private boolean modifyLore(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
 
-        if(clickType == ClickType.MIDDLE) {
-            String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) + "</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. You may cancel by typing RETURN.";
+        if(clickType == ClickType.SWAP_OFFHAND) {
+            String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) + "</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. Create a blank line by typing EMPTY, and CANCEL to return.";
 
             new ChatInput(super.getPlugin(), super.getDPlayer(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
                 Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                    if(!result.equalsIgnoreCase("return") && !result.isEmpty()) {
-                        applyLine(MiniMessage.miniMessage().deserialize(result));
+                    if(!result.equalsIgnoreCase("cancel") && !result.isEmpty()) {
+                        if(result.equalsIgnoreCase("empty")) {
+                            applyLine(Component.empty());
+                        } else applyLine(MiniMessage.miniMessage().deserialize(result));
+
                         super.addSocket(this.loreSocket());
                         getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                     }
@@ -330,7 +340,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value ").append(rarity.getComponent()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -349,7 +359,7 @@ public class ToolModificationMenu extends StaticMenu {
                 .material(Material.BLUE_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Static Attributes"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -364,8 +374,10 @@ public class ToolModificationMenu extends StaticMenu {
 
     @Override
     public void inventoryClickEvent(InventoryClickEvent event) {
-        if(event.getClickedInventory().getHolder() instanceof StaticMenu) event.setCancelled(true);
-        super.handleClick(event);
+        if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
+            event.setCancelled(true);
+            this.handleClick(event);
+        }
     }
 
     @Override

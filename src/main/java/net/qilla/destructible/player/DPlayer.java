@@ -16,6 +16,7 @@ import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemData;
 import net.qilla.destructible.mining.item.ItemDataType;
 import net.qilla.destructible.mining.item.ItemDrop;
+import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.DUtil;
@@ -115,7 +116,6 @@ public class DPlayer {
         Preconditions.checkNotNull(itemStack, "ItemStack cannot be null");
 
         int space = this.getSpace(itemStack);
-        this.playSound(Sounds.GET_ITEM, true);
         if(space >= itemStack.getAmount()) {
             craftPlayer.getInventory().addItem(itemStack);
             return;
@@ -129,18 +129,20 @@ public class DPlayer {
 
             overflow.put(itemData, overflowAmount);
             craftPlayer.getInventory().addItem(itemStack);
-
+            this.playSound(Sounds.GET_ITEM, true);
             this.sendActionBar(ComponentUtil.getItemAmountAndType(dItem, overflowAmount).append(MiniMessage.miniMessage().deserialize("<green> added to stash")));
         } else this.sendActionBar("<red>There was a problem adding an item to your stash!");
     }
 
-    public Map<DItem, Integer> calcItemDrops(List<ItemDrop> itemDrops) {
+    public Map<DItem, Integer> calcItemDrops(@NotNull List<ItemDrop> itemDrops, @NotNull ItemData itemData, @NotNull DItem dItem) {
+        int fortune = itemData.getAttributes().getValue(AttributeTypes.MINING_FORTUNE) + dItem.getStaticAttributes().getValue(AttributeTypes.MINING_FORTUNE);
+
         return itemDrops.stream()
                 .filter(this::hasChanceToDrop)
                 .sorted(Comparator.comparing(ItemDrop::getChance).reversed())
                 .collect(Collectors.toUnmodifiableMap(
                         ItemDrop::getDItem,
-                        this::calculateAmount,
+                        value -> value.isFortuneAffected() ? calculateAmount(value, fortune) : calculateAmount(value, 0),
                         Integer::sum
                 ));
     }
@@ -150,8 +152,14 @@ public class DPlayer {
         return random.nextDouble() < dropChance;
     }
 
-    private int calculateAmount(ItemDrop itemDrop) {
-        return random.nextInt(itemDrop.getMaxAmount() - itemDrop.getMinAmount() + 1) + itemDrop.getMinAmount();
+    private int calculateAmount(ItemDrop itemDrop, int fortune) {
+        int baseAmount = random.nextInt(itemDrop.getMaxAmount() - itemDrop.getMinAmount() + 1) + itemDrop.getMinAmount();
+
+        if(fortune == 0) return baseAmount;
+
+        int multiplier = random.nextInt(1, fortune + 1);
+
+        return baseAmount * (multiplier);
     }
 
     public void resetCraftPlayer(CraftPlayer craftPlayer) {

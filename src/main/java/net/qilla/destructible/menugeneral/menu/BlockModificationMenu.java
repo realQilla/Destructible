@@ -134,7 +134,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .material(Material.BARRIER)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Remove!"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to permanently"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to permanently"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>delete this block")
                 )))
         ), this::remove, CooldownType.MENU_CLICK);
@@ -162,7 +162,7 @@ public class BlockModificationMenu extends StaticMenu {
                     .lore(ItemLore.lore(List.of(
                             MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <red>Empty"),
                             Component.empty(),
-                            MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either a block or nothing to set a material")
+                            MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either a block or nothing to set a material")
                     )))
                     .clickSound(Sounds.MENU_CLICK_ITEM)
                     .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -173,7 +173,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(material.toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click with either a block or nothing to set a material")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either a block or nothing to set a material")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -188,7 +188,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + id),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -229,7 +229,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + durability),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -267,7 +267,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + strength),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -305,7 +305,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Unique lootpools <white>" + lootpool.size()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -326,7 +326,7 @@ public class BlockModificationMenu extends StaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current list:"),
                         MiniMessage.miniMessage().deserialize("<!italic><white>" + (correctTools.isEmpty() ? "<red>None" : StringUtil.toNameList(new ArrayList<>(correctTools)))),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -346,7 +346,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + TimeUtil.getTime(cooldown, true)),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -384,7 +384,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(breakParticle.toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -406,7 +406,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + breakSound.toString()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -422,8 +422,10 @@ public class BlockModificationMenu extends StaticMenu {
 
     @Override
     public void inventoryClickEvent(InventoryClickEvent event) {
-        if(event.getClickedInventory().getHolder() instanceof StaticMenu) event.setCancelled(true);
-        super.handleClick(event);
+        if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
+            event.setCancelled(true);
+            this.handleClick(event);
+        }
     }
 
     @Override

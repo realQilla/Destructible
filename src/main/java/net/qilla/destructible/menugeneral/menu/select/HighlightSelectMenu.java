@@ -20,13 +20,15 @@ import net.qilla.destructible.util.TimeUtil;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class HighlightSelectMenu extends SearchMenu<String> {
 
-    private static final List<String> LOADED_BLOCKS = DRegistry.LOADED_BLOCKS_GROUPED.keySet().stream()
-            .toList();
+    private static final Map<String, DBlock> DBLOCKS = DRegistry.BLOCKS;
+    private static final Collection<String> LOADED_BLOCKS = DRegistry.LOADED_BLOCKS_GROUPED.keySet();
     private final Set<String> highlights;
 
     public HighlightSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Set<String> highlights) {
@@ -39,7 +41,8 @@ public class HighlightSelectMenu extends SearchMenu<String> {
 
     @Override
     public Socket createSocket(int index, String item) {
-        DBlock dBlock = DRegistry.BLOCKS.get(item);
+        DBlock dBlock = DBLOCKS.get(item);
+        if(dBlock == null) return null;
         String toolList = dBlock.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(dBlock.getCorrectTools().stream().toList());
         String visible = highlights.contains(item) ? "<green><bold>VISIBLE" : "<red><bold>NOT VISIBLE";
 
@@ -47,6 +50,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
                 .material(dBlock.getMaterial())
                 .displayName(Component.text(dBlock.getId()))
                 .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Currently " + visible),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + NumberUtil.romanNumeral(dBlock.getStrength())),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Durability <white>" + dBlock.getDurability()),
@@ -57,7 +61,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(dBlock.getBreakParticle().toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Currently " + visible)
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to toggle visibility")
                 )))
                 .glow(highlights.contains(item))
                 .clickSound(Sounds.MENU_CLICK_ITEM)

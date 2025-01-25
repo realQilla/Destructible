@@ -50,7 +50,6 @@ public final class ItemStackFactory {
             itemStack.setData(DataComponentTypes.MAX_DAMAGE, item.getStaticAttributes().getValue(AttributeTypes.ITEM_MAX_DURABILITY));
             itemData.getAttributes().set(AttributeTypes.ITEM_DURABILITY_LOST, 0);
         }
-        else itemStack.setData(DataComponentTypes.UNBREAKABLE, Unbreakable.unbreakable(false));
 
         itemStack.setData(DataComponentTypes.MAX_STACK_SIZE, item.getStackSize());
         itemStack.setData(DataComponentTypes.ITEM_MODEL, item.getMaterial().getKey());
@@ -67,7 +66,7 @@ public final class ItemStackFactory {
         DItem dItem = DUtil.getDItem(itemData.getItemID());
         ItemStack newItemStack = getItemStack(dItem, itemStack.getAmount());
 
-        newItemStack.setData(DataComponentTypes.DAMAGE, itemData.getAttributes().getValue(AttributeTypes.ITEM_MAX_DURABILITY));
+        newItemStack.setData(DataComponentTypes.DAMAGE, itemData.getAttributes().getValue(AttributeTypes.ITEM_DURABILITY_LOST));
 
         newItemStack.editMeta(meta -> {
             meta.getPersistentDataContainer().set(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM, new ItemData(itemData));

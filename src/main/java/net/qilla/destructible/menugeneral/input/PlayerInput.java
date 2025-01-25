@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public abstract class PlayerInput {
 
-    private static final int SEC_TIMEOUT = 15;
+    private static final int SEC_TIMEOUT = 60;
     private final Destructible plugin;
     private final DPlayer dPlayer;
     private final ExecutorService executorService;

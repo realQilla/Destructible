@@ -132,7 +132,9 @@ public abstract class StaticMenu implements InventoryHolder {
 
     public void inventoryClickEvent(InventoryClickEvent event) {
         event.setCancelled(true);
-        this.handleClick(event);
+        if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
+            this.handleClick(event);
+        }
     }
 
     public void inventoryOpenEvent(InventoryOpenEvent event) {

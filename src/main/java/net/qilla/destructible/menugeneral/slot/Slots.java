@@ -23,7 +23,7 @@ public class Slots {
             .material(Material.BELL)
             .displayName(MiniMessage.miniMessage().deserialize("<red>Return"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to return to your"),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to return to your"),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>previously accessed menu")
             )))
             .clickSound(Sounds.RETURN_MENU)
@@ -43,7 +43,7 @@ public class Slots {
             .material(Material.ARROW)
             .displayName(MiniMessage.miniMessage().deserialize("<white>Previous"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to shift the menu backwards")
+                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to shift the menu backwards")
             )))
             .clickSound(Sounds.MENU_ROTATE_PREVIOUS)
     );
@@ -52,7 +52,7 @@ public class Slots {
             .material(Material.SPECTRAL_ARROW)
             .displayName(MiniMessage.miniMessage().deserialize("<white>Next"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to shift the menu forwards")
+                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to shift the menu forwards")
             )))
             .clickSound(Sounds.MENU_ROTATE_NEXT)
     );
@@ -61,7 +61,7 @@ public class Slots {
             .material(Material.OAK_SIGN)
             .displayName(MiniMessage.miniMessage().deserialize("<white>Search"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to search for"),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to search for"),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>something more specific")
             )))
             .clickSound(Sounds.MENU_CLICK_ITEM)
@@ -80,16 +80,17 @@ public class Slots {
             .displayName(MiniMessage.miniMessage().deserialize("<green><bold>CONFIRM"))
             .lore(ItemLore.lore(List.of(
                     Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click to set all made changes")
+                    MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set all made changes")
             )))
             .clickSound(Sounds.GENERAL_SUCCESS)
     );
 
     public static final Slot CREATE_NEW = Slot.of(builder -> builder
             .material(Material.SHULKER_SHELL)
-            .displayName(MiniMessage.miniMessage().deserialize("<green>Create New"))
+            .displayName(MiniMessage.miniMessage().deserialize("<green>New Item"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to open the modification menu")
+                    Component.empty(),
+                    MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to create a new item")
             )))
             .clickSound(Sounds.MENU_CLICK_ITEM)
     );
@@ -98,7 +99,7 @@ public class Slots {
             .material(Material.BROWN_BUNDLE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Overflowing Items"))
             .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to claim any items that were not"),
+                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to claim any items that were not"),
                     MiniMessage.miniMessage().deserialize("<!italic><gray>able to fit into your inventory")
             )))
     );

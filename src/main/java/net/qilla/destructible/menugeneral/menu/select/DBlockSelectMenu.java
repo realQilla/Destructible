@@ -55,7 +55,7 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(item.getBreakParticle().toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select custom block")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select custom block")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

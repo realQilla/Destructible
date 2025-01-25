@@ -49,16 +49,18 @@ public class BlockMiner {
     public void tickBlock(@NotNull ItemStack itemStack, @NotNull ItemData itemData, @NotNull DItem dItem, @NotNull BlockInstance blockInstance) {
         if(!this.canMine(blockInstance, itemData, dItem)) return;
 
+        int efficiency = Math.max(1, itemData.getAttributes().getValue(AttributeTypes.MINING_EFFICIENCY) + dItem.getStaticAttributes().getValue(AttributeTypes.MINING_EFFICIENCY));
+
         if(dItem.getStaticAttributes().has(AttributeTypes.ITEM_MAX_DURABILITY)) {
             int durabilityLost = itemData.getAttribute(AttributeTypes.ITEM_DURABILITY_LOST);
             int maxDurability = dItem.getStaticAttributes().getValue(AttributeTypes.ITEM_MAX_DURABILITY);
             if(durabilityLost >= maxDurability) return;
 
-            blockInstance.damageBlock(dItem.getStaticAttributes().getValue(AttributeTypes.MINING_EFFICIENCY));
+            blockInstance.damageBlock(efficiency);
 
             if(blockInstance.isDestroyed()) {
                 blockInstance.getDBlockData().setLocked(true);
-                this.destroyBlock(blockInstance);
+                this.destroyBlock(blockInstance, itemData, dItem);
                 if(dItem.getStaticAttributes().has(AttributeTypes.ITEM_MAX_DURABILITY)) this.damageTool(itemStack, itemData, durabilityLost, maxDurability);
             } else {
                 dPlayer.broadcastPacket(new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), blockInstance.getCrackLevel()));
@@ -66,11 +68,11 @@ public class BlockMiner {
             return;
         }
 
-        blockInstance.damageBlock(dItem.getStaticAttributes().getValue(AttributeTypes.MINING_EFFICIENCY));
+        blockInstance.damageBlock(efficiency);
 
         if(blockInstance.isDestroyed()) {
             blockInstance.getDBlockData().setLocked(true);
-            this.destroyBlock(blockInstance);
+            this.destroyBlock(blockInstance, itemData, dItem);
         } else {
             dPlayer.broadcastPacket(new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), blockInstance.getCrackLevel()));
         }
@@ -80,7 +82,7 @@ public class BlockMiner {
         dPlayer.broadcastPacket(new ClientboundBlockDestructionPacket(blockInstance.getBlockPos().hashCode(), blockInstance.getBlockPos(), 10));
     }
 
-    private void destroyBlock(@NotNull BlockInstance blockInstance) {
+    private void destroyBlock(@NotNull BlockInstance blockInstance, @NotNull ItemData itemData, @NotNull DItem dItem) {
         blockInstance.getDBlockData().setLocked(true);
         Bukkit.getScheduler().runTask(dPlayer.getPlugin(), () -> {
             long msCooldown = RandomUtil.offset(blockInstance.getDBlock().getCooldown(), 2500);
@@ -91,7 +93,7 @@ public class BlockMiner {
             blockInstance.getDBlockData().setLocked(false);
         });
 
-        Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> this.handleItemDrops(blockInstance));
+        Bukkit.getScheduler().runTaskAsynchronously(dPlayer.getPlugin(), () -> this.handleItemDrops(blockInstance, itemData, dItem));
     }
 
     private void showItemPopVisual(CraftItem itemEntity) {
@@ -119,8 +121,8 @@ public class BlockMiner {
                 itemEntity.getHandle().getDeltaMovement()));
     }
 
-    private void handleItemDrops(@NotNull BlockInstance blockInstance) {
-        Map<DItem, Integer> itemDrops = dPlayer.calcItemDrops(blockInstance.getDBlock().getLootpool());
+    private void handleItemDrops(@NotNull BlockInstance blockInstance, @NotNull ItemData itemData, @NotNull DItem dItem) {
+        Map<DItem, Integer> itemDrops = dPlayer.calcItemDrops(blockInstance.getDBlock().getLootpool(), itemData, dItem);
         Vec3 dropOffset = blockInstance.getDirection().getUnitVec3();
         Vec3 faceCenter = DUtil.getCenterOfFaceForItem(blockInstance.getDirection());
 

@@ -8,7 +8,6 @@ import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
-import net.qilla.destructible.mining.item.attributes.AttributeType;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.player.PlayerPacketListener;
 import net.qilla.destructible.player.GeneralListener;
@@ -18,10 +17,17 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.logging.Logger;
 
 public final class Destructible extends JavaPlugin {
+
+    static {
+        try {
+            Class.forName(AttributeTypes.class.getName());
+        } catch(ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private LifecycleEventManager<Plugin> lifecycleMan;
     private final DExecutor dExecutor = new DExecutor(this, 4);
@@ -35,7 +41,6 @@ public final class Destructible extends JavaPlugin {
     public void onEnable() {
         Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Rejoin to revalidate your player information.")));
 
-        new AttributeTypes();
         this.lifecycleMan = this.getLifecycleManager();
 
         this.customItemsFile.load();

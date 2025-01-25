@@ -42,7 +42,7 @@ public class BlockParticleSelectMenu extends SearchMenu<Material> {
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select particle")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select particle")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

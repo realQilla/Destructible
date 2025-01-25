@@ -44,7 +44,7 @@ public class SingleToolTypeSelectionMenu extends DynamicMenu<ToolType> {
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left click to select")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this tool")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

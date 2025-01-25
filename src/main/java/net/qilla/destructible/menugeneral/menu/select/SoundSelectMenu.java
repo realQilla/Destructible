@@ -44,8 +44,8 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
                 .displayName(MiniMessage.miniMessage().deserialize(item.toString()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select sound"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Right Click to listen")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this sound"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to listen")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

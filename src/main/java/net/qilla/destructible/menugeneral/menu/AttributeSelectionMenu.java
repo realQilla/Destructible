@@ -49,12 +49,12 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
     public Socket createSocket(int index, Attribute<?> item) {
         return new Socket(index, Slot.of(builder -> builder
                 .material(item.type().getRepresentation())
-                .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.type().getKey())))
+                .displayName(MiniMessage.miniMessage().deserialize("<yellow>" + StringUtil.toName(item.type().getKey())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Value <white>" + item.value().toString()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Right click to unset")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to unset")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .glow(true)
@@ -71,9 +71,9 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
     public Socket toolEfficiencySocket() {
         return new Socket(11, Slot.of(builder -> builder
                 .material(Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE)
-                .displayName(MiniMessage.miniMessage().deserialize("<gold>Tool Efficiency"))
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Tool Efficiency"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -93,6 +93,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
                 if(!result.isEmpty()) {
                     int value = Math.max(1, Integer.parseInt(result));
 
+                    attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_EFFICIENCY);
                     attributeSet.add(new Attribute<>(AttributeTypes.MINING_EFFICIENCY, value));
                     super.refreshSockets();
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
@@ -108,7 +109,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
                 .material(Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Tool Strength"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -128,6 +129,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
                 if(!result.isEmpty()) {
                     int value = Math.max(1, Integer.parseInt(result));
 
+                    attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_STRENGTH);
                     attributeSet.add(new Attribute<>(AttributeTypes.MINING_STRENGTH, value));
                     super.refreshSockets();
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
@@ -141,9 +143,9 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
     public Socket toolFortuneSocket() {
         return new Socket(13, Slot.of(builder -> builder
                 .material(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Tool Fortune"))
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Tool Fortune"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -163,6 +165,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
                 if(!result.isEmpty()) {
                     int value = Math.max(1, Integer.parseInt(result));
 
+                    attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_FORTUNE);
                     attributeSet.add(new Attribute<>(AttributeTypes.MINING_FORTUNE, value));
                     super.refreshSockets();
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);
@@ -178,7 +181,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
                 .material(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Tool Type"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -189,6 +192,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
             new SingleToolTypeSelectionMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
 
             future.thenAccept(toolType -> {
+                attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.TOOL_TYPE);
                 attributeSet.add(new Attribute<>(AttributeTypes.TOOL_TYPE, toolType));
             });
             return true;
@@ -200,7 +204,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
                 .material(Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Tool Durability"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
                 .appearSound(Sounds.MENU_ITEM_APPEAR)
@@ -220,6 +224,7 @@ public class AttributeSelectionMenu extends DynamicMenu<Attribute<?>> {
                 if(!result.isEmpty()) {
                     int value = Math.max(1, Integer.parseInt(result));
 
+                    attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.ITEM_MAX_DURABILITY);
                     attributeSet.add(new Attribute<>(AttributeTypes.ITEM_MAX_DURABILITY, value));
                     super.refreshSockets();
                     getDPlayer().playSound(Sounds.SIGN_INPUT, true);

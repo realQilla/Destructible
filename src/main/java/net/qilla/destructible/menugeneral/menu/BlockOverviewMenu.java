@@ -62,8 +62,8 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(item.getBreakParticle().toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to view possible drops"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to make modifications")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view lootpool"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><yellow><key:key.swapOffhand> to make modifications")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -71,7 +71,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
             if(clickType.isLeftClick()) {
                 new BlockLootpoolOverview(super.getPlugin(), super.getDPlayer(), item).open(true);
                 return true;
-            } else if(clickType == ClickType.MIDDLE) {
+            } else if(clickType == ClickType.SWAP_OFFHAND) {
                 new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), item).open(true);
                 return true;
             } else return false;
@@ -84,7 +84,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                 .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Custom Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to save custom block changes")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to save custom block changes")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -118,7 +118,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Custom Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to load the config, undoing any unsaved changes.")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to load the config, undoing any unsaved changes.")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -155,7 +155,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                 .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Custom Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to clear custom blocks")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to clear custom blocks")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

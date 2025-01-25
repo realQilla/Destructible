@@ -37,7 +37,7 @@ public class RaritySelectMenu extends DynamicMenu<Rarity> {
                 .displayName(item.getComponent())
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to select rarity")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select rarity")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

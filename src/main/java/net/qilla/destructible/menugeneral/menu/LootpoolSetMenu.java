@@ -16,6 +16,7 @@ import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.NumberUtil;
+import net.qilla.destructible.util.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,11 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
         this.lootpool = lootpool;
         super.addSocket(new Socket(47, Slot.of(builder -> builder
                 .material(Material.LIME_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<green>Add new item drop"))
+                .displayName(MiniMessage.miniMessage().deserialize("<green>New Item"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to create a new item")
+                )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             new ItemDropCreationMenu(super.getPlugin(), getDPlayer(), lootpool, null).open(true);
@@ -49,17 +54,18 @@ public class LootpoolSetMenu extends DynamicMenu<ItemDrop> {
                 .amount(item.getMinAmount())
                 .displayName(Component.text(dItem.getId()))
                 .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Fortune Affected <white>" + StringUtil.toName(String.valueOf(item.isFortuneAffected()))),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Amount <white>" + item.getMinAmount() + " - " + item.getMaxAmount()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" +
                                 NumberUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to modify"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to remove"))
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.swapOffhand> to modify"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.sneak> + <key:key.mouse.left> to remove"))
                 ))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
-            if(clickType == ClickType.MIDDLE) {
+            if(clickType == ClickType.SWAP_OFFHAND) {
                 new ItemDropCreationMenu(super.getPlugin(), super.getDPlayer(), lootpool, item).open(true);
                 return true;
             } else if(clickType.isShiftClick() && clickType.isLeftClick()) {

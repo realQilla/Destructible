@@ -35,7 +35,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                 .material(Material.IRON_INGOT)
                 .displayName(MiniMessage.miniMessage().deserialize("<yellow>Create New Item"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to open the item modification menu")
+                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to open the item modification menu")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -49,7 +49,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                 .material(Material.IRON_PICKAXE)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Create New Tool"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Left Click to open the tool modification menu")
+                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to open the tool modification menu")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -80,9 +80,9 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                         .addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Last Update <white>" + TimeUtil.timeSince(item.getVersion(), false)))
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to get this item"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Shift-Left Click to select an amount"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow>Middle Click to make modifications")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to get this item"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.sneak> + <key:key.mouse.left> to select an amount"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.swapOffhand> to make modifications")
                         )).build()
                 )
                 .clickSound(Sounds.MENU_GET_ITEM)
@@ -97,7 +97,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                     super.getItemAmount(signText, item);
                 } else super.getItem(item);
                 return true;
-            } else if(clickType == ClickType.MIDDLE) {
+            } else if(clickType == ClickType.SWAP_OFFHAND) {
                 if(item.getStaticAttributes().has(AttributeTypes.TOOL_TYPE)) new ToolModificationMenu(super.getPlugin(), super.getDPlayer(), item).open(true);
                 else new ItemModificationMenu(super.getPlugin(), super.getDPlayer(), item).open(true);
                 return true;
@@ -111,7 +111,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                 .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Custom Items"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to save custom item changes")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to save custom item changes")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -145,7 +145,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Custom Items"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to load the config, undoing any unsaved changes.")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to load the config, undoing any unsaved changes.")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -182,7 +182,7 @@ public class ItemOverviewMenu extends DynamicMenu<DItem> {
                 .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Custom Items"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow>Left Click to clear custom items")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to clear custom items")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {

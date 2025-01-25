@@ -59,6 +59,7 @@ public class BlockLootpoolOverview extends DynamicMenu<ItemDrop> {
                 .lore(ItemLore.lore().addLines(dItem.getLore().lines())
                         .addLines(List.of(
                                 Component.empty(),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Fortune Affected <white>" + StringUtil.toName(String.valueOf(item.isFortuneAffected()))),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Amount <white>" +
                                         item.getMinAmount() + " - " + item.getMaxAmount()),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" +
