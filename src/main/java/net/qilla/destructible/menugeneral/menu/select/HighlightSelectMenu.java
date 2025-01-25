@@ -6,7 +6,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.slot.*;
@@ -14,9 +13,9 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.BlockHighlight;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.NumberUtil;
-import net.qilla.destructible.util.StringUtil;
-import net.qilla.destructible.util.TimeUtil;
+import net.qilla.qlibrary.util.tools.NumberUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
+import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,7 +42,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
     public Socket createSocket(int index, String item) {
         DBlock dBlock = DBLOCKS.get(item);
         if(dBlock == null) return null;
-        String toolList = dBlock.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(dBlock.getCorrectTools().stream().toList());
+        String toolList = dBlock.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(dBlock.getCorrectTools().stream().toList(), ", ");
         String visible = highlights.contains(item) ? "<green><bold>VISIBLE" : "<red><bold>NOT VISIBLE";
 
         return new Socket(index, Slot.of(builder -> builder

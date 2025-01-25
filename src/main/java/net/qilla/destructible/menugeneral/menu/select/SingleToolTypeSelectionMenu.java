@@ -14,7 +14,7 @@ import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.StringUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;

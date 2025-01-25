@@ -10,9 +10,8 @@ import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
-import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.mining.logic.MiningManager;
-import net.qilla.destructible.util.CoordUtil;
+import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;

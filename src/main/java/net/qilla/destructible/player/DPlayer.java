@@ -20,7 +20,7 @@ import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.DUtil;
-import net.qilla.destructible.util.RandomUtil;
+import net.qilla.qlibrary.util.tools.RandomUtil;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.craftbukkit.CraftServer;

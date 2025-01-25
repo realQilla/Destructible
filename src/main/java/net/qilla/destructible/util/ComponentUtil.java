@@ -12,6 +12,8 @@ import net.qilla.destructible.mining.item.ItemData;
 import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.destructible.mining.item.attributes.AttributeContainer;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
+import net.qilla.qlibrary.util.tools.NumberUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

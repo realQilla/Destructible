@@ -12,7 +12,7 @@ import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.PlayType;
-import net.qilla.destructible.util.StringUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.Sound;

@@ -8,6 +8,7 @@ import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItems;
+import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Optional;
@@ -28,9 +29,9 @@ public final class DUtil {
         long chunkKey = CoordUtil.getChunkKey(blockPos);
         int chunkInt = CoordUtil.getBlockIndexInChunk(blockPos);
 
-        var chunkIntMap = LOADED_BLOCK_MAP.get(chunkKey);
-        if(chunkIntMap == null || !chunkIntMap.containsKey(chunkInt)) return Optional.empty();
-        return Optional.ofNullable(DBLOCK_MAP.get(chunkIntMap.get(chunkInt)));
+        return Optional.ofNullable(LOADED_BLOCK_MAP.get(chunkKey))
+                .map(chunkIntMap -> chunkIntMap.get(chunkInt))
+                .map(DBLOCK_MAP::get);
     }
 
     public static @NotNull DItem getDItem(@NotNull String itemID) {

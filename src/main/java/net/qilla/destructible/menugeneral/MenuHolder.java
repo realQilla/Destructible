@@ -31,10 +31,6 @@ public class MenuHolder<T extends StaticMenu> {
         return Optional.ofNullable(menuHistory.peek());
     }
 
-    public Optional<T> peekFromHistory() {
-        return Optional.ofNullable(menuHistory.peek());
-    }
-
     public void pushToHistory(@NotNull T menu) {
         Preconditions.checkNotNull(menu, "Menu cannot be null");
         menuHistory.push(menu);

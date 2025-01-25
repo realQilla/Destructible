@@ -11,7 +11,7 @@ import net.qilla.destructible.menugeneral.MenuListener;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.player.PlayerPacketListener;
 import net.qilla.destructible.player.GeneralListener;
-import net.qilla.destructible.util.DExecutor;
+import net.qilla.qlibrary.util.tools.DExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;

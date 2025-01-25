@@ -6,7 +6,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.Sounds;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.menugeneral.*;
 import net.qilla.destructible.menugeneral.input.SignInput;
 import net.qilla.destructible.menugeneral.slot.Slot;
@@ -15,9 +14,9 @@ import net.qilla.destructible.menugeneral.slot.Socket;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.NumberUtil;
-import net.qilla.destructible.util.StringUtil;
-import net.qilla.destructible.util.TimeUtil;
+import net.qilla.qlibrary.util.tools.NumberUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
+import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -46,7 +45,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
 
     @Override
     public Socket createSocket(int index, DBlock item) {
-        String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList());
+        String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList(), ", ");
 
         return new Socket(index, Slot.of(builder -> builder
                 .material(item.getMaterial())

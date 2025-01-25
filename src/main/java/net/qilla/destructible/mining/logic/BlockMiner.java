@@ -20,7 +20,7 @@ import net.qilla.destructible.mining.item.attributes.AttributeContainer;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.util.DUtil;
-import net.qilla.destructible.util.RandomUtil;
+import net.qilla.qlibrary.util.tools.RandomUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;

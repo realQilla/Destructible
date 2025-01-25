@@ -12,9 +12,9 @@ import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.NumberUtil;
-import net.qilla.destructible.util.StringUtil;
-import net.qilla.destructible.util.TimeUtil;
+import net.qilla.qlibrary.util.tools.NumberUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
+import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +38,7 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
 
     @Override
     public Socket createSocket(int index, DBlock item) {
-        String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList());
+        String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList(), ", ");
 
 
         return new Socket(index, Slot.of(builder -> builder

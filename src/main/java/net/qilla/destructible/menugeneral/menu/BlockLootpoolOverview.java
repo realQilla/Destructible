@@ -15,9 +15,9 @@ import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.NumberUtil;
-import net.qilla.destructible.util.StringUtil;
-import net.qilla.destructible.util.TimeUtil;
+import net.qilla.qlibrary.util.tools.NumberUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
+import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
@@ -38,7 +38,7 @@ public class BlockLootpoolOverview extends DynamicMenu<ItemDrop> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Durability <white>" + dBlock.getDurability()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Cooldown <white>" + TimeUtil.getTime(dBlock.getCooldown(), true)),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Correct Tools:"),
-                        MiniMessage.miniMessage().deserialize("<!italic><white>" + StringUtil.toNameList(dBlock.getCorrectTools().stream().toList())),
+                        MiniMessage.miniMessage().deserialize("<!italic><white>" + StringUtil.toNameList(dBlock.getCorrectTools().stream().toList(), ", ")),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Item Drops <yellow>" + "[Currently viewing]"),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + dBlock.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())

@@ -22,8 +22,8 @@ import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.StringUtil;
-import net.qilla.destructible.util.TimeUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
+import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -324,7 +324,7 @@ public class BlockModificationMenu extends StaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Correct Tools"))
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current list:"),
-                        MiniMessage.miniMessage().deserialize("<!italic><white>" + (correctTools.isEmpty() ? "<red>None" : StringUtil.toNameList(new ArrayList<>(correctTools)))),
+                        MiniMessage.miniMessage().deserialize("<!italic><white>" + (correctTools.isEmpty() ? "<red>None" : StringUtil.toNameList(new ArrayList<>(correctTools), ", "))),
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
                 )))

@@ -21,7 +21,7 @@ import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.StringUtil;
+import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;

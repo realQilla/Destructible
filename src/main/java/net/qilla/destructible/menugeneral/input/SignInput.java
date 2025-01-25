@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.util.CoordUtil;
+import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.block.CraftSign;
 import org.jetbrains.annotations.NotNull;
