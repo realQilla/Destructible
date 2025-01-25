@@ -25,10 +25,10 @@ public class BlockMenu extends StaticMenu {
         super(plugin, dPlayer);
         super.addSocket(new Socket(21, Slot.of(builder -> builder
                 .material(Material.COMMAND_BLOCK_MINECART)
-                .displayName(MiniMessage.miniMessage().deserialize("<gold>World Loading"))
+                .displayName(MiniMessage.miniMessage().deserialize("<red>World Loading"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view options on loading blocks")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view options on block loading")
                 )))
                 .clickSound(Sounds.MENU_CLICK_ITEM)
         ), event -> {
@@ -41,7 +41,7 @@ public class BlockMenu extends StaticMenu {
 
         super.addSocket(new Socket(23, Slot.of(builder -> builder
                 .material(Material.CHEST_MINECART)
-                .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Overview"))
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Overview"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view or customize all blocks")
