@@ -53,7 +53,7 @@ public class WorldLoadingMenu extends StaticMenu {
 
     private Socket loadBlockSocket() {
         String dBlock = dBlockEdit.getDblock() == null ? "<red><bold>NONE" : "<white>" + dBlockEdit.getDblock().getId();
-        String size = dBlockEdit.getRecursionSize() <= 0 ? "<red><bold>DISABLED" : "<white>" + dBlockEdit.getRecursionSize();
+        String size = dBlockEdit.getRecursionSize() <= 0 ? "<red><bold>DISABLED" : "<white>" + NumberUtil.numberComma(dBlockEdit.getRecursionSize());
 
         return new Socket(20, Slot.of(builder -> builder
                 .material((dBlockEdit.getRecursionSize() > 0 && dBlockEdit.getDblock() != null) ? Material.HONEY_BOTTLE : Material.POTION)

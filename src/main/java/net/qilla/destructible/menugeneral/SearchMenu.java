@@ -10,6 +10,7 @@ import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -62,7 +63,8 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
                             .filter(item -> matchSearchCriteria(item, result))
                             .toList();
                     try {
-                        super.refreshSockets();
+                        super.setShiftIndex(0);
+                        this.refreshSockets();
                         super.addSocket(resetSearchSocket());
                         getDPlayer().playSound(Sounds.SIGN_INPUT, true);
                     } catch(NumberFormatException ignored) {
@@ -74,8 +76,51 @@ public abstract class SearchMenu<T> extends DynamicMenu<T> {
         return true;
     }
 
+    @Override
+    public boolean rotateNext(InventoryClickEvent event, int amount) {
+        ClickType clickType = event.getClick();
+
+        if(clickType.isShiftClick() && clickType.isLeftClick()) {
+            for(int i = 0; i < super.getDynamicSlots().size() / amount; i++) {
+                if(super.setShiftIndex(super.getShiftIndex() + amount) + super.getDynamicSlots().size() > localPopulation.size()) {
+                    if((super.getShiftIndex() + super.getDynamicSlots().size()) % localPopulation.size() >= amount) super.setShiftIndex(super.getShiftIndex() - amount);
+                    break;
+                }
+            }
+        } else if(clickType.isLeftClick()) super.setShiftIndex(super.getShiftIndex() + amount);
+        else return false;
+
+        this.refreshSockets();
+        return true;
+    }
+
+    @Override
+    public boolean rotatePrevious(InventoryClickEvent event, int amount) {
+        ClickType clickType = event.getClick();
+        if(clickType.isShiftClick() && clickType.isLeftClick()) {
+            for(int i = 0; i < super.getDynamicSlots().size() / amount; i++) {
+                if(super.setShiftIndex(super.getShiftIndex() - amount) < 0) break;
+            }
+        } else if(clickType.isLeftClick()) super.setShiftIndex(super.getShiftIndex() - amount);
+        else return false;
+
+        this.refreshSockets();
+        return true;
+    }
+
+    @Override
+    public void refreshSockets() {
+        if(super.getShiftIndex() + super.getDynamicSlots().size() < localPopulation.size()) super.addSocket(nextSocket());
+        else super.removeSocket(super.nextSocket().index());
+        if(super.getShiftIndex() > 0) super.addSocket(super.previousSocket());
+        else super.removeSocket(super.previousSocket().index());
+        if(super.getShiftIndex() < 0) super.setShiftIndex(0);
+
+        this.populateModular();
+    }
+
     protected boolean resetSearch() {
-        this.localPopulation = new ArrayList<>(super.getItemPopulation());
+        localPopulation = new ArrayList<>(super.getItemPopulation());
         super.removeSocket(searchConfig().resetSearchIndex());
         super.setShiftIndex(0);
         refreshSockets();

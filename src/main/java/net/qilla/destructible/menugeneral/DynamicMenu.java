@@ -106,8 +106,8 @@ public abstract class DynamicMenu<T> extends StaticMenu implements Subscriber {
         return shiftIndex;
     }
 
-    public void setShiftIndex(int shiftIndex) {
-        this.shiftIndex = shiftIndex;
+    public int setShiftIndex(int shiftIndex) {
+        return this.shiftIndex = shiftIndex;
     }
 
     public List<Integer> getDynamicSlots() {
