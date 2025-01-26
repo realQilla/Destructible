@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.*;
 import net.qilla.qlibrary.menu.socket.QSlot;
@@ -18,7 +19,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -46,7 +46,7 @@ public class BlockParticleSelectMenu extends QSearchMenu<Material> {
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this particle")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select this particle")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -64,10 +64,7 @@ public class BlockParticleSelectMenu extends QSearchMenu<Material> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of((builder -> builder
-                .material(Material.HEART_OF_THE_SEA)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Search"))
-        )));
+        return new QSocket(4, DSlots.PARTICLE_SELECTION_MENU);
     }
 
     @Override

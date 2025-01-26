@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
@@ -18,7 +19,6 @@ import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
-import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
@@ -29,6 +29,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
         super(plugin, playerData, dBlock.getLootpool().stream()
                 .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
                 .toList());
+
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
         super.addSocket(new QSocket(31, QSlot.of(consumer -> consumer
                 .material(dBlock.getMaterial())
@@ -60,9 +61,9 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
                 .lore(ItemLore.lore().addLines(dItem.getLore().lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Fortune Affected <white>" + StringUtil.toName(String.valueOf(item.isFortuneAffected()))),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Amount <white>" +
                                         item.getMinAmount() + " - " + item.getMaxAmount()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Fortune Affected <white>" + StringUtil.toName(String.valueOf(item.isFortuneAffected()))),
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" +
                                         NumberUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")")
                         )).build()
@@ -72,16 +73,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.PINK_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>All information regarding block"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>lootpool's can be found below,"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>ordered by each item's chance ")
-                )))
-        ));
+        return new QSocket(4, DSlots.LOOTPOOL_OVERVIEW_MENU);
     }
 
     @Override

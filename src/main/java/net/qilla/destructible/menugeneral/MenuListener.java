@@ -1,6 +1,5 @@
 package net.qilla.destructible.menugeneral;
 
-import net.qilla.destructible.Destructible;
 import net.qilla.qlibrary.menu.StaticMenu;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,10 +10,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public class MenuListener implements Listener {
-
-
-    public MenuListener() {
-    }
 
     @EventHandler
     private void onInventoryInteract(InventoryInteractEvent event) {

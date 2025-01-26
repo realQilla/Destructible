@@ -86,6 +86,10 @@ public class AttributeContainer implements Iterable<Map.Entry<AttributeType<?>, 
         attributeMap.remove(attribute);
     }
 
+    public boolean isEmpty() {
+        return attributeMap.isEmpty();
+    }
+
     public void clear() {
         attributeMap.clear();
     }

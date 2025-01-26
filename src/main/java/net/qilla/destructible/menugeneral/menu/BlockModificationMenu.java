@@ -149,14 +149,7 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     public Socket removeSocket() {
-        return new QSocket(53, QSlot.of(builder -> builder
-                .material(Material.BARRIER)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Remove!"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to permanently"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>delete this block")
-                )))
-        ), this::remove, CooldownType.MENU_CLICK);
+        return new QSocket(53, DSlots.MODIFICATION_REMOVE, this::remove, CooldownType.MENU_CLICK);
     }
 
     private boolean remove(InventoryClickEvent event) {
@@ -176,7 +169,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <red>Empty"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either a block or nothing to set a material")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a material or use an item to quickset")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -190,7 +183,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(material.toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either a block or nothing to set a material")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a material or use an item to quickset")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -204,7 +197,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + id),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -244,7 +237,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + durability),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -281,7 +274,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + strength),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -318,7 +311,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Unique lootpools <white>" + lootpool.size()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -338,7 +331,7 @@ public class BlockModificationMenu extends QStaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current list:"),
                         MiniMessage.miniMessage().deserialize("<!italic><white>" + (correctTools.isEmpty() ? "<red>None" : StringUtil.toNameList(new ArrayList<>(correctTools), ", "))),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -357,7 +350,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + TimeUtil.getTime(cooldown, true)),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -394,7 +387,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(breakParticle.toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -415,7 +408,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + breakSound.toString()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)

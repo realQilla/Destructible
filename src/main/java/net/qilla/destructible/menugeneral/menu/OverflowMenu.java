@@ -46,10 +46,10 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
 
         super.addSocket(new QSocket(53, QSlot.of(builder -> builder
                 .material(Material.BARRIER)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
+                .displayName(MiniMessage.miniMessage().deserialize("<red>Clear Stash"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to clear your entire"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>overflow stash")
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to remove item in your stash")
                 )))
         ), event -> {
             this.clearOverflow(event);
@@ -72,8 +72,8 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
                         .addLines(ComponentUtil.getLore(dItem).lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to claim"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.sneak> + <key:key.mouse.left> to remove")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to claim item"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.sneak> + <key:key.mouse.right></gold> to remove item")
                         )).build()
                 )
         ), event -> this.claimOverflow(event, dItem, amount), CooldownType.MENU_CLICK);
@@ -83,7 +83,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
         ClickType clickType = event.getClick();
 
         if(!overflow.contains(dItem.getId())) {
-            super.getPlayer().sendMessage("<red>This item is no longer in your overflow stash!");
+            super.getPlayer().sendMessage("<red>This item is no longer in your stash!");
             super.getPlayer().playSound(DSounds.GENERAL_ERROR, true);
             return false;
         }

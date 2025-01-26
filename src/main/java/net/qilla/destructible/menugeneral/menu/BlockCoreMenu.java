@@ -5,7 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.menugeneral.DSlots;
-import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.MenuScale;
 import net.qilla.qlibrary.menu.QStaticMenu;
@@ -21,16 +20,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BlockMenu extends QStaticMenu {
+public class BlockCoreMenu extends QStaticMenu {
 
-    public BlockMenu(@NotNull Destructible plugin, @NotNull PlayerData playerData) {
+    public BlockCoreMenu(@NotNull Destructible plugin, @NotNull PlayerData playerData) {
         super(plugin, playerData);
         super.addSocket(new QSocket(21, QSlot.of(builder -> builder
                 .material(Material.COMMAND_BLOCK_MINECART)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>World Loading"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view options on block loading")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to view options on block loading")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -46,7 +45,7 @@ public class BlockMenu extends QStaticMenu {
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Overview"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view or customize all blocks")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to view or customize all blocks")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {

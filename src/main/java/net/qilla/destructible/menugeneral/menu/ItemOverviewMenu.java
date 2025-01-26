@@ -42,9 +42,10 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
 
         super.addSocket(new QSocket(46, QSlot.of(builder -> builder
                 .material(Material.IRON_INGOT)
-                .displayName(MiniMessage.miniMessage().deserialize("<yellow>Create New Item"))
+                .displayName(MiniMessage.miniMessage().deserialize("<green>Create New Item"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to open the item modification menu")
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the item creation menu")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -56,9 +57,10 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
         }, CooldownType.OPEN_MENU));
         super.addSocket(new QSocket(47, QSlot.of(builder -> builder
                 .material(Material.IRON_PICKAXE)
-                .displayName(MiniMessage.miniMessage().deserialize("<gold>Create New Tool"))
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Create New Tool"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to open the tool modification menu")
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the tool creation menu")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -89,16 +91,16 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                         .addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Last Update <white>" + TimeUtil.timeSince(item.getVersion(), false)))
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to make modifications"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to get this item"),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.sneak> + <key:key.mouse.right> to select an amount")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to get this item"),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>③ <key:key.sneak> + <key:key.mouse.right></gold> to select an amount")
                         )).build()
                 )
                 .clickSound(MenuSound.MENU_GET_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                if(item.getStaticAttributes().has(AttributeTypes.TOOL_TYPE)) new ToolModificationMenu(super.getPlugin(), super.getPlayerData(), item).open(true);
+                if(!item.getStaticAttributes().isEmpty()) new ToolModificationMenu(super.getPlugin(), super.getPlayerData(), item).open(true);
                 else new ItemModificationMenu(super.getPlugin(), super.getPlayerData(), item).open(true);
                 return true;
             } else if(clickType.isRightClick()) {
@@ -136,15 +138,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     private Socket saveItemsSocket() {
-        return new QSocket(0, QSlot.of(builder -> builder
-                .material(Material.SLIME_BALL)
-                .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Custom Items"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to save custom item changes")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(0, DSlots.SAVED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -170,15 +164,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     private Socket reloadItemsSocket() {
-        return new QSocket(1, QSlot.of(builder -> builder
-                .material(Material.SNOWBALL)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Custom Items"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to load the config, undoing any unsaved changes.")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(1, DSlots.RELOADED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -207,15 +193,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     private Socket clearItemsSocket() {
-        return new QSocket(2, QSlot.of(builder -> builder
-                .material(Material.FIRE_CHARGE)
-                .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Custom Items"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to clear custom items")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(2, DSlots.CLEAR_SAVED, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -252,7 +230,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
-                .title(Component.text("Custom Item Overview"))
+                .title(Component.text("Item Overview"))
                 .menuIndex(4)
                 .returnIndex(49));
     }

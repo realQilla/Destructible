@@ -4,12 +4,9 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.DSounds;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.*;
@@ -23,7 +20,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -45,18 +41,16 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
     public @Nullable Socket createSocket(int index, DItem item) {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
-                .displayName(MiniMessage.miniMessage().deserialize(item.getId()))
+                .displayName(item.getDisplayName())
                 .lore(ItemLore.lore()
                         .addLines(List.of(
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(item.getDisplayName()),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Item ID <white>" + item.getId()),
+                                Component.empty()
                         ))
-                        .addLines(item.getLore().lines())
+                        .addLines(ComponentUtil.getLore(item).lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Rarity ").append(item.getRarity().getComponent()),
-                                Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select custom item")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select this item")
                         )).build()
                 )
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
@@ -75,10 +69,7 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.DIAMOND_PICKAXE)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Search"))
-        ));
+        return new QSocket(4, DSlots.DITEM_SELECTION_MENU);
     }
 
     @Override

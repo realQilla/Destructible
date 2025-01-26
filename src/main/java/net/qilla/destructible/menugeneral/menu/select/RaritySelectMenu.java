@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.DynamicConfig;
@@ -20,7 +21,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -44,7 +44,7 @@ public class RaritySelectMenu extends QDynamicMenu<Rarity> {
                 .displayName(item.getComponent())
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select rarity")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select rarity")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -57,17 +57,14 @@ public class RaritySelectMenu extends QDynamicMenu<Rarity> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.LAPIS_LAZULI)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Rarity Settings"))
-        ));
+        return new QSocket(4, DSlots.RARITY_SELECTION_MENU);
     }
 
     @Override
     public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.THREE)
-                .title(Component.text("Rarity Settings"))
+                .title(Component.text("Rarity Selection"))
                 .menuIndex(4)
                 .returnIndex(22));
     }

@@ -5,6 +5,7 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.registry.DRegistry;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.*;
@@ -16,12 +17,10 @@ import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -58,7 +57,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(item.getBreakParticle().toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select custom block")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select this custom block")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -76,10 +75,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.GRAY_GLAZED_TERRACOTTA)
-                .displayName(MiniMessage.miniMessage().deserialize("<gold>Search"))
-        ));
+        return new QSocket(4, DSlots.DBLOCK_SELECTION_MENU);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.qlibrary.data.PlayerData;
@@ -34,15 +35,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
         super(plugin, playerData, lootpool);
         Preconditions.checkNotNull(lootpool, "List cannot be null");
         this.lootpool = lootpool;
-        super.addSocket(new QSocket(47, QSlot.of(builder -> builder
-                .material(Material.LIME_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<green>New Item"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to create a new item")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        super.addSocket(new QSocket(47, DSlots.MODIFICATION_CREATE, event -> {
             new ItemDropCreationMenu(super.getPlugin(), super.getPlayerData(), lootpool).open(true);
             return true;
         }, CooldownType.OPEN_MENU), 0);
@@ -63,8 +56,8 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Drop Chance <white>" +
                                 NumberUtil.decimalTruncation(item.getChance() * 100, 17) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(1 / item.getChance())) + ")"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to make modifications"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to remove"))
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to remove this item drop"))
                 ))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -82,14 +75,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.PINK_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Make lootpool modifications to"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>the selected destructible block")
-                )))
-        ));
+        return new QSocket(4, DSlots.LOOTPOOL_MODIFICATION_MENU);
     }
 
     @Override

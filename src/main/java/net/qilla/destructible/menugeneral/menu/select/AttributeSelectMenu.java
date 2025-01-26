@@ -1,9 +1,9 @@
-package net.qilla.destructible.menugeneral.menu;
+package net.qilla.destructible.menugeneral.menu.select;
 
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.menugeneral.menu.select.SingleToolTypeSelectionMenu;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.ToolType;
 import net.qilla.destructible.mining.item.attributes.Attribute;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
@@ -28,11 +28,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
+public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
 
     private final Set<Attribute<?>> attributeSet;
 
-    public AttributeSelectionMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull Set<Attribute<?>> attributeSet) {
+    public AttributeSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull Set<Attribute<?>> attributeSet) {
         super(plugin, playerData, attributeSet);
 
         this.attributeSet = attributeSet;
@@ -58,7 +58,7 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Value <white>" + item.value().toString()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to unset")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.right></gold> to unset")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .glow(true)
@@ -75,9 +75,9 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     public Socket toolEfficiencySocket() {
         return new QSocket(11, QSlot.of(builder -> builder
                 .material(Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Tool Efficiency"))
+                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Item Efficiency"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -111,9 +111,9 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     public Socket toolStrengthSocket() {
         return new QSocket(12, QSlot.of(builder -> builder
                 .material(Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Tool Strength"))
+                .displayName(MiniMessage.miniMessage().deserialize("<red>Item Strength"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -147,9 +147,9 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     public Socket toolFortuneSocket() {
         return new QSocket(13, QSlot.of(builder -> builder
                 .material(Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Tool Fortune"))
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Item Fortune"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -183,9 +183,9 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     public Socket toolTypeSocket() {
         return new QSocket(14, QSlot.of(builder -> builder
                 .material(Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE)
-                .displayName(MiniMessage.miniMessage().deserialize("<gold>Tool Type"))
+                .displayName(MiniMessage.miniMessage().deserialize("<gold>Item Type"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -206,9 +206,9 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     public Socket toolDurabilitySocket() {
         return new QSocket(15, QSlot.of(builder -> builder
                 .material(Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Tool Durability"))
+                .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Item Durability"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -241,14 +241,7 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.RED_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Attribute Modification"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Set which attributes apply"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>to the selected item")
-                )))
-        ));
+        return new QSocket(4, DSlots.ATTRIBUTE_SELECTION_MENU);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.*;
 import net.qilla.qlibrary.menu.socket.QSlot;
@@ -48,8 +49,8 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
                 .displayName(MiniMessage.miniMessage().deserialize(item.toString()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this sound"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to listen")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select this sound"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to listen")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -72,10 +73,7 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.NAUTILUS_SHELL)
-                .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Search"))
-        ));
+        return new QSocket(4, DSlots.SOUND_SELECTION_MENU);
     }
 
     @Override

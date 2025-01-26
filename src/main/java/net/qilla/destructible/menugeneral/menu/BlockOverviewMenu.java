@@ -3,13 +3,11 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.files.CustomBlocksFile;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.DynamicConfig;
 import net.qilla.qlibrary.menu.MenuScale;
@@ -40,7 +38,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
     public BlockOverviewMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
         super(plugin, playerData, DBLOCK_COLLECTION);
 
-        super.addSocket(new QSocket(6, DSlots.CREATE_NEW, event -> {
+        super.addSocket(new QSocket(46, DSlots.MODIFICATION_CREATE, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new BlockModificationMenu(super.getPlugin(), playerData).open(true);
@@ -72,8 +70,8 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(item.getBreakParticle().toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view make modifications"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><yellow><key:key.mouse.right> to view lootpool")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to view make modifications"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><yellow><gold>② <key:key.mouse.right></gold> to view lootpool")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
@@ -89,15 +87,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
     }
 
     private Socket saveBlocksSocket() {
-        return new QSocket(0, QSlot.of(builder -> builder
-                .material(Material.SLIME_BALL)
-                .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Custom Blocks"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to save custom block changes")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(0, DSlots.SAVED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -123,15 +113,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
     }
 
     private Socket reloadBlocksSocket() {
-        return new QSocket(1, QSlot.of(builder -> builder
-                .material(Material.SNOWBALL)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Custom Blocks"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to load the config, undoing any unsaved changes.")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(1, DSlots.RELOADED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -160,15 +142,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
     }
 
     private Socket clearlocksSocket() {
-        return new QSocket(2, QSlot.of(builder -> builder
-                .material(Material.FIRE_CHARGE)
-                .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Custom Blocks"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to clear custom blocks")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(2, DSlots.CLEAR_SAVED, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(

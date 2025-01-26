@@ -7,12 +7,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.menugeneral.DSlots;
+import net.qilla.destructible.menugeneral.menu.select.AttributeSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.ItemSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.RaritySelectMenu;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.Rarity;
 import net.qilla.destructible.mining.item.attributes.Attribute;
-import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.MenuScale;
 import net.qilla.qlibrary.menu.QStaticMenu;
@@ -102,21 +102,16 @@ public class ToolModificationMenu extends QStaticMenu {
                 .staticAttributes(staticAttributes)
         );
 
-        if(originalId != null) DITEM_MAP.computeIfPresent(originalId, (id, dItem) -> null);
-        super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + newDItem.getId() + " has been successfully registered!"));
+        if(originalId != null) {
+            DITEM_MAP.computeIfPresent(originalId, (id, dItem) -> null);
+            super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + originalId + " has been successfully replaced by " + id + "!"));
+        } else super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + newDItem.getId() + " has been successfully registered!"));
         DITEM_MAP.put(newDItem.getId(), newDItem);
         return super.returnMenu();
     }
 
     public Socket removeSocket() {
-        return new QSocket(44, QSlot.of(builder -> builder
-                .material(Material.BARRIER)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Remove!"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to permanently"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>delete this item")
-                )))
-        ), this::remove, CooldownType.MENU_CLICK);
+        return new QSocket(44, DSlots.MODIFICATION_REMOVE, this::remove, CooldownType.MENU_CLICK);
     }
 
     private boolean remove(InventoryClickEvent event) {
@@ -136,7 +131,7 @@ public class ToolModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <red>Empty"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either an item or nothing to set a material")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a material or use an item to quickset")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -150,7 +145,7 @@ public class ToolModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + StringUtil.toName(material.toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either an item or nothing to set a material")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a material or use an item to quickset")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -165,7 +160,7 @@ public class ToolModificationMenu extends QStaticMenu {
 
         if(cursorMaterial.isEmpty()) {
             CompletableFuture<Material> future = new CompletableFuture<>();
-            new ItemSelectMenu(super.getPlugin(), (DPlayerData) super.getPlayerData(), future).open(true);
+            new ItemSelectMenu(super.getPlugin(), super.getPlayerData(), future).open(true);
             future.thenAccept(material -> {
                 if(material == null) return;
                 this.material = material;
@@ -192,7 +187,7 @@ public class ToolModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>" + id),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -232,7 +227,7 @@ public class ToolModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <white>").append(displayName),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -275,11 +270,11 @@ public class ToolModificationMenu extends QStaticMenu {
         else if(loreCycle < 0) loreCycle = lore.lines().size();
 
         ItemLore.Builder loreBuilder = ItemLore.lore();
-        loreBuilder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Current value: <white>"));
+        loreBuilder.addLine(MiniMessage.miniMessage().deserialize("<!italic><gray>Current value:"));
         List<Component> loreList = new ArrayList<>();
 
         if(!this.lore.lines().isEmpty()) loreList.addAll(this.lore.lines());
-        loreList.add(MiniMessage.miniMessage().deserialize("<!italic><gold>New Line"));
+        loreList.add(MiniMessage.miniMessage().deserialize("<!italic><white>New Line"));
 
         Component curLine = MiniMessage.miniMessage().deserialize("<!italic><white>»</white></!italic> ").append(loreList.get(loreCycle)).append(MiniMessage.miniMessage().deserialize(" <!italic><white>«</!italic>"));
         loreList.set(loreCycle, curLine);
@@ -287,10 +282,10 @@ public class ToolModificationMenu extends QStaticMenu {
         loreBuilder.addLines(loreList);
         loreBuilder.addLines(List.of(
                 Component.empty(),
-                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to cycle down"),
-                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to cycle up"),
-                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.sneak> + <key:key.mouse.left> to make modifications"),
-                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.sneak> + <key:key.mouse.right> to remove line")
+                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to cycle down"),
+                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to cycle up"),
+                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>③ <key:key.sneak> + <key:key.mouse.left></gold> to make modifications"),
+                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>④ <key:key.sneak> + <key:key.mouse.right></gold> to remove line")
         ));
         return loreBuilder.build();
     }
@@ -350,7 +345,7 @@ public class ToolModificationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Current value ").append(rarity.getComponent()),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -358,7 +353,7 @@ public class ToolModificationMenu extends QStaticMenu {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
             CompletableFuture<Rarity> future = new CompletableFuture<>();
-            new RaritySelectMenu(super.getPlugin(), (DPlayerData) super.getPlayerData(), future).open(true);
+            new RaritySelectMenu(super.getPlugin(), super.getPlayerData(), future).open(true);
             future.thenAccept(rarity -> this.rarity = rarity);
             return true;
         }, CooldownType.OPEN_MENU);
@@ -366,10 +361,14 @@ public class ToolModificationMenu extends QStaticMenu {
 
     public Socket staticAttributesSocket() {
         return new QSocket(16, QSlot.of(builder -> builder
-                .material(Material.BLUE_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<blue>Static Attributes"))
+                .material(Material.RED_BUNDLE)
+                .displayName(MiniMessage.miniMessage().deserialize("<red>Static Attributes"))
                 .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to modify")
+                        MiniMessage.miniMessage().deserialize("<!italic><gray><blue>ℹ</blue> Modification option for persistent attributes"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>within this item, meaning these are the item's"),
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>BASE unchangeable stats."),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -377,7 +376,7 @@ public class ToolModificationMenu extends QStaticMenu {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
 
-            new AttributeSelectionMenu(super.getPlugin(), (DPlayerData) super.getPlayerData(), this.staticAttributes).open(true);
+            new AttributeSelectMenu(super.getPlugin(), super.getPlayerData(), this.staticAttributes).open(true);
             return true;
         }, CooldownType.OPEN_MENU);
     }

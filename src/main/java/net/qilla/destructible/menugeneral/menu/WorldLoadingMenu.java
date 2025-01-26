@@ -3,7 +3,6 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.files.LoadedDestructibleBlocksFile;
@@ -73,8 +72,8 @@ public class WorldLoadingMenu extends QStaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Loading block " + dBlock),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Recursion size " + size),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select a block to be loaded"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to set a recursion size, or nothing to disable")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select a block to be loaded"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to set a recursion size, or nothing to disable")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), this::clickLoadBlock, CooldownType.MENU_CLICK);
@@ -118,15 +117,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket disableLoadBlockSocket() {
-        return new QSocket(29, QSlot.of(builder -> builder
-                .material(Material.GLASS_BOTTLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Disable Block Loading"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to disable block loading")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(29, DSlots.DISABLE_LOADED_BLOCK_VIEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 blockEdit.setDblock(null);
@@ -139,15 +130,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket viewBlockSocket() {
-        return new QSocket(22, QSlot.of(builder -> builder
-                .material(Material.OMINOUS_BOTTLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua>Loaded Block View"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to specify blocks to view")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(22, DSlots.VIEW_LOADED_BLOCKS, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new HighlightSelectMenu(super.getPlugin(), super.getPlayerData(), blockEdit.getBlockHighlight().getVisibleDBlocks()).open(true);
@@ -157,15 +140,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket saveLoadedBlocksSocket() {
-        return new QSocket(0, QSlot.of(builder -> builder
-                .material(Material.SLIME_BALL)
-                .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Loaded Blocks"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to save all loaded blocks within the world")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(0, DSlots.SAVED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -194,15 +169,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket reloadLoadedBlocksSocket() {
-        return new QSocket(1, QSlot.of(builder -> builder
-                .material(Material.SNOWBALL)
-                .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Loaded Blocks"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to load the config, undoing any unsaved changes.")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(1, DSlots.RELOADED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -231,15 +198,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket clearLoadedBlocksSocket() {
-        return new QSocket(2, QSlot.of(builder -> builder
-                .material(Material.FIRE_CHARGE)
-                .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Loaded Blocks"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to clear all loaded blocks within the world")
-                )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-        ), event -> {
+        return new QSocket(2, DSlots.CLEAR_SAVED, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 List<String> signText = List.of(
@@ -296,7 +255,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.FIVE)
-                .title(Component.text("Load Blocks"))
+                .title(Component.text("Loading Blocks"))
                 .menuIndex(4)
                 .returnIndex(40));
     }

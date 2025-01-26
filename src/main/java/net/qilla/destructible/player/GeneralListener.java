@@ -49,6 +49,7 @@ public class GeneralListener implements Listener {
     private static final Map<UUID, DPlayerData> PLAYER_DATA = DRegistry.PLAYER_DATA;
     private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
     private static final Map<String, DItem> DITEM_MAP = DRegistry.ITEMS;
+
     private final Destructible plugin;
     private final BlockingQueue<Runnable> taskQueue = new ArrayBlockingQueue<>(16);
     private final AtomicBoolean isProcessing = new AtomicBoolean(false);

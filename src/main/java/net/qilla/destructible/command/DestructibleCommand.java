@@ -6,9 +6,8 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.menugeneral.menu.BlockMenu;
+import net.qilla.destructible.menugeneral.menu.BlockCoreMenu;
 import net.qilla.destructible.menugeneral.menu.ItemOverviewMenu;
-import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.player.CooldownType;
@@ -69,7 +68,7 @@ public class DestructibleCommand {
         }
         playerData.setCooldown(CooldownType.OPEN_MENU);
 
-        playerData.newMenu(new BlockMenu(plugin, playerData));
+        playerData.newMenu(new BlockCoreMenu(plugin, playerData));
         return Command.SINGLE_SUCCESS;
     }
 }

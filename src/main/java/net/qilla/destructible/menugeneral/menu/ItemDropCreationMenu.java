@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ItemDropCreationMenu extends QStaticMenu {
 
-    private boolean lockedMenu = false;
+    private boolean lockedMenu = true;
     private final List<ItemDrop> lootpool;
     private final ItemDrop itemDrop;
     private DItem dItem;
@@ -99,10 +99,10 @@ public class ItemDropCreationMenu extends QStaticMenu {
     private Socket emptyItemSocket() {
         return new QSocket(22, QSlot.of(builder -> builder
                 .material(Material.HOPPER_MINECART)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Drop item"))
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Custom Item"))
                 .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><red>Empty"),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set an item")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a custom item")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -121,7 +121,7 @@ public class ItemDropCreationMenu extends QStaticMenu {
                         .addLines(dItem.getLore().lines())
                         .addLines(List.of(
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set an item")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a custom item")
                         )).build())
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -152,7 +152,7 @@ public class ItemDropCreationMenu extends QStaticMenu {
                         .addLines(List.of(
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Value <white>" + StringUtil.toName(String.valueOf(fortuneAffected))),
                                 Component.empty(),
-                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to toggle")
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to toggle")
                         )).build())
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -173,8 +173,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Drop amount <white>" + this.minAmount + " <white>- " + this.maxAmount),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set a minimum amount"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to set a maximum amount")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a <green><bold>MINIMUM</green> amount"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to set a <red><bold>MAXIMUM</red> amount")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -242,7 +242,7 @@ public class ItemDropCreationMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Drop chance <white>" + string),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set a drop chance")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a drop chance")
                 )))
                 .clickSound(MenuSound.MENU_CLICK_ITEM)
                 .appearSound(MenuSound.MENU_ITEM_APPEAR)
@@ -281,21 +281,14 @@ public class ItemDropCreationMenu extends QStaticMenu {
 
     @Override
     public @NotNull Socket menuSocket() {
-        return new QSocket(4, QSlot.of(builder -> builder
-                .material(Material.PINK_BUNDLE)
-                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Item Drop Modification"))
-                .lore(ItemLore.lore(List.of(
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>Settings menu for modifying properties"),
-                        MiniMessage.miniMessage().deserialize("<!italic><gray>of existing lootpools")
-                )))
-        ));
+        return new QSocket(4, DSlots.ITEM_DROP_MODIFICATION_MENU);
     }
 
     @Override
     public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.FIVE)
-                .title(Component.text("Drop Settings"))
+                .title(Component.text("Item Drop Modification"))
                 .menuIndex(4)
                 .returnIndex(40));
     }
