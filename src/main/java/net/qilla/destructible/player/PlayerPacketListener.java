@@ -12,6 +12,8 @@ import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.logic.MiningManager;
 import net.qilla.qlibrary.util.tools.CoordUtil;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,12 +78,13 @@ public final class PlayerPacketListener {
         return false;
     }
 
-    public void removeListener(DPlayer dPlayer) {
-        ServerGamePacketListenerImpl playerCon = dPlayer.getHandle().connection;
+    public void removeListener(Player player) {
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+        ServerGamePacketListenerImpl playerCon = craftPlayer.getHandle().connection;
         Channel channel = playerCon.connection.channel;
 
         channel.eventLoop().submit(() -> {
-            channel.pipeline().remove(dPlayer.getUniqueId().toString());
+            channel.pipeline().remove(craftPlayer.getUniqueId().toString());
             return null;
         });
 

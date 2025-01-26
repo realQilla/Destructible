@@ -20,6 +20,15 @@ public class DPlayerData extends QPlayerData {
         this.miningManager = new MiningManager(plugin, this.getPlayer());
     }
 
+    public DPlayerData(@NotNull DPlayer player, @NotNull DPlayerData playerData) {
+        super(player, playerData);
+
+        this.plugin = playerData.plugin;
+        this.overflow = playerData.overflow;
+        this.miningManager = playerData.miningManager;
+        this.blockEdit = null;
+    }
+
     public @NotNull Overflow getOverflow() {
         return overflow;
     }

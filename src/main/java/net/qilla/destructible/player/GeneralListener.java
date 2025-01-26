@@ -279,13 +279,12 @@ public class GeneralListener implements Listener {
     }
 
     public void initPlayer(@NotNull Player player) {
-        UUID uuid = player.getUniqueId();
+        CraftPlayer craftPlayer = (CraftPlayer) player;
 
-        DPlayerData playerData = PLAYER_DATA.computeIfAbsent(uuid,
-                k -> new DPlayerData(new DPlayer((CraftPlayer) player), plugin)
-        );
-        PlayerPacketListener.getInstance().addListener(playerData);
+        if(PLAYER_DATA.containsKey(craftPlayer.getUniqueId())) PLAYER_DATA.put(craftPlayer.getUniqueId(), new DPlayerData(new DPlayer(craftPlayer), plugin));
+        else PLAYER_DATA.put(craftPlayer.getUniqueId(), new DPlayerData(new DPlayer(craftPlayer), plugin));
 
+        PlayerPacketListener.getInstance().addListener(PLAYER_DATA.get(craftPlayer.getUniqueId()));
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
     }
 
