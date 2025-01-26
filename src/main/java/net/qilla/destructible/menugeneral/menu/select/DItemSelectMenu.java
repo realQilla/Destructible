@@ -6,29 +6,35 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.registry.DRegistryMaster;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.*;
-import net.qilla.destructible.menugeneral.slot.*;
+import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.util.ComponentUtil;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.*;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.plugin.Plugin;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DItemSelectMenu extends SearchMenu<DItem> {
+public class DItemSelectMenu extends QSearchMenu<DItem> {
 
     private static final Collection<DItem> DITEMS = DRegistry.ITEMS.values();
     private final CompletableFuture<DItem> future;
 
-    public DItemSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<DItem> future) {
-        super(plugin, dPlayer, DITEMS);
+    public DItemSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<DItem> future) {
+        super(plugin, playerData, DITEMS);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -36,8 +42,8 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
     }
 
     @Override
-    public Socket createSocket(int index, DItem item) {
-        return new Socket(index, Slot.of(builder -> builder
+    public @Nullable Socket createSocket(int index, DItem item) {
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
                 .displayName(MiniMessage.miniMessage().deserialize(item.getId()))
                 .lore(ItemLore.lore()
@@ -53,7 +59,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select custom item")
                         )).build()
                 )
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -69,7 +75,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slot.of(builder -> builder
+        return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.DIAMOND_PICKAXE)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Search"))
         ));
@@ -78,7 +84,7 @@ public class DItemSelectMenu extends SearchMenu<DItem> {
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuScale.SIX)
                 .title(Component.text("Custom Item Search"))
                 .menuIndex(4)
                 .returnIndex(49));

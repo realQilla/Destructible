@@ -6,18 +6,19 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.registry.DRegistryMaster;
 import net.qilla.destructible.menugeneral.menu.BlockMenu;
 import net.qilla.destructible.menugeneral.menu.ItemOverviewMenu;
-import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.player.CooldownType;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public class DestructibleCommand {
 
-    private static final Map<UUID, DPlayer> DPLAYERS = DRegistry.DPLAYERS;
+    private static final Map<UUID, DPlayerData> PLAYER_DATA = DRegistry.PLAYER_DATA;
     private static final String COMMAND = "destructible";
     private static final List<String> ALIAS = List.of("dest", "d");
     private static final String ITEM = "item";
@@ -46,29 +47,29 @@ public class DestructibleCommand {
 
     private int itemMenu(CommandContext<CommandSourceStack> context) {
         UUID uuid = ((Player) context.getSource().getSender()).getUniqueId();
-        DPlayer dPlayer = DPLAYERS.get(uuid);
+        PlayerData playerData = PLAYER_DATA.get(uuid);
 
-        if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
-            dPlayer.sendMessage("<red>Please wait a bit before accessing this menu.");
+        if(playerData.hasCooldown(CooldownType.OPEN_MENU)) {
+            playerData.getPlayer().sendMessage("<red>Please wait a bit before accessing this menu.");
             return 0;
         }
-        dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
+        playerData.setCooldown(CooldownType.OPEN_MENU);
 
-        dPlayer.getMenuHolder().newMenu(new ItemOverviewMenu(plugin, dPlayer));
+        playerData.newMenu(new ItemOverviewMenu(plugin, playerData));
         return Command.SINGLE_SUCCESS;
     }
 
     private int blockMenu(CommandContext<CommandSourceStack> context) {
         UUID uuid = ((Player) context.getSource().getSender()).getUniqueId();
-        DPlayer dPlayer = DPLAYERS.get(uuid);
+        PlayerData playerData = PLAYER_DATA.get(uuid);
 
-        if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
-            dPlayer.sendMessage("<red>Please wait a bit before accessing this menu.");
+        if(playerData.hasCooldown(CooldownType.OPEN_MENU)) {
+            playerData.getPlayer().sendMessage("<red>Please wait a bit before accessing this menu.");
             return 0;
         }
-        dPlayer.getCooldown().set(CooldownType.OPEN_MENU);
+        playerData.setCooldown(CooldownType.OPEN_MENU);
 
-        dPlayer.getMenuHolder().newMenu(new BlockMenu(plugin, dPlayer));
+        playerData.newMenu(new BlockMenu(plugin, playerData));
         return Command.SINGLE_SUCCESS;
     }
 }

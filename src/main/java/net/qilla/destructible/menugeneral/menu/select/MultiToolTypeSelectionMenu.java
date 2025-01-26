@@ -4,32 +4,34 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.DynamicMenu;
-import net.qilla.destructible.menugeneral.slot.*;
-import net.qilla.destructible.menugeneral.DynamicConfig;
-import net.qilla.destructible.menugeneral.MenuSize;
-import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.ToolType;
-import net.qilla.destructible.player.CooldownType;
-import net.qilla.destructible.player.DPlayer;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.DynamicConfig;
+import net.qilla.qlibrary.menu.MenuScale;
+import net.qilla.qlibrary.menu.QDynamicMenu;
+import net.qilla.qlibrary.menu.StaticConfig;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MultiToolTypeSelectionMenu extends DynamicMenu<ToolType> {
+public class MultiToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
 
     private static final List<ToolType> TOOL_TYPES = Arrays.stream(ToolType.values())
             .collect(Collectors.toList());
 
     private final Set<ToolType> correctTools;
 
-    public MultiToolTypeSelectionMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Set<ToolType> correctTools) {
-        super(plugin, dPlayer, TOOL_TYPES);
+    public MultiToolTypeSelectionMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull Set<ToolType> correctTools) {
+        super(plugin, playerData, TOOL_TYPES);
         Preconditions.checkNotNull(correctTools, "Set cannot be null");
         this.correctTools = correctTools;
         super.populateModular();
@@ -40,7 +42,7 @@ public class MultiToolTypeSelectionMenu extends DynamicMenu<ToolType> {
     public Socket createSocket(int index, ToolType item) {
         boolean contains = correctTools.contains(item);
 
-        return new Socket(index, Slot.of(builder -> builder
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getRepresentation())
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
@@ -49,7 +51,7 @@ public class MultiToolTypeSelectionMenu extends DynamicMenu<ToolType> {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this tool")
                 )))
                 .glow(contains)
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -63,7 +65,7 @@ public class MultiToolTypeSelectionMenu extends DynamicMenu<ToolType> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slot.of(builder -> builder
+        return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.BLACK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Tool Settings"))
                 .lore(ItemLore.lore(List.of(
@@ -74,9 +76,9 @@ public class MultiToolTypeSelectionMenu extends DynamicMenu<ToolType> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.THREE)
+                .menuSize(MenuScale.THREE)
                 .title(Component.text("Tool Settings"))
                 .menuIndex(4)
                 .returnIndex(22));

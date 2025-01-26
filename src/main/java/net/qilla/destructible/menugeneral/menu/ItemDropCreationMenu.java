@@ -5,77 +5,88 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.StaticMenu;
-import net.qilla.destructible.menugeneral.input.SignInput;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.menugeneral.menu.select.DItemSelectMenu;
-import net.qilla.destructible.menugeneral.slot.Slots;
-import net.qilla.destructible.menugeneral.slot.Slot;
-import net.qilla.destructible.menugeneral.slot.Socket;
-import net.qilla.destructible.menugeneral.MenuSize;
-import net.qilla.destructible.menugeneral.StaticConfig;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
-import net.qilla.destructible.player.CooldownType;
-import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.MenuScale;
+import net.qilla.qlibrary.menu.QStaticMenu;
+import net.qilla.qlibrary.menu.StaticConfig;
+import net.qilla.qlibrary.menu.input.SignInput;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class ItemDropCreationMenu extends StaticMenu {
+public class ItemDropCreationMenu extends QStaticMenu {
 
-    private boolean fullMenu;
+    private boolean lockedMenu = false;
     private final List<ItemDrop> lootpool;
     private final ItemDrop itemDrop;
     private DItem dItem;
-    private boolean fortuneAffected;
-    private Integer minAmount;
-    private Integer maxAmount;
-    private Double chance;
+    private boolean fortuneAffected = true;
+    private int minAmount = 1;
+    private int maxAmount = 1;
+    private double chance = 1;
 
-    public ItemDropCreationMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull List<ItemDrop> lootpool, @Nullable ItemDrop itemDrop) {
-        super(plugin, dPlayer);
+    public ItemDropCreationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull List<ItemDrop> lootpool, @NotNull ItemDrop itemDrop) {
+        super(plugin, playerData);
         Preconditions.checkNotNull(lootpool, "List cannot be null");
         this.lootpool = lootpool;
         this.itemDrop = itemDrop;
 
-        if(this.itemDrop != null) {
-            this.fullMenu = true;
-            this.dItem = itemDrop.getDItem();
-            this.fortuneAffected = itemDrop.isFortuneAffected();
-            this.minAmount = itemDrop.getMinAmount();
-            this.maxAmount = itemDrop.getMaxAmount();
-            this.chance = itemDrop.getChance() * 100;
-            this.populateSettings();
-        }
-        super.addSocket(this.itemSocket(), 50);
+
+        this.lockedMenu = true;
+        this.dItem = itemDrop.getDItem();
+        this.fortuneAffected = itemDrop.isFortuneAffected();
+        this.minAmount = itemDrop.getMinAmount();
+        this.maxAmount = itemDrop.getMaxAmount();
+        this.chance = itemDrop.getChance() * 100;
+
+        super.addSocket(this.getSettingsSockets(), 50);
         super.finalizeMenu();
     }
 
-    private void populateSettings() {
+    public ItemDropCreationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull List<ItemDrop> lootpool) {
+        super(plugin, playerData);
+        Preconditions.checkNotNull(lootpool, "List cannot be null");
+        this.lootpool = lootpool;
+        this.itemDrop = null;
+
+        super.addSocket(this.emptyItemSocket(), 100);
+        super.finalizeMenu();
+    }
+
+    private List<Socket> getSettingsSockets() {
         List<Socket> socketList = new ArrayList<>(List.of(
-                amountSocket(), chanceSocket(), fortuneAffectedSocket()
+                itemSocket(), amountSocket(), chanceSocket(), fortuneAffectedSocket()
         ));
         Collections.shuffle(socketList);
         socketList.add(buildSocket());
 
-        super.addSocket(socketList, 100);
+        return socketList;
     }
 
     private Socket buildSocket() {
-        return new Socket(42, Slots.CONFIRM, event -> {
+        return new QSocket(42, DSlots.CONFIRM, event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
-            lootpool.remove(itemDrop);
+            if(itemDrop != null) lootpool.remove(itemDrop);
             lootpool.add(new ItemDrop.Builder()
                     .dItem(dItem)
                     .fortuneAffected(fortuneAffected)
@@ -87,39 +98,56 @@ public class ItemDropCreationMenu extends StaticMenu {
         }, CooldownType.MENU_CLICK);
     }
 
+    private Socket emptyItemSocket() {
+        return new QSocket(22, QSlot.of(builder -> builder
+                .material(Material.HOPPER_MINECART)
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Drop item"))
+                .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><red>Empty"),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set an item")
+                )))
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+        ), this::setItem, CooldownType.MENU_CLICK);
+    }
+
     private Socket itemSocket() {
-        if(dItem == null) {
-            return new Socket(22, Slot.of(builder -> builder
-                    .material(Material.HOPPER_MINECART)
-                    .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Drop item"))
-                    .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><red>Empty"),
-                            Component.empty(),
-                            MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set an item")
-                    )))
-                    .clickSound(Sounds.MENU_CLICK_ITEM)
-            ), this::setItem, CooldownType.MENU_CLICK);
-        } else {
-            return new Socket(22, Slot.of(builder -> builder
-                    .material(dItem.getMaterial())
-                    .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Drop item"))
-                    .lore(ItemLore.lore()
-                            .addLines(List.of(
-                                    MiniMessage.miniMessage().deserialize("<!italic><gray>Name <white>").append(dItem.getDisplayName()),
-                                    MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
-                            ))
-                            .addLines(dItem.getLore().lines())
-                            .addLines(List.of(
-                                    Component.empty(),
-                                    MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set an item")
-                            )).build())
-                    .clickSound(Sounds.MENU_CLICK_ITEM)
-                    .appearSound(Sounds.MENU_ITEM_APPEAR)
-            ), this::setItem, CooldownType.MENU_CLICK);
-        }
+        return new QSocket(22, QSlot.of(builder -> builder
+                .material(dItem.getMaterial())
+                .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Drop item"))
+                .lore(ItemLore.lore()
+                        .addLines(List.of(
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Name <white>").append(dItem.getDisplayName()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Lore:")
+                        ))
+                        .addLines(dItem.getLore().lines())
+                        .addLines(List.of(
+                                Component.empty(),
+                                MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set an item")
+                        )).build())
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+        ), this::setItem, CooldownType.MENU_CLICK);
+
+    }
+
+    private boolean setItem(InventoryClickEvent event) {
+        ClickType clickType = event.getClick();
+        if(clickType.isLeftClick()) {
+            CompletableFuture<DItem> future = new CompletableFuture<>();
+            new DItemSelectMenu(super.getPlugin(), super.getPlayerData(), future).open(true);
+            future.thenAccept(dItem -> {
+                if(dItem == null) return;
+                this.dItem = dItem;
+                lockedMenu = false;
+                super.addSocket(getSettingsSockets());
+            });
+            return true;
+        } else return false;
     }
 
     private Socket fortuneAffectedSocket() {
-        return new Socket(31, Slot.of(builder -> builder
+        return new QSocket(31, QSlot.of(builder -> builder
                 .material(Material.ENCHANTED_BOOK)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Fortune Affected"))
                 .lore(ItemLore.lore()
@@ -128,8 +156,8 @@ public class ItemDropCreationMenu extends StaticMenu {
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to toggle")
                         )).build())
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-                .appearSound(Sounds.MENU_ITEM_APPEAR)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .appearSound(MenuSound.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -140,20 +168,8 @@ public class ItemDropCreationMenu extends StaticMenu {
         }, CooldownType.MENU_CLICK);
     }
 
-    private boolean setItem(InventoryClickEvent event) {
-        ClickType clickType = event.getClick();
-        if(clickType.isLeftClick()) {
-            CompletableFuture<DItem> future = new CompletableFuture<>();
-            new DItemSelectMenu(super.getPlugin(), super.getDPlayer(), future).open(true);
-            future.thenAccept(dItem -> this.dItem = dItem);
-            return true;
-        } else return false;
-    }
-
     private Socket amountSocket() {
-        if(minAmount == null) this.minAmount = 1;
-        if(maxAmount == null) this.maxAmount = 1;
-        return new Socket(20, Slot.of(builder -> builder
+        return new QSocket(20, QSlot.of(builder -> builder
                 .material(Material.BROWN_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Drop amount"))
                 .lore(ItemLore.lore(List.of(
@@ -162,8 +178,8 @@ public class ItemDropCreationMenu extends StaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set a minimum amount"),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to set a maximum amount")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-                .appearSound(Sounds.MENU_ITEM_APPEAR)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .appearSound(MenuSound.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -180,7 +196,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                 "Minimum amount",
                 "that can drop");
 
-        SignInput signInput = new SignInput(super.getPlugin(), super.getDPlayer(), signText);
+        SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
         signInput.init(result -> {
             Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
 
@@ -188,7 +204,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                     this.minAmount = Math.max(1, Integer.parseInt(result));
                     if(this.minAmount > maxAmount) this.maxAmount = minAmount;
                     super.addSocket(this.amountSocket(), 0);
-                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
                 super.open(false);
@@ -203,7 +219,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                 "Maximum amount",
                 "that can drop");
 
-        SignInput signInput = new SignInput(super.getPlugin(), super.getDPlayer(), signText);
+        SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
         signInput.init(result -> {
             Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
 
@@ -211,7 +227,7 @@ public class ItemDropCreationMenu extends StaticMenu {
                     this.maxAmount = Math.max(1, Integer.parseInt(result));
                     if(this.maxAmount < minAmount) this.minAmount = maxAmount;
                     super.addSocket(this.amountSocket(), 0);
-                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
                 super.open(false);
@@ -221,9 +237,8 @@ public class ItemDropCreationMenu extends StaticMenu {
     }
 
     private Socket chanceSocket() {
-        if(chance == null) this.chance = 100.0;
         String string = (NumberUtil.decimalTruncation(this.chance, 17)) + "% (1/" + NumberUtil.numberComma((long) Math.ceil(100 / this.chance)) + ")";
-        return new Socket(24, Slot.of(builder -> builder
+        return new QSocket(24, QSlot.of(builder -> builder
                 .material(Material.HONEYCOMB)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Drop Chance"))
                 .lore(ItemLore.lore(List.of(
@@ -231,8 +246,8 @@ public class ItemDropCreationMenu extends StaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set a drop chance")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
-                .appearSound(Sounds.MENU_ITEM_APPEAR)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .appearSound(MenuSound.MENU_ITEM_APPEAR)
         ), this::setChance, CooldownType.MENU_CLICK);
     }
 
@@ -245,14 +260,14 @@ public class ItemDropCreationMenu extends StaticMenu {
                 "Chance that this",
                 "item can drop");
 
-        SignInput signInput = new SignInput(super.getPlugin(), super.getDPlayer(), signText);
+        SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
         signInput.init(result -> {
             Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
 
                 try {
                     this.chance = Math.max(0, Math.min(100, Double.parseDouble(result)));
                     super.addSocket(this.chanceSocket(), 0);
-                    getDPlayer().playSound(Sounds.SIGN_INPUT, true);
+                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
                 super.open(false);
@@ -263,20 +278,12 @@ public class ItemDropCreationMenu extends StaticMenu {
 
     @Override
     public void refreshSockets() {
-        if(!fullMenu && dItem != null) {
-            super.addSocket(itemSocket(), 50);
-            this.populateSettings();
-            this.fullMenu = true;
-        } else if(dItem != null) {
-            super.addSocket(List.of(
-                    itemSocket(),amountSocket(), chanceSocket(), buildSocket(), fortuneAffectedSocket()
-            ));
-        }
+        if(!lockedMenu) super.addSocket(getSettingsSockets());
     }
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slot.of(builder -> builder
+        return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Item Drop Modification"))
                 .lore(ItemLore.lore(List.of(
@@ -287,9 +294,9 @@ public class ItemDropCreationMenu extends StaticMenu {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.FIVE)
+                .menuSize(MenuScale.FIVE)
                 .title(Component.text("Drop Settings"))
                 .menuIndex(4)
                 .returnIndex(40));

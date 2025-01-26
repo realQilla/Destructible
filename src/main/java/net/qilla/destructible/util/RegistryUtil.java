@@ -2,13 +2,9 @@ package net.qilla.destructible.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
-import net.qilla.destructible.player.DPlayer;
 import net.qilla.qlibrary.util.tools.CoordUtil;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -16,33 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class RegistryUtil {
 
-    private static final Map<UUID, DPlayer> DPLAYERS = DRegistry.DPLAYERS;
     private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCKS = DRegistry.LOADED_BLOCKS;
     private static final Map<Long, ConcurrentHashMap<Integer, BlockMemory>> LOADED_BLOCKS_MEMORY = DRegistry.LOADED_BLOCK_MEMORY;
     private static final Map<String, ConcurrentHashMap<Long, Set<Integer>>> LOADED_BLOCKS_GROUPED = DRegistry.LOADED_BLOCKS_GROUPED;
 
     private RegistryUtil() {
-    }
-
-    public static boolean registerPlayer(@NotNull Player player) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-
-        DPLAYERS.compute(player.getUniqueId(), (uuid, existingDPlayer) -> {
-            if(existingDPlayer != null) {
-                existingDPlayer.resetCraftPlayer(craftPlayer);
-                return existingDPlayer;
-            }
-            return new DPlayer(Destructible.getInstance(), craftPlayer);
-        });
-
-        return true;
-    }
-
-    public static boolean unregisterPlayer(Player player) {
-        var registry = DPLAYERS;
-        if(!registry.containsKey(player.getUniqueId())) return false;
-        registry.remove(player.getUniqueId());
-        return true;
     }
 
     public static boolean loadBlock(@NotNull BlockPos blockPos, @NotNull String blockID) {

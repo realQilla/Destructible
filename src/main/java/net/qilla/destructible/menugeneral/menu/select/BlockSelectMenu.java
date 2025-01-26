@@ -4,22 +4,25 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.*;
-import net.qilla.destructible.menugeneral.slot.*;
-import net.qilla.destructible.player.CooldownType;
-import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.*;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class BlockSelectMenu extends SearchMenu<Material> {
+public class BlockSelectMenu extends QSearchMenu<Material> {
 
     private static final List<Material> SOLID_BLOCKS = Registry.MATERIAL.stream()
             .filter(Material::isSolid)
@@ -27,8 +30,8 @@ public class BlockSelectMenu extends SearchMenu<Material> {
 
     private final CompletableFuture<Material> future;
 
-    public BlockSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Material> future) {
-        super(plugin, dPlayer, SOLID_BLOCKS);
+    public BlockSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<Material> future) {
+        super(plugin, playerData, SOLID_BLOCKS);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -37,14 +40,14 @@ public class BlockSelectMenu extends SearchMenu<Material> {
 
     @Override
     public Socket createSocket(int index, Material item) {
-        return new Socket(index, Slot.of(builder -> builder
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(item)
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select material")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -60,7 +63,7 @@ public class BlockSelectMenu extends SearchMenu<Material> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slot.of(builder -> builder
+        return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.COARSE_DIRT)
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Search"))
         ));
@@ -69,7 +72,7 @@ public class BlockSelectMenu extends SearchMenu<Material> {
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuScale.SIX)
                 .title(Component.text("Block Search"))
                 .menuIndex(4)
                 .returnIndex(49));

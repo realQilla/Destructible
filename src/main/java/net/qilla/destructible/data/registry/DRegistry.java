@@ -4,7 +4,7 @@ import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.attributes.AttributeType;
-import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -19,9 +19,9 @@ public interface DRegistry<T> extends Iterable<T> {
 
     Map<String, ConcurrentHashMap<Long, Set<Integer>>> LOADED_BLOCKS_GROUPED = DRegistryMaster.getRegistry(DRegistryKey.LOADED_BLOCKS_GROUPED);
 
-    Map<UUID, DPlayer> DPLAYERS = DRegistryMaster.getRegistry(DRegistryKey.PLAYER_DATA);
+    Map<UUID, DPlayerData> PLAYER_DATA = DRegistryMaster.getRegistry(DRegistryKey.PLAYER_DATA);
 
-    Set<DPlayer> BLOCK_EDITORS = DRegistryMaster.getRegistry(DRegistryKey.BLOCK_EDITORS);
+    Set<UUID> BLOCK_EDITORS = DRegistryMaster.getRegistry(DRegistryKey.BLOCK_EDITORS);
 
     ConcurrentSkipListMap<String, DItem> ITEMS = DRegistryMaster.getRegistry(DRegistryKey.ITEMS);
 

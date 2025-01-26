@@ -4,35 +4,44 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Sounds;
+import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.menugeneral.*;
-import net.qilla.destructible.menugeneral.input.SignInput;
-import net.qilla.destructible.menugeneral.slot.Slot;
-import net.qilla.destructible.menugeneral.slot.Slots;
-import net.qilla.destructible.menugeneral.slot.Socket;
+import net.qilla.destructible.files.CustomBlocksFile;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.player.CooldownType;
-import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.DynamicConfig;
+import net.qilla.qlibrary.menu.MenuScale;
+import net.qilla.qlibrary.menu.QDynamicMenu;
+import net.qilla.qlibrary.menu.StaticConfig;
+import net.qilla.qlibrary.menu.input.SignInput;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
-public class BlockOverviewMenu extends DynamicMenu<DBlock> {
+public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
 
     private static final Collection<DBlock> DBLOCK_COLLECTION = DRegistry.BLOCKS.values();
 
-    public BlockOverviewMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
-        super(plugin, dPlayer, DBLOCK_COLLECTION);
-        super.addSocket(new Socket(6, Slots.CREATE_NEW, event -> {
+    public BlockOverviewMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
+        super(plugin, playerData, DBLOCK_COLLECTION);
+
+        super.addSocket(new QSocket(6, DSlots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), null).open(true);
+                new BlockModificationMenu(super.getPlugin(), playerData, null).open(true);
                 return true;
             } else return false;
         }, CooldownType.MENU_CLICK));
@@ -47,7 +56,7 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
     public Socket createSocket(int index, DBlock item) {
         String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList(), ", ");
 
-        return new Socket(index, Slot.of(builder -> builder
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
                 .displayName(Component.text(item.getId()))
                 .lore(ItemLore.lore(List.of(
@@ -61,31 +70,31 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Sound <white>" + item.getBreakSound()),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particle <white>" + StringUtil.toName(item.getBreakParticle().toString())),
                         Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view lootpool"),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><yellow><key:key.swapOffhand> to make modifications")
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to view make modifications"),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><yellow><key:key.mouse.right> to view lootpool")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new BlockLootpoolOverview(super.getPlugin(), super.getDPlayer(), item).open(true);
+                new BlockModificationMenu(super.getPlugin(), super.getPlayerData(), item).open(true);
                 return true;
-            } else if(clickType == ClickType.SWAP_OFFHAND) {
-                new BlockModificationMenu(super.getPlugin(), super.getDPlayer(), item).open(true);
+            } else if(clickType.isRightClick()) {
+                new BlockLootpoolOverview(super.getPlugin(), super.getPlayerData(), item).open(true);
                 return true;
             } else return false;
         }, CooldownType.OPEN_MENU);
     }
 
     private Socket saveBlocksSocket() {
-        return new Socket(0, Slot.of(builder -> builder
+        return new QSocket(0, QSlot.of(builder -> builder
                 .material(Material.SLIME_BALL)
                 .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> Custom Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to save custom block changes")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -95,13 +104,13 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         "to save"
                 );
 
-                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
                 signInput.init(result -> {
                     Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                         if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> super.getPlugin().getCustomBlocksFile().save());
-                            super.getDPlayer().sendMessage("<yellow>Custom blocks have been <green><bold>SAVED</green>!");
-                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> CustomBlocksFile.getInstance().save());
+                            super.getPlayer().sendMessage("<yellow>Custom blocks have been <green><bold>SAVED</green>!");
+                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -112,14 +121,14 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
     }
 
     private Socket reloadBlocksSocket() {
-        return new Socket(1, Slot.of(builder -> builder
+        return new QSocket(1, QSlot.of(builder -> builder
                 .material(Material.SNOWBALL)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> Custom Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to load the config, undoing any unsaved changes.")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -129,16 +138,16 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         "to reload"
                 );
 
-                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
                 signInput.init(result -> {
                     Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                         if(result.equals("CONFIRM")) {
                             Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                super.getPlugin().getCustomBlocksFile().load();
+                               CustomBlocksFile.getInstance().load();
                                 Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
                             });
-                            super.getDPlayer().sendMessage("<yellow>Custom blocks have been <aqua><bold>RELOADED</aqua>!");
-                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS, true);
+                            super.getPlayer().sendMessage("<yellow>Custom blocks have been <aqua><bold>RELOADED</aqua>!");
+                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -149,14 +158,14 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
     }
 
     private Socket clearlocksSocket() {
-        return new Socket(2, Slot.of(builder -> builder
+        return new QSocket(2, QSlot.of(builder -> builder
                 .material(Material.FIRE_CHARGE)
                 .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Custom Blocks"))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to clear custom blocks")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -166,16 +175,16 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
                         "to clear"
                 );
 
-                SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
                 signInput.init(result -> {
                     Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                         if(result.equals("CONFIRM")) {
                             Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                super.getPlugin().getCustomBlocksFile().clear();
+                                CustomBlocksFile.getInstance().clear();
                                 Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
                             });
-                            super.getDPlayer().sendMessage("<yellow>All custom blocks have been <red><bold>CLEARED</red>!");
-                            super.getDPlayer().playSound(Sounds.GENERAL_SUCCESS_2, true);
+                            super.getPlayer().sendMessage("<yellow>All custom blocks have been <red><bold>CLEARED</red>!");
+                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS_2, true);
                         }
                         super.open(false);
                     });
@@ -187,13 +196,13 @@ public class BlockOverviewMenu extends DynamicMenu<DBlock> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slots.BLOCK_OVERVIEW_MENU);
+        return new QSocket(4, DSlots.BLOCK_OVERVIEW_MENU);
     }
 
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuScale.SIX)
                 .title(Component.text("Custom Block Overview"))
                 .menuIndex(4)
                 .returnIndex(49));

@@ -1,101 +1,38 @@
-package net.qilla.destructible.menugeneral.slot;
+package net.qilla.destructible.menugeneral;
 
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.Sounds;
+import net.qilla.destructible.data.DSounds;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.Slot;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import org.bukkit.Material;
 
 import java.util.List;
 
-public class Slots {
-
-    public static final Slot MISSING = Slot.of(slot -> slot
-            .material(Material.BARRIER)
-            .displayName(MiniMessage.miniMessage().deserialize("<red>Missing Item"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>This item is missing"),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>from the menu!")
-            )))
-    );
-
-    public static final Slot RETURN = Slot.of(slot -> slot
-            .material(Material.BELL)
-            .displayName(MiniMessage.miniMessage().deserialize("<red>Return"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to return to your"),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>previously accessed menu")
-            )))
-            .clickSound(Sounds.RETURN_MENU)
-    );
-
-    public static final Slot EMPTY_MODULAR_SLOT = Slot.of(slot -> slot
-            .material(Material.PALE_OAK_BUTTON)
-            .hideTooltip(true)
-    );
-
-    public static final Slot FILLER = Slot.of(slot -> slot
-            .hideTooltip(true)
-            .material(null)
-    );
-
-    public static final Slot PREVIOUS = Slot.of(slot -> slot
-            .material(Material.ARROW)
-            .displayName(MiniMessage.miniMessage().deserialize("<white>Previous"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to shift the menu backwards")
-            )))
-            .clickSound(Sounds.MENU_ROTATE_PREVIOUS)
-    );
-
-    public static final Slot NEXT = Slot.of(slot -> slot
-            .material(Material.SPECTRAL_ARROW)
-            .displayName(MiniMessage.miniMessage().deserialize("<white>Next"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to shift the menu forwards")
-            )))
-            .clickSound(Sounds.MENU_ROTATE_NEXT)
-    );
-
-    public static final Slot SEARCH = Slot.of(slot -> slot
-            .material(Material.OAK_SIGN)
-            .displayName(MiniMessage.miniMessage().deserialize("<white>Search"))
-            .lore(ItemLore.lore(List.of(
-                    MiniMessage.miniMessage().deserialize("<!italic><gray><key:key.mouse.left> to search for"),
-                    MiniMessage.miniMessage().deserialize("<!italic><gray>something more specific")
-            )))
-            .clickSound(Sounds.MENU_CLICK_ITEM)
-    );
-
-    public static final Slot RESET_SEARCH = Slot.of(builder2 -> builder2
-            .material(Material.BARRIER)
-            .displayName(MiniMessage.miniMessage().deserialize("<red>Reset Search"))
-            .lore(ItemLore.lore(List.of(MiniMessage.miniMessage().deserialize("<!italic><gray>Resets your currently searched term")
-            )))
-            .clickSound(Sounds.RESET)
-    );
-
-    public static final Slot CONFIRM = Slot.of(consumer -> consumer
+public class DSlots {
+    public static final Slot CONFIRM = QSlot.of(consumer -> consumer
             .material(Material.END_CRYSTAL)
             .displayName(MiniMessage.miniMessage().deserialize("<green><bold>CONFIRM"))
             .lore(ItemLore.lore(List.of(
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to set all made changes")
             )))
-            .clickSound(Sounds.GENERAL_SUCCESS)
+            .clickSound(DSounds.GENERAL_SUCCESS)
     );
 
-    public static final Slot CREATE_NEW = Slot.of(builder -> builder
+    public static final Slot CREATE_NEW = QSlot.of(builder -> builder
             .material(Material.SHULKER_SHELL)
             .displayName(MiniMessage.miniMessage().deserialize("<green>New Item"))
             .lore(ItemLore.lore(List.of(
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to create a new item")
             )))
-            .clickSound(Sounds.MENU_CLICK_ITEM)
+            .clickSound(MenuSound.MENU_CLICK_ITEM)
     );
 
-    public static final Slot OVERFLOW_MENU = Slot.of(consumer -> consumer
+    public static final Slot OVERFLOW_MENU = QSlot.of(consumer -> consumer
             .material(Material.BROWN_BUNDLE)
             .displayName(MiniMessage.miniMessage().deserialize("<gold>Overflowing Items"))
             .lore(ItemLore.lore(List.of(
@@ -104,7 +41,7 @@ public class Slots {
             )))
     );
 
-    public static final Slot ITEM_MENU = Slot.of(consumer -> consumer
+    public static final Slot ITEM_MENU = QSlot.of(consumer -> consumer
             .material(Material.QUARTZ)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Overview"))
             .lore(ItemLore.lore(List.of(
@@ -113,7 +50,7 @@ public class Slots {
             )))
     );
 
-    public static final Slot TOOL_OVERVIEW_MENU = Slot.of(consumer -> consumer
+    public static final Slot TOOL_OVERVIEW_MENU = QSlot.of(consumer -> consumer
             .material(Material.IRON_PICKAXE)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Overview"))
             .lore(ItemLore.lore(List.of(
@@ -121,12 +58,12 @@ public class Slots {
             )))
     );
 
-    public static final Slot BLOCK_MENU = Slot.of(consumer -> consumer
+    public static final Slot BLOCK_MENU = QSlot.of(consumer -> consumer
             .material(Material.DECORATED_POT)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Settings"))
     );
 
-    public static final Slot LOAD_BLOCK_MENU = Slot.of(consumer -> consumer
+    public static final Slot LOAD_BLOCK_MENU = QSlot.of(consumer -> consumer
             .material(Material.COMMAND_BLOCK)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Load Blocks"))
             .lore(ItemLore.lore(List.of(
@@ -135,7 +72,7 @@ public class Slots {
             )))
     );
 
-    public static final Slot BLOCK_OVERVIEW_MENU = Slot.of(consumer -> consumer
+    public static final Slot BLOCK_OVERVIEW_MENU = QSlot.of(consumer -> consumer
             .material(Material.CHEST)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Overview"))
             .lore(ItemLore.lore(List.of(
@@ -144,7 +81,7 @@ public class Slots {
             )))
     );
 
-    public static final Slot BLOCK_MODIFICATION_MENU = Slot.of(consumer -> consumer
+    public static final Slot BLOCK_MODIFICATION_MENU = QSlot.of(consumer -> consumer
             .material(Material.CRAFTING_TABLE)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Block Modification"))
             .lore(ItemLore.lore(List.of(
@@ -154,7 +91,7 @@ public class Slots {
             )))
     );
 
-    public static final Slot ITEM_MODIFICATION_MENU = Slot.of(consumer -> consumer
+    public static final Slot ITEM_MODIFICATION_MENU = QSlot.of(consumer -> consumer
             .material(Material.CRAFTING_TABLE)
             .displayName(MiniMessage.miniMessage().deserialize("<yellow>Item Modification"))
             .lore(ItemLore.lore(List.of(

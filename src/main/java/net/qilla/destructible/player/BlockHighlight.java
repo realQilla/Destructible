@@ -6,20 +6,20 @@ import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.EntityType;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftBlockDisplay;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,16 +33,16 @@ public class BlockHighlight {
     private static final int HIGHLIGHT_CREATION_BATCH_SIZE = 1000;
     private static final Map<String, DBlock> DBLOCK_MAP = DRegistry.BLOCKS;
 
-    private final Destructible plugin;
-    private final DPlayer dPlayer;
+    private final Plugin plugin;
+    private final DPlayer player;
     private final Set<String> visibleDBlocks = ConcurrentHashMap.newKeySet();
     private final ConcurrentHashMap<String, ConcurrentHashMap<Long, ConcurrentHashMap<Integer, Integer>>> highlight = new ConcurrentHashMap<>();
     private final ConcurrentLinkedQueue<Runnable> taskQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
-    public BlockHighlight(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
+    public BlockHighlight(@NotNull Plugin plugin, @NotNull DPlayer player) {
         this.plugin = plugin;
-        this.dPlayer = dPlayer;
+        this.player = player;
     }
 
     private void scheduleTask(Runnable task) {
@@ -105,8 +105,8 @@ public class BlockHighlight {
         highlight.computeIfAbsent(blockId, blockId2 ->
                 new ConcurrentHashMap<>()).computeIfAbsent(chunkKey, chunkKey2 ->
                 new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, (chunkInt3) -> {
-            dPlayer.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
-            dPlayer.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
+            player.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
+            player.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
             return entity.getEntityId();
         });
     }
@@ -118,7 +118,7 @@ public class BlockHighlight {
         highlight.forEach((blockId, chunkKeyMap) -> {
             chunkKeyMap.computeIfPresent(chunkKey, (chunkKey2, chunkIntMap) -> {
                 chunkIntMap.computeIfPresent(chunkInt, (chunkInt2, entityId) -> {
-                    dPlayer.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
+                    player.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
                     return null;
                 });
                 return chunkIntMap.isEmpty() ? null : chunkIntMap;
@@ -148,7 +148,7 @@ public class BlockHighlight {
             highlight.computeIfPresent(blockId, (k, v) -> {
                 v.forEach((k2, v2) -> {
                     v2.forEach((k3, v3) -> {
-                        dPlayer.sendPacket(new ClientboundRemoveEntitiesPacket(v3));
+                        player.sendPacket(new ClientboundRemoveEntitiesPacket(v3));
                     });
                 });
                 return null;
@@ -173,7 +173,7 @@ public class BlockHighlight {
             highlight.forEach((blockId, chunkKeyMap) -> {
                 chunkKeyMap.computeIfPresent(chunkKey, (chunkKey2, chunkIntMap) -> {
                     chunkIntMap.forEach((chunkInt, entityId) -> {
-                        dPlayer.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
+                        player.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
                     });
                     return null;
                 });
@@ -205,7 +205,7 @@ public class BlockHighlight {
             highlight.forEach((blockId, chunkKeyMap) -> {
                 chunkKeyMap.forEach((chunkKey, localIndexMap) -> {
                     localIndexMap.forEach((localIndex, entityId) -> {
-                        dPlayer.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
+                        player.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
                     });
                 });
             });
@@ -214,7 +214,7 @@ public class BlockHighlight {
     }
 
     private CraftEntity getHighlightEntity() {
-            CraftBlockDisplay craftEntity = new CraftBlockDisplay(dPlayer.getCraftServer(), new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, dPlayer.getServerLevel()));
+            CraftBlockDisplay craftEntity = new CraftBlockDisplay((CraftServer) plugin.getServer(), new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, player.getHandle().level()));
             craftEntity.setGlowing(true);
             craftEntity.setGlowColorOverride(Color.SILVER);
             craftEntity.setBlock(Material.LIGHT_GRAY_CONCRETE.createBlockData());

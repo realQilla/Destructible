@@ -4,32 +4,34 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.*;
-import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.block.DBlock;
-import net.qilla.destructible.player.CooldownType;
-import net.qilla.destructible.player.DPlayer;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.*;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class DBlockSelectMenu extends SearchMenu<DBlock> {
+public class DBlockSelectMenu extends QSearchMenu<DBlock> {
 
     private static final Collection<DBlock> DBLOCKS = DRegistry.BLOCKS.values();
 
     private final CompletableFuture<DBlock> future;
 
-    public DBlockSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<DBlock> future) {
-        super(plugin, dPlayer, DBLOCKS);
+    public DBlockSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<DBlock> future) {
+        super(plugin, playerData, DBLOCKS);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -41,7 +43,7 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
         String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList(), ", ");
 
 
-        return new Socket(index, Slot.of(builder -> builder
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
                 .displayName(Component.text(item.getId()))
                 .lore(ItemLore.lore(List.of(
@@ -57,7 +59,7 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select custom block")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -73,7 +75,7 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slot.of(builder -> builder
+        return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.GRAY_GLAZED_TERRACOTTA)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Search"))
         ));
@@ -82,7 +84,7 @@ public class DBlockSelectMenu extends SearchMenu<DBlock> {
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuScale.SIX)
                 .title(Component.text("Custom Block Search"))
                 .menuIndex(4)
                 .returnIndex(49));

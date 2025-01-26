@@ -12,8 +12,8 @@ import net.qilla.destructible.util.DUtil;
 import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.bukkit.GameMode;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Optional;
 
 public class MiningManager {
@@ -22,13 +22,13 @@ public class MiningManager {
     private final BlockMiner blockMiner;
     private volatile BlockInstance blockInstance;
 
-    public MiningManager(@NotNull DPlayer dPlayer) {
+    public MiningManager(@NotNull Plugin plugin, @NotNull DPlayer dPlayer) {
         this.dPlayer = dPlayer;
-        this.blockMiner = new BlockMiner(dPlayer);
+        this.blockMiner = new BlockMiner(plugin, dPlayer);
     }
 
     public void init(@NotNull BlockPos blockPos, @NotNull Direction direction) {
-        if(dPlayer.getCraftPlayer().getGameMode() == GameMode.CREATIVE) return;
+        if(dPlayer.getGameMode() == GameMode.CREATIVE) return;
 
         if(blockInstance == null || blockPos.hashCode() != blockInstance.getBlockPos().hashCode()) {
             Optional<DBlock> optionalBlock = DUtil.getDBlock(blockPos);
@@ -46,7 +46,7 @@ public class MiningManager {
         if(blockInstance == null) return;
         if(!interactionHand.equals(InteractionHand.MAIN_HAND)) return;
 
-        ItemStack itemStack = dPlayer.getCraftPlayer().getEquipment().getItemInMainHand();
+        ItemStack itemStack = dPlayer.getEquipment().getItemInMainHand();
 
         ItemData itemData = itemStack.getPersistentDataContainer().getOrDefault(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM, ItemData.EMPTY);
         DItem dItem = DUtil.getDItem(itemData.getItemID());

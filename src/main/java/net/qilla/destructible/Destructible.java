@@ -9,9 +9,7 @@ import net.qilla.destructible.command.OverflowCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
-import net.qilla.destructible.player.PlayerPacketListener;
 import net.qilla.destructible.player.GeneralListener;
-import net.qilla.qlibrary.util.tools.DExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
@@ -20,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.logging.Logger;
 
 public final class Destructible extends JavaPlugin {
+
+    private final Logger LOGGER = new PluginLogger(this);
 
     static {
         try {
@@ -30,12 +30,10 @@ public final class Destructible extends JavaPlugin {
     }
 
     private LifecycleEventManager<Plugin> lifecycleMan;
-    private final DExecutor dExecutor = new DExecutor(this, 4);
-    private final PlayerPacketListener packetListener = new PlayerPacketListener();
-    private final CustomItemsFile customItemsFile = new CustomItemsFile();
-    private final CustomBlocksFile customBlocksFile = new CustomBlocksFile();
-    private final LoadedDestructibleBlocksFile loadedDestructibleBlocksFile = new LoadedDestructibleBlocksFile();
-    private final LoadedDestructibleBlocksGroupedFile loadedDestructibleBlocksGroupedFile = new LoadedDestructibleBlocksGroupedFile();
+    private final CustomItemsFile customItemsFile = CustomItemsFile.getInstance();
+    private final CustomBlocksFile customBlocksFile = CustomBlocksFile.getInstance();
+    private final LoadedDestructibleBlocksFile loadedDestructibleBlocksFile = LoadedDestructibleBlocksFile.getInstance();
+    private final LoadedDestructibleBlocksGroupedFile loadedDestructibleBlocksGroupedFile = LoadedDestructibleBlocksGroupedFile.getInstance();
 
     @Override
     public void onEnable() {
@@ -54,7 +52,7 @@ public final class Destructible extends JavaPlugin {
 
     private void initListener() {
         getServer().getPluginManager().registerEvents(new GeneralListener(this), this);
-        getServer().getPluginManager().registerEvents(new MenuListener(this), this);
+        getServer().getPluginManager().registerEvents(new MenuListener(), this);
     }
 
     private void initCommand() {
@@ -64,42 +62,19 @@ public final class Destructible extends JavaPlugin {
             new OverflowCommand(this, commands).register();
         });
     }
+
     @Override
     public void onDisable() {
         Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Server Reloaded.")));
-        if(dExecutor != null) dExecutor.shutdown();
     }
 
-    public DExecutor getdExecutor() {
-        return this.dExecutor;
-    }
-
-    public CustomItemsFile getCustomItemsFile() {
-        return this.customItemsFile;
-    }
-
-    public CustomBlocksFile getCustomBlocksFile() {
-        return this.customBlocksFile;
-    }
-
-
-    public LoadedDestructibleBlocksFile getLoadedBlocksFile() {
-        return this.loadedDestructibleBlocksFile;
-    }
-    public LoadedDestructibleBlocksGroupedFile getLoadedBlocksGroupedFile() {
-        return this.loadedDestructibleBlocksGroupedFile;
-    }
-
-    public PlayerPacketListener getPlayerPacketListener() {
-        return this.packetListener;
-    }
 
     public static Destructible getInstance() {
         return getPlugin(Destructible.class);
     }
 
-    @NotNull
-    public static Logger getPluginLogger() {
-        return PluginLogger.getLogger("Destructible");
+    @Override
+    public @NotNull Logger getLogger() {
+        return LOGGER;
     }
 }

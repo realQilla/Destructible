@@ -11,12 +11,15 @@ import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.*;
 import net.qilla.destructible.util.*;
+import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.util.tools.CoordUtil;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +35,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -43,8 +45,8 @@ import java.util.logging.Level;
 
 public class GeneralListener implements Listener {
 
-    private static final Set<DPlayer> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
-    private static final Map<UUID, DPlayer> DPLAYER_MAP = DRegistry.DPLAYERS;
+    private static final Set<UUID> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
+    private static final Map<UUID, DPlayerData> PLAYER_DATA = DRegistry.PLAYER_DATA;
     private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
     private static final Map<String, DItem> DITEM_MAP = DRegistry.ITEMS;
     private final Destructible plugin;
@@ -79,57 +81,68 @@ public class GeneralListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     private void onBlockPlace(BlockPlaceEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        DPlayer dPlayer = DPLAYER_MAP.get(uuid);
+        DPlayer player = new DPlayer((CraftPlayer) event.getPlayer());
 
-        if(!dPlayer.hasDBlockEdit()) return;
-        DBlockEdit edit = dPlayer.getDBlockEdit();
-        DBlock dBlock = edit.getDblock();
+        if(!player.isOp()) return;
+
+        DPlayerData playerData = PLAYER_DATA.get(player.getUniqueId());
+
+        if(!playerData.isBlockEditing()) return;
+
+        BlockEdit blockEdit = playerData.getBlockEdit();
+        DBlock dBlock = blockEdit.getDblock();
 
         if(dBlock == null) return;
 
         Block block = event.getBlock();
-        if(edit.getRecursionSize() <= 0) {
-            if(registerBlock(dBlock, block)) {
-                dPlayer.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <green><bold>LOADED</green>!");
-                dPlayer.playSound(Sounds.TINY_OPERATION_COMPLETE, true);
+
+        if(blockEdit.getRecursionSize() <= 0) {
+            if(registerBlock(playerData, block)) {
+                player.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <green><bold>LOADED</green>!");
+                player.playSound(DSounds.TINY_OPERATION_COMPLETE, true);
             } else {
-                dPlayer.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>LOADED</red>: block already exists in this position. Destroy and try again!");
-                dPlayer.playSound(Sounds.GENERAL_ERROR, true);
+                player.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>LOADED</red>: block already exists in this position. Destroy and try again!");
+                player.playSound(DSounds.GENERAL_ERROR, true);
             }
         } else {
             event.setCancelled(true);
-            Set<BlockPos> recursiveBlocks = this.findConnectedBlocks(CoordUtil.getBlockPos(block), block.getWorld(), block.getType(), edit.getRecursionSize());
+            Set<BlockPos> recursiveBlocks = this.findConnectedBlocks(CoordUtil.getBlockPos(block), block.getWorld(), block.getType(), blockEdit.getRecursionSize());
             if(!this.scheduleTask(() -> {
-                this.registerBlock(dPlayer, dBlock, recursiveBlocks);
+                this.registerBlock(playerData, recursiveBlocks);
             })) {
-                dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>There are too many queued operations! Please wait for one to complete before trying again!"));
-                dPlayer.playSound(Sounds.GENERAL_ERROR, true);
+                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>There are too many queued operations! Please wait for one to complete before trying again!"));
+                player.playSound(DSounds.GENERAL_ERROR, true);
             }
         }
     }
 
-    private boolean registerBlock(DBlock dBlock, Block block) {
+    private boolean registerBlock(@NotNull DPlayerData playerData, @NotNull Block block) {
+        DBlock dBlock = playerData.getBlockEdit().getDblock();
         BlockPos blockPos = CoordUtil.getBlockPos(block);
 
         if(!RegistryUtil.loadBlock(blockPos, dBlock.getId())) return false;
         if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
-        BLOCK_EDITOR_SET.forEach(curPlayer -> {
-            curPlayer.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
+
+        BLOCK_EDITOR_SET.forEach(uuid -> {
+            DPlayerData curPlayerData = PLAYER_DATA.get(uuid);
+            curPlayerData.getBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
         });
         return true;
     }
 
-    private void registerBlock(DPlayer dPlayer, DBlock dBlock, Set<BlockPos> blockPosSet) {
-        World world = dPlayer.getCraftPlayer().getWorld();
+    private void registerBlock(@NotNull DPlayerData playerData, @NotNull Set<BlockPos> blockPosSet) {
+        DPlayer player = playerData.getPlayer();
+        World world = player.getWorld();
+        DBlock dBlock = playerData.getBlockEdit().getDblock();
+
         AtomicInteger remainingBlocks = new AtomicInteger(blockPosSet.size());
         List<BlockPos> blocks = new ArrayList<>(blockPosSet);
 
         BukkitTask progressTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             String operationString = "<yellow>Operation is <gold>" + NumberUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed" +
                     (taskQueue.isEmpty() ? "" : ", <gold>" + taskQueue.size() + "</gold> " + StringUtil.pluralize("operation", taskQueue.size()) + " remaining");
-            dPlayer.sendActionBar(operationString);
-            dPlayer.playSound(Sounds.LARGE_OPERATION_UPDATE, true);
+            player.sendActionBar(operationString);
+            player.playSound(DSounds.LARGE_OPERATION_UPDATE, true);
         }, 0, 40);
         for(BlockPos blockPos : blocks) {
             Block block = CoordUtil.getBlock(blockPos, world);
@@ -137,7 +150,7 @@ public class GeneralListener implements Listener {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 BLOCK_EDITOR_SET.forEach(curPlayer -> {
-                    curPlayer.getDBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
+                    playerData.getBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
                 });
 
                 if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
@@ -153,9 +166,9 @@ public class GeneralListener implements Listener {
         progressTask.cancel();
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Operation completed, <gold>" + NumberUtil.numberChar(blockPosSet.size(), false) + "</gold> block(s) cached as <gold>" + dBlock.getId() + "</gold>!"));
-            dPlayer.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Operation <gold>" + NumberUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed"));
-            dPlayer.playSound(Sounds.LARGE_OPERATION_COMPLETE, true);
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Operation completed, <gold>" + NumberUtil.numberChar(blockPosSet.size(), false) + "</gold> block(s) cached as <gold>" + dBlock.getId() + "</gold>!"));
+            player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Operation <gold>" + NumberUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed"));
+            player.playSound(DSounds.LARGE_OPERATION_COMPLETE, true);
         });
 
     }
@@ -196,12 +209,12 @@ public class GeneralListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     private void onBlockBreak(final BlockBreakEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        DPlayer dPlayer = DPLAYER_MAP.get(uuid);
+        DPlayer player = new DPlayer((CraftPlayer) event.getPlayer());
+
+        if(!player.isOp()) return;
+
+        DPlayerData playerData = PLAYER_DATA.get(player.getUniqueId());;
         Block block = event.getBlock();
-
-        if(!dPlayer.getCraftPlayer().isOp()) return;
-
         BlockPos blockPos = CoordUtil.getBlockPos(block);
         Optional<DBlock> optional = DUtil.getDBlock(blockPos);
 
@@ -210,23 +223,23 @@ public class GeneralListener implements Listener {
 
         if(RegistryUtil.unloadBlock(blockPos)) {
             BLOCK_EDITOR_SET.forEach(dPlayer2 -> {
-                dPlayer2.getDBlockEdit().getBlockHighlight().removeHighlight(blockPos);
+                playerData.getBlockEdit().getBlockHighlight().removeHighlight(blockPos);
             });
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <red><bold>UNLOADED</red>!"));
-            dPlayer.playSound(Sounds.TINY_OPERATION_COMPLETE, true);
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <red><bold>UNLOADED</red>!"));
+            player.playSound(DSounds.TINY_OPERATION_COMPLETE, true);
         } else {
-            dPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>UNLOADED</red>!"));
-            dPlayer.playSound(Sounds.GENERAL_ERROR, true);
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>UNLOADED</red>!"));
+            player.playSound(DSounds.GENERAL_ERROR, true);
         }
     }
 
     @EventHandler
-    private void onChunkLoad(PlayerChunkLoadEvent event) {
+    private void onChunkLoad(final PlayerChunkLoadEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        DPlayer dPlayer = DPLAYER_MAP.get(uuid);
-        if(!BLOCK_EDITOR_SET.contains(dPlayer)) return;
+        if(!BLOCK_EDITOR_SET.contains(uuid)) return;
+        DPlayerData playerData = PLAYER_DATA.get(uuid);
 
-        BlockHighlight blockHighlight = dPlayer.getDBlockEdit().getBlockHighlight();
+        BlockHighlight blockHighlight = playerData.getBlockEdit().getBlockHighlight();
         Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
 
         for(long chunkKey : chunkKeys) {
@@ -237,10 +250,11 @@ public class GeneralListener implements Listener {
 
     @EventHandler
     private void onChunkUnload(PlayerChunkUnloadEvent event) {
-        DPlayer dPlayer = DPLAYER_MAP.get(event.getPlayer().getUniqueId());
-        if(!BLOCK_EDITOR_SET.contains(dPlayer)) return;
+        UUID uuid = event.getPlayer().getUniqueId();
+        if(!BLOCK_EDITOR_SET.contains(uuid)) return;
+        DPlayerData playerData = PLAYER_DATA.get(uuid);
 
-        BlockHighlight blockHighlight = dPlayer.getDBlockEdit().getBlockHighlight();
+        BlockHighlight blockHighlight = playerData.getBlockEdit().getBlockHighlight();
         Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
 
         for(long chunkKey : chunkKeys) {
@@ -265,24 +279,31 @@ public class GeneralListener implements Listener {
     }
 
     public void initPlayer(@NotNull Player player) {
-        RegistryUtil.registerPlayer(player);
-        DPlayer dPlayer = DPLAYER_MAP.get(player.getUniqueId());
-        plugin.getPlayerPacketListener().addListener(dPlayer);
+        UUID uuid = player.getUniqueId();
+
+        DPlayerData playerData = PLAYER_DATA.computeIfAbsent(uuid,
+                k -> new DPlayerData(new DPlayer((CraftPlayer) player), plugin)
+        );
+        PlayerPacketListener.getInstance().addListener(playerData);
 
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
     }
 
     public void removePlayer(@NotNull Player player) {
-        DPlayer dPlayer = DPLAYER_MAP.get(player.getUniqueId());
-        plugin.getPlayerPacketListener().removeListener(dPlayer);
-        //RegistryUtil.unregisterPlayer(player);
+        UUID uuid = player.getUniqueId();
+        if(!PLAYER_DATA.containsKey(uuid)) return;
+        DPlayerData playerData = PLAYER_DATA.get(uuid);
+
+        PlayerPacketListener.getInstance().removeListener(playerData.getPlayer());
     }
 
     @EventHandler
     private void onChatEvent(AsyncChatEvent event) {
-        DPlayer dPlayer = DPLAYER_MAP.get(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+        if(!PLAYER_DATA.containsKey(uuid)) return;
+        DPlayerData playerData = PLAYER_DATA.get(uuid);
 
-        if(dPlayer.getMenuHolder().fulfillInput(ComponentUtil.cleanComponent(event.message()))) {
+        if(playerData.fulfillInput(ComponentUtil.cleanComponent(event.message()))) {
             event.setCancelled(true);
         }
     }
@@ -331,13 +352,13 @@ public class GeneralListener implements Listener {
 
     //@EventHandler
     private void itemPickupItemEvent(PlayerAttemptPickupItemEvent event) {
-        DPlayer dPlayer = DPLAYER_MAP.get(event.getPlayer().getUniqueId());
+        DPlayer player = new DPlayer((CraftPlayer) event.getPlayer());
 
         event.setCancelled(true);
         event.getItem().remove();
         ItemStack itemStack = event.getItem().getItemStack();
 
-        dPlayer.give(itemStack);
+        player.give(itemStack);
     }
 
     private boolean validateItemVersion(@NotNull ItemStack itemStack) {

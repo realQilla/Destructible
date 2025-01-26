@@ -3,34 +3,47 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.*;
-import net.qilla.destructible.menugeneral.input.SignInput;
-import net.qilla.destructible.menugeneral.slot.Slots;
-import net.qilla.destructible.menugeneral.slot.Slot;
-import net.qilla.destructible.menugeneral.slot.Socket;
+import net.qilla.destructible.data.DSounds;
+import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemStackFactory;
-import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.player.Overflow;
 import net.qilla.destructible.player.OverflowEntry;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.DUtil;
+import net.qilla.qlibrary.menu.DynamicConfig;
+import net.qilla.qlibrary.menu.MenuScale;
+import net.qilla.qlibrary.menu.QDynamicMenu;
+import net.qilla.qlibrary.menu.StaticConfig;
+import net.qilla.qlibrary.menu.input.SignInput;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> {
+public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>> {
 
-    public OverflowMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer) {
-        super(plugin, dPlayer, dPlayer.getOverflow().getOverflow());
-        super.addSocket(new Socket(53, Slot.of(builder -> builder
+    private final Overflow overflow;
+    private final DPlayer player;
+
+    public OverflowMenu(@NotNull Plugin plugin, @NotNull DPlayerData playerData) {
+        super(plugin, playerData, playerData.getOverflow().getOverflow());
+
+        this.overflow = playerData.getOverflow();
+        this.player = playerData.getPlayer();
+
+        super.addSocket(new QSocket(53, QSlot.of(builder -> builder
                 .material(Material.BARRIER)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Remove <bold>ALL</bold>!"))
                 .lore(ItemLore.lore(List.of(
@@ -50,7 +63,7 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> 
         DItem dItem = DUtil.getDItem(item.getValue().getData().getItemID());
         int amount = item.getValue().getAmount();
 
-        return new Socket(index, Slot.of(builder -> builder
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(dItem.getMaterial())
                 .amount(amount)
                 .displayName(dItem.getDisplayName().append(MiniMessage.miniMessage().deserialize("<white> x" + amount)))
@@ -67,37 +80,36 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> 
 
     private boolean claimOverflow(InventoryClickEvent event, DItem dItem, int amount) {
         ClickType clickType = event.getClick();
-        Overflow overflow = super.getDPlayer().getOverflow();
 
         if(!overflow.contains(dItem.getId())) {
-            super.getDPlayer().sendMessage("<red>This item is no longer in your overflow stash!");
-            getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
+            super.getPlayer().sendMessage("<red>This item is no longer in your overflow stash!");
+            super.getPlayer().playSound(DSounds.GENERAL_ERROR, true);
             return false;
         }
 
         if(clickType.isShiftClick() && clickType.isRightClick()) {
             overflow.remove(dItem.getId());
-            super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You have <red><bold>REMOVED</red> ").append(dItem.getDisplayName().asComponent()).append(MiniMessage.miniMessage().deserialize(" from your stash!")));
-            getDPlayer().playSound(Sounds.ITEM_DELETE, true);
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have <red><bold>REMOVED</red> ").append(dItem.getDisplayName().asComponent()).append(MiniMessage.miniMessage().deserialize(" from your stash!")));
+            player.playSound(MenuSound.ITEM_DELETE, true);
         } else if(clickType.isLeftClick()) {
-            if(super.getDPlayer().getSpace(ItemStackFactory.of(dItem, amount)) <= 0) {
-                super.getDPlayer().sendMessage("<red>You do not have enough space in your inventory!");
-                getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
+            if(player.getSpace(ItemStackFactory.of(dItem, amount)) <= 0) {
+                player.sendMessage("<red>You do not have enough space in your inventory!");
+                player.playSound(DSounds.GENERAL_ERROR, true);
                 return false;
             }
 
             Optional<ItemStack> optional = overflow.take(dItem.getId());
 
             if(optional.isEmpty()) {
-                super.getDPlayer().sendMessage("<red>There was an error claiming this item!");
-                getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
+                player.sendMessage("<red>There was an error claiming this item!");
+                player.playSound(DSounds.GENERAL_ERROR, true);
                 return false;
             }
             ItemStack takenItemStack = optional.get();
 
-            super.getDPlayer().give(takenItemStack.clone());
-            super.getDPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>You claimed ").append(ComponentUtil.getItemAmountAndType(takenItemStack)).append(MiniMessage.miniMessage().deserialize("!")));
-            getDPlayer().playSound(Sounds.MENU_CLAIM_ITEM, true);
+            player.give(takenItemStack.clone());
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You claimed ").append(ComponentUtil.getItemAmountAndType(takenItemStack)).append(MiniMessage.miniMessage().deserialize("!")));
+            player.playSound(MenuSound.MENU_CLAIM_ITEM, true);
         }
         super.refreshSockets();
         return true;
@@ -107,9 +119,9 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> 
         ClickType clickType = event.getClick();
 
         if(clickType.isLeftClick()) {
-            if(getDPlayer().getOverflow().isEmpty()) {
-                getDPlayer().sendMessage("<red>Your overflow stash is already empty!");
-                getDPlayer().playSound(Sounds.GENERAL_ERROR, true);
+            if(overflow.isEmpty()) {
+                player.sendMessage("<red>Your overflow stash is already empty!");
+                player.playSound(DSounds.GENERAL_ERROR, true);
                 return false;
             }
 
@@ -119,13 +131,13 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> 
                     "to clear stash"
             );
 
-            SignInput signInput = new SignInput(super.getPlugin(), getDPlayer(), signText);
+            SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
             signInput.init(result -> {
                 Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                     if(result.equals("CONFIRM")) {
-                        getDPlayer().getOverflow().clear();
-                        getDPlayer().playSound(Sounds.RESET, true);
-                        getDPlayer().sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
+                        overflow.clear();
+                        player.playSound(MenuSound.RESET, true);
+                        player.sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
 
                         super.setShiftIndex(0);
                         this.refreshSockets();
@@ -139,13 +151,13 @@ public class OverflowMenu extends DynamicMenu<Map.Entry<String, OverflowEntry>> 
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slots.OVERFLOW_MENU);
+        return new QSocket(4, DSlots.OVERFLOW_MENU);
     }
 
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuScale.SIX)
                 .title(Component.text("Overflow"))
                 .menuIndex(4)
                 .returnIndex(49));

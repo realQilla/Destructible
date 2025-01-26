@@ -23,6 +23,7 @@ import java.util.List;
 
 public class CustomItemsFile extends DestructibleFile {
 
+    private static CustomItemsFile INSTANCE;
     private final static String DEFAULT_RESOURCE = "custom_items_default.json";
     private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "custom_items.json");
     private final Type type = new TypeToken<List<DItem>>() {
@@ -32,7 +33,12 @@ public class CustomItemsFile extends DestructibleFile {
             .setPrettyPrinting()
             .create();
 
-    public CustomItemsFile() {
+    public static CustomItemsFile getInstance() {
+        if(INSTANCE == null) INSTANCE = new CustomItemsFile();
+        return INSTANCE;
+    }
+
+    private CustomItemsFile() {
         super(DEFAULT_RESOURCE, FILE_PATH);
     }
 

@@ -1,7 +1,6 @@
 package net.qilla.destructible.data.registry;
 
 import com.google.common.base.Preconditions;
-import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

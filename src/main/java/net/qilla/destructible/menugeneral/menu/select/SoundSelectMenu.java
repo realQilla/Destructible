@@ -4,33 +4,35 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.SoundSettings;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.*;
-import net.qilla.destructible.menugeneral.slot.*;
-import net.qilla.destructible.player.CooldownType;
-import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.player.PlayType;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.*;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.PlayType;
+import net.qilla.qlibrary.util.sound.QSound;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class SoundSelectMenu extends SearchMenu<Sound> {
+public class SoundSelectMenu extends QSearchMenu<Sound> {
 
     private static final List<Sound> SOUND_SET = Registry.SOUNDS.stream()
             .collect(Collectors.toList());
     private final CompletableFuture<Sound> future;
 
-    public SoundSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull CompletableFuture<Sound> future) {
-        super(plugin, dPlayer, SOUND_SET);
+    public SoundSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<Sound> future) {
+        super(plugin, playerData, SOUND_SET);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
@@ -39,7 +41,7 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
 
     @Override
     public Socket createSocket(int index, Sound item) {
-        return new Socket(index, Slot.of(builder -> builder
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(Material.MUSIC_DISC_RELIC)
                 .displayName(MiniMessage.miniMessage().deserialize(item.toString()))
                 .lore(ItemLore.lore(List.of(
@@ -47,15 +49,15 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this sound"),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.right> to listen")
                 )))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 future.complete(item);
                 return this.returnMenu();
             } else if(clickType.isRightClick()) {
-                getDPlayer().getCraftPlayer().stopAllSounds();
-                getDPlayer().playSound(SoundSettings.of(item, 0.5f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
+                super.getPlayer().stopAllSounds();
+                super.getPlayer().playSound(QSound.of(item, 0.5f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER), true);
             }
             return false;
         }, CooldownType.MENU_CLICK);
@@ -68,7 +70,7 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slot.of(builder -> builder
+        return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.NAUTILUS_SHELL)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Search"))
         ));
@@ -77,7 +79,7 @@ public class SoundSelectMenu extends SearchMenu<Sound> {
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuScale.SIX)
                 .title(Component.text("Sound Search"))
                 .menuIndex(4)
                 .returnIndex(49));

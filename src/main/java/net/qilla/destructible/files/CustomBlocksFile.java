@@ -21,8 +21,9 @@ import java.util.List;
 
 public class CustomBlocksFile extends DestructibleFile {
 
-    private final static String DEFAULT_RESOURCE = "custom_blocks_default.json";
-    private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "custom_blocks.json");
+    private static CustomBlocksFile INSTANCE;
+    private static final String DEFAULT_RESOURCE = "custom_blocks_default.json";
+    private static final Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "custom_blocks.json");
     private final Type type = new TypeToken<List<DBlock>>() {
     }.getType();
     private final Gson gson = new GsonBuilder()
@@ -30,7 +31,12 @@ public class CustomBlocksFile extends DestructibleFile {
             .setPrettyPrinting()
             .create();
 
-    public CustomBlocksFile() {
+    public static CustomBlocksFile getInstance() {
+        if(INSTANCE == null) INSTANCE = new CustomBlocksFile();
+        return INSTANCE;
+    }
+
+    private CustomBlocksFile() {
         super(DEFAULT_RESOURCE, FILE_PATH);
     }
 

@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
 
+    private static LoadedDestructibleBlocksGroupedFile INSTANCE;
     private final static String DEFAULT_RESOURCE = "loaded_destructible_blocks_grouped_default.json";
     private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "localdb" + File.separator + "loaded_destructible_blocks_grouped.json");
     private final Type type = new TypeToken<ConcurrentHashMap<String, ConcurrentHashMap<Long, Set<Integer>>>>() {
@@ -34,7 +35,12 @@ public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
             .setPrettyPrinting()
             .create();
 
-    public LoadedDestructibleBlocksGroupedFile() {
+    public static LoadedDestructibleBlocksGroupedFile getInstance() {
+        if(INSTANCE == null) INSTANCE = new LoadedDestructibleBlocksGroupedFile();
+        return INSTANCE;
+    }
+
+    private LoadedDestructibleBlocksGroupedFile() {
         super(DEFAULT_RESOURCE, FILE_PATH);
     }
 

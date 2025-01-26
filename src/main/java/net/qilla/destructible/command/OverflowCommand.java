@@ -7,9 +7,10 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.menugeneral.menu.OverflowMenu;
-import net.qilla.destructible.player.CooldownType;
 import net.qilla.destructible.player.DPlayer;
-import net.qilla.destructible.data.registry.DRegistryMaster;
+import net.qilla.destructible.player.DPlayerData;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.player.CooldownType;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -18,11 +19,9 @@ import java.util.UUID;
 
 public class OverflowCommand {
 
-    private static final Map<UUID, DPlayer> DPLAYERS = DRegistry.DPLAYERS;
+    private static final Map<UUID, DPlayerData> PLAYER_DATA = DRegistry.PLAYER_DATA;
     private static final String COMMAND = "overflow";
     private static final List<String> ALIAS = List.of("o", "stash");
-    private static final String COLLECT = "collect";
-    private static final String CLEAR = "clear";
 
     private final Destructible plugin;
     private final Commands commands;
@@ -40,15 +39,15 @@ public class OverflowCommand {
 
     private int openMenu(CommandContext<CommandSourceStack> context) {
         UUID uuid = ((Player) context.getSource().getSender()).getUniqueId();
-        DPlayer dPlayer = DPLAYERS.get(uuid);
+        DPlayerData playerData = PLAYER_DATA.get(uuid);
 
-        if(dPlayer.getCooldown().has(CooldownType.OPEN_MENU)) {
-            dPlayer.sendMessage("<red>Please wait a bit before accessing this menu.");
+        if(playerData.hasCooldown(CooldownType.OPEN_MENU)) {
+            playerData.getPlayer().sendMessage("<red>Please wait a bit before accessing this menu.");
             return 0;
         }
-        dPlayer.getCooldown().has(CooldownType.OPEN_MENU);
+        playerData.hasCooldown(CooldownType.OPEN_MENU);
 
-        dPlayer.getMenuHolder().newMenu(new OverflowMenu(plugin, dPlayer));
+        playerData.newMenu(new OverflowMenu(plugin, playerData));
         return Command.SINGLE_SUCCESS;
     }
 }

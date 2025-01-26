@@ -4,19 +4,22 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.Sounds;
-import net.qilla.destructible.menugeneral.*;
-import net.qilla.destructible.menugeneral.slot.*;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.BlockHighlight;
-import net.qilla.destructible.player.CooldownType;
-import net.qilla.destructible.player.DPlayer;
+import net.qilla.destructible.player.DPlayerData;
+import net.qilla.qlibrary.data.PlayerData;
+import net.qilla.qlibrary.menu.*;
+import net.qilla.qlibrary.menu.socket.QSlot;
+import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Material;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -24,14 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HighlightSelectMenu extends SearchMenu<String> {
+public class HighlightSelectMenu extends QSearchMenu<String> {
 
     private static final Map<String, DBlock> DBLOCKS = DRegistry.BLOCKS;
     private static final Collection<String> LOADED_BLOCKS = DRegistry.LOADED_BLOCKS_GROUPED.keySet();
     private final Set<String> highlights;
 
-    public HighlightSelectMenu(@NotNull Destructible plugin, @NotNull DPlayer dPlayer, @NotNull Set<String> highlights) {
-        super(plugin, dPlayer, LOADED_BLOCKS);
+    public HighlightSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull Set<String> highlights) {
+        super(plugin, playerData, LOADED_BLOCKS);
         Preconditions.checkNotNull(highlights, "Set cannot be null");
         this.highlights = highlights;
         super.populateModular();
@@ -45,7 +48,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
         String toolList = dBlock.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(dBlock.getCorrectTools().stream().toList(), ", ");
         String visible = highlights.contains(item) ? "<green><bold>VISIBLE" : "<red><bold>NOT VISIBLE";
 
-        return new Socket(index, Slot.of(builder -> builder
+        return new QSocket(index, QSlot.of(builder -> builder
                 .material(dBlock.getMaterial())
                 .displayName(Component.text(dBlock.getId()))
                 .lore(ItemLore.lore(List.of(
@@ -63,10 +66,11 @@ public class HighlightSelectMenu extends SearchMenu<String> {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to toggle visibility")
                 )))
                 .glow(highlights.contains(item))
-                .clickSound(Sounds.MENU_CLICK_ITEM)
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
         ), event -> {
-            BlockHighlight blockHighlight = getDPlayer().getDBlockEdit().getBlockHighlight();
-            DRegistry.BLOCK_EDITORS.add(super.getDPlayer());
+
+            BlockHighlight blockHighlight = DRegistry.PLAYER_DATA.get(super.getPlayer().getUniqueId()).getBlockEdit().getBlockHighlight();
+            DRegistry.BLOCK_EDITORS.add(super.getPlayer().getUniqueId());
             if(highlights.contains(item)) {
                 highlights.remove(item);
                 blockHighlight.removeVisibleDBlock(item);
@@ -88,7 +92,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
 
     @Override
     public Socket menuSocket() {
-        return new Socket(4, Slot.of(builder -> builder
+        return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.BLUE_ICE)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Search"))
         ));
@@ -97,7 +101,7 @@ public class HighlightSelectMenu extends SearchMenu<String> {
     @Override
     public StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
-                .menuSize(MenuSize.SIX)
+                .menuSize(MenuScale.SIX)
                 .title(Component.text("Block Highlight Search"))
                 .menuIndex(4)
                 .returnIndex(49));
