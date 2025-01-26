@@ -288,12 +288,12 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.LOAD_BLOCK_MENU);
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.FIVE)
                 .title(Component.text("Load Blocks"))

@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.menugeneral.DSlots;
@@ -397,12 +396,12 @@ public class ToolModificationMenu extends QStaticMenu {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.ITEM_MODIFICATION_MENU);
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.FIVE)
                 .title(Component.text("Tool Modification"))

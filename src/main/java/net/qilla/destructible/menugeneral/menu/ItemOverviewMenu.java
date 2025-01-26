@@ -11,7 +11,6 @@ import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemStackFactory;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
-import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.qlibrary.data.PlayerData;
@@ -24,13 +23,13 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.MenuSound;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -77,7 +76,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     @Override
-    public Socket createSocket(int index, DItem item) {
+    public @Nullable Socket createSocket(int index, DItem item) {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
                 .displayName(MiniMessage.miniMessage().deserialize(item.getId()))
@@ -245,12 +244,12 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.ITEM_MENU);
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Custom Item Overview"))
@@ -259,7 +258,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(
                 builder -> builder
                         .dynamicSlots(List.of(

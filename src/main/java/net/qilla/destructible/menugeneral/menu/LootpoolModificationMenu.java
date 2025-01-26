@@ -22,6 +22,8 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
@@ -49,7 +51,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public Socket createSocket(int index, ItemDrop item) {
+    public @Nullable Socket createSocket(int index, ItemDrop item) {
         DItem dItem = item.getDItem();
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(dItem.getMaterial())
@@ -79,7 +81,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
@@ -91,7 +93,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Lootpool Settings"))
@@ -100,7 +102,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(
                 builder -> builder
                         .dynamicSlots(List.of(

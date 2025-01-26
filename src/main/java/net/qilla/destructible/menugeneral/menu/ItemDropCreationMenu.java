@@ -4,12 +4,10 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.menugeneral.menu.select.DItemSelectMenu;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemDrop;
-import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.MenuScale;
 import net.qilla.qlibrary.menu.QStaticMenu;
@@ -282,7 +280,7 @@ public class ItemDropCreationMenu extends QStaticMenu {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Item Drop Modification"))

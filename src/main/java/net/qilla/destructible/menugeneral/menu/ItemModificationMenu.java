@@ -441,12 +441,12 @@ public class ItemModificationMenu extends QStaticMenu {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.ITEM_MODIFICATION_MENU);
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.FIVE)
                 .title(Component.text("Item Modification"))

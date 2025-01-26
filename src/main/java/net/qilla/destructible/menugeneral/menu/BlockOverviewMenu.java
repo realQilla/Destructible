@@ -29,6 +29,8 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
@@ -53,7 +55,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
     }
 
     @Override
-    public Socket createSocket(int index, DBlock item) {
+    public @Nullable Socket createSocket(int index, DBlock item) {
         String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList(), ", ");
 
         return new QSocket(index, QSlot.of(builder -> builder
@@ -195,12 +197,12 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.BLOCK_OVERVIEW_MENU);
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Custom Block Overview"))
@@ -209,7 +211,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(
                 builder -> builder
                         .dynamicSlots(List.of(

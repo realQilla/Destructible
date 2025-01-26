@@ -29,6 +29,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -59,7 +60,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
     }
 
     @Override
-    public Socket createSocket(int index, Map.Entry<String, OverflowEntry> item) {
+    public @Nullable Socket createSocket(int index, Map.Entry<String, OverflowEntry> item) {
         DItem dItem = DUtil.getDItem(item.getValue().getData().getItemID());
         int amount = item.getValue().getAmount();
 
@@ -150,12 +151,12 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.OVERFLOW_MENU);
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Overflow"))
@@ -164,7 +165,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         9, 10, 11, 12, 13, 14, 15, 16, 17,
