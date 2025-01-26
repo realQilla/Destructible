@@ -240,7 +240,7 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.RED_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<red>Attribute Modification"))
@@ -252,7 +252,7 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Attribute Modification"))
@@ -261,7 +261,7 @@ public class AttributeSelectionMenu extends QDynamicMenu<Attribute<?>> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         28, 29, 30, 31, 32, 33, 34, 38, 39, 40, 41, 42

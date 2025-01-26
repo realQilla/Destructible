@@ -73,7 +73,7 @@ public class ItemModificationMenu extends QStaticMenu {
     public ItemModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
         super(plugin, playerData);
 
-        super.addSocket(emptyMaterialSocket(), 100);
+        super.addSocket(emptyMaterialSocket(), 250);
         super.finalizeMenu();
     }
 

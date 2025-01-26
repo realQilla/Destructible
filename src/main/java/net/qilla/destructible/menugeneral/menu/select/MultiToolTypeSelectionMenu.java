@@ -20,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ public class MultiToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
     }
 
     @Override
-    public Socket createSocket(int index, ToolType item) {
+    public @Nullable Socket createSocket(int index, ToolType item) {
         boolean contains = correctTools.contains(item);
 
         return new QSocket(index, QSlot.of(builder -> builder
@@ -64,7 +65,7 @@ public class MultiToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.BLACK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Tool Settings"))
@@ -85,7 +86,7 @@ public class MultiToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         10, 11, 12, 13, 14, 15, 16

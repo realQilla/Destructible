@@ -41,7 +41,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
         super.addSocket(new QSocket(6, DSlots.CREATE_NEW, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                new BlockModificationMenu(super.getPlugin(), playerData, null).open(true);
+                new BlockModificationMenu(super.getPlugin(), playerData).open(true);
                 return true;
             } else return false;
         }, CooldownType.MENU_CLICK));

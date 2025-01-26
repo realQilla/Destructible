@@ -21,6 +21,8 @@ import org.bukkit.SoundCategory;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -40,7 +42,7 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
     }
 
     @Override
-    public Socket createSocket(int index, Sound item) {
+    public @Nullable Socket createSocket(int index, Sound item) {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(Material.MUSIC_DISC_RELIC)
                 .displayName(MiniMessage.miniMessage().deserialize(item.toString()))
@@ -64,12 +66,12 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
     }
 
     @Override
-    public String getString(Sound item) {
+    public @NotNull String getString(Sound item) {
         return StringUtil.toName(item.toString());
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.NAUTILUS_SHELL)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Search"))
@@ -77,7 +79,7 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Sound Search"))
@@ -86,7 +88,7 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -101,7 +103,7 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
     }
 
     @Override
-    public SearchConfig searchConfig() {
+    public @NotNull SearchConfig searchConfig() {
         return SearchConfig.of(builder -> builder
                 .searchIndex(47)
                 .resetSearchIndex(46)

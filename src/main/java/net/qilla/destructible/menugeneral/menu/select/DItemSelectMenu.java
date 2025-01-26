@@ -69,12 +69,12 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
     }
 
     @Override
-    public String getString(DItem item) {
+    public @NotNull String getString(DItem item) {
         return ComponentUtil.cleanComponent(item.getDisplayName());
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.DIAMOND_PICKAXE)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Search"))
@@ -82,7 +82,7 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Custom Item Search"))
@@ -91,7 +91,7 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -106,7 +106,7 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
     }
 
     @Override
-    public SearchConfig searchConfig() {
+    public @NotNull SearchConfig searchConfig() {
         return SearchConfig.of(builder -> builder
                 .searchIndex(47)
                 .resetSearchIndex(46)

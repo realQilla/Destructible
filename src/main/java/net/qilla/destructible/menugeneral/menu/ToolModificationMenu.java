@@ -71,7 +71,7 @@ public class ToolModificationMenu extends QStaticMenu {
     public ToolModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
         super(plugin, playerData);
 
-        super.addSocket(emptyMaterialSocket(), 200);
+        super.addSocket(emptyMaterialSocket(), 250);
         super.finalizeMenu();
     }
 
@@ -168,7 +168,8 @@ public class ToolModificationMenu extends QStaticMenu {
             CompletableFuture<Material> future = new CompletableFuture<>();
             new ItemSelectMenu(super.getPlugin(), (DPlayerData) super.getPlayerData(), future).open(true);
             future.thenAccept(material -> {
-                if(material != null) this.material = material;
+                if(material == null) return;
+                this.material = material;
                 lockedMenu = false;
                 super.addSocket(getSettingsSockets());
             });
@@ -179,8 +180,8 @@ public class ToolModificationMenu extends QStaticMenu {
             }
             this.material = cursorMaterial;
             lockedMenu = false;
-            super.getPlayer().setItemOnCursor(null);
             super.addSocket(getSettingsSockets());
+            super.getPlayer().setItemOnCursor(null);
         }
         return true;
     }

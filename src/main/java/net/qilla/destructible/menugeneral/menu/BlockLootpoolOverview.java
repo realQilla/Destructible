@@ -51,7 +51,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public Socket createSocket(int index, ItemDrop item) {
+    public @NotNull Socket createSocket(int index, ItemDrop item) {
         DItem dItem = item.getDItem();
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(dItem.getMaterial())
@@ -71,7 +71,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
@@ -85,7 +85,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Lootpool Overview"))
@@ -94,7 +94,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(
                 builder -> builder
                         .dynamicSlots(List.of(9, 10, 19, 28, 37, 38, 39, 30, 21, 12, 13, 14, 23, 32, 41, 42, 43, 34, 25, 16, 17))

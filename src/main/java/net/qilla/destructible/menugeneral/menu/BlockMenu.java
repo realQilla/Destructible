@@ -63,7 +63,7 @@ public class BlockMenu extends QStaticMenu {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.BLOCK_MENU);
     }
 

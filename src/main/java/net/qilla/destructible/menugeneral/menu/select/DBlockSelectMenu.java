@@ -20,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -39,7 +40,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
     }
 
     @Override
-    public Socket createSocket(int index, DBlock item) {
+    public @Nullable Socket createSocket(int index, DBlock item) {
         String toolList = item.getCorrectTools().isEmpty() ? "<red>None" : StringUtil.toNameList(item.getCorrectTools().stream().toList(), ", ");
 
 
@@ -69,12 +70,12 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
     }
 
     @Override
-    public String getString(DBlock item) {
+    public @NotNull String getString(DBlock item) {
         return item.getId();
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.GRAY_GLAZED_TERRACOTTA)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Search"))
@@ -82,7 +83,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Custom Block Search"))
@@ -91,7 +92,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -106,7 +107,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
     }
 
     @Override
-    public SearchConfig searchConfig() {
+    public @NotNull SearchConfig searchConfig() {
         return SearchConfig.of(builder -> builder
                 .searchIndex(47)
                 .resetSearchIndex(46)

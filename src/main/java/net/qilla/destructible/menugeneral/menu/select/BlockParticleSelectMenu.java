@@ -17,6 +17,8 @@ import org.bukkit.Registry;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -38,7 +40,7 @@ public class BlockParticleSelectMenu extends QSearchMenu<Material> {
     }
 
     @Override
-    public Socket createSocket(int index, Material item) {
+    public @Nullable Socket createSocket(int index, Material item) {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item)
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
@@ -56,12 +58,12 @@ public class BlockParticleSelectMenu extends QSearchMenu<Material> {
     }
 
     @Override
-    public String getString(Material item) {
+    public @NotNull String getString(Material item) {
         return StringUtil.toName(item.toString());
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of((builder -> builder
                 .material(Material.HEART_OF_THE_SEA)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Search"))
@@ -69,7 +71,7 @@ public class BlockParticleSelectMenu extends QSearchMenu<Material> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Particle Search"))
@@ -78,7 +80,7 @@ public class BlockParticleSelectMenu extends QSearchMenu<Material> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -93,7 +95,7 @@ public class BlockParticleSelectMenu extends QSearchMenu<Material> {
     }
 
     @Override
-    public SearchConfig searchConfig() {
+    public @NotNull SearchConfig searchConfig() {
         return SearchConfig.of(builder -> builder
                 .searchIndex(47)
                 .resetSearchIndex(46)

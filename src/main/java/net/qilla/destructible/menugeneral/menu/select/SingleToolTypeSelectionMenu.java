@@ -4,9 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.Destructible;
 import net.qilla.destructible.mining.item.ToolType;
-import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.DynamicConfig;
 import net.qilla.qlibrary.menu.MenuScale;
@@ -22,6 +20,8 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class SingleToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
     }
 
     @Override
-    public Socket createSocket(int index, ToolType item) {
+    public @Nullable Socket createSocket(int index, ToolType item) {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getRepresentation())
                 .displayName(MiniMessage.miniMessage().deserialize(StringUtil.toName(item.toString())))
@@ -61,7 +61,7 @@ public class SingleToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.BLACK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Tool Settings"))
@@ -82,7 +82,7 @@ public class SingleToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         10, 11, 12, 13, 14, 15, 16

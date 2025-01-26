@@ -19,6 +19,8 @@ import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -36,7 +38,7 @@ public class RaritySelectMenu extends QDynamicMenu<Rarity> {
     }
 
     @Override
-    public Socket createSocket(int index, Rarity item) {
+    public @Nullable Socket createSocket(int index, Rarity item) {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getRepresentation())
                 .displayName(item.getComponent())
@@ -54,7 +56,7 @@ public class RaritySelectMenu extends QDynamicMenu<Rarity> {
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, QSlot.of(builder -> builder
                 .material(Material.LAPIS_LAZULI)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Rarity Settings"))
@@ -62,7 +64,7 @@ public class RaritySelectMenu extends QDynamicMenu<Rarity> {
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.THREE)
                 .title(Component.text("Rarity Settings"))
@@ -71,7 +73,7 @@ public class RaritySelectMenu extends QDynamicMenu<Rarity> {
     }
 
     @Override
-    public DynamicConfig dynamicConfig() {
+    public @NotNull DynamicConfig dynamicConfig() {
         return DynamicConfig.of(builder -> builder
                 .dynamicSlots(List.of(
                         10, 11, 12, 13, 14, 15, 16

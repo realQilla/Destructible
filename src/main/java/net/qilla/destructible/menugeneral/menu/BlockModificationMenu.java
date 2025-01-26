@@ -1,5 +1,6 @@
 package net.qilla.destructible.menugeneral.menu;
 
+import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -13,7 +14,6 @@ import net.qilla.destructible.menugeneral.menu.select.SoundSelectMenu;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
-import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.MenuScale;
 import net.qilla.qlibrary.menu.QStaticMenu;
@@ -32,56 +32,67 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class BlockModificationMenu extends QStaticMenu {
 
     private static final Map<String, DBlock> DBLOCK_MAP = DRegistry.BLOCKS;
-    private boolean fullMenu;
-    private final DBlock dBlock;
-    private String id;
-    private Material material;
-    private Integer strength;
-    private Long durability;
-    private Long cooldown;
-    private Set<ToolType> correctTools;
-    private List<ItemDrop> lootpool;
-    private Sound breakSound;
-    private Material breakParticle;
 
-    public BlockModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @Nullable DBlock dBlock) {
+    private boolean lockedMenu = true;
+    private final DBlock dBlock;
+    private String id = UUID.randomUUID().toString();
+    private Material material = Material.STONE;
+    private int strength = 0;
+    private long durability = -1;
+    private long cooldown = 5000;
+    private Set<ToolType> correctTools = new HashSet<>();
+    private List<ItemDrop> lootpool = new ArrayList<>();
+    private Sound breakSound = Sound.BLOCK_STONE_BREAK;
+    private Material breakParticle = Material.STONE;
+
+    public BlockModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull DBlock dBlock) {
         super(plugin, playerData);
+        Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
+
         this.dBlock = dBlock;
 
-        if(dBlock != null) {
-            this.fullMenu = true;
-            this.id = dBlock.getId();
-            this.material = dBlock.getMaterial();
-            this.strength = dBlock.getStrength();
-            this.durability = dBlock.getDurability();
-            this.cooldown = dBlock.getCooldown();
-            this.correctTools = new HashSet<>(dBlock.getCorrectTools());
-            this.lootpool = new ArrayList<>(dBlock.getLootpool());
-            this.breakSound = dBlock.getBreakSound();
-            this.breakParticle = dBlock.getBreakParticle();
-            this.populateSettings();
-        }
-        super.addSocket(materialSocket(), 50);
+        this.lockedMenu = false;
+        this.id = dBlock.getId();
+        this.material = dBlock.getMaterial();
+        this.strength = dBlock.getStrength();
+        this.durability = dBlock.getDurability();
+        this.cooldown = dBlock.getCooldown();
+        this.correctTools = new HashSet<>(dBlock.getCorrectTools());
+        this.lootpool = new ArrayList<>(dBlock.getLootpool());
+        this.breakSound = dBlock.getBreakSound();
+        this.breakParticle = dBlock.getBreakParticle();
+
+        super.addSocket(getSettingsSockets(), 25);
+        super.addSocket(removeSocket());
         super.finalizeMenu();
     }
 
-    private void populateSettings() {
+    public BlockModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
+        super(plugin, playerData);
+        this.dBlock = null;
+
+        super.addSocket(emptyMaterialSocket(), 250);
+        super.finalizeMenu();
+    }
+
+    private List<Socket> getSettingsSockets() {
         List<Socket> socketList = new ArrayList<>(List.of(
-                idSocket(), strengthSocket(), durabilitySocket(), lootpoolSocket(),
-                correctToolSocket(), cooldownSocket(), breakParticleSocket(), breakSoundSocket()
+                materialSocket(), idSocket(), strengthSocket(), durabilitySocket(),
+                lootpoolSocket(), correctToolSocket(), cooldownSocket(), breakParticleSocket(),
+                breakSoundSocket()
         ));
         Collections.shuffle(socketList);
         socketList.add(buildSocket());
         socketList.add(removeSocket());
 
-        addSocket(socketList, 25);
+        return socketList;
     }
 
     private boolean clickMaterial(InventoryClickEvent event) {
@@ -92,7 +103,10 @@ public class BlockModificationMenu extends QStaticMenu {
                 CompletableFuture<Material> future = new CompletableFuture<>();
                 new BlockSelectMenu(super.getPlugin(), super.getPlayerData(), future).open(true);
                 future.thenAccept(material -> {
-                    if(material != null) this.material = material;
+                    if(material == null) return;
+                    this.material = material;
+                    lockedMenu = false;
+                    super.addSocket(getSettingsSockets());
                 });
             } else {
                 if(!cursorMaterial.isSolid()) {
@@ -100,8 +114,9 @@ public class BlockModificationMenu extends QStaticMenu {
                     return false;
                 }
                 this.material = cursorMaterial;
+                lockedMenu = false;
+                super.addSocket(getSettingsSockets());
                 super.getPlayer().setItemOnCursor(null);
-                this.refreshSockets();
             }
             return true;
         } else return false;
@@ -147,10 +162,6 @@ public class BlockModificationMenu extends QStaticMenu {
     private boolean remove(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        if(this.dBlock == null) {
-            super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<red>This block does not currently exist!"));
-            return false;
-        }
 
         super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
         DBLOCK_MAP.remove(dBlock.getId());
@@ -158,20 +169,22 @@ public class BlockModificationMenu extends QStaticMenu {
         return super.returnMenu();
     }
 
+    public Socket emptyMaterialSocket() {
+        return new QSocket(13, QSlot.of(builder -> builder
+                .material(Material.HOPPER_MINECART)
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
+                .lore(ItemLore.lore(List.of(
+                        MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <red>Empty"),
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either a block or nothing to set a material")
+                )))
+                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+        ), this::clickMaterial, CooldownType.MENU_CLICK);
+    }
+
     public Socket materialSocket() {
-        if(material == null) {
-            return new QSocket(13, QSlot.of(builder -> builder
-                    .material(Material.HOPPER_MINECART)
-                    .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
-                    .lore(ItemLore.lore(List.of(
-                            MiniMessage.miniMessage().deserialize("<!italic><gray>Current value <red>Empty"),
-                            Component.empty(),
-                            MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> with either a block or nothing to set a material")
-                    )))
-                    .clickSound(MenuSound.MENU_CLICK_ITEM)
-                    .appearSound(MenuSound.MENU_ITEM_APPEAR)
-            ), this::clickMaterial, CooldownType.MENU_CLICK);
-        } else return new QSocket(13, QSlot.of(builder -> builder
+        return new QSocket(13, QSlot.of(builder -> builder
                 .material(material)
                 .displayName(MiniMessage.miniMessage().deserialize("<blue>Block Material"))
                 .lore(ItemLore.lore(List.of(
@@ -185,7 +198,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     public Socket idSocket() {
-        if(id == null) id = UUID.randomUUID().toString();
         return new QSocket(22, QSlot.of(builder -> builder
                 .material(Material.OAK_SIGN)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_green>Block ID"))
@@ -226,7 +238,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     protected Socket durabilitySocket() {
-        if(durability == null) durability = -1L;
         return new QSocket(10, QSlot.of(builder -> builder
                 .material(Material.IRON_INGOT)
                 .displayName(MiniMessage.miniMessage().deserialize("<aqua>Block Durability"))
@@ -264,7 +275,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     protected Socket strengthSocket() {
-        if(strength == null) strength = 0;
         return new QSocket(11, QSlot.of(builder -> builder
                 .material(Material.RESIN_BRICK)
                 .displayName(MiniMessage.miniMessage().deserialize("<Red>Block Strength"))
@@ -302,7 +312,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     protected Socket lootpoolSocket() {
-        if(lootpool == null) lootpool = new ArrayList<>();
         return new QSocket(38, QSlot.of(builder -> builder
                 .material(Material.PINK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<light_purple>Lootpool"))
@@ -322,7 +331,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     protected Socket correctToolSocket() {
-        if(correctTools == null) correctTools = new HashSet<>();
         return new QSocket(42, QSlot.of(builder -> builder
                 .material(Material.BLACK_BUNDLE)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_gray>Correct Tools"))
@@ -343,7 +351,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     protected Socket cooldownSocket() {
-        if(cooldown == null) cooldown = 1000L;
         return new QSocket(19, QSlot.of(builder -> builder
                 .material(Material.GOLD_INGOT)
                 .displayName(MiniMessage.miniMessage().deserialize("<gold>Block Cooldown"))
@@ -381,7 +388,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     public Socket breakParticleSocket() {
-        if(breakParticle == null) breakParticle = Material.STONE;
         return new QSocket(15, QSlot.of(builder -> builder
                 .material(Material.HEART_OF_THE_SEA)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_aqua>Break Particle"))
@@ -403,7 +409,6 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     public Socket breakSoundSocket() {
-        if(breakSound == null) breakSound = Sound.BLOCK_STONE_BREAK;
         return new QSocket(16, QSlot.of(builder -> builder
                 .material(Material.NAUTILUS_SHELL)
                 .displayName(MiniMessage.miniMessage().deserialize("<dark_purple>Break Sound"))
@@ -434,26 +439,16 @@ public class BlockModificationMenu extends QStaticMenu {
 
     @Override
     public void refreshSockets() {
-        if(!fullMenu && material != null) {
-            super.addSocket(materialSocket(), 100);
-            this.populateSettings();
-            fullMenu = true;
-        } else if(material != null) {
-            super.addSocket(List.of(
-                    materialSocket(), idSocket(), strengthSocket(), durabilitySocket(),
-                    lootpoolSocket(), correctToolSocket(), cooldownSocket(), breakParticleSocket(),
-                    breakSoundSocket(), buildSocket(), removeSocket()
-            ));
-        }
+        if(!lockedMenu) super.addSocket(this.getSettingsSockets());
     }
 
     @Override
-    public Socket menuSocket() {
+    public @NotNull Socket menuSocket() {
         return new QSocket(4, DSlots.BLOCK_MODIFICATION_MENU);
     }
 
     @Override
-    public StaticConfig staticConfig() {
+    public @NotNull StaticConfig staticConfig() {
         return StaticConfig.of(builder -> builder
                 .menuSize(MenuScale.SIX)
                 .title(Component.text("Block Modification"))
