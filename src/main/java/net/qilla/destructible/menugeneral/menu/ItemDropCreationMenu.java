@@ -40,7 +40,7 @@ public class ItemDropCreationMenu extends QStaticMenu {
     private boolean fortuneAffected = true;
     private int minAmount = 1;
     private int maxAmount = 1;
-    private double chance = 1;
+    private double chance = 100;
 
     public ItemDropCreationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull List<ItemDrop> lootpool, @NotNull ItemDrop itemDrop) {
         super(plugin, playerData);

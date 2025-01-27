@@ -2,6 +2,7 @@ package net.qilla.destructible.player;
 
 import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.data.DataKey;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.item.DItem;
@@ -62,7 +63,10 @@ public class DPlayer extends QEnhancedPlayer {
             this.getInventory().addItem(itemStack);
             this.playSound(MenuSound.GET_ITEM, true);
             this.sendActionBar(ComponentUtil.getItemAmountAndType(dItem, overflowAmount).append(MiniMessage.miniMessage().deserialize("<green> added to stash")));
-        } else this.sendActionBar("<red>There was a problem adding an item to your stash!");
+        } else {
+            this.playSound(DSounds.GENERAL_ERROR, true);
+            this.sendActionBar("<red>There was a problem adding an item to your stash!");
+        }
     }
 
     public Map<DItem, Integer> calcItemDrops(@NotNull List<ItemDrop> itemDrops, @NotNull ItemData itemData, @NotNull DItem dItem) {
@@ -92,4 +96,5 @@ public class DPlayer extends QEnhancedPlayer {
 
         return baseAmount * (multiplier);
     }
-}
+}//Base Amount = Random number between the minimum and maximum
+//Final amount = The base amount * random number between 0 and the fortune level + 1

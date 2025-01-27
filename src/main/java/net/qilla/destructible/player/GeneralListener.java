@@ -5,6 +5,13 @@ import io.papermc.paper.event.packet.PlayerChunkUnloadEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundEntityEventPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
 import net.qilla.destructible.data.registry.DRegistry;
@@ -19,7 +26,10 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -136,7 +146,7 @@ public class GeneralListener implements Listener {
         World world = player.getWorld();
         DBlock dBlock = playerData.getBlockEdit().getDblock();
 
-        AtomicInteger remainingBlocks = new AtomicInteger(blockPosSet.size());
+        AtomicInteger remainingBlocks = new AtomicInteger();
         List<BlockPos> blocks = new ArrayList<>(blockPosSet);
 
         BukkitTask progressTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -156,7 +166,7 @@ public class GeneralListener implements Listener {
 
                 if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
             });
-            if(remainingBlocks.decrementAndGet() % 1000 == 0) {
+            if(remainingBlocks.incrementAndGet() % 1000 == 0) {
                 try {
                     Thread.sleep(100);
                 } catch(InterruptedException e) {
@@ -350,15 +360,42 @@ public class GeneralListener implements Listener {
         event.getItemDrop().setItemStack(ItemStackFactory.ofUpdated(itemStack));
     }
 
-    //@EventHandler
+    @EventHandler
     private void itemPickupItemEvent(PlayerAttemptPickupItemEvent event) {
+        CraftItem craftItem = (CraftItem) event.getItem();
+        ItemStack itemStack = craftItem.getItemStack();
+
+        if(!itemStack.getPersistentDataContainer().has(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM)) return;
+        craftItem.remove();
+        event.setCancelled(true);
+
+        ItemEntity itemEntity = new ItemEntity(
+                craftItem.getHandle().level(),
+                craftItem.getX(),
+                craftItem.getY(),
+                craftItem.getZ(),
+                craftItem.getHandle().getItem()
+        );
+
         DPlayer player = new DPlayer((CraftPlayer) event.getPlayer());
 
-        event.setCancelled(true);
-        event.getItem().remove();
-        ItemStack itemStack = event.getItem().getItemStack();
+        player.broadcastPacket(new ClientboundAddEntityPacket(
+                itemEntity.getId(), itemEntity.getUUID(),
+                itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(),
+                0f, 0f,
+                itemEntity.getType(),
+                0,
+                new Vec3(0, 0, 0),
+                0
+        ));
+        player.broadcastPacket(new ClientboundSetEntityDataPacket(itemEntity.getId(), craftItem.getHandle().getEntityData().packAll()));
+        player.broadcastPacket(new ClientboundTakeItemEntityPacket(itemEntity.getId(), player.getEntityId(), itemEntity.getItem().getCount()));
 
         player.give(itemStack);
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if(!itemEntity.isAlive()) itemEntity.remove(Entity.RemovalReason.DISCARDED);
+        }, 40);
     }
 
     private boolean validateItemVersion(@NotNull ItemStack itemStack) {
