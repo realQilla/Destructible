@@ -13,3 +13,5 @@ Supported Minecraft Versions:
 ```
 
 - Contact `@qilla` on Discord for questions or assistance.
+
+[![Watch the video](https://img.youtube.com/vi/dsGMOwaV1Fs/maxresdefault.jpg)](https://youtu.be/dsGMOwaV1Fs)
