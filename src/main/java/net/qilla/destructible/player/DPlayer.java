@@ -96,5 +96,4 @@ public class DPlayer extends QEnhancedPlayer {
 
         return baseAmount * (multiplier);
     }
-}//Base Amount = Random number between the minimum and maximum
-//Final amount = The base amount * random number between 0 and the fortune level + 1
+}

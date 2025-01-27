@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "net.qilla"
-version = "1.0.0-beta1"
+version = "1.0.0-beta2"
 
 repositories {
     mavenCentral()
