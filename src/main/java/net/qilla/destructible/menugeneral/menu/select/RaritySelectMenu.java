@@ -15,6 +15,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import org.bukkit.Material;
@@ -30,7 +31,7 @@ public class RaritySelectMenu extends QDynamicMenu<Rarity> {
     private static final List<Rarity> RARITY_SET = List.of(Rarity.values());
     private final CompletableFuture<Rarity> future;
 
-    public RaritySelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<Rarity> future) {
+    public RaritySelectMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull CompletableFuture<Rarity> future) {
         super(plugin, playerData, RARITY_SET);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;

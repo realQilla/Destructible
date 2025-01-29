@@ -15,6 +15,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.StringUtil;
@@ -32,7 +33,7 @@ public class MultiToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
 
     private final Set<ToolType> correctTools;
 
-    public MultiToolTypeSelectionMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull Set<ToolType> correctTools) {
+    public MultiToolTypeSelectionMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull Set<ToolType> correctTools) {
         super(plugin, playerData, TOOL_TYPES);
         Preconditions.checkNotNull(correctTools, "Set cannot be null");
         this.correctTools = correctTools;

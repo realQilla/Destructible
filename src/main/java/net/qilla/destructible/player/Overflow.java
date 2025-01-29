@@ -63,7 +63,7 @@ public class Overflow {
         ItemData itemData = overflowEntry.getData();
         int amount = overflowEntry.getAmount();
 
-        ItemStack itemStack = ItemStackFactory.of(itemData, amount);
+        ItemStack itemStack = DItemFactory.of(itemData, amount);
 
         int space = dPlayer.getSpace(itemStack);
         if(space == 0) return Optional.empty();

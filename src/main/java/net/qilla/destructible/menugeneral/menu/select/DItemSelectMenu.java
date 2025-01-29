@@ -14,6 +14,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
@@ -28,7 +29,7 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
     private static final Collection<DItem> DITEMS = DRegistry.ITEMS.values();
     private final CompletableFuture<DItem> future;
 
-    public DItemSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<DItem> future) {
+    public DItemSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull CompletableFuture<DItem> future) {
         super(plugin, playerData, DITEMS);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;

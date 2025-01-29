@@ -4,12 +4,11 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.Destructible;
-import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.files.CustomItemsFile;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.ItemStackFactory;
+import net.qilla.destructible.mining.item.DItemFactory;
 import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.qlibrary.data.PlayerData;
@@ -23,7 +22,6 @@ import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,7 +34,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
 
     private static final Collection<DItem> DITEM_COLLECTION = DRegistry.ITEMS.values();
 
-    public ItemOverviewMenu(@NotNull Destructible plugin, @NotNull PlayerData playerData) {
+    public ItemOverviewMenu(@NotNull Destructible plugin, @NotNull PlayerData<?> playerData) {
         super(plugin, playerData, DITEM_COLLECTION);
 
         super.addSocket(new QSocket(46, QSlot.of(builder -> builder
@@ -118,7 +116,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                                 int amount = Integer.parseInt(result);
 
                                 if(playerData.hasCooldown(CooldownType.GET_ITEM)) return;
-                                playerData.getPlayer().give(ItemStackFactory.of(item, amount));
+                                playerData.getPlayer().give(DItemFactory.of(item, amount));
                                 playerData.setCooldown(CooldownType.GET_ITEM);
                             } catch(NumberFormatException ignore) {
                             }
@@ -128,7 +126,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                     });
                 } else {
                     if(playerData.hasCooldown(CooldownType.GET_ITEM)) return false;
-                    playerData.getPlayer().give(ItemStackFactory.of(item, 1));
+                    playerData.getPlayer().give(DItemFactory.of(item, 1));
                     playerData.setCooldown(CooldownType.GET_ITEM);
                 }
                 return true;

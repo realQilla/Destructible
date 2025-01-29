@@ -32,7 +32,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
 
     private final List<ItemDrop> lootpool;
 
-    public LootpoolModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull List<ItemDrop> lootpool) {
+    public LootpoolModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull List<ItemDrop> lootpool) {
         super(plugin, playerData, lootpool);
         Preconditions.checkNotNull(lootpool, "List cannot be null");
         this.lootpool = lootpool;

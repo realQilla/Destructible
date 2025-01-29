@@ -88,6 +88,7 @@ public class GeneralListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     private void onBlockPlace(BlockPlaceEvent event) {
+        if(event.isCancelled()) return;
         DPlayer player = new DPlayer((CraftPlayer) event.getPlayer());
 
         if(!player.isOp()) return;
@@ -217,6 +218,8 @@ public class GeneralListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     private void onBlockBreak(final BlockBreakEvent event) {
+        if(event.isCancelled()) return;
+
         DPlayer player = new DPlayer((CraftPlayer) event.getPlayer());
 
         if(!player.isOp()) return;
@@ -311,7 +314,7 @@ public class GeneralListener implements Listener {
             if(itemStack == null) continue;
             if(validateItemVersion(itemStack)) continue;
 
-            player.getInventory().setItem(slot, ItemStackFactory.ofUpdated(itemStack));
+            player.getInventory().setItem(slot, DItemFactory.ofUpdated(itemStack));
         }
     }
 
@@ -323,7 +326,7 @@ public class GeneralListener implements Listener {
         if(itemData == null) return;
         if(validateItemVersion(itemStack)) return;
 
-        event.setItem(ItemStackFactory.ofUpdated(itemStack));
+        event.setItem(DItemFactory.ofUpdated(itemStack));
     }
 
     @EventHandler
@@ -332,7 +335,7 @@ public class GeneralListener implements Listener {
         if(itemStack == null) return;
         if(validateItemVersion(itemStack)) return;
 
-        event.setCurrentItem(ItemStackFactory.ofUpdated(itemStack));
+        event.setCurrentItem(DItemFactory.ofUpdated(itemStack));
     }
 
     @EventHandler
@@ -343,7 +346,7 @@ public class GeneralListener implements Listener {
         if(itemData == null) return;
         if(validateItemVersion(itemStack)) return;
 
-        event.getItemDrop().setItemStack(ItemStackFactory.ofUpdated(itemStack));
+        event.getItemDrop().setItemStack(DItemFactory.ofUpdated(itemStack));
     }
 
     @EventHandler

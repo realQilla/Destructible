@@ -18,6 +18,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
@@ -36,7 +37,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
 
     private static final Collection<DBlock> DBLOCK_COLLECTION = DRegistry.BLOCKS.values();
 
-    public BlockOverviewMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
+    public BlockOverviewMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData) {
         super(plugin, playerData, DBLOCK_COLLECTION);
 
         super.addSocket(new QSocket(46, DSlots.MODIFICATION_CREATE, event -> {

@@ -11,6 +11,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.sound.PlayType;
@@ -35,7 +36,7 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
             .collect(Collectors.toList());
     private final CompletableFuture<Sound> future;
 
-    public SoundSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<Sound> future) {
+    public SoundSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull CompletableFuture<Sound> future) {
         super(plugin, playerData, SOUND_SET);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;

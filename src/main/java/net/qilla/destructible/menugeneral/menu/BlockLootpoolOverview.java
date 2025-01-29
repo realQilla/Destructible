@@ -16,6 +16,7 @@ import net.qilla.qlibrary.menu.StaticConfig;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
@@ -25,7 +26,7 @@ import java.util.*;
 
 public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
 
-    public BlockLootpoolOverview(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull DBlock dBlock) {
+    public BlockLootpoolOverview(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull DBlock dBlock) {
         super(plugin, playerData, dBlock.getLootpool().stream()
                 .sorted((Comparator.comparingDouble(ItemDrop::getChance).reversed()))
                 .toList());

@@ -3,7 +3,6 @@ package net.qilla.destructible.mining.logic;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.*;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
@@ -157,7 +156,7 @@ public class BlockMiner {
             );
 
             if(DRegistry.ITEMS.containsKey(itemDrop.getKey().getId())) {
-                player.give(ItemStackFactory.of(itemDrop.getKey(), itemDrop.getValue()));
+                player.give(DItemFactory.of(itemDrop.getKey(), itemDrop.getValue()));
             }
         }, ITEM_MAGNET_DELAY);
 

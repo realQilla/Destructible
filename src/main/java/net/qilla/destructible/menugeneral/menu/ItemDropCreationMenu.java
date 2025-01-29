@@ -17,6 +17,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
@@ -43,7 +44,7 @@ public class ItemDropCreationMenu extends QStaticMenu {
     private int maxAmount = 1;
     private double chance = 100;
 
-    public ItemDropCreationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull List<ItemDrop> lootpool, @NotNull ItemDrop itemDrop) {
+    public ItemDropCreationMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull List<ItemDrop> lootpool, @NotNull ItemDrop itemDrop) {
         super(plugin, playerData);
         Preconditions.checkNotNull(lootpool, "List cannot be null");
         this.lootpool = lootpool;
@@ -61,7 +62,7 @@ public class ItemDropCreationMenu extends QStaticMenu {
         super.finalizeMenu();
     }
 
-    public ItemDropCreationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull List<ItemDrop> lootpool) {
+    public ItemDropCreationMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull List<ItemDrop> lootpool) {
         super(plugin, playerData);
         Preconditions.checkNotNull(lootpool, "List cannot be null");
         this.lootpool = lootpool;

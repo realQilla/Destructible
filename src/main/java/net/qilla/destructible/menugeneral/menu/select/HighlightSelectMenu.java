@@ -15,6 +15,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
@@ -35,7 +36,7 @@ public class HighlightSelectMenu extends QSearchMenu<String> {
     private static final Collection<String> LOADED_BLOCKS = DRegistry.LOADED_BLOCKS_GROUPED.keySet();
     private final Set<String> highlights;
 
-    public HighlightSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull Set<String> highlights) {
+    public HighlightSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull Set<String> highlights) {
         super(plugin, playerData, LOADED_BLOCKS);
         Preconditions.checkNotNull(highlights, "Set cannot be null");
         this.highlights = highlights;

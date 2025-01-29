@@ -15,6 +15,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.StringUtil;
@@ -33,7 +34,7 @@ public class SingleToolTypeSelectionMenu extends QDynamicMenu<ToolType> {
 
     private final CompletableFuture<ToolType> future;
 
-    public SingleToolTypeSelectionMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull CompletableFuture<ToolType> future) {
+    public SingleToolTypeSelectionMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull CompletableFuture<ToolType> future) {
         super(plugin, playerData, TOOL_TYPES);
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;

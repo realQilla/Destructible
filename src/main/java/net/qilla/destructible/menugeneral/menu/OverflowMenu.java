@@ -3,10 +3,9 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
-import net.qilla.destructible.mining.item.ItemStackFactory;
+import net.qilla.destructible.mining.item.DItemFactory;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.player.Overflow;
@@ -23,7 +22,6 @@ import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -94,7 +92,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
             player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have <red><bold>REMOVED</red> ").append(dItem.getDisplayName().asComponent()).append(MiniMessage.miniMessage().deserialize(" from your stash!")));
             player.playSound(QSounds.Menu.ITEM_DELETE, true);
         } else if(clickType.isLeftClick()) {
-            if(player.getSpace(ItemStackFactory.of(dItem, amount)) <= 0) {
+            if(player.getSpace(DItemFactory.of(dItem, amount)) <= 0) {
                 player.sendMessage("<red>You do not have enough space in your inventory!");
                 player.playSound(QSounds.General.GENERAL_ERROR, true);
                 return false;

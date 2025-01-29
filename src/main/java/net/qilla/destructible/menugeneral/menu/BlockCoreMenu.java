@@ -13,6 +13,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class BlockCoreMenu extends QStaticMenu {
 
-    public BlockCoreMenu(@NotNull Destructible plugin, @NotNull PlayerData playerData) {
+    public BlockCoreMenu(@NotNull Destructible plugin, @NotNull PlayerData<?> playerData) {
         super(plugin, playerData);
         super.addSocket(new QSocket(21, QSlot.of(builder -> builder
                 .material(Material.COMMAND_BLOCK_MINECART)

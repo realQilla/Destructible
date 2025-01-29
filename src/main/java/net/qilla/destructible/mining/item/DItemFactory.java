@@ -2,7 +2,6 @@ package net.qilla.destructible.mining.item;
 
 import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.Unbreakable;
 import net.qilla.destructible.data.DataKey;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.util.ComponentUtil;
@@ -11,9 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public final class ItemStackFactory {
+public final class DItemFactory {
 
-    private ItemStackFactory() {
+    private DItemFactory() {
     }
 
     public static @NotNull ItemStack of(@NotNull DItem item, int amount) {

@@ -50,7 +50,7 @@ public class ToolModificationMenu extends QStaticMenu {
     private Rarity rarity = Rarity.NONE;
     private final Set<Attribute<?>> staticAttributes = new HashSet<>();
 
-    public ToolModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull DItem dItem) {
+    public ToolModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull DItem dItem) {
         super(plugin, playerData);
         Preconditions.checkNotNull(dItem, "DItem cannot be null");
 
@@ -68,7 +68,7 @@ public class ToolModificationMenu extends QStaticMenu {
         super.finalizeMenu();
     }
 
-    public ToolModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
+    public ToolModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData) {
         super(plugin, playerData);
 
         super.addSocket(emptyMaterialSocket(), 250);

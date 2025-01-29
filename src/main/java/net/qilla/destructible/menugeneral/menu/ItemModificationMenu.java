@@ -22,6 +22,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Bukkit;
@@ -48,7 +49,7 @@ public class ItemModificationMenu extends QStaticMenu {
     private Rarity rarity = Rarity.NONE;
     private Boolean resource = true;
 
-    public ItemModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData, @NotNull DItem dItem) {
+    public ItemModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull DItem dItem) {
         super(plugin, playerData);
         Preconditions.checkNotNull(dItem, "DItem cannot be null");
 
@@ -67,7 +68,7 @@ public class ItemModificationMenu extends QStaticMenu {
         super.finalizeMenu();
     }
 
-    public ItemModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
+    public ItemModificationMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData) {
         super(plugin, playerData);
 
         super.addSocket(emptyMaterialSocket(), 250);

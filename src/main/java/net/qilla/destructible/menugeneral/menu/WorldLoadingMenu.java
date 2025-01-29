@@ -47,7 +47,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     private final DPlayerData playerData;
     private final BlockEdit blockEdit;
 
-    public WorldLoadingMenu(@NotNull Plugin plugin, @NotNull PlayerData playerData) {
+    public WorldLoadingMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData) {
         super(plugin, playerData);
         this.playerData = (DPlayerData) playerData;
         this.blockEdit = this.playerData.getBlockEdit();
