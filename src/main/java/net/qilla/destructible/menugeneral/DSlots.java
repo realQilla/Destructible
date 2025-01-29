@@ -3,7 +3,6 @@ package net.qilla.destructible.menugeneral;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.DSounds;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.Slot;
 import net.qilla.qlibrary.util.sound.QSounds;
@@ -18,7 +17,7 @@ public class DSlots {
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to save any changes made")
             )))
-            .clickSound(DSounds.GENERAL_SUCCESS)
+            .clickSound(QSounds.General.GENERAL_SUCCESS)
     );
 
     public static final Slot MODIFICATION_CREATE = QSlot.of(builder -> builder

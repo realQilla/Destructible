@@ -103,7 +103,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
                         if(result.equals("CONFIRM")) {
                             Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> CustomBlocksFile.getInstance().save());
                             super.getPlayer().sendMessage("<yellow>Custom blocks have been <green><bold>SAVED</green>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -132,7 +132,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
                                 Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
                             });
                             super.getPlayer().sendMessage("<yellow>Custom blocks have been <aqua><bold>RELOADED</aqua>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -161,7 +161,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
                                 Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
                             });
                             super.getPlayer().sendMessage("<yellow>All custom blocks have been <red><bold>CLEARED</red>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS_2, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
                         }
                         super.open(false);
                     });

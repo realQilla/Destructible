@@ -66,7 +66,7 @@ public class DPlayer extends QEnhancedPlayer {
             this.playSound(QSounds.Menu.GET_ITEM, true);
             this.sendActionBar(ComponentUtil.getItemAmountAndType(dItem, overflowAmount).append(MiniMessage.miniMessage().deserialize("<green> added to stash")));
         } else {
-            this.playSound(DSounds.GENERAL_ERROR, true);
+            this.playSound(QSounds.General.GENERAL_ERROR, true);
             this.sendActionBar("<red>There was a problem adding an item to your stash!");
         }
     }

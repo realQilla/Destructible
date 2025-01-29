@@ -15,6 +15,7 @@ import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.util.NMSUtil;
+import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;
@@ -80,7 +81,7 @@ public class SelectCommand {
         SELECTED_AREA.computeIfAbsent(dPlayer.getUniqueId(), k -> new SelectedArea()).first(blockPos);
         this.createTempEntity(dPlayer, blockPos);
         dPlayer.sendMessage("<yellow>Raytrace completed!");
-        dPlayer.playSound(DSounds.GENERAL_SUCCESS_2, true);
+        dPlayer.playSound(QSounds.General.GENERAL_SUCCESS_2, true);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -101,7 +102,7 @@ public class SelectCommand {
         SELECTED_AREA.computeIfAbsent(dPlayer.getUniqueId(), k -> new SelectedArea()).second(blockPos);
         this.createTempEntity(dPlayer, blockPos);
         dPlayer.sendMessage("<yellow>Raytrace completed!");
-        dPlayer.playSound(DSounds.GENERAL_SUCCESS_2, true);
+        dPlayer.playSound(QSounds.General.GENERAL_SUCCESS_2, true);
         return Command.SINGLE_SUCCESS;
     }
 
@@ -112,7 +113,7 @@ public class SelectCommand {
 
         if(SELECTED_AREA.computeIfPresent(dPlayer.getUniqueId(), (k, v) -> v.isSelected() ? v : null) == null) {
             dPlayer.sendMessage("<red>You must first make two selections!");
-            dPlayer.playSound(DSounds.GENERAL_ERROR, true);
+            dPlayer.playSound(QSounds.General.GENERAL_ERROR, true);
             return 0;
         }
 

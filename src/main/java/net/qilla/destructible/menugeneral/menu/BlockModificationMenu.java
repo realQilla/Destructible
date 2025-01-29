@@ -110,7 +110,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 });
             } else {
                 if(!cursorMaterial.isSolid()) {
-                    super.getPlayer().playSound(DSounds.GENERAL_ERROR, true);
+                    super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
                     return false;
                 }
                 this.material = cursorMaterial;
@@ -217,7 +217,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 if(!result.isEmpty()) {
                     if(DBLOCK_MAP.containsKey(result)) {
                         super.getPlayer().sendMessage("<red>Block ID already exists.");
-                        super.getPlayer().playSound(DSounds.GENERAL_ERROR, true);
+                        super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
                     } else {
                         id = result;
                         super.addSocket(this.idSocket());

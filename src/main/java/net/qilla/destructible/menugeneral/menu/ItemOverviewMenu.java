@@ -152,7 +152,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                         if(result.equals("CONFIRM")) {
                             Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> CustomItemsFile.getInstance().save());
                             super.getPlayer().sendMessage("<yellow>Custom items have been <green><bold>SAVED</green>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -181,7 +181,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                                 Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
                             });
                             super.getPlayer().sendMessage("<yellow>Custom items have been <aqua><bold>RELOADED</aqua>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -210,7 +210,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                                 Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
                             });
                             super.getPlayer().sendMessage("<yellow>All custom items have been <red><bold>CLEARED</red>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS_2, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
                         }
                         super.open(false);
                     });

@@ -160,7 +160,7 @@ public class WorldLoadingMenu extends QStaticMenu {
                                 LoadedDestructibleBlocksGroupedFile.getInstance().save();
                             });
                             super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -189,7 +189,7 @@ public class WorldLoadingMenu extends QStaticMenu {
                                 LoadedDestructibleBlocksGroupedFile.getInstance().load();
                             });
                             super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RELOADED</aqua>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
                         }
                         super.open(false);
                     });
@@ -223,7 +223,7 @@ public class WorldLoadingMenu extends QStaticMenu {
                                 playerData.getBlockEdit().getBlockHighlight().removeHighlightsAll();
                             }
                             super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <red><bold>CLEARED</red>!");
-                            super.getPlayer().playSound(DSounds.GENERAL_SUCCESS_2, true);
+                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
                         }
                         super.open(false);
                     });

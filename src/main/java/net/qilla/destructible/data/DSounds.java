@@ -11,10 +11,7 @@ public class DSounds {
     /**
      * General Sounds
      */
-
-    public static final QSound GENERAL_ERROR = QSound.of(Sound.ENTITY_VILLAGER_NO, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
-    public static final QSound GENERAL_SUCCESS = QSound.of(Sound.ENTITY_VILLAGER_YES, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
-    public static final QSound GENERAL_SUCCESS_2 = QSound.of(Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.5f, 1, SoundCategory.PLAYERS, PlayType.PLAYER);
+    
     public static final QSound LARGE_OPERATION_COMPLETE = QSound.of(Sound.ENTITY_PLAYER_BURP, 0.5f, 0f, SoundCategory.PLAYERS, PlayType.PLAYER);
     public static final QSound TINY_OPERATION_COMPLETE = QSound.of(Sound.ENTITY_PLAYER_BURP, 0.5f, 2f, SoundCategory.PLAYERS, PlayType.PLAYER);
     public static final QSound LARGE_OPERATION_UPDATE = QSound.of(Sound.BLOCK_NOTE_BLOCK_PLING, 0.1f, 1f, SoundCategory.PLAYERS, PlayType.PLAYER);

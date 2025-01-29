@@ -169,7 +169,7 @@ public class ItemModificationMenu extends QStaticMenu {
             });
         } else {
             if(!cursorMaterial.isItem()) {
-                super.getPlayer().playSound(DSounds.GENERAL_ERROR, true);
+                super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
                 return false;
             }
             this.material = cursorMaterial;
@@ -207,7 +207,7 @@ public class ItemModificationMenu extends QStaticMenu {
                 if(!result.isEmpty()) {
                     if(DITEM_MAP.containsKey(result)) {
                         super.getPlayer().sendMessage("<red>Item ID already exists.");
-                        super.getPlayer().playSound(DSounds.GENERAL_ERROR, true);
+                        super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
                     } else {
                         id = result;
                         super.addSocket(this.idSocket());

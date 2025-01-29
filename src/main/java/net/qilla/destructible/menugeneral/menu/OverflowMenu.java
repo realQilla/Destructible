@@ -85,7 +85,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
 
         if(!overflow.contains(dItem.getId())) {
             super.getPlayer().sendMessage("<red>This item is no longer in your stash!");
-            super.getPlayer().playSound(DSounds.GENERAL_ERROR, true);
+            super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
             return false;
         }
 
@@ -96,7 +96,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
         } else if(clickType.isLeftClick()) {
             if(player.getSpace(ItemStackFactory.of(dItem, amount)) <= 0) {
                 player.sendMessage("<red>You do not have enough space in your inventory!");
-                player.playSound(DSounds.GENERAL_ERROR, true);
+                player.playSound(QSounds.General.GENERAL_ERROR, true);
                 return false;
             }
 
@@ -104,7 +104,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
 
             if(optional.isEmpty()) {
                 player.sendMessage("<red>There was an error claiming this item!");
-                player.playSound(DSounds.GENERAL_ERROR, true);
+                player.playSound(QSounds.General.GENERAL_ERROR, true);
                 return false;
             }
             ItemStack takenItemStack = optional.get();
@@ -123,7 +123,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
         if(clickType.isLeftClick()) {
             if(overflow.isEmpty()) {
                 player.sendMessage("<red>Your overflow stash is already empty!");
-                player.playSound(DSounds.GENERAL_ERROR, true);
+                player.playSound(QSounds.General.GENERAL_ERROR, true);
                 return false;
             }
 

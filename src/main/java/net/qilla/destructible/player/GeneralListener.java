@@ -18,6 +18,7 @@ import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.*;
 import net.qilla.destructible.util.*;
+import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.CoordUtil;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
@@ -108,7 +109,7 @@ public class GeneralListener implements Listener {
                 player.playSound(DSounds.TINY_OPERATION_COMPLETE, true);
             } else {
                 player.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>LOADED</red>: block already exists in this position. Destroy and try again!");
-                player.playSound(DSounds.GENERAL_ERROR, true);
+                player.playSound(QSounds.General.GENERAL_ERROR, true);
             }
         } else {
             event.setCancelled(true);
@@ -117,7 +118,7 @@ public class GeneralListener implements Listener {
                 this.registerBlock(playerData, recursiveBlocks);
             })) {
                 player.sendMessage(MiniMessage.miniMessage().deserialize("<red>There are too many queued operations! Please wait for one to complete before trying again!"));
-                player.playSound(DSounds.GENERAL_ERROR, true);
+                player.playSound(QSounds.General.GENERAL_ERROR, true);
             }
         }
     }
@@ -236,7 +237,7 @@ public class GeneralListener implements Listener {
             player.playSound(DSounds.TINY_OPERATION_COMPLETE, true);
         } else {
             player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>UNLOADED</red>!"));
-            player.playSound(DSounds.GENERAL_ERROR, true);
+            player.playSound(QSounds.General.GENERAL_ERROR, true);
         }
     }
 
