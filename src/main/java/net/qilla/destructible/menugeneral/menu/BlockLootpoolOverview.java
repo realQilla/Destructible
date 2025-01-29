@@ -46,7 +46,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Break Particles <white>" + dBlock.getBreakParticle())
                 )))
                 .glow(true)
-        )), 0);
+        )));
         super.populateModular();
         super.finalizeMenu();
     }

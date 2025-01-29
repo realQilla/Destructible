@@ -13,7 +13,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
@@ -31,14 +31,14 @@ public class BlockCoreMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to view options on block loading")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new WorldLoadingMenu(super.getPlugin(), playerData).open(true);
                 return true;
             } else return false;
-        }, CooldownType.OPEN_MENU), 0);
+        }, CooldownType.OPEN_MENU));
 
         super.addSocket(new QSocket(23, QSlot.of(builder -> builder
                 .material(Material.CHEST_MINECART)
@@ -47,14 +47,14 @@ public class BlockCoreMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to view or customize all blocks")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
                 new BlockOverviewMenu(super.getPlugin(), super.getPlayerData()).open(true);
                 return true;
             } else return false;
-        }, CooldownType.OPEN_MENU), 0);
+        }, CooldownType.OPEN_MENU));
     }
 
     @Override

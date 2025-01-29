@@ -10,7 +10,6 @@ import net.qilla.destructible.files.CustomItemsFile;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemStackFactory;
-import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.player.DPlayerData;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.qlibrary.data.PlayerData;
@@ -23,14 +22,14 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
 
 public class ItemOverviewMenu extends QDynamicMenu<DItem> {
@@ -47,7 +46,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the item creation menu")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -62,7 +61,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the tool creation menu")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -96,7 +95,7 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>③ <key:key.sneak> + <key:key.mouse.right></gold> to select an amount")
                         )).build()
                 )
-                .clickSound(MenuSound.MENU_GET_ITEM)
+                .clickSound(QSounds.Menu.MENU_GET_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {

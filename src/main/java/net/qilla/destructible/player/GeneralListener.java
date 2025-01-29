@@ -6,7 +6,6 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundEntityEventPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundTakeItemEntityPacket;
 import net.minecraft.world.entity.Entity;
@@ -14,22 +13,19 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.Vec3;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.*;
+import net.qilla.destructible.data.registry.DPlayerDataRegistry;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.*;
 import net.qilla.destructible.util.*;
-import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.util.tools.CoordUtil;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -48,7 +44,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -56,8 +51,8 @@ import java.util.logging.Level;
 public class GeneralListener implements Listener {
 
     private static final Set<UUID> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
-    private static final Map<UUID, DPlayerData> PLAYER_DATA = DRegistry.PLAYER_DATA;
-    private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
+    private static final DPlayerDataRegistry PLAYER_DATA_REGISTRY = DPlayerDataRegistry.getInstance();
+    private static final Map<Long, Map<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
     private static final Map<String, DItem> DITEM_MAP = DRegistry.ITEMS;
 
     private final Destructible plugin;
@@ -96,7 +91,7 @@ public class GeneralListener implements Listener {
 
         if(!player.isOp()) return;
 
-        DPlayerData playerData = PLAYER_DATA.get(player.getUniqueId());
+        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
 
         if(!playerData.isBlockEditing()) return;
 
@@ -135,7 +130,8 @@ public class GeneralListener implements Listener {
         if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
 
         BLOCK_EDITOR_SET.forEach(uuid -> {
-            DPlayerData curPlayerData = PLAYER_DATA.get(uuid);
+            DPlayerData curPlayerData = PLAYER_DATA_REGISTRY.getData(uuid);
+            if(curPlayerData == null) return;
             curPlayerData.getBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
         });
         return true;
@@ -224,7 +220,7 @@ public class GeneralListener implements Listener {
 
         if(!player.isOp()) return;
 
-        DPlayerData playerData = PLAYER_DATA.get(player.getUniqueId());;
+        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);;
         Block block = event.getBlock();
         BlockPos blockPos = CoordUtil.getBlockPos(block);
         Optional<DBlock> optional = DUtil.getDBlock(blockPos);
@@ -246,32 +242,28 @@ public class GeneralListener implements Listener {
 
     @EventHandler
     private void onChunkLoad(final PlayerChunkLoadEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        if(!BLOCK_EDITOR_SET.contains(uuid)) return;
-        DPlayerData playerData = PLAYER_DATA.get(uuid);
+        Player player = event.getPlayer();
+        if(!BLOCK_EDITOR_SET.contains(player.getUniqueId())) return;
+        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
 
         BlockHighlight blockHighlight = playerData.getBlockEdit().getBlockHighlight();
-        Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
+        long chunkKey = CoordUtil.getChunkKey(event.getChunk().getX(), event.getChunk().getZ());
 
-        for(long chunkKey : chunkKeys) {
-            if(!LOADED_BLOCK_MAP.containsKey(chunkKey)) continue;
-            blockHighlight.createHighlights(chunkKey);
-        }
+        if(!LOADED_BLOCK_MAP.containsKey(chunkKey)) return;
+        blockHighlight.createHighlights(chunkKey);
     }
 
     @EventHandler
     private void onChunkUnload(PlayerChunkUnloadEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        if(!BLOCK_EDITOR_SET.contains(uuid)) return;
-        DPlayerData playerData = PLAYER_DATA.get(uuid);
+        Player player = event.getPlayer();
+        if(!BLOCK_EDITOR_SET.contains(player.getUniqueId())) return;
+        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
 
         BlockHighlight blockHighlight = playerData.getBlockEdit().getBlockHighlight();
-        Set<Long> chunkKeys = CoordUtil.getYChunkKeys(event.getChunk().getX(), event.getChunk().getZ());
+        long chunkKey = CoordUtil.getChunkKey(event.getChunk().getX(), event.getChunk().getZ());
 
-        for(long chunkKey : chunkKeys) {
-            if(!LOADED_BLOCK_MAP.containsKey(chunkKey)) continue;
-            blockHighlight.removeHighlights(chunkKey);
-        }
+        if(!LOADED_BLOCK_MAP.containsKey(chunkKey)) return;
+        blockHighlight.removeHighlights(chunkKey);
     }
 
     @EventHandler
@@ -290,28 +282,21 @@ public class GeneralListener implements Listener {
     }
 
     public void initPlayer(@NotNull Player player) {
-        CraftPlayer craftPlayer = (CraftPlayer) player;
-
-        if(PLAYER_DATA.containsKey(craftPlayer.getUniqueId())) PLAYER_DATA.put(craftPlayer.getUniqueId(), new DPlayerData(new DPlayer(craftPlayer), plugin));
-        else PLAYER_DATA.put(craftPlayer.getUniqueId(), new DPlayerData(new DPlayer(craftPlayer), plugin));
-
-        PlayerPacketListener.getInstance().addListener(PLAYER_DATA.get(craftPlayer.getUniqueId()));
+        PlayerPacketListener.getInstance().addListener(PLAYER_DATA_REGISTRY.getData(player));
         player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
     }
 
     public void removePlayer(@NotNull Player player) {
-        UUID uuid = player.getUniqueId();
-        if(!PLAYER_DATA.containsKey(uuid)) return;
-        DPlayerData playerData = PLAYER_DATA.get(uuid);
+        if(!PLAYER_DATA_REGISTRY.hasData(player.getUniqueId())) return;
+        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
 
         PlayerPacketListener.getInstance().removeListener(playerData.getPlayer());
     }
 
     @EventHandler
     private void onChatEvent(AsyncChatEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
-        if(!PLAYER_DATA.containsKey(uuid)) return;
-        DPlayerData playerData = PLAYER_DATA.get(uuid);
+        Player player = event.getPlayer();
+        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
 
         if(playerData.fulfillInput(ComponentUtil.cleanComponent(event.message()))) {
             event.setCancelled(true);

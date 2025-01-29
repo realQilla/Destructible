@@ -36,7 +36,7 @@ public class MiningManager {
 
             blockInstance = new BlockInstance(dPlayer.getPlayer().getWorld(),
                     blockPos, CoordUtil.getChunkKey(blockPos),
-                    CoordUtil.getBlockIndexInChunk(blockPos),
+                    CoordUtil.getSubChunkKey(blockPos),
                     optionalBlock.get(), direction
             );
         }

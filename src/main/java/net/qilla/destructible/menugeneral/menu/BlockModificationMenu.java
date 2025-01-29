@@ -24,7 +24,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.*;
@@ -42,7 +42,7 @@ public class BlockModificationMenu extends QStaticMenu {
 
     private boolean lockedMenu = true;
     private final DBlock dBlock;
-    private String id = UUID.randomUUID().toString();
+    private String id = StringUtil.uniqueIdentifier(8);
     private Material material = Material.STONE;
     private int strength = 0;
     private long durability = -1;
@@ -158,7 +158,7 @@ public class BlockModificationMenu extends QStaticMenu {
 
         super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
         DBLOCK_MAP.remove(dBlock.getId());
-        super.getPlayer().playSound(MenuSound.RESET, true);
+        super.getPlayer().playSound(QSounds.Menu.RESET, true);
         return super.returnMenu();
     }
 
@@ -171,8 +171,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a material or use an item to quickset")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::clickMaterial, CooldownType.MENU_CLICK);
     }
 
@@ -185,8 +185,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a material or use an item to quickset")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::clickMaterial, CooldownType.MENU_CLICK);
     }
 
@@ -199,8 +199,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputID, CooldownType.MENU_CLICK);
     }
 
@@ -221,7 +221,7 @@ public class BlockModificationMenu extends QStaticMenu {
                     } else {
                         id = result;
                         super.addSocket(this.idSocket());
-                        super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                        super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                     }
                 }
                 super.open(false);
@@ -239,8 +239,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputDurability, CooldownType.MENU_CLICK);
     }
 
@@ -258,7 +258,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 try {
                     durability = Math.max(-1, Long.parseLong(result));
                     super.addSocket(this.durabilitySocket());
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
                 super.open(false);
@@ -276,8 +276,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputStrength, CooldownType.MENU_CLICK);
     }
 
@@ -295,7 +295,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 try {
                     strength = Integer.parseInt(result);
                     super.addSocket(this.strengthSocket());
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
                 super.open(false);
@@ -313,8 +313,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -333,8 +333,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -352,8 +352,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputCooldown, CooldownType.MENU_CLICK);
     }
 
@@ -371,7 +371,7 @@ public class BlockModificationMenu extends QStaticMenu {
                 try {
                     cooldown = TimeUtil.stringToMillis(result);
                     super.addSocket(this.cooldownSocket());
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 } catch(NumberFormatException ignored) {
                 }
                 super.open(false);
@@ -389,8 +389,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -410,8 +410,8 @@ public class BlockModificationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to make modifications")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;

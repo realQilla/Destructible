@@ -27,7 +27,7 @@ public final class BlockInstance {
     private final AtomicDouble currentDurability;
     private final AtomicInteger crackLevel;
 
-    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, long chunkKey, int chunkInt, @NotNull DBlock dBlock, @NotNull Direction direction) {
+    public BlockInstance(@NotNull World world, @NotNull BlockPos blockPos, long chunkKey, int subChunkKey, @NotNull DBlock dBlock, @NotNull Direction direction) {
         Preconditions.checkNotNull(world, "World cannot be null");
         Preconditions.checkNotNull(blockPos, "BlockPos cannot be null");
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
@@ -35,10 +35,10 @@ public final class BlockInstance {
         this.location = CoordUtil.getLoc(blockPos, world);
         this.blockPos = blockPos;
         this.chunkKey = chunkKey;
-        this.chunkInt = chunkInt;
+        this.chunkInt = subChunkKey;
         this.dBlock = dBlock;
         this.direction = direction;
-        this.blockMemory = RegistryUtil.getBlockMemory(chunkKey, chunkInt);
+        this.blockMemory = RegistryUtil.getBlockMemory(chunkKey, subChunkKey);
         this.totalDurability = new AtomicDouble(dBlock.getDurability());
         this.currentDurability = new AtomicDouble(totalDurability.get());
         this.crackLevel = new AtomicInteger(0);

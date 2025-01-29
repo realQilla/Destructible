@@ -6,12 +6,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.Slot;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
 import org.bukkit.Material;
 import java.util.List;
 
 public class DSlots {
-    public static final Slot CONFIRM = QSlot.of(consumer -> consumer
+    public static final Slot CONFIRM = QSlot.of(builder -> builder
             .material(Material.END_CRYSTAL)
             .displayName(MiniMessage.miniMessage().deserialize("<green><bold>CONFIRM"))
             .lore(ItemLore.lore(List.of(
@@ -28,7 +28,7 @@ public class DSlots {
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the creation menu")
             )))
-            .clickSound(MenuSound.MENU_CLICK_ITEM)
+            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
     );
 
     public static final Slot MODIFICATION_REMOVE = QSlot.of(builder -> builder
@@ -41,7 +41,7 @@ public class DSlots {
             )))
     );
 
-    public static final Slot OVERFLOW_MENU = QSlot.of(consumer -> consumer
+    public static final Slot OVERFLOW_MENU = QSlot.of(builder -> builder
             .material(Material.BROWN_BUNDLE)
             .displayName(MiniMessage.miniMessage().deserialize("<aqua>Overflowing Stash"))
             .lore(ItemLore.lore(List.of(
@@ -50,7 +50,7 @@ public class DSlots {
             )))
     );
 
-    public static final Slot ITEM_MENU = QSlot.of(consumer -> consumer
+    public static final Slot ITEM_MENU = QSlot.of(builder -> builder
             .material(Material.QUARTZ)
             .displayName(MiniMessage.miniMessage().deserialize("<aqua>Item Overview"))
             .lore(ItemLore.lore(List.of(
@@ -59,7 +59,7 @@ public class DSlots {
             )))
     );
 
-    public static final Slot BLOCK_MENU = QSlot.of(consumer -> consumer
+    public static final Slot BLOCK_MENU = QSlot.of(builder -> builder
             .material(Material.BARREL)
             .displayName(MiniMessage.miniMessage().deserialize("<aqua>Block Settings"))
             .lore(ItemLore.lore(List.of(
@@ -68,7 +68,7 @@ public class DSlots {
             )))
     );
 
-    public static final Slot LOAD_BLOCK_MENU = QSlot.of(consumer -> consumer
+    public static final Slot LOAD_BLOCK_MENU = QSlot.of(builder -> builder
             .material(Material.COMMAND_BLOCK)
             .displayName(MiniMessage.miniMessage().deserialize("<aqua>Loading Blocks"))
             .lore(ItemLore.lore(List.of(
@@ -77,7 +77,7 @@ public class DSlots {
             )))
     );
 
-    public static final Slot BLOCK_OVERVIEW_MENU = QSlot.of(consumer -> consumer
+    public static final Slot BLOCK_OVERVIEW_MENU = QSlot.of(builder -> builder
             .material(Material.CHEST)
             .displayName(MiniMessage.miniMessage().deserialize("<aqua>Block Overview"))
             .lore(ItemLore.lore(List.of(
@@ -86,7 +86,7 @@ public class DSlots {
             )))
     );
 
-    public static final Slot BLOCK_MODIFICATION_MENU = QSlot.of(consumer -> consumer
+    public static final Slot BLOCK_MODIFICATION_MENU = QSlot.of(builder -> builder
             .material(Material.CRAFTING_TABLE)
             .displayName(MiniMessage.miniMessage().deserialize("<aqua>Block Modification"))
             .lore(ItemLore.lore(List.of(
@@ -95,7 +95,7 @@ public class DSlots {
             )))
     );
 
-    public static final Slot ITEM_MODIFICATION_MENU = QSlot.of(consumer -> consumer
+    public static final Slot ITEM_MODIFICATION_MENU = QSlot.of(builder -> builder
             .material(Material.CRAFTING_TABLE)
             .displayName(MiniMessage.miniMessage().deserialize("<aqua>Item Modification"))
             .lore(ItemLore.lore(List.of(
@@ -207,7 +207,7 @@ public class DSlots {
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to specify blocks to view")
             )))
-            .clickSound(MenuSound.MENU_CLICK_ITEM)
+            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
     );
 
     public static final Slot DISABLE_LOADED_BLOCK_VIEW = QSlot.of(builder -> builder
@@ -217,7 +217,7 @@ public class DSlots {
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to disable block loading")
             )))
-            .clickSound(MenuSound.MENU_CLICK_ITEM)
+            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
     );
 
     public static final Slot SAVED_CHANGES = QSlot.of(builder -> builder
@@ -227,7 +227,7 @@ public class DSlots {
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to save any made changes.")
             )))
-            .clickSound(MenuSound.MENU_CLICK_ITEM)
+            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
     );
 
     public static final Slot RELOADED_CHANGES = QSlot.of(builder -> builder
@@ -237,7 +237,7 @@ public class DSlots {
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to load the config, undoing any unsaved changes.")
             )))
-            .clickSound(MenuSound.MENU_CLICK_ITEM)
+            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
     );
 
     public static final Slot CLEAR_SAVED = QSlot.of(builder -> builder
@@ -247,6 +247,6 @@ public class DSlots {
                     Component.empty(),
                     MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to clear any stored data.")
             )))
-            .clickSound(MenuSound.MENU_CLICK_ITEM)
+            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
     );
 }

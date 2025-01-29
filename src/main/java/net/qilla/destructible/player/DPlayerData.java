@@ -5,7 +5,7 @@ import net.qilla.qlibrary.data.QPlayerData;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-public class DPlayerData extends QPlayerData {
+public class DPlayerData extends QPlayerData<DPlayer> {
 
     private final Plugin plugin;
     private final Overflow overflow;
@@ -52,6 +52,6 @@ public class DPlayerData extends QPlayerData {
 
     @Override
     public @NotNull DPlayer getPlayer() {
-        return (DPlayer) super.getPlayer();
+        return super.getPlayer();
     }
 }

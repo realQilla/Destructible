@@ -7,8 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import net.qilla.destructible.Destructible;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.registry.DRegistryKey;
-import net.qilla.destructible.data.registry.DRegistryMaster;
 import org.bukkit.Bukkit;
 
 import java.io.BufferedReader;
@@ -28,9 +26,8 @@ public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
     private static LoadedDestructibleBlocksGroupedFile INSTANCE;
     private final static String DEFAULT_RESOURCE = "loaded_destructible_blocks_grouped_default.json";
     private final static Path FILE_PATH = Paths.get(Destructible.getInstance().getDataFolder() + File.separator + "localdb" + File.separator + "loaded_destructible_blocks_grouped.json");
-    private final Type type = new TypeToken<ConcurrentHashMap<String, ConcurrentHashMap<Long, Set<Integer>>>>() {
-    }.getType();
-    private final Gson gson = new GsonBuilder()
+    private final static Type TYPE = new TypeToken<Map<String, Map<Long, Set<Integer>>>>() {}.getType();
+    private final static Gson GSON = new GsonBuilder()
             .enableComplexMapKeySerialization()
             .setPrettyPrinting()
             .create();
@@ -49,7 +46,7 @@ public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
         try(BufferedWriter writer = Files.newWriter(super.newFile, StandardCharsets.UTF_8)) {
             var map = DRegistry.LOADED_BLOCKS_GROUPED;
 
-            writer.write(gson.toJson(map, type));
+            writer.write(GSON.toJson(map, TYPE));
         } catch(IOException exception) {
             Bukkit.getLogger().severe("There was a problem saving Destructible loaded blocks(GROUPED)!\n" + exception);
         }
@@ -59,7 +56,7 @@ public class LoadedDestructibleBlocksGroupedFile extends DestructibleFile {
     public void load() {
         this.clear();
         try(BufferedReader reader = Files.newReader(super.newFile, StandardCharsets.UTF_8)) {
-            ConcurrentHashMap<String, ConcurrentHashMap<Long, Set<Integer>>> map = gson.fromJson(reader, type);
+            Map<String, Map<Long, Set<Integer>>> map = GSON.fromJson(reader, TYPE);
             var registry = DRegistry.LOADED_BLOCKS_GROUPED;
 
             registry.putAll(map);

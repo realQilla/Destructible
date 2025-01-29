@@ -12,11 +12,10 @@ import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class DUtil {
 
-    private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
+    private static final Map<Long, Map<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
     private static final Map<String, DBlock> DBLOCK_MAP = DRegistry.BLOCKS;
     private static final Map<String, DItem> ITEM_MAP = DRegistry.ITEMS;
 
@@ -27,10 +26,10 @@ public final class DUtil {
         Preconditions.checkNotNull(blockPos, "BlockPos cannot be null");
 
         long chunkKey = CoordUtil.getChunkKey(blockPos);
-        int chunkInt = CoordUtil.getBlockIndexInChunk(blockPos);
+        int subChunkKey = CoordUtil.getSubChunkKey(blockPos);
 
         return Optional.ofNullable(LOADED_BLOCK_MAP.get(chunkKey))
-                .map(chunkIntMap -> chunkIntMap.get(chunkInt))
+                .map(chunkIntMap -> chunkIntMap.get(subChunkKey))
                 .map(DBLOCK_MAP::get);
     }
 

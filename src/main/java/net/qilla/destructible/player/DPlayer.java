@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.data.DataKey;
+import net.qilla.destructible.data.registry.DPlayerDataRegistry;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.ItemData;
@@ -13,7 +14,8 @@ import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.util.ComponentUtil;
 import net.qilla.destructible.util.DUtil;
 import net.qilla.qlibrary.player.QEnhancedPlayer;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +53,7 @@ public class DPlayer extends QEnhancedPlayer {
             this.getInventory().addItem(itemStack);
             return;
         }
-        Overflow overflow = DRegistry.PLAYER_DATA.get(this.getUniqueId()).getOverflow();
+        Overflow overflow = DPlayerDataRegistry.getInstance().getData(this).getOverflow();
         ItemData itemData = itemStack.getPersistentDataContainer().get(DataKey.DESTRUCTIBLE_ITEM, ItemDataType.ITEM);
 
         if(itemData != null) {
@@ -61,7 +63,7 @@ public class DPlayer extends QEnhancedPlayer {
 
             overflow.put(itemData, overflowAmount);
             this.getInventory().addItem(itemStack);
-            this.playSound(MenuSound.GET_ITEM, true);
+            this.playSound(QSounds.Menu.GET_ITEM, true);
             this.sendActionBar(ComponentUtil.getItemAmountAndType(dItem, overflowAmount).append(MiniMessage.miniMessage().deserialize("<green> added to stash")));
         } else {
             this.playSound(DSounds.GENERAL_ERROR, true);

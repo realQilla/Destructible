@@ -17,7 +17,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Bukkit;
@@ -104,8 +105,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a custom item")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::setItem, CooldownType.MENU_CLICK);
     }
 
@@ -123,8 +124,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a custom item")
                         )).build())
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::setItem, CooldownType.MENU_CLICK);
 
     }
@@ -154,8 +155,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                                 Component.empty(),
                                 MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to toggle")
                         )).build())
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -176,8 +177,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a <green><bold>MINIMUM</green> amount"),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to set a <red><bold>MAXIMUM</red> amount")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
@@ -201,8 +202,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                 try {
                     this.minAmount = Math.max(1, Integer.parseInt(result));
                     if(this.minAmount > maxAmount) this.maxAmount = minAmount;
-                    super.addSocket(this.amountSocket(), 0);
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.addSocket(this.amountSocket());
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
                 super.open(false);
@@ -224,8 +225,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                 try {
                     this.maxAmount = Math.max(1, Integer.parseInt(result));
                     if(this.maxAmount < minAmount) this.minAmount = maxAmount;
-                    super.addSocket(this.amountSocket(), 0);
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.addSocket(this.amountSocket());
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
                 super.open(false);
@@ -244,8 +245,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set a drop chance")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::setChance, CooldownType.MENU_CLICK);
     }
 
@@ -264,8 +265,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
 
                 try {
                     this.chance = Math.max(0, Math.min(100, Double.parseDouble(result)));
-                    super.addSocket(this.chanceSocket(), 0);
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.addSocket(this.chanceSocket());
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 } catch(NumberFormatException ignore) {
                 }
                 super.open(false);

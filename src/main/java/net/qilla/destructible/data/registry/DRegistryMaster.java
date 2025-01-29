@@ -43,7 +43,6 @@ public final class DRegistryMaster {
     static {
         addRegistry(DRegistryKey.LOADED_BLOCKS, new DRegistryHolder<>(new ConcurrentHashMap<>()));
         addRegistry(DRegistryKey.LOADED_BLOCKS_GROUPED, new DRegistryHolder<>(new ConcurrentHashMap<>()));
-        addRegistry(DRegistryKey.PLAYER_DATA, new DRegistryHolder<>(new ConcurrentHashMap<>()));
         addRegistry(DRegistryKey.BLOCK_EDITORS, new DRegistryHolder<>(ConcurrentHashMap.newKeySet()));
         addRegistry(DRegistryKey.LOADED_BLOCK_MEMORY, new DRegistryHolder<>(new ConcurrentHashMap<>()));
         addRegistry(DRegistryKey.ITEMS, new DRegistryHolder<>(new ConcurrentSkipListMap<>()));

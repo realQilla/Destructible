@@ -17,7 +17,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -60,7 +60,7 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.right></gold> to unset")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
                 .glow(true)
         ), event -> {
             ClickType clickType = event.getClick();
@@ -79,8 +79,8 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputEfficiency, CooldownType.OPEN_MENU);
     }
 
@@ -100,7 +100,7 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                     attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_EFFICIENCY);
                     attributeSet.add(new Attribute<>(AttributeTypes.MINING_EFFICIENCY, value));
                     super.refreshSockets();
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 }
                 super.open(false);
             });
@@ -115,8 +115,8 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputStrength, CooldownType.OPEN_MENU);
     }
 
@@ -136,7 +136,7 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                     attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_STRENGTH);
                     attributeSet.add(new Attribute<>(AttributeTypes.MINING_STRENGTH, value));
                     super.refreshSockets();
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 }
                 super.open(false);
             });
@@ -151,8 +151,8 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputFortune, CooldownType.OPEN_MENU);
     }
 
@@ -172,7 +172,7 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                     attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_FORTUNE);
                     attributeSet.add(new Attribute<>(AttributeTypes.MINING_FORTUNE, value));
                     super.refreshSockets();
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 }
                 super.open(false);
             });
@@ -187,8 +187,8 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
@@ -210,8 +210,8 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to set")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
-                .appearSound(MenuSound.MENU_ITEM_APPEAR)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+                .appearSound(QSounds.Menu.MENU_ITEM_APPEAR)
         ), this::inputDurability, CooldownType.OPEN_MENU);
     }
 
@@ -231,7 +231,7 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                     attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.ITEM_MAX_DURABILITY);
                     attributeSet.add(new Attribute<>(AttributeTypes.ITEM_MAX_DURABILITY, value));
                     super.refreshSockets();
-                    super.getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 }
                 super.open(false);
             });

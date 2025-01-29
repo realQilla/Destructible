@@ -4,22 +4,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.EntityType;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.DBlock;
+import net.qilla.destructible.util.NMSUtil;
 import net.qilla.qlibrary.util.tools.CoordUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftBlockDisplay;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Transformation;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,12 +25,11 @@ import java.util.stream.Collectors;
 public class BlockHighlight {
 
     private static final int HIGHLIGHT_CREATION_BATCH_SIZE = 1000;
-    private static final Map<String, DBlock> DBLOCK_MAP = DRegistry.BLOCKS;
 
     private final Plugin plugin;
     private final DPlayer player;
     private final Set<String> visibleDBlocks = ConcurrentHashMap.newKeySet();
-    private final ConcurrentHashMap<String, ConcurrentHashMap<Long, ConcurrentHashMap<Integer, Integer>>> highlight = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Map<Long, Map<Integer, Integer>>> highlight = new ConcurrentHashMap<>();
     private final ConcurrentLinkedQueue<Runnable> taskQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean isProcessing = new AtomicBoolean(false);
 
@@ -84,7 +77,7 @@ public class BlockHighlight {
     }
 
     public void addVisibleDBlockAll() {
-        this.getVisibleDBlocks().addAll(DBLOCK_MAP.keySet());
+        this.getVisibleDBlocks().addAll(DRegistry.BLOCKS.keySet());
     }
 
     public void removeVisibleDBlock(@NotNull String blockId) {
@@ -98,13 +91,14 @@ public class BlockHighlight {
     public void createHighlight(@NotNull BlockPos blockPos, @NotNull String blockId) {
         if(!this.isDBlockVisible(blockId)) return;
 
-        long chunkKey = CoordUtil.getChunkKey(blockPos);
-        int chunkInt = CoordUtil.getBlockIndexInChunk(blockPos);
-        CraftEntity entity = this.getHighlightEntity();
+        long originChunkKey = CoordUtil.getChunkKey(blockPos);
+        int originSubChunkKey = CoordUtil.getSubChunkKey(blockPos);
+        CraftEntity entity = NMSUtil.createHighlightEntity(player.getWorld());
 
-        highlight.computeIfAbsent(blockId, blockId2 ->
-                new ConcurrentHashMap<>()).computeIfAbsent(chunkKey, chunkKey2 ->
-                new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, (chunkInt3) -> {
+        highlight.computeIfAbsent(blockId, id ->
+                new HashMap<>()).computeIfAbsent(originChunkKey, chunkKey ->
+                new HashMap<>()).computeIfAbsent(originSubChunkKey, subChunkKey -> {
+
             player.sendPacket(new ClientboundAddEntityPacket(entity.getHandle(), 0, blockPos));
             player.sendPacket(new ClientboundSetEntityDataPacket(entity.getEntityId(), entity.getHandle().getEntityData().packAll()));
             return entity.getEntityId();
@@ -112,29 +106,29 @@ public class BlockHighlight {
     }
 
     public void removeHighlight(@NotNull BlockPos blockPos) {
-        long chunkKey = CoordUtil.getChunkKey(blockPos);
-        int chunkInt = CoordUtil.getBlockIndexInChunk(blockPos);
+        long originChunkKey = CoordUtil.getChunkKey(blockPos);
+        int originSubChunkKey = CoordUtil.getSubChunkKey(blockPos);
 
-        highlight.forEach((blockId, chunkKeyMap) -> {
-            chunkKeyMap.computeIfPresent(chunkKey, (chunkKey2, chunkIntMap) -> {
-                chunkIntMap.computeIfPresent(chunkInt, (chunkInt2, entityId) -> {
-                    player.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
-                    return null;
-                });
-                return chunkIntMap.isEmpty() ? null : chunkIntMap;
-            });
-        });
+        highlight.forEach((blockId, chunkKeyMap) ->
+                chunkKeyMap.computeIfPresent(originChunkKey, (chunkKey, subChunkKeyMap) -> {
+                    subChunkKeyMap.computeIfPresent(originSubChunkKey, (chunkInt, entityId) -> {
+                        player.sendPacket(new ClientboundRemoveEntitiesPacket(entityId));
+                        return null;
+                    });
+                    return subChunkKeyMap.isEmpty() ? null : subChunkKeyMap;
+                }));
     }
 
     public void createHighlights(@NotNull String blockId) {
+        if(!this.isDBlockVisible(blockId)) return;
+
         this.scheduleTask(() -> {
-            if(!this.isDBlockVisible(blockId)) return;
             var loadedBlocksGrouped = DRegistry.LOADED_BLOCKS_GROUPED;
 
-            loadedBlocksGrouped.computeIfPresent(blockId, (blockId2, chunkKeyMap) -> {
+            loadedBlocksGrouped.computeIfPresent(blockId, (id, chunkKeyMap) -> {
                 chunkKeyMap.forEach((chunkKey, chunkIntSet) -> {
-                    chunkIntSet.forEach(chunkInt -> {
-                        BlockPos blockPos = CoordUtil.getBlockPos(chunkKey, chunkInt);
+                    chunkIntSet.forEach(subChunkKey -> {
+                        BlockPos blockPos = CoordUtil.getBlockPos(chunkKey, subChunkKey);
                         this.createHighlight(blockPos, blockId);
                     });
                 });
@@ -211,20 +205,6 @@ public class BlockHighlight {
             });
             highlight.clear();
         });
-    }
-
-    private CraftEntity getHighlightEntity() {
-            CraftBlockDisplay craftEntity = new CraftBlockDisplay((CraftServer) plugin.getServer(), new Display.BlockDisplay(EntityType.BLOCK_DISPLAY, player.getHandle().level()));
-            craftEntity.setGlowing(true);
-            craftEntity.setGlowColorOverride(Color.SILVER);
-            craftEntity.setBlock(Material.LIGHT_GRAY_CONCRETE.createBlockData());
-            craftEntity.setTransformation(new Transformation(
-                    new Vector3f(0.05f, 0.05f, 0.05f),
-                    new Quaternionf(),
-                    new Vector3f(0.90f, 0.90f, 0.90f),
-                    new Quaternionf()
-            ));
-        return craftEntity;
     }
 
     public Set<String> getVisibleDBlocks() {

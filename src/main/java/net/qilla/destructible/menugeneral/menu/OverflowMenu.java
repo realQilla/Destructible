@@ -22,7 +22,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -54,7 +55,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
         ), event -> {
             this.clearOverflow(event);
             return true;
-        }, CooldownType.MENU_CLICK), 0);
+        }, CooldownType.MENU_CLICK));
         super.populateModular();
         super.finalizeMenu();
     }
@@ -91,7 +92,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
         if(clickType.isShiftClick() && clickType.isRightClick()) {
             overflow.remove(dItem.getId());
             player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have <red><bold>REMOVED</red> ").append(dItem.getDisplayName().asComponent()).append(MiniMessage.miniMessage().deserialize(" from your stash!")));
-            player.playSound(MenuSound.ITEM_DELETE, true);
+            player.playSound(QSounds.Menu.ITEM_DELETE, true);
         } else if(clickType.isLeftClick()) {
             if(player.getSpace(ItemStackFactory.of(dItem, amount)) <= 0) {
                 player.sendMessage("<red>You do not have enough space in your inventory!");
@@ -110,7 +111,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
 
             player.give(takenItemStack.clone());
             player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You claimed ").append(ComponentUtil.getItemAmountAndType(takenItemStack)).append(MiniMessage.miniMessage().deserialize("!")));
-            player.playSound(MenuSound.MENU_CLAIM_ITEM, true);
+            player.playSound(QSounds.Menu.MENU_CLAIM_ITEM, true);
         }
         super.refreshSockets();
         return true;
@@ -137,7 +138,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
                 Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
                     if(result.equals("CONFIRM")) {
                         overflow.clear();
-                        player.playSound(MenuSound.RESET, true);
+                        player.playSound(QSounds.Menu.RESET, true);
                         player.sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
 
                         super.setShiftIndex(0);

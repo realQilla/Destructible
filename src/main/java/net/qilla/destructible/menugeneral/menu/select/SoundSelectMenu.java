@@ -11,7 +11,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.sound.PlayType;
 import net.qilla.qlibrary.util.sound.QSound;
 import net.qilla.qlibrary.util.tools.StringUtil;
@@ -52,7 +53,7 @@ public class SoundSelectMenu extends QSearchMenu<Sound> {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select this sound"),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to listen")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {

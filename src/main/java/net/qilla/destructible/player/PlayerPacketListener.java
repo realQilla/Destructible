@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class PlayerPacketListener {
 
     private static PlayerPacketListener INSTANCE;
-    private static final Map<Long, ConcurrentHashMap<Integer, BlockMemory>> BLOCK_MEMORY_MAP = DRegistry.LOADED_BLOCK_MEMORY;
+    private static final Map<Long, Map<Integer, BlockMemory>> BLOCK_MEMORY_MAP = DRegistry.LOADED_BLOCK_MEMORY;
 
     public static PlayerPacketListener getInstance() {
         if(INSTANCE == null) INSTANCE = new PlayerPacketListener();
@@ -67,10 +67,10 @@ public final class PlayerPacketListener {
         } else if(packet instanceof ServerboundUseItemOnPacket usePacket) {
             BlockPos blockPos = usePacket.getHitResult().getBlockPos();
             long chunkKey = CoordUtil.getChunkKey(blockPos);
-            int chunkInt = CoordUtil.getBlockIndexInChunk(blockPos);
+            int subChunkKey = CoordUtil.getSubChunkKey(blockPos);
 
             return BLOCK_MEMORY_MAP.computeIfAbsent(chunkKey, v ->
-                    new ConcurrentHashMap<>()).computeIfAbsent(chunkInt, v ->
+                    new ConcurrentHashMap<>()).computeIfAbsent(subChunkKey, v ->
                     new BlockMemory()).isOnCooldown();
         } else if(packet instanceof ServerboundSignUpdatePacket signPacket) {
             return playerData.fulfillInput(signPacket.getLines()[0]);

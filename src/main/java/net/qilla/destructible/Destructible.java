@@ -1,11 +1,11 @@
 package net.qilla.destructible;
 
-import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
+import net.qilla.destructible.command.temp.SelectCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.menugeneral.MenuListener;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
@@ -29,7 +29,7 @@ public final class Destructible extends JavaPlugin {
         }
     }
 
-    private LifecycleEventManager<Plugin> lifecycleMan;
+    private final LifecycleEventManager<Plugin> pluginLifecycle =this.getLifecycleManager();
     private final CustomItemsFile customItemsFile = CustomItemsFile.getInstance();
     private final CustomBlocksFile customBlocksFile = CustomBlocksFile.getInstance();
     private final LoadedDestructibleBlocksFile loadedDestructibleBlocksFile = LoadedDestructibleBlocksFile.getInstance();
@@ -39,27 +39,25 @@ public final class Destructible extends JavaPlugin {
     public void onEnable() {
         Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Rejoin to revalidate your player information.")));
 
-        this.lifecycleMan = this.getLifecycleManager();
-
         this.customItemsFile.load();
         this.customBlocksFile.load();
         this.loadedDestructibleBlocksFile.load();
         this.loadedDestructibleBlocksGroupedFile.load();
 
-        initListener();
-        initCommand();
+        initListeners();
+        initCommands();
     }
 
-    private void initListener() {
+    private void initListeners() {
         getServer().getPluginManager().registerEvents(new GeneralListener(this), this);
         getServer().getPluginManager().registerEvents(new MenuListener(), this);
     }
 
-    private void initCommand() {
-        this.lifecycleMan.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
-            Commands commands = event.registrar();
-            new DestructibleCommand(this, commands).register();
-            new OverflowCommand(this, commands).register();
+    private void initCommands() {
+        this.pluginLifecycle.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            new DestructibleCommand(this, event.registrar()).register();
+            new OverflowCommand(this, event.registrar()).register();
+            new SelectCommand(this, event.registrar()).register();
         });
     }
 

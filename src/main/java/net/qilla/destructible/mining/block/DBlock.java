@@ -3,6 +3,7 @@ package net.qilla.destructible.mining.block;
 import com.google.common.base.Preconditions;
 import net.qilla.destructible.mining.item.ItemDrop;
 import net.qilla.destructible.mining.item.ToolType;
+import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +109,7 @@ public class DBlock {
     }
 
     public static final class Builder {
-        private String id = UUID.randomUUID().toString();
+        private String id = StringUtil.uniqueIdentifier(8);
         private Material material = Material.AIR;
         private int strength = 0;
         private long durability = -1;

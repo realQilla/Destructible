@@ -11,7 +11,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
@@ -48,7 +49,7 @@ public class BlockSelectMenu extends QSearchMenu<Material> {
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><key:key.mouse.left> to select this block")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), event -> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;

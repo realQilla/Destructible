@@ -5,6 +5,7 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.qilla.destructible.mining.item.attributes.Attribute;
 import net.qilla.destructible.mining.item.attributes.AttributeContainer;
+import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
@@ -88,7 +89,7 @@ public final class DItem {
     }
 
     public static final class Builder implements ItemBuilder<DItem>{
-        private String id = UUID.randomUUID().toString();
+        private String id = StringUtil.uniqueIdentifier(8);
         private long version = System.currentTimeMillis();
         private Material material = Material.AIR;
         private Component displayName = Component.text(material.name());

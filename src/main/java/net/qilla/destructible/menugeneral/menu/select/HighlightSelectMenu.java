@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.data.registry.DPlayerDataRegistry;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.block.DBlock;
@@ -14,7 +15,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
@@ -66,10 +68,10 @@ public class HighlightSelectMenu extends QSearchMenu<String> {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to toggle visibility")
                 )))
                 .glow(highlights.contains(item))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), event -> {
 
-            BlockHighlight blockHighlight = DRegistry.PLAYER_DATA.get(super.getPlayer().getUniqueId()).getBlockEdit().getBlockHighlight();
+            BlockHighlight blockHighlight = DPlayerDataRegistry.getInstance().getData(super.getPlayer()).getBlockEdit().getBlockHighlight();
             DRegistry.BLOCK_EDITORS.add(super.getPlayer().getUniqueId());
             if(highlights.contains(item)) {
                 highlights.remove(item);

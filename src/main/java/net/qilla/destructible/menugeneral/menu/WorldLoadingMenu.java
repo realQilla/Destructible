@@ -3,6 +3,7 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.data.registry.DPlayerDataRegistry;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.files.LoadedDestructibleBlocksFile;
@@ -22,7 +23,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.util.sound.MenuSound;
+import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WorldLoadingMenu extends QStaticMenu {
 
     private static final Set<UUID> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
-    private static final Map<Long, ConcurrentHashMap<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
+    private static final Map<Long, Map<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
 
     private final DPlayerData playerData;
     private final BlockEdit blockEdit;
@@ -75,7 +77,7 @@ public class WorldLoadingMenu extends QStaticMenu {
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to select a block to be loaded"),
                         MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>② <key:key.mouse.right></gold> to set a recursion size, or nothing to disable")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ), this::clickLoadBlock, CooldownType.MENU_CLICK);
     }
 
@@ -108,7 +110,7 @@ public class WorldLoadingMenu extends QStaticMenu {
                         }
                     } else blockEdit.setRecursionSize(0);
                     super.addSocket(this.loadBlockSocket());
-                    getPlayer().playSound(MenuSound.SIGN_INPUT, true);
+                    getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                     super.open(false);
                 });
             });
@@ -215,10 +217,11 @@ public class WorldLoadingMenu extends QStaticMenu {
                                 LoadedDestructibleBlocksFile.getInstance().clear();
                                 LoadedDestructibleBlocksGroupedFile.getInstance().clear();
                             });
-                            BLOCK_EDITOR_SET.forEach(uuid -> {
-                                DPlayerData playerData = DRegistry.PLAYER_DATA.get(uuid);
+                            for(UUID uuid : BLOCK_EDITOR_SET) {
+                                DPlayerData playerData = DPlayerDataRegistry.getInstance().getData(uuid);
+                                if(playerData == null) continue;
                                 playerData.getBlockEdit().getBlockHighlight().removeHighlightsAll();
-                            });
+                            }
                             super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <red><bold>CLEARED</red>!");
                             super.getPlayer().playSound(DSounds.GENERAL_SUCCESS_2, true);
                         }
@@ -237,7 +240,7 @@ public class WorldLoadingMenu extends QStaticMenu {
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray><white>" + NumberUtil.numberChar(LOADED_BLOCK_MAP.values().stream().mapToInt(Map::size).sum(), false) + "</white> loaded blocks within <white>" + NumberUtil.numberChar(LOADED_BLOCK_MAP.size(), false) + "</white> chunks")
                 )))
-                .clickSound(MenuSound.MENU_CLICK_ITEM)
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
         ));
     }
 
