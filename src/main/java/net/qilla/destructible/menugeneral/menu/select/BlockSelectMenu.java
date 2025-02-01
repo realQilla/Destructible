@@ -11,9 +11,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Material;
 import org.bukkit.Registry;
@@ -25,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class BlockSelectMenu extends QSearchMenu<Material> {
+public final class BlockSelectMenu extends QSearchMenu<Material> {
 
     private static final List<Material> SOLID_BLOCKS = Registry.MATERIAL.stream()
             .filter(Material::isSolid)

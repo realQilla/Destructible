@@ -7,12 +7,12 @@ import net.qilla.destructible.data.registry.DPlayerDataRegistry;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.files.LoadedDestructibleBlocksFile;
-import net.qilla.destructible.files.LoadedDestructibleBlocksGroupedFile;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.menugeneral.menu.select.DBlockSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.HighlightSelectMenu;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.BlockEdit;
+import net.qilla.destructible.player.DPlayer;
 import net.qilla.destructible.player.DPlayerData;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.MenuScale;
@@ -21,10 +21,10 @@ import net.qilla.qlibrary.menu.StaticConfig;
 import net.qilla.qlibrary.menu.input.SignInput;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Slots;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -34,14 +34,12 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldLoadingMenu extends QStaticMenu {
 
-    private static final Set<UUID> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
+    private static final Map<UUID, DPlayer> BLOCK_EDITORS = DRegistry.BLOCK_EDITORS;
     private static final Map<Long, Map<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
 
     private final DPlayerData playerData;
@@ -63,7 +61,7 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket loadBlockSocket() {
-        String dBlock = blockEdit.getDblock() == null ? "<red><bold>NONE" : "<white>" + blockEdit.getDblock().getId();
+        String dBlock = blockEdit.getDblock() == null ? "<red><bold>NONE" : "<white>" + blockEdit.getDblock().getID();
         String size = blockEdit.getRecursionSize() <= 0 ? "<red><bold>DISABLED" : "<white>" + NumberUtil.numberComma(blockEdit.getRecursionSize());
 
         return new QSocket(20, QSlot.of(builder -> builder
@@ -88,31 +86,24 @@ public class WorldLoadingMenu extends QStaticMenu {
             new DBlockSelectMenu(super.getPlugin(), super.getPlayerData(), future).open(true);
             future.thenAccept(dBlock -> {
                 blockEdit.setDblock(dBlock);
-                BLOCK_EDITOR_SET.add(super.getPlayer().getUniqueId());
+                BLOCK_EDITORS.put(super.getPlayer().getUniqueId(), (DPlayer) super.getPlayer());
 
-                super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getId() + "</gold>."));
+                super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<yellow>You have enabled Destructible build mode, all place blocks will be marked as <gold>" + dBlock.getID() + "</gold>."));
                 super.getPlayer().playSound(DSounds.ENABLE_SETTING, true);
             });
             return true;
         } else if(clickType.isRightClick()) {
-
-            List<String> signText = List.of(
-                    "^^^^^^^^^^^^^^^",
-                    "Total block",
-                    "recursion size");
-
-            new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                    if(!result.isBlank()) {
-                        try {
-                            blockEdit.setRecursionSize(NumberUtil.minMax(0, 128000, Integer.parseInt(result)));
-                        } catch(NumberFormatException ignored) {
-                        }
-                    } else blockEdit.setRecursionSize(0);
-                    super.addSocket(this.loadBlockSocket());
-                    getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                    super.open(false);
-                });
+            List<String> signText = List.of("^^^^^^^^^^^^^^^", "Total block", "recursion size");
+            super.requestSignInput(signText, result -> {
+                if(!result.isBlank()) {
+                    try {
+                        blockEdit.setRecursionSize(NumberUtil.minMax(0, 128000, Integer.parseInt(result)));
+                    } catch(NumberFormatException ignored) {
+                    }
+                } else blockEdit.setRecursionSize(0);
+                super.addSocket(this.loadBlockSocket());
+                getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+                super.open(false);
             });
             return true;
         } else return false;
@@ -134,36 +125,26 @@ public class WorldLoadingMenu extends QStaticMenu {
     private Socket viewBlockSocket() {
         return new QSocket(22, DSlots.VIEW_LOADED_BLOCKS, event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                new HighlightSelectMenu(super.getPlugin(), super.getPlayerData(), blockEdit.getBlockHighlight().getVisibleDBlocks()).open(true);
-                return true;
-            } else return false;
+            if(!clickType.isLeftClick()) return false;
+            new HighlightSelectMenu(super.getPlugin(), super.getPlayerData(), blockEdit.getBlockHighlight().getVisibleDBlocks()).open(true);
+            return true;
         }, CooldownType.MENU_CLICK);
     }
 
     private Socket saveLoadedBlocksSocket() {
-        return new QSocket(0, DSlots.SAVED_CHANGES, event -> {
+        return new QSocket(0, Slots.SAVED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to save"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                LoadedDestructibleBlocksFile.getInstance().save();
-                                LoadedDestructibleBlocksGroupedFile.getInstance().save();
-                            });
-                            super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
-                        }
-                        super.open(false);
-                    });
+                List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to save");
+                super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                            LoadedDestructibleBlocksFile.getInstance().save();
+                        });
+                        super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <green><bold>SAVED</green>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
+                    }
+                    super.open(false);
                 });
                 return true;
             } else return false;
@@ -171,28 +152,19 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket reloadLoadedBlocksSocket() {
-        return new QSocket(1, DSlots.RELOADED_CHANGES, event -> {
+        return new QSocket(1, Slots.RELOADED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to reload"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                LoadedDestructibleBlocksFile.getInstance().load();
-                                LoadedDestructibleBlocksGroupedFile.getInstance().load();
-                            });
-                            super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RELOADED</aqua>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
-                        }
-                        super.open(false);
-                    });
+                List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to reload");
+                super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                            LoadedDestructibleBlocksFile.getInstance().load();
+                        });
+                        super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <aqua><bold>RELOADED</aqua>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
+                    }
+                    super.open(false);
                 });
                 return true;
             } else return false;
@@ -200,33 +172,23 @@ public class WorldLoadingMenu extends QStaticMenu {
     }
 
     private Socket clearLoadedBlocksSocket() {
-        return new QSocket(2, DSlots.CLEAR_SAVED, event -> {
+        return new QSocket(2, Slots.CLEAR_SAVED, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to clear"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                LoadedDestructibleBlocksFile.getInstance().clear();
-                                LoadedDestructibleBlocksGroupedFile.getInstance().clear();
-                            });
-                            for(UUID uuid : BLOCK_EDITOR_SET) {
-                                DPlayerData playerData = DPlayerDataRegistry.getInstance().getData(uuid);
-                                if(playerData == null) continue;
-                                playerData.getBlockEdit().getBlockHighlight().removeHighlightsAll();
-                            }
-                            super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <red><bold>CLEARED</red>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
-                        }
-                        super.open(false);
-                    });
+                List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to clear");
+                super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                            LoadedDestructibleBlocksFile.getInstance().clear();
+                        });
+                        BLOCK_EDITORS.forEach((uuid, player) -> {
+                            DPlayerData playerData = DPlayerDataRegistry.getInstance().getData(player);
+                            playerData.getBlockEdit().getBlockHighlight().removeHighlightsAll();
+                        });
+                        super.getPlayer().sendMessage("<yellow>Loaded custom blocks have been <red><bold>CLEARED</red>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
+                    }
+                    super.open(false);
                 });
                 return true;
             } else return false;

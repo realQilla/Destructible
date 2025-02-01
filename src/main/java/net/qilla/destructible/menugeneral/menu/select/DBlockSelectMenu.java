@@ -13,9 +13,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
+import net.qilla.qlibrary.registry.RegistrySubscriber;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
@@ -26,18 +25,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class DBlockSelectMenu extends QSearchMenu<DBlock> {
-
-    private static final Collection<DBlock> DBLOCKS = DRegistry.BLOCKS.values();
+public class DBlockSelectMenu extends QSearchMenu<DBlock> implements RegistrySubscriber {
 
     private final CompletableFuture<DBlock> future;
 
     public DBlockSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull CompletableFuture<DBlock> future) {
-        super(plugin, playerData, DBLOCKS);
+        super(plugin, playerData, List.copyOf(DRegistry.BLOCKS.values()));
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
         super.finalizeMenu();
+        DRegistry.BLOCKS.subscribe(this);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.updateItemPopulation(List.copyOf(DRegistry.BLOCKS.values()));
     }
 
     @Override
@@ -47,7 +50,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
 
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
-                .displayName(Component.text(item.getId()))
+                .displayName(Component.text(item.getID()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + NumberUtil.romanNumeral(item.getStrength())),
@@ -72,7 +75,7 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
 
     @Override
     public @NotNull String getString(DBlock item) {
-        return item.getId();
+        return item.getID();
     }
 
     @Override
@@ -110,5 +113,12 @@ public class DBlockSelectMenu extends QSearchMenu<DBlock> {
                 .searchIndex(47)
                 .resetSearchIndex(46)
         );
+    }
+
+    @Override
+    public void shutdown() {
+        this.clearSockets();
+        super.getInventory().close();
+        DRegistry.BLOCKS.unsubscribe(this);
     }
 }

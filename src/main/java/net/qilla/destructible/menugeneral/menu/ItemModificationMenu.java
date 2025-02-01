@@ -5,7 +5,6 @@ import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.data.registry.DRegistry;
-import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.menugeneral.menu.select.ItemSelectMenu;
 import net.qilla.destructible.menugeneral.menu.select.RaritySelectMenu;
@@ -22,8 +21,8 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
+import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -54,8 +53,8 @@ public class ItemModificationMenu extends QStaticMenu {
         Preconditions.checkNotNull(dItem, "DItem cannot be null");
 
         this.lockedMenu = false;
-        this.originalId = dItem.getId();
-        this.id = dItem.getId();
+        this.originalId = dItem.getID();
+        this.id = dItem.getID();
         this.material = dItem.getMaterial();
         this.displayName = dItem.getDisplayName();
         this.lore = dItem.getLore();
@@ -106,8 +105,8 @@ public class ItemModificationMenu extends QStaticMenu {
         if(originalId != null) {
             DITEM_MAP.computeIfPresent(originalId, (id, dItem) -> null);
             super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + originalId + " has been successfully replaced by " + id + "!"));
-        } else super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + newDItem.getId() + " has been successfully registered!"));
-        DITEM_MAP.put(newDItem.getId(), newDItem);
+        } else super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + newDItem.getID() + " has been successfully registered!"));
+        DITEM_MAP.put(newDItem.getID(), newDItem);
         return super.returnMenu();
     }
 
@@ -198,25 +197,19 @@ public class ItemModificationMenu extends QStaticMenu {
     private boolean inputID(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Unique identifier",
-                "for this item");
-
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.isEmpty()) {
-                    if(DITEM_MAP.containsKey(result)) {
-                        super.getPlayer().sendMessage("<red>Item ID already exists.");
-                        super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
-                    } else {
-                        id = result;
-                        super.addSocket(this.idSocket());
-                        super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                    }
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Unique identifier", "for this item");
+        super.requestSignInput(signText, result -> {
+            if(!result.isEmpty()) {
+                if(DITEM_MAP.containsKey(result)) {
+                    super.getPlayer().sendMessage("<red>Item ID already exists.");
+                    super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
+                } else {
+                    id = result;
+                    super.addSocket(this.idSocket());
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 }
-                super.open(false);
-            });
+            }
+            super.open(false);
         });
         return true;
     }
@@ -238,20 +231,18 @@ public class ItemModificationMenu extends QStaticMenu {
     private boolean inputDisplayName(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        String chatText = "<yellow>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. <gold>Shift-Click <bold><insert:'" + MiniMessage.miniMessage().serialize(displayName) + "'>HERE</insert></gold> get the previous name. Create a blank line by typing EMPTY, and CANCEL to return.";
+        String chatText = "<yellow>Type the name of the item, using the <white><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</white> format. <gold>Shift-Click <bold><insert:'" +
+                MiniMessage.miniMessage().serialize(displayName) + "'>HERE</insert></gold> get the previous name. Create a blank line by typing EMPTY, and CANCEL to return.";
+        super.requestChatInput(List.of(MiniMessage.miniMessage().deserialize(chatText)), result -> {
+            if(!result.equalsIgnoreCase("cancel") && !result.isEmpty()) {
+                if(result.equalsIgnoreCase("empty")) {
+                    displayName = Component.empty();
+                } else displayName = MiniMessage.miniMessage().deserialize(result);
 
-        new ChatInput(super.getPlugin(), super.getPlayerData(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.equalsIgnoreCase("cancel") && !result.isEmpty()) {
-                    if(result.equalsIgnoreCase("empty")) {
-                        displayName = Component.empty();
-                    } else displayName = MiniMessage.miniMessage().deserialize(result);
-
-                    super.addSocket(this.displayNameSocket());
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                }
-                super.open(false);
-            });
+                super.addSocket(this.displayNameSocket());
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            }
+            super.open(false);
         });
         return true;
     }
@@ -275,9 +266,9 @@ public class ItemModificationMenu extends QStaticMenu {
         List<Component> loreList = new ArrayList<>();
 
         if(!this.lore.lines().isEmpty()) loreList.addAll(this.lore.lines());
-        loreList.add(MiniMessage.miniMessage().deserialize("<!italic><white>New Line"));
+        loreList.add(MiniMessage.miniMessage().deserialize("<!italic><yellow>New Line"));
 
-        Component curLine = MiniMessage.miniMessage().deserialize("<!italic><white>»</white></!italic> ").append(loreList.get(loreCycle)).append(MiniMessage.miniMessage().deserialize(" <!italic><white>«</!italic>"));
+        Component curLine = MiniMessage.miniMessage().deserialize("<!italic><gold>»</gold> ").append(loreList.get(loreCycle)).append(MiniMessage.miniMessage().deserialize(" <gold>«</gold>"));
         loreList.set(loreCycle, curLine);
 
         loreBuilder.addLines(loreList);
@@ -296,18 +287,16 @@ public class ItemModificationMenu extends QStaticMenu {
 
         if(clickType.isLeftClick()) {
             if(clickType.isShiftClick()) {
-                String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) + "</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. Create a blank line by typing EMPTY, and CANCEL to return.";
+                String chatText = "<yellow>Type the item's lore for line <gold>" + (loreCycle + 1) +
+                        "</gold> using the <gold><hover:show_text:'https://docs.advntr.dev/minimessage/format'><click:open_url:'https://docs.advntr.dev/minimessage/format'>MiniMessage</gold> format. Create a blank line by typing EMPTY, and CANCEL to return.";
+                super.requestChatInput(List.of(MiniMessage.miniMessage().deserialize(chatText)), result -> {
+                    if(!result.equalsIgnoreCase("cancel") && !result.isEmpty()) {
+                        applyLine(result.equalsIgnoreCase("empty") ? Component.empty() : MiniMessage.miniMessage().deserialize(result));
 
-                new ChatInput(super.getPlugin(), super.getPlayerData(), MiniMessage.miniMessage().deserialize(chatText)).init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(!result.equalsIgnoreCase("cancel") && !result.isEmpty()) {
-                            applyLine(result.equalsIgnoreCase("empty") ? Component.empty() : MiniMessage.miniMessage().deserialize(result));
-
-                            super.addSocket(this.loreSocket());
-                            super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                        }
-                        super.open(false);
-                    });
+                        super.addSocket(this.loreSocket());
+                        super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+                    }
+                    super.open(false);
                 });
             } else {
                 loreCycle++;
@@ -357,20 +346,17 @@ public class ItemModificationMenu extends QStaticMenu {
     private boolean inputStackSize(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Item's maximum",
-                "stack size");
-
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.isEmpty()) {
-                    this.stackSize = Math.max(1, Math.min(99, Integer.parseInt(result)));
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Item's maximum", "stack size");
+        super.requestSignInput(signText, result -> {
+            if(!result.isEmpty()) {
+                try {
+                    this.stackSize = NumberUtil.minMax(1, 99, Integer.parseInt(result));
                     super.addSocket(this.stackSizeSocket());
                     super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+                } catch(NumberFormatException ignored) {
                 }
-                super.open(false);
-            });
+            }
+            super.open(false);
         });
         return true;
     }
@@ -421,10 +407,11 @@ public class ItemModificationMenu extends QStaticMenu {
     }
 
     @Override
-    public void inventoryClickEvent(InventoryClickEvent event) {
+    public void playerClickMenu(InventoryClickEvent event) {
         if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
             event.setCancelled(true);
-            this.handleClick(event);
+            Socket socket = super.getSockets().get(event.getSlot());
+            if(socket != null) socket.onClick(super.getPlayer(), event, super.getPlayerData());
         }
     }
 

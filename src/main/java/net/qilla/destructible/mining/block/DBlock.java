@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class DBlock {
@@ -55,7 +54,7 @@ public class DBlock {
         return newBuilder.build();
     }
 
-    public @NotNull String getId() {
+    public @NotNull String getID() {
         return this.id;
     }
 
@@ -97,7 +96,7 @@ public class DBlock {
 
     public static @NotNull Builder getBuilder(DBlock dBlock) {
         return new Builder()
-                .id(dBlock.getId())
+                .id(dBlock.getID())
                 .material(dBlock.getMaterial())
                 .strength(dBlock.getStrength())
                 .durability(dBlock.getDurability())

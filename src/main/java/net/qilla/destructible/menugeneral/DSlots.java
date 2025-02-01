@@ -218,34 +218,4 @@ public class DSlots {
             )))
             .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
     );
-
-    public static final Slot SAVED_CHANGES = QSlot.of(builder -> builder
-            .material(Material.SLIME_BALL)
-            .displayName(MiniMessage.miniMessage().deserialize("<green><bold>SAVE</bold> to Config"))
-            .lore(ItemLore.lore(List.of(
-                    Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to save any made changes.")
-            )))
-            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
-    );
-
-    public static final Slot RELOADED_CHANGES = QSlot.of(builder -> builder
-            .material(Material.SNOWBALL)
-            .displayName(MiniMessage.miniMessage().deserialize("<aqua><bold>RELOAD</bold> from Config"))
-            .lore(ItemLore.lore(List.of(
-                    Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to load the config, undoing any unsaved changes.")
-            )))
-            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
-    );
-
-    public static final Slot CLEAR_SAVED = QSlot.of(builder -> builder
-            .material(Material.FIRE_CHARGE)
-            .displayName(MiniMessage.miniMessage().deserialize("<red><bold>CLEAR</bold> Config"))
-            .lore(ItemLore.lore(List.of(
-                    Component.empty(),
-                    MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to clear any stored data.")
-            )))
-            .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
-    );
 }

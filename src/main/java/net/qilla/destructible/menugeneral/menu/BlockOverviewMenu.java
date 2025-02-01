@@ -3,7 +3,6 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.files.CustomBlocksFile;
 import net.qilla.destructible.menugeneral.DSlots;
@@ -16,16 +15,15 @@ import net.qilla.qlibrary.menu.StaticConfig;
 import net.qilla.qlibrary.menu.input.SignInput;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Slots;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
+import net.qilla.qlibrary.registry.RegistrySubscriber;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -33,25 +31,24 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
-
-    private static final Collection<DBlock> DBLOCK_COLLECTION = DRegistry.BLOCKS.values();
+public class BlockOverviewMenu extends QDynamicMenu<DBlock> implements RegistrySubscriber {
 
     public BlockOverviewMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData) {
-        super(plugin, playerData, DBLOCK_COLLECTION);
+        super(plugin, playerData, List.copyOf(DRegistry.BLOCKS.values()));
 
-        super.addSocket(new QSocket(46, DSlots.MODIFICATION_CREATE, event -> {
-            ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                new BlockModificationMenu(super.getPlugin(), playerData).open(true);
-                return true;
-            } else return false;
-        }, CooldownType.MENU_CLICK));
+        super.addSocket(this.blockCreationSocket());
         super.addSocket(this.clearlocksSocket());
         super.addSocket(this.saveBlocksSocket());
         super.addSocket(this.reloadBlocksSocket());
         super.populateModular();
         super.finalizeMenu();
+
+        DRegistry.BLOCKS.subscribe(this);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.updateItemPopulation(List.copyOf(DRegistry.BLOCKS.values()));
     }
 
     @Override
@@ -60,7 +57,7 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
 
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
-                .displayName(Component.text(item.getId()))
+                .displayName(Component.text(item.getID()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + NumberUtil.romanNumeral(item.getStrength())),
@@ -88,87 +85,70 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
         }, CooldownType.OPEN_MENU);
     }
 
-    private Socket saveBlocksSocket() {
-        return new QSocket(0, DSlots.SAVED_CHANGES, event -> {
+    private Socket blockCreationSocket() {
+        return new QSocket(46, DSlots.MODIFICATION_CREATE, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to save"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> CustomBlocksFile.getInstance().save());
-                            super.getPlayer().sendMessage("<yellow>Custom blocks have been <green><bold>SAVED</green>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
-                        }
-                        super.open(false);
-                    });
-                });
+                new BlockModificationMenu(super.getPlugin(), super.getPlayerData()).open(true);
                 return true;
             } else return false;
+        }, CooldownType.MENU_CLICK);
+    }
+
+    private Socket saveBlocksSocket() {
+        return new QSocket(0, Slots.SAVED_CHANGES, event -> {
+            ClickType clickType = event.getClick();
+            if(!clickType.isLeftClick()) return false;
+            List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to save");
+            super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> CustomBlocksFile.getInstance().save());
+                        super.getPlayer().sendMessage("<yellow>Custom blocks have been <green><bold>SAVED</green>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
+                    }
+                    super.open(false);
+                });
+            return true;
         }, CooldownType.MENU_CLICK);
     }
 
     private Socket reloadBlocksSocket() {
-        return new QSocket(1, DSlots.RELOADED_CHANGES, event -> {
+        return new QSocket(1, Slots.RELOADED_CHANGES, event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to reload"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                               CustomBlocksFile.getInstance().load();
-                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
-                            });
-                            super.getPlayer().sendMessage("<yellow>Custom blocks have been <aqua><bold>RELOADED</aqua>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
-                        }
-                        super.open(false);
-                    });
+            if(!clickType.isLeftClick()) return false;
+            List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to reload");
+            super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                            CustomBlocksFile.getInstance().load();
+                            Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
+                        });
+                        super.getPlayer().sendMessage("<yellow>Custom blocks have been <aqua><bold>RELOADED</aqua>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
+                    }
+                    super.open(false);
                 });
-                return true;
-            } else return false;
+            return true;
         }, CooldownType.MENU_CLICK);
     }
 
     private Socket clearlocksSocket() {
-        return new QSocket(2, DSlots.CLEAR_SAVED, event -> {
+        return new QSocket(2, Slots.CLEAR_SAVED, event -> {
             ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to clear"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                CustomBlocksFile.getInstance().clear();
-                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
-                            });
-                            super.getPlayer().sendMessage("<yellow>All custom blocks have been <red><bold>CLEARED</red>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
-                        }
-                        super.open(false);
+            if(!clickType.isLeftClick()) return false;
+            List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to clear");
+            super.requestSignInput(signText, result -> {
+                if(result.equals("CONFIRM")) {
+                    Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                        CustomBlocksFile.getInstance().clear();
+                        Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
                     });
-                });
-                return true;
-            } else return false;
+                    super.getPlayer().sendMessage("<yellow>All custom blocks have been <red><bold>CLEARED</red>!");
+                    super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
+                }
+                super.open(false);
+            });
+            return true;
         }, CooldownType.MENU_CLICK);
     }
 
@@ -200,5 +180,12 @@ public class BlockOverviewMenu extends QDynamicMenu<DBlock> {
                         .previousIndex(7)
                         .shiftAmount(9)
         );
+    }
+
+    @Override
+    public void shutdown() {
+        this.clearSockets();
+        super.getInventory().close();
+        DRegistry.BLOCKS.unsubscribe(this);
     }
 }

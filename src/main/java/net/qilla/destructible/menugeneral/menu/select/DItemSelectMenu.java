@@ -14,27 +14,31 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
+import net.qilla.qlibrary.registry.RegistrySubscriber;
 import net.qilla.qlibrary.util.sound.QSounds;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DItemSelectMenu extends QSearchMenu<DItem> {
+public class DItemSelectMenu extends QSearchMenu<DItem> implements RegistrySubscriber {
 
-    private static final Collection<DItem> DITEMS = DRegistry.ITEMS.values();
     private final CompletableFuture<DItem> future;
 
     public DItemSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull CompletableFuture<DItem> future) {
-        super(plugin, playerData, DITEMS);
+        super(plugin, playerData, List.copyOf(DRegistry.ITEMS.values()));
         Preconditions.checkNotNull(future, "Future cannot be null");
         this.future = future;
         super.populateModular();
         super.finalizeMenu();
+        DRegistry.ITEMS.subscribe(this);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.updateItemPopulation(List.copyOf(DRegistry.ITEMS.values()));
     }
 
     @Override
@@ -44,7 +48,7 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
                 .displayName(item.getDisplayName())
                 .lore(ItemLore.lore()
                         .addLines(List.of(
-                                MiniMessage.miniMessage().deserialize("<!italic><gray>Item ID <white>" + item.getId()),
+                                MiniMessage.miniMessage().deserialize("<!italic><gray>Item ID <white>" + item.getID()),
                                 Component.empty()
                         ))
                         .addLines(ComponentUtil.getLore(item).lines())
@@ -102,5 +106,12 @@ public class DItemSelectMenu extends QSearchMenu<DItem> {
                 .searchIndex(47)
                 .resetSearchIndex(46)
         );
+    }
+
+    @Override
+    public void shutdown() {
+        this.clearSockets();
+        super.getInventory().close();
+        DRegistry.ITEMS.unsubscribe(this);
     }
 }

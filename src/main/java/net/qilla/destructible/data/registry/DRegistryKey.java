@@ -4,11 +4,12 @@ import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.attributes.AttributeType;
+import net.qilla.destructible.player.DPlayer;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public sealed interface DRegistryKey<T> permits DRegistryKeyImpl {
+public sealed interface DRegistryKey<DRegistryHolder> permits DRegistryKeyImpl {
 
     DRegistryKey<Map<Long, Map<Integer, String>>> LOADED_BLOCKS = DRegistryKeyImpl.create("loaded_blocks");
 
@@ -16,7 +17,7 @@ public sealed interface DRegistryKey<T> permits DRegistryKeyImpl {
 
     DRegistryKey<Map<String, Map<Long, Set<Integer>>>> LOADED_BLOCKS_GROUPED = DRegistryKeyImpl.create("loaded_blocks_grouped");
 
-    DRegistryKey<Set<UUID>> BLOCK_EDITORS = DRegistryKeyImpl.create("block_editors");
+    DRegistryKey<Map<UUID, DPlayer>> BLOCK_EDITORS = DRegistryKeyImpl.create("block_editors");
 
     DRegistryKey<Map<String, DItem>> ITEMS = DRegistryKeyImpl.create("items");
 

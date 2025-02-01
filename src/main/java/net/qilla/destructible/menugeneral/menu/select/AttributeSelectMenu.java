@@ -12,15 +12,12 @@ import net.qilla.qlibrary.menu.DynamicConfig;
 import net.qilla.qlibrary.menu.MenuScale;
 import net.qilla.qlibrary.menu.QDynamicMenu;
 import net.qilla.qlibrary.menu.StaticConfig;
-import net.qilla.qlibrary.menu.input.SignInput;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.StringUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -88,23 +85,17 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
     private boolean inputEfficiency(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Efficiency value",
-                "for this item");
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Efficiency value", "for this item");
+        super.requestSignInput(signText, result -> {
+            if(!result.isEmpty()) {
+                int value = Math.max(1, Integer.parseInt(result));
 
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.isEmpty()) {
-                    int value = Math.max(1, Integer.parseInt(result));
-
-                    attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_EFFICIENCY);
-                    attributeSet.add(new Attribute<>(AttributeTypes.MINING_EFFICIENCY, value));
-                    super.refreshSockets();
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                }
-                super.open(false);
-            });
+                attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_EFFICIENCY);
+                attributeSet.add(new Attribute<>(AttributeTypes.MINING_EFFICIENCY, value));
+                super.refreshSockets();
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            }
+            super.open(false);
         });
         return true;
     }
@@ -124,23 +115,17 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
     private boolean inputStrength(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Strength value",
-                "for this item");
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Strength value", "for this item");
+        super.requestSignInput(signText, result -> {
+            if(!result.isEmpty()) {
+                int value = Math.max(1, Integer.parseInt(result));
 
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.isEmpty()) {
-                    int value = Math.max(1, Integer.parseInt(result));
-
-                    attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_STRENGTH);
-                    attributeSet.add(new Attribute<>(AttributeTypes.MINING_STRENGTH, value));
-                    super.refreshSockets();
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                }
-                super.open(false);
-            });
+                attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_STRENGTH);
+                attributeSet.add(new Attribute<>(AttributeTypes.MINING_STRENGTH, value));
+                super.refreshSockets();
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            }
+            super.open(false);
         });
         return true;
     }
@@ -160,23 +145,17 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
     private boolean inputFortune(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Fortune value",
-                "for this item");
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Fortune value", "for this item");
+        super.requestSignInput(signText, result -> {
+            if(!result.isEmpty()) {
+                int value = Math.max(1, Integer.parseInt(result));
 
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.isEmpty()) {
-                    int value = Math.max(1, Integer.parseInt(result));
-
-                    attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_FORTUNE);
-                    attributeSet.add(new Attribute<>(AttributeTypes.MINING_FORTUNE, value));
-                    super.refreshSockets();
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                }
-                super.open(false);
-            });
+                attributeSet.removeIf(attribute -> attribute.type() == AttributeTypes.MINING_FORTUNE);
+                attributeSet.add(new Attribute<>(AttributeTypes.MINING_FORTUNE, value));
+                super.refreshSockets();
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            }
+            super.open(false);
         });
         return true;
     }
@@ -219,13 +198,8 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
     private boolean inputDurability(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Durability value",
-                "for this item");
-
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Durability value", "for this item");
+        super.requestSignInput(signText, result -> {
                 if(!result.isEmpty()) {
                     int value = Math.max(1, Integer.parseInt(result));
 
@@ -236,7 +210,6 @@ public class AttributeSelectMenu extends QDynamicMenu<Attribute<?>> {
                 }
                 super.open(false);
             });
-        });
         return true;
     }
 

@@ -16,11 +16,12 @@ import net.qilla.qlibrary.menu.DynamicConfig;
 import net.qilla.qlibrary.menu.MenuScale;
 import net.qilla.qlibrary.menu.QDynamicMenu;
 import net.qilla.qlibrary.menu.StaticConfig;
-import net.qilla.qlibrary.menu.input.SignInput;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
+import net.qilla.qlibrary.menu.socket.Slots;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.registry.RegistrySubscriber;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.TimeUtil;
 import org.bukkit.Bukkit;
@@ -30,55 +31,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
-public class ItemOverviewMenu extends QDynamicMenu<DItem> {
-
-    private static final Collection<DItem> DITEM_COLLECTION = DRegistry.ITEMS.values();
+public class ItemOverviewMenu extends QDynamicMenu<DItem> implements RegistrySubscriber {
 
     public ItemOverviewMenu(@NotNull Destructible plugin, @NotNull PlayerData<?> playerData) {
-        super(plugin, playerData, DITEM_COLLECTION);
+        super(plugin, playerData, List.copyOf(DRegistry.ITEMS.values()));
 
-        super.addSocket(new QSocket(46, QSlot.of(builder -> builder
-                .material(Material.IRON_INGOT)
-                .displayName(MiniMessage.miniMessage().deserialize("<green>Create New Item"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the item creation menu")
-                )))
-                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
-        ), event -> {
-            ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                new ItemModificationMenu(super.getPlugin(), super.getPlayerData()).open(true);
-                return true;
-            } else return false;
-        }, CooldownType.OPEN_MENU));
-        super.addSocket(new QSocket(47, QSlot.of(builder -> builder
-                .material(Material.IRON_PICKAXE)
-                .displayName(MiniMessage.miniMessage().deserialize("<blue>Create New Tool"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the tool creation menu")
-                )))
-                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
-        ), event -> {
-            ClickType clickType = event.getClick();
-            if(clickType.isLeftClick()) {
-                new ToolModificationMenu(super.getPlugin(), super.getPlayerData()).open(true);
-                return true;
-            } else return false;
-        }, CooldownType.OPEN_MENU));
+        super.addSocket(itemCreationSocket());
+        super.addSocket(toolCreationSocket());
         super.addSocket(this.clearItemsSocket());
         super.addSocket(this.saveItemsSocket());
         super.addSocket(this.reloadItemsSocket());
         super.populateModular();
         super.finalizeMenu();
+
+        DRegistry.ITEMS.subscribe(this);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.updateItemPopulation(List.copyOf(DRegistry.ITEMS.values()));
     }
 
     @Override
     public @Nullable Socket createSocket(int index, DItem item) {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(item.getMaterial())
-                .displayName(MiniMessage.miniMessage().deserialize(item.getId()))
+                .displayName(MiniMessage.miniMessage().deserialize(item.getID()))
                 .lore(ItemLore.lore()
                         .addLines(List.of(
                                 MiniMessage.miniMessage().deserialize("<!italic><gray>Name ").append(item.getDisplayName()),
@@ -104,25 +82,18 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                 DPlayerData playerData = (DPlayerData) super.getPlayerData();
 
                 if(clickType.isShiftClick()) {
-                    List<String> signText = List.of(
-                            "^^^^^^^^^^^^^^^",
-                            "Amount to receive",
-                            "");
+                    List<String> signText = List.of("^^^^^^^^^^^^^^^", "Amount to receive", "");
 
-                    SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                    signInput.init(result -> {
-                        Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                            try {
-                                int amount = Integer.parseInt(result);
+                    super.requestSignInput(signText, result -> {
+                        try {
+                            int amount = Integer.parseInt(result);
 
-                                if(playerData.hasCooldown(CooldownType.GET_ITEM)) return;
-                                playerData.getPlayer().give(DItemFactory.of(item, amount));
-                                playerData.setCooldown(CooldownType.GET_ITEM);
-                            } catch(NumberFormatException ignore) {
-                            }
-
-                            super.open(false);
-                        });
+                            if(playerData.hasCooldown(CooldownType.GET_ITEM)) return;
+                            playerData.getPlayer().give(DItemFactory.of(item, amount));
+                            playerData.setCooldown(CooldownType.GET_ITEM);
+                        } catch(NumberFormatException ignore) {
+                        }
+                        super.open(false);
                     });
                 } else {
                     if(playerData.hasCooldown(CooldownType.GET_ITEM)) return false;
@@ -134,26 +105,54 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
         }, CooldownType.GET_ITEM);
     }
 
-    private Socket saveItemsSocket() {
-        return new QSocket(0, DSlots.SAVED_CHANGES, event -> {
+    private Socket itemCreationSocket() {
+        return new QSocket(46, QSlot.of(builder -> builder
+                .material(Material.IRON_INGOT)
+                .displayName(MiniMessage.miniMessage().deserialize("<green>Create New Item"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the item creation menu")
+                )))
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+        ), event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to save"
-                );
+                new ItemModificationMenu(super.getPlugin(), super.getPlayerData()).open(true);
+                return true;
+            } else return false;
+        }, CooldownType.OPEN_MENU);
+    }
 
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> CustomItemsFile.getInstance().save());
-                            super.getPlayer().sendMessage("<yellow>Custom items have been <green><bold>SAVED</green>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
-                        }
-                        super.open(false);
-                    });
+    private Socket toolCreationSocket() {
+        return new QSocket(47, QSlot.of(builder -> builder
+                .material(Material.IRON_PICKAXE)
+                .displayName(MiniMessage.miniMessage().deserialize("<blue>Create New Tool"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to open the tool creation menu")
+                )))
+                .clickSound(QSounds.Menu.MENU_CLICK_ITEM)
+        ), event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                new ToolModificationMenu(super.getPlugin(), super.getPlayerData()).open(true);
+                return true;
+            } else return false;
+        }, CooldownType.OPEN_MENU);
+    }
+
+    private Socket saveItemsSocket() {
+        return new QSocket(0, Slots.SAVED_CHANGES, event -> {
+            ClickType clickType = event.getClick();
+            if(clickType.isLeftClick()) {
+                List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to save");
+                super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> CustomItemsFile.getInstance().save());
+                        super.getPlayer().sendMessage("<yellow>Custom items have been <green><bold>SAVED</green>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
+                    }
+                    super.open(false);
                 });
                 return true;
             } else return false;
@@ -161,28 +160,20 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     private Socket reloadItemsSocket() {
-        return new QSocket(1, DSlots.RELOADED_CHANGES, event -> {
+        return new QSocket(1, Slots.RELOADED_CHANGES, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to reload"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                CustomItemsFile.getInstance().load();
-                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
-                            });
-                            super.getPlayer().sendMessage("<yellow>Custom items have been <aqua><bold>RELOADED</aqua>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
-                        }
-                        super.open(false);
-                    });
+                List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to reload");
+                super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                            CustomItemsFile.getInstance().load();
+                            Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
+                        });
+                        super.getPlayer().sendMessage("<yellow>Custom items have been <aqua><bold>RELOADED</aqua>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS, true);
+                    }
+                    super.open(false);
                 });
                 return true;
             } else return false;
@@ -190,28 +181,20 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
     }
 
     private Socket clearItemsSocket() {
-        return new QSocket(2, DSlots.CLEAR_SAVED, event -> {
+        return new QSocket(2, Slots.CLEAR_SAVED, event -> {
             ClickType clickType = event.getClick();
             if(clickType.isLeftClick()) {
-                List<String> signText = List.of(
-                        "^^^^^^^^^^^^^^^",
-                        "Type CONFIRM",
-                        "to clear"
-                );
-
-                SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-                signInput.init(result -> {
-                    Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                        if(result.equals("CONFIRM")) {
-                            Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
-                                CustomItemsFile.getInstance().clear();
-                                Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
-                            });
-                            super.getPlayer().sendMessage("<yellow>All custom items have been <red><bold>CLEARED</red>!");
-                            super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
-                        }
-                        super.open(false);
-                    });
+                List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to clear");
+                super.requestSignInput(signText, result -> {
+                    if(result.equals("CONFIRM")) {
+                        Bukkit.getScheduler().runTaskAsynchronously(super.getPlugin(), () -> {
+                            CustomItemsFile.getInstance().clear();
+                            Bukkit.getScheduler().runTask(super.getPlugin(), this::refreshSockets);
+                        });
+                        super.getPlayer().sendMessage("<yellow>All custom items have been <red><bold>CLEARED</red>!");
+                        super.getPlayer().playSound(QSounds.General.GENERAL_SUCCESS_2, true);
+                    }
+                    super.open(false);
                 });
                 return true;
             } else return false;
@@ -246,5 +229,12 @@ public class ItemOverviewMenu extends QDynamicMenu<DItem> {
                         .previousIndex(7)
                         .shiftAmount(9)
         );
+    }
+
+    @Override
+    public void shutdown() {
+        this.clearSockets();
+        super.getInventory().close();
+        DRegistry.ITEMS.unsubscribe(this);
     }
 }

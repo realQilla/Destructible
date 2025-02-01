@@ -20,7 +20,7 @@ public class DBlockTA extends TypeAdapter<DBlock> {
     @Override
     public void write(JsonWriter out, DBlock value) throws IOException {
         out.beginObject();
-        out.name("BLOCK_ID").value(value.getId());
+        out.name("BLOCK_ID").value(value.getID());
         out.name("MATERIAL").value(Registry.MATERIAL.getKey(value.getMaterial()).value());
         out.name("STRENGTH").value(value.getStrength());
         out.name("DURABILITY").value(value.getDurability());
@@ -37,7 +37,7 @@ public class DBlockTA extends TypeAdapter<DBlock> {
         out.beginArray();
         for(ItemDrop drop : value.getLootpool()) {
             out.beginObject();
-            out.name("ITEM_ID").value(drop.getDItem().getId());
+            out.name("ITEM_ID").value(drop.getDItem().getID());
             out.name("FORTUNE").value(drop.isFortuneAffected());
             out.name("MIN").value(drop.getMinAmount());
             out.name("MAX").value(drop.getMaxAmount());

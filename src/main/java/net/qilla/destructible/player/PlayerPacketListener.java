@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.qilla.destructible.data.registry.DPlayerDataRegistry;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.mining.block.BlockMemory;
 import net.qilla.destructible.mining.logic.MiningManager;
@@ -31,30 +32,26 @@ public final class PlayerPacketListener {
     private PlayerPacketListener() {
     }
 
-    public void addListener(@NotNull DPlayerData playerData) {
-        Preconditions.checkNotNull(playerData, "PlayerData cannot be null");
+    public void addListener(@NotNull Player player) {
+        Preconditions.checkNotNull(player, "Player cannot be null");
 
         ChannelDuplexHandler handler = new ChannelDuplexHandler() {
             @Override
             public void channelRead(ChannelHandlerContext context, Object object) throws Exception {
                 Packet<?> packet = (Packet<?>) object;
-                if(packetLogic(packet, playerData)) return;
+                if(packetLogic(packet, player)) return;
                 super.channelRead(context, object);
-            }
-
-            @Override
-            public void write(ChannelHandlerContext context, Object object, io.netty.channel.ChannelPromise promise) throws Exception {
-                super.write(context, object, promise);
             }
         };
 
-        ServerGamePacketListenerImpl playerCon = playerData.getPlayer().getHandle().connection;
+        ServerGamePacketListenerImpl playerCon = ((CraftPlayer) player).getHandle().connection;
         Channel channel = playerCon.connection.channel;
 
-        channel.pipeline().addBefore("packet_handler", playerData.getPlayer().getUniqueId().toString(), handler);
+        channel.pipeline().addBefore("packet_handler", player.getUniqueId() + "destructible", handler);
     }
 
-    private boolean packetLogic(Packet<?> packet, DPlayerData playerData) {
+    private boolean packetLogic(Packet<?> packet, Player player) {
+        DPlayerData playerData = DPlayerDataRegistry.getInstance().getData(player);
         MiningManager miningManager = playerData.getMiningManager();
 
         if(packet instanceof ServerboundPlayerActionPacket actionPacket) {
@@ -78,13 +75,13 @@ public final class PlayerPacketListener {
         return false;
     }
 
-    public void removeListener(Player player) {
+    public void removeListener(@NotNull Player player) {
         CraftPlayer craftPlayer = (CraftPlayer) player;
         ServerGamePacketListenerImpl playerCon = craftPlayer.getHandle().connection;
         Channel channel = playerCon.connection.channel;
 
         channel.eventLoop().submit(() -> {
-            channel.pipeline().remove(craftPlayer.getUniqueId().toString());
+            channel.pipeline().remove(player.getUniqueId() + "destructible");
             return null;
         });
 

@@ -155,7 +155,7 @@ public class BlockMiner {
                     itemDrop.getValue())
             );
 
-            if(DRegistry.ITEMS.containsKey(itemDrop.getKey().getId())) {
+            if(DRegistry.ITEMS.containsKey(itemDrop.getKey().getID())) {
                 player.give(DItemFactory.of(itemDrop.getKey(), itemDrop.getValue()));
             }
         }, ITEM_MAGNET_DELAY);

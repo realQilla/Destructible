@@ -3,6 +3,8 @@ package net.qilla.destructible.menugeneral.menu;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.qilla.destructible.data.registry.DPlayerDataRegistry;
+import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.item.DItem;
 import net.qilla.destructible.mining.item.DItemFactory;
@@ -21,6 +23,7 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
+import net.qilla.qlibrary.registry.RegistrySubscriber;
 import net.qilla.qlibrary.util.sound.QSounds;
 import org.bukkit.*;
 import org.bukkit.event.inventory.ClickType;
@@ -32,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>> {
+public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>> implements RegistrySubscriber {
 
     private final Overflow overflow;
     private final DPlayer player;
@@ -43,19 +46,15 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
         this.overflow = playerData.getOverflow();
         this.player = playerData.getPlayer();
 
-        super.addSocket(new QSocket(53, QSlot.of(builder -> builder
-                .material(Material.BARRIER)
-                .displayName(MiniMessage.miniMessage().deserialize("<red>Clear Stash"))
-                .lore(ItemLore.lore(List.of(
-                        Component.empty(),
-                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to remove item in your stash")
-                )))
-        ), event -> {
-            this.clearOverflow(event);
-            return true;
-        }, CooldownType.MENU_CLICK));
+        super.addSocket(clearStashSocket());
         super.populateModular();
         super.finalizeMenu();
+        DPlayerDataRegistry.getInstance().getData(super.getPlayer()).getOverflow().subscribe(this);
+    }
+
+    @Override
+    public void onUpdate() {
+        ((DPlayerData) super.getPlayerData()).getOverflow().getOverflow();
     }
 
     @Override
@@ -78,17 +77,30 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
         ), event -> this.claimOverflow(event, dItem, amount), CooldownType.MENU_CLICK);
     }
 
+    private Socket clearStashSocket() {
+        return new QSocket(53, QSlot.of(builder -> builder
+                .material(Material.BARRIER)
+                .displayName(MiniMessage.miniMessage().deserialize("<red>Clear Stash"))
+                .lore(ItemLore.lore(List.of(
+                        Component.empty(),
+                        MiniMessage.miniMessage().deserialize("<!italic><yellow><gold>① <key:key.mouse.left></gold> to remove item in your stash")
+                )))
+        ), event -> {
+            this.clearOverflow(event);
+            return true;
+        }, CooldownType.MENU_CLICK);
+    }
+
     private boolean claimOverflow(InventoryClickEvent event, DItem dItem, int amount) {
         ClickType clickType = event.getClick();
-
-        if(!overflow.contains(dItem.getId())) {
+        if(!overflow.contains(dItem.getID())) {
             super.getPlayer().sendMessage("<red>This item is no longer in your stash!");
             super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
             return false;
         }
 
         if(clickType.isShiftClick() && clickType.isRightClick()) {
-            overflow.remove(dItem.getId());
+            overflow.remove(dItem.getID());
             player.sendMessage(MiniMessage.miniMessage().deserialize("<green>You have <red><bold>REMOVED</red> ").append(dItem.getDisplayName().asComponent()).append(MiniMessage.miniMessage().deserialize(" from your stash!")));
             player.playSound(QSounds.Menu.ITEM_DELETE, true);
         } else if(clickType.isLeftClick()) {
@@ -98,7 +110,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
                 return false;
             }
 
-            Optional<ItemStack> optional = overflow.take(dItem.getId());
+            Optional<ItemStack> optional = overflow.take(dItem.getID());
 
             if(optional.isEmpty()) {
                 player.sendMessage("<red>There was an error claiming this item!");
@@ -117,33 +129,23 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
 
     public boolean clearOverflow(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
-
         if(clickType.isLeftClick()) {
             if(overflow.isEmpty()) {
                 player.sendMessage("<red>Your overflow stash is already empty!");
                 player.playSound(QSounds.General.GENERAL_ERROR, true);
                 return false;
             }
+            List<String> signText = List.of("^^^^^^^^^^^^^^^", "Type CONFIRM", "to clear stash");
+            super.requestSignInput(signText, result -> {
+                if(result.equals("CONFIRM")) {
+                    overflow.clear();
+                    player.playSound(QSounds.Menu.RESET, true);
+                    player.sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
 
-            List<String> signText = List.of(
-                    "^^^^^^^^^^^^^^^",
-                    "Type CONFIRM",
-                    "to clear stash"
-            );
-
-            SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-            signInput.init(result -> {
-                Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                    if(result.equals("CONFIRM")) {
-                        overflow.clear();
-                        player.playSound(QSounds.Menu.RESET, true);
-                        player.sendMessage("<green>You have <red><bold>REMOVED</red> your overflow stash!");
-
-                        super.setShiftIndex(0);
-                        this.refreshSockets();
-                    }
-                    super.open(false);
-                });
+                    super.setShiftIndex(0);
+                    this.refreshSockets();
+                }
+                super.open(false);
             });
             return true;
         } else return false;
@@ -176,5 +178,12 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
                 .previousIndex(7)
                 .shiftAmount(9)
         );
+    }
+
+    @Override
+    public void shutdown() {
+        this.clearSockets();
+        super.getInventory().close();
+        DPlayerDataRegistry.getInstance().getData(super.getPlayer()).getOverflow().unsubscribe(this);
     }
 }

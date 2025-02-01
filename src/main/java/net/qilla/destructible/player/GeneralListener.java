@@ -51,7 +51,7 @@ import java.util.logging.Level;
 
 public class GeneralListener implements Listener {
 
-    private static final Set<UUID> BLOCK_EDITOR_SET = DRegistry.BLOCK_EDITORS;
+    private static final Map<UUID, DPlayer> BLOCK_EDITORS = DRegistry.BLOCK_EDITORS;
     private static final DPlayerDataRegistry PLAYER_DATA_REGISTRY = DPlayerDataRegistry.getInstance();
     private static final Map<Long, Map<Integer, String>> LOADED_BLOCK_MAP = DRegistry.LOADED_BLOCKS;
     private static final Map<String, DItem> DITEM_MAP = DRegistry.ITEMS;
@@ -106,10 +106,10 @@ public class GeneralListener implements Listener {
 
         if(blockEdit.getRecursionSize() <= 0) {
             if(registerBlock(playerData, block)) {
-                player.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <green><bold>LOADED</green>!");
+                player.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getID() + "</gold> has been <green><bold>LOADED</green>!");
                 player.playSound(DSounds.TINY_OPERATION_COMPLETE, true);
             } else {
-                player.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>LOADED</red>: block already exists in this position. Destroy and try again!");
+                player.sendMessage("<yellow>Block: <gold><bold>" + dBlock.getID() + "</gold> could not be <red><bold>LOADED</red>: block already exists in this position. Destroy and try again!");
                 player.playSound(QSounds.General.GENERAL_ERROR, true);
             }
         } else {
@@ -128,13 +128,12 @@ public class GeneralListener implements Listener {
         DBlock dBlock = playerData.getBlockEdit().getDblock();
         BlockPos blockPos = CoordUtil.getBlockPos(block);
 
-        if(!RegistryUtil.loadBlock(blockPos, dBlock.getId())) return false;
+        if(!RegistryUtil.loadBlock(blockPos, dBlock.getID())) return false;
         if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
 
-        BLOCK_EDITOR_SET.forEach(uuid -> {
-            DPlayerData curPlayerData = PLAYER_DATA_REGISTRY.getData(uuid);
-            if(curPlayerData == null) return;
-            curPlayerData.getBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
+        BLOCK_EDITORS.forEach((uuid, curPlayer) -> {
+            DPlayerData curPlayerData = PLAYER_DATA_REGISTRY.getData(curPlayer);
+            curPlayerData.getBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getID());
         });
         return true;
     }
@@ -155,11 +154,12 @@ public class GeneralListener implements Listener {
         }, 0, 40);
         for(BlockPos blockPos : blocks) {
             Block block = CoordUtil.getBlock(blockPos, world);
-            RegistryUtil.loadBlock(blockPos, dBlock.getId());
+            RegistryUtil.loadBlock(blockPos, dBlock.getID());
 
             Bukkit.getScheduler().runTask(plugin, () -> {
-                BLOCK_EDITOR_SET.forEach(curPlayer -> {
-                    playerData.getBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getId());
+                BLOCK_EDITORS.forEach((uuid, curPlayer) -> {
+                    DPlayerData curPlayerData = PLAYER_DATA_REGISTRY.getData(curPlayer);
+                    curPlayerData.getBlockEdit().getBlockHighlight().createHighlight(blockPos, dBlock.getID());
                 });
 
                 if(block.getType() != dBlock.getMaterial()) block.setType(dBlock.getMaterial(), false);
@@ -175,7 +175,7 @@ public class GeneralListener implements Listener {
         progressTask.cancel();
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Operation completed, <gold>" + NumberUtil.numberChar(blockPosSet.size(), false) + "</gold> block(s) cached as <gold>" + dBlock.getId() + "</gold>!"));
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Operation completed, <gold>" + NumberUtil.numberChar(blockPosSet.size(), false) + "</gold> block(s) cached as <gold>" + dBlock.getID() + "</gold>!"));
             player.sendActionBar(MiniMessage.miniMessage().deserialize("<yellow>Operation <gold>" + NumberUtil.numberPercentage(blockPosSet.size(), remainingBlocks.get()) + "</gold> completed"));
             player.playSound(DSounds.LARGE_OPERATION_COMPLETE, true);
         });
@@ -233,13 +233,14 @@ public class GeneralListener implements Listener {
         DBlock dBlock = optional.get();
 
         if(RegistryUtil.unloadBlock(blockPos)) {
-            BLOCK_EDITOR_SET.forEach(dPlayer2 -> {
-                playerData.getBlockEdit().getBlockHighlight().removeHighlight(blockPos);
+            BLOCK_EDITORS.forEach((uuid, curPlayer) -> {
+                DPlayerData curPlayerData = PLAYER_DATA_REGISTRY.getData(curPlayer);
+                curPlayerData.getBlockEdit().getBlockHighlight().removeHighlight(blockPos);
             });
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> has been <red><bold>UNLOADED</red>!"));
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getID() + "</gold> has been <red><bold>UNLOADED</red>!"));
             player.playSound(DSounds.TINY_OPERATION_COMPLETE, true);
         } else {
-            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getId() + "</gold> could not be <red><bold>UNLOADED</red>!"));
+            player.sendMessage(MiniMessage.miniMessage().deserialize("<yellow>Block: <gold><bold>" + dBlock.getID() + "</gold> could not be <red><bold>UNLOADED</red>!"));
             player.playSound(QSounds.General.GENERAL_ERROR, true);
         }
     }
@@ -247,7 +248,7 @@ public class GeneralListener implements Listener {
     @EventHandler
     private void onChunkLoad(final PlayerChunkLoadEvent event) {
         Player player = event.getPlayer();
-        if(!BLOCK_EDITOR_SET.contains(player.getUniqueId())) return;
+        if(!BLOCK_EDITORS.containsKey(player.getUniqueId())) return;
         DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
 
         BlockHighlight blockHighlight = playerData.getBlockEdit().getBlockHighlight();
@@ -260,7 +261,7 @@ public class GeneralListener implements Listener {
     @EventHandler
     private void onChunkUnload(PlayerChunkUnloadEvent event) {
         Player player = event.getPlayer();
-        if(!BLOCK_EDITOR_SET.contains(player.getUniqueId())) return;
+        if(!BLOCK_EDITORS.containsKey(player.getUniqueId())) return;
         DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
 
         BlockHighlight blockHighlight = playerData.getBlockEdit().getBlockHighlight();
@@ -274,7 +275,8 @@ public class GeneralListener implements Listener {
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        this.initPlayer(player);
+        PlayerPacketListener.getInstance().addListener(player);
+        player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
         this.updatePlayer(player);
     }
 
@@ -282,19 +284,8 @@ public class GeneralListener implements Listener {
     private void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        removePlayer(player);
-    }
-
-    public void initPlayer(@NotNull Player player) {
-        PlayerPacketListener.getInstance().addListener(PLAYER_DATA_REGISTRY.getData(player));
-        player.getAttribute(Attribute.BLOCK_BREAK_SPEED).setBaseValue(0.0);
-    }
-
-    public void removePlayer(@NotNull Player player) {
         if(!PLAYER_DATA_REGISTRY.hasData(player.getUniqueId())) return;
-        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
-
-        PlayerPacketListener.getInstance().removeListener(playerData.getPlayer());
+        PlayerPacketListener.getInstance().removeListener(player);
     }
 
     @EventHandler
@@ -395,11 +386,11 @@ public class GeneralListener implements Listener {
         DItem dItem = DUtil.getDItem(itemData.getItemID());
 
         long itemVersion = itemData.getVersion();
-        long registryVersion = DITEM_MAP.getOrDefault(dItem.getId(), DItems.MISSING_ITEM).getVersion();
+        long registryVersion = DITEM_MAP.getOrDefault(dItem.getID(), DItems.MISSING_ITEM).getVersion();
 
         if(itemVersion == registryVersion) return true;
 
-        plugin.getLogger().log(Level.INFO, "Updating item " + dItem.getId() + " for a player as there is a version mismatch. (" + itemVersion + " != " + registryVersion + ")");
+        plugin.getLogger().log(Level.INFO, "Updating item " + dItem.getID() + " for a player as there is a version mismatch. (" + itemVersion + " != " + registryVersion + ")");
         return false;
     }
 }

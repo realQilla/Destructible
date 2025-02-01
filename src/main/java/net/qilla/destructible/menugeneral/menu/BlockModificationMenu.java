@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import io.papermc.paper.datacomponent.item.ItemLore;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.qilla.destructible.data.DSounds;
 import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.menugeneral.menu.select.BlockParticleSelectMenu;
@@ -24,7 +23,6 @@ import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
@@ -60,7 +58,7 @@ public class BlockModificationMenu extends QStaticMenu {
         this.dBlock = dBlock;
 
         this.lockedMenu = false;
-        this.id = dBlock.getId();
+        this.id = dBlock.getID();
         this.material = dBlock.getMaterial();
         this.strength = dBlock.getStrength();
         this.durability = dBlock.getDurability();
@@ -142,10 +140,10 @@ public class BlockModificationMenu extends QStaticMenu {
                 .breakParticle(breakParticle)
                 .build();
         if(this.dBlock != null) {
-            DBLOCK_MAP.remove(this.dBlock.getId());
-            super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully replaced by " + id + "!"));
-        } else super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully registered!"));
-        DBLOCK_MAP.put(dBlock.getId(), dBlock);
+            DBLOCK_MAP.remove(this.dBlock.getID());
+            super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getID() + " has been successfully replaced by " + id + "!"));
+        } else super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getID() + " has been successfully registered!"));
+        DBLOCK_MAP.put(dBlock.getID(), dBlock);
         return super.returnMenu();
     }
 
@@ -157,8 +155,8 @@ public class BlockModificationMenu extends QStaticMenu {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
 
-        super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getId() + " has been successfully unregistered."));
-        DBLOCK_MAP.remove(dBlock.getId());
+        super.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>" + dBlock.getID() + " has been successfully unregistered."));
+        DBLOCK_MAP.remove(dBlock.getID());
         super.getPlayer().playSound(QSounds.Menu.RESET, true);
         return super.returnMenu();
     }
@@ -208,25 +206,19 @@ public class BlockModificationMenu extends QStaticMenu {
     private boolean inputID(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Unique identifier",
-                "for this block");
-
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                if(!result.isEmpty()) {
-                    if(DBLOCK_MAP.containsKey(result)) {
-                        super.getPlayer().sendMessage("<red>Block ID already exists.");
-                        super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
-                    } else {
-                        id = result;
-                        super.addSocket(this.idSocket());
-                        super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                    }
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Unique identifier", "for this block");
+        super.requestSignInput(signText, result -> {
+            if(!result.isEmpty()) {
+                if(DBLOCK_MAP.containsKey(result)) {
+                    super.getPlayer().sendMessage("<red>Block ID already exists.");
+                    super.getPlayer().playSound(QSounds.General.GENERAL_ERROR, true);
+                } else {
+                    id = result;
+                    super.addSocket(this.idSocket());
+                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
                 }
-                super.open(false);
-            });
+            }
+            super.open(false);
         });
         return true;
     }
@@ -248,22 +240,15 @@ public class BlockModificationMenu extends QStaticMenu {
     private boolean inputDurability(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Block durability",
-                "value");
-
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                try {
-                    durability = Math.max(-1, Long.parseLong(result));
-                    super.addSocket(this.durabilitySocket());
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                } catch(NumberFormatException ignored) {
-                }
-                super.open(false);
-            });
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Block durability", "value");
+        super.requestSignInput(signText, result -> {
+            try {
+                durability = Math.max(-1, Long.parseLong(result));
+                super.addSocket(this.durabilitySocket());
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            } catch(NumberFormatException ignored) {
+            }
+            super.open(false);
         });
         return true;
     }
@@ -285,22 +270,15 @@ public class BlockModificationMenu extends QStaticMenu {
     private boolean inputStrength(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Block strength",
-                "value");
-
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                try {
-                    strength = Integer.parseInt(result);
-                    super.addSocket(this.strengthSocket());
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                } catch(NumberFormatException ignored) {
-                }
-                super.open(false);
-            });
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Block strength", "value");
+        super.requestSignInput(signText, result -> {
+            try {
+                strength = Integer.parseInt(result);
+                super.addSocket(this.strengthSocket());
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            } catch(NumberFormatException ignored) {
+            }
+            super.open(false);
         });
         return true;
     }
@@ -361,22 +339,15 @@ public class BlockModificationMenu extends QStaticMenu {
     private boolean inputCooldown(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Block cooldown",
-                "value");
-
-        new SignInput(super.getPlugin(), super.getPlayerData(), signText).init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-                try {
-                    cooldown = TimeUtil.stringToMillis(result);
-                    super.addSocket(this.cooldownSocket());
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                } catch(NumberFormatException ignored) {
-                }
-                super.open(false);
-            });
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Block cooldown", "value");
+        super.requestSignInput(signText, result -> {
+            try {
+                cooldown = TimeUtil.stringToMillis(result);
+                super.addSocket(this.cooldownSocket());
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            } catch(NumberFormatException ignored) {
+            }
+            super.open(false);
         });
         return true;
     }
@@ -424,10 +395,11 @@ public class BlockModificationMenu extends QStaticMenu {
     }
 
     @Override
-    public void inventoryClickEvent(InventoryClickEvent event) {
+    public void playerClickMenu(InventoryClickEvent event) {
         if(event.getClickedInventory().getHolder() instanceof StaticMenu) {
             event.setCancelled(true);
-            this.handleClick(event);
+            Socket socket = super.getSockets().get(event.getSlot());
+            if(socket != null) socket.onClick(super.getPlayer(), event, super.getPlayerData());
         }
     }
 

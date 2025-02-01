@@ -2,6 +2,7 @@ package net.qilla.destructible.player;
 
 import com.google.common.base.Preconditions;
 import net.qilla.destructible.mining.item.*;
+import net.qilla.qlibrary.registry.RegistrySubscriber;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
@@ -9,86 +10,105 @@ import java.util.*;
 public class Overflow {
 
     private final Map<String, OverflowEntry> overflowItems = new LinkedHashMap<>();
+    private final Set<RegistrySubscriber> registrySubscribers = new HashSet<>();
 
-    private final DPlayer dPlayer;
+    private final DPlayer player;
 
-    public Overflow(DPlayer dPlayer) {
-        this.dPlayer = dPlayer;
+    public Overflow(@NotNull DPlayer player) {
+        Preconditions.checkNotNull(player, "DPlayer cannot be null");
+
+        this.player = player;
     }
 
-    public int size() {
+    public void subscribe(@NotNull RegistrySubscriber subscriber) {
+        Preconditions.checkNotNull(subscriber, "Subscriber cannot be null");
+        synchronized(registrySubscribers) {
+            registrySubscribers.add(subscriber);
+        }
+    }
+
+    public void unsubscribe(@NotNull RegistrySubscriber subscriber) {
+        Preconditions.checkNotNull(subscriber, "Subscriber cannot be null");
+        synchronized(registrySubscribers) {
+            registrySubscribers.remove(subscriber);
+        }
+    }
+
+    private void notifySubscribers() {
+        for(RegistrySubscriber subscriber : registrySubscribers) {
+            subscriber.onUpdate();
+        }
+    }
+
+    public int typeSize() {
         return this.overflowItems.size();
+    }
+
+    public int itemSize() {
+        return this.overflowItems.values().stream().mapToInt(OverflowEntry::getAmount).sum();
     }
 
     public boolean isEmpty() {
         return this.overflowItems.isEmpty();
     }
 
-    public boolean put(@NotNull OverflowEntry overflowEntry) {
-        Preconditions.checkNotNull(overflowEntry, "OverflowEntry cannot be null");
-
-        this.overflowItems.merge(overflowEntry.getData().getItemID(), overflowEntry, (oldValue, newValue) -> {
-           newValue.addAmount(oldValue.getAmount());
-           return newValue;
-        });
-        return true;
-    }
-
     public boolean put(@NotNull DItem item, int amount) {
-        Preconditions.checkNotNull(item, "Item cannot be null");
-
-        this.overflowItems.merge(item.getId(), new OverflowEntry(new ItemData(item), amount), (oldValue, newValue) -> {
-            newValue.addAmount(amount);
-            return newValue;
-        });
-        return true;
+        return this.put(new ItemData(item), amount);
     }
 
     public boolean put(@NotNull ItemData itemData, int amount) {
-        Preconditions.checkNotNull(itemData, "ItemData cannot be null");
+        return this.put(new OverflowEntry(itemData, amount));
+    }
 
-        this.overflowItems.merge(itemData.getItemID(), new OverflowEntry(itemData, amount), (oldValue, newValue) -> {
-            newValue.setAmount(oldValue.getAmount() + amount);
-            return newValue;
-        });
+    public boolean put(@NotNull OverflowEntry overflowEntry) {
+        Preconditions.checkNotNull(overflowEntry, "OverflowEntry cannot be null");
+
+        synchronized(overflowItems) {
+            overflowItems.merge(overflowEntry.getData().getItemID(), overflowEntry, (oldValue, newValue) -> {
+                newValue.addAmount(oldValue.getAmount());
+                return newValue;
+            });
+        }
         return true;
     }
 
-    public Optional<ItemStack> take(@NotNull String itemId) {
-        Preconditions.checkNotNull(itemId, "String cannot be null");
+    public Optional<ItemStack> take(@NotNull String ID) {
+        Preconditions.checkNotNull(ID, "ID cannot be null");
 
-        if(!this.overflowItems.containsKey(itemId)) return Optional.empty();
+        synchronized(overflowItems) {
+            if(!this.overflowItems.containsKey(ID)) return Optional.empty();
 
-        OverflowEntry overflowEntry = this.overflowItems.get(itemId);
-        ItemData itemData = overflowEntry.getData();
-        int amount = overflowEntry.getAmount();
+            OverflowEntry overflowEntry = this.overflowItems.get(ID);
+            ItemData itemData = overflowEntry.getData();
+            int amount = overflowEntry.getAmount();
 
-        ItemStack itemStack = DItemFactory.of(itemData, amount);
+            ItemStack itemStack = DItemFactory.of(itemData, amount);
 
-        int space = dPlayer.getSpace(itemStack);
-        if(space == 0) return Optional.empty();
+            int space = player.getSpace(itemStack);
+            if(space == 0) return Optional.empty();
 
-        if(space >= itemStack.getAmount()) this.overflowItems.remove(itemId);
-        else {
-            this.overflowItems.get(itemId).subtractAmount(space);
-            itemStack.setAmount(space);
+            if(space >= itemStack.getAmount()) this.overflowItems.remove(ID);
+            else {
+                this.overflowItems.get(ID).subtractAmount(space);
+                itemStack.setAmount(space);
+            }
+            return Optional.of(itemStack);
         }
-        return Optional.of(itemStack);
     }
 
-    public Set<Map.Entry<String, OverflowEntry>> getOverflow() {
-        return this.overflowItems.entrySet();
+    public List<Map.Entry<String, OverflowEntry>> getOverflow() {
+        return List.copyOf(this.overflowItems.entrySet());
     }
 
     public boolean contains(String itemID) {
         return this.overflowItems.containsKey(itemID);
     }
 
-    public void remove(String itemID) {
+    public synchronized void remove(String itemID) {
         this.overflowItems.remove(itemID);
     }
 
-    public void clear() {
+    public synchronized void clear() {
         this.overflowItems.clear();
     }
 }

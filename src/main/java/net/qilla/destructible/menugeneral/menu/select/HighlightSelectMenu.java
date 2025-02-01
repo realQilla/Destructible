@@ -9,15 +9,15 @@ import net.qilla.destructible.data.registry.DRegistry;
 import net.qilla.destructible.menugeneral.DSlots;
 import net.qilla.destructible.mining.block.DBlock;
 import net.qilla.destructible.player.BlockHighlight;
+import net.qilla.destructible.player.DPlayer;
 import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.*;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
+import net.qilla.qlibrary.registry.RegistrySubscriber;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
@@ -30,18 +30,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class HighlightSelectMenu extends QSearchMenu<String> {
+public class HighlightSelectMenu extends QSearchMenu<String> implements RegistrySubscriber {
 
     private static final Map<String, DBlock> DBLOCKS = DRegistry.BLOCKS;
-    private static final Collection<String> LOADED_BLOCKS = DRegistry.LOADED_BLOCKS_GROUPED.keySet();
     private final Set<String> highlights;
 
     public HighlightSelectMenu(@NotNull Plugin plugin, @NotNull PlayerData<?> playerData, @NotNull Set<String> highlights) {
-        super(plugin, playerData, LOADED_BLOCKS);
+        super(plugin, playerData, List.copyOf(DRegistry.LOADED_BLOCKS_GROUPED.keySet()));
         Preconditions.checkNotNull(highlights, "Set cannot be null");
         this.highlights = highlights;
         super.populateModular();
         super.finalizeMenu();
+        DRegistry.LOADED_BLOCKS_GROUPED.subscribe(this);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.updateItemPopulation(List.copyOf(DRegistry.LOADED_BLOCKS_GROUPED.keySet()));
     }
 
     @Override
@@ -53,7 +58,7 @@ public class HighlightSelectMenu extends QSearchMenu<String> {
 
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(dBlock.getMaterial())
-                .displayName(Component.text(dBlock.getId()))
+                .displayName(Component.text(dBlock.getID()))
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Currently " + visible),
                         Component.empty(),
@@ -73,7 +78,7 @@ public class HighlightSelectMenu extends QSearchMenu<String> {
         ), event -> {
 
             BlockHighlight blockHighlight = DPlayerDataRegistry.getInstance().getData(super.getPlayer()).getBlockEdit().getBlockHighlight();
-            DRegistry.BLOCK_EDITORS.add(super.getPlayer().getUniqueId());
+            DRegistry.BLOCK_EDITORS.put(super.getPlayer().getUniqueId(), (DPlayer) super.getPlayer());
             if(highlights.contains(item)) {
                 highlights.remove(item);
                 blockHighlight.removeVisibleDBlock(item);
@@ -128,5 +133,12 @@ public class HighlightSelectMenu extends QSearchMenu<String> {
                 .searchIndex(47)
                 .resetSearchIndex(46)
         );
+    }
+
+    @Override
+    public void shutdown() {
+        this.clearSockets();
+        super.getInventory().close();
+        DRegistry.LOADED_BLOCKS_GROUPED.unsubscribe(this);
     }
 }

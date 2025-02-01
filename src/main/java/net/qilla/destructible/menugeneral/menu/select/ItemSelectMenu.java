@@ -53,7 +53,7 @@ public class ItemSelectMenu extends QSearchMenu<Material> {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
             this.future.complete(item);
-            return this.returnMenu();
+            return super.returnMenu();
         }, CooldownType.MENU_CLICK);
     }
 

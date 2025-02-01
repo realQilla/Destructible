@@ -48,7 +48,7 @@ public final class DItem {
         return newBuilder.build();
     }
 
-    public String getId() {
+    public String getID() {
         return this.id;
     }
 

@@ -20,7 +20,7 @@ public class DItemTA extends TypeAdapter<DItem> {
     public void write(JsonWriter out, DItem value) throws IOException {
         out.beginObject();
 
-        out.name("ID").value(value.getId());
+        out.name("ID").value(value.getID());
         out.name("LAST_UPDATE").value(value.getVersion());
         out.name("MATERIAL").value(value.getMaterial().key().value());
         out.name("NAME").value(MiniMessage.miniMessage().serialize(value.getDisplayName()));

@@ -2,15 +2,13 @@ package net.qilla.destructible;
 
 import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
 import net.qilla.destructible.command.temp.SelectCommand;
 import net.qilla.destructible.files.*;
-import net.qilla.destructible.menugeneral.MenuListener;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.player.GeneralListener;
-import org.bukkit.Bukkit;
+import net.qilla.qlibrary.menu.MenuEventHandlers;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,20 +27,14 @@ public final class Destructible extends JavaPlugin {
         }
     }
 
-    private final LifecycleEventManager<Plugin> pluginLifecycle =this.getLifecycleManager();
-    private final CustomItemsFile customItemsFile = CustomItemsFile.getInstance();
-    private final CustomBlocksFile customBlocksFile = CustomBlocksFile.getInstance();
-    private final LoadedDestructibleBlocksFile loadedDestructibleBlocksFile = LoadedDestructibleBlocksFile.getInstance();
-    private final LoadedDestructibleBlocksGroupedFile loadedDestructibleBlocksGroupedFile = LoadedDestructibleBlocksGroupedFile.getInstance();
+    private final LifecycleEventManager<Plugin> pluginLifecycle = this.getLifecycleManager();
 
     @Override
     public void onEnable() {
-        Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Rejoin to revalidate your player information.")));
 
-        this.customItemsFile.load();
-        this.customBlocksFile.load();
-        this.loadedDestructibleBlocksFile.load();
-        this.loadedDestructibleBlocksGroupedFile.load();
+        CustomItemsFile.getInstance().load();
+        CustomBlocksFile.getInstance().load();
+        LoadedDestructibleBlocksFile.getInstance().load();
 
         initListeners();
         initCommands();
@@ -50,7 +42,7 @@ public final class Destructible extends JavaPlugin {
 
     private void initListeners() {
         getServer().getPluginManager().registerEvents(new GeneralListener(this), this);
-        getServer().getPluginManager().registerEvents(new MenuListener(), this);
+        getServer().getPluginManager().registerEvents(MenuEventHandlers.initiateEventHandlers(), this);
     }
 
     private void initCommands() {
@@ -59,11 +51,6 @@ public final class Destructible extends JavaPlugin {
             new OverflowCommand(this, event.registrar()).register();
             new SelectCommand(this, event.registrar()).register();
         });
-    }
-
-    @Override
-    public void onDisable() {
-        Bukkit.getOnlinePlayers().forEach(player -> player.kick(MiniMessage.miniMessage().deserialize("<red>Server Reloaded.")));
     }
 
 

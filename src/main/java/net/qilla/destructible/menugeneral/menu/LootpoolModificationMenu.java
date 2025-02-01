@@ -17,10 +17,8 @@ import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
-import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +48,7 @@ public class LootpoolModificationMenu extends QDynamicMenu<ItemDrop> {
         return new QSocket(index, QSlot.of(builder -> builder
                 .material(dItem.getMaterial())
                 .amount(item.getMinAmount())
-                .displayName(Component.text(dItem.getId()))
+                .displayName(Component.text(dItem.getID()))
                 .lore(ItemLore.lore(List.of(
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Fortune Affected <white>" + StringUtil.toName(String.valueOf(item.isFortuneAffected()))),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Amount <white>" + item.getMinAmount() + " - " + item.getMaxAmount()),

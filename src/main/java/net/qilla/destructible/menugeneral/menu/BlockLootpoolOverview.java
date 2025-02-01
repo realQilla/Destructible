@@ -16,7 +16,6 @@ import net.qilla.qlibrary.menu.StaticConfig;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
-import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
 import net.qilla.qlibrary.util.tools.TimeUtil;
@@ -34,7 +33,7 @@ public class BlockLootpoolOverview extends QDynamicMenu<ItemDrop> {
         Preconditions.checkNotNull(dBlock, "DBlock cannot be null");
         super.addSocket(new QSocket(31, QSlot.of(consumer -> consumer
                 .material(dBlock.getMaterial())
-                .displayName(Component.text(dBlock.getId()))
+                .displayName(Component.text(dBlock.getID()))
                 .lore(ItemLore.lore(List.of(
                         Component.empty(),
                         MiniMessage.miniMessage().deserialize("<!italic><gray>Block Strength <white>" + NumberUtil.romanNumeral(dBlock.getStrength())),

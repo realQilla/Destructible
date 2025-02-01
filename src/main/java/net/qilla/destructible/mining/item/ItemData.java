@@ -30,7 +30,7 @@ public class ItemData {
     public ItemData(@NotNull DItem dItem) {
         Preconditions.checkNotNull(dItem, "DItem cannot be null");
 
-        this.itemID = dItem.getId();
+        this.itemID = dItem.getID();
         this.version = dItem.getVersion();
         this.attributes = dItem.getDynamicAttributes();
     }
@@ -45,7 +45,7 @@ public class ItemData {
 
         DItem ditem = DUtil.getDItem(itemData.getItemID());
 
-        this.itemID = ditem.getId();
+        this.itemID = ditem.getID();
         this.version = ditem.getVersion();
         this.attributes = new AttributeContainer(itemData.getAttributes().getAll());
     }

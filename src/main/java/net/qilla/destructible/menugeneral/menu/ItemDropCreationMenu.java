@@ -12,17 +12,13 @@ import net.qilla.qlibrary.data.PlayerData;
 import net.qilla.qlibrary.menu.MenuScale;
 import net.qilla.qlibrary.menu.QStaticMenu;
 import net.qilla.qlibrary.menu.StaticConfig;
-import net.qilla.qlibrary.menu.input.SignInput;
 import net.qilla.qlibrary.menu.socket.QSlot;
 import net.qilla.qlibrary.menu.socket.QSocket;
 import net.qilla.qlibrary.menu.socket.Socket;
 import net.qilla.qlibrary.player.CooldownType;
-import net.qilla.qlibrary.player.EnhancedPlayer;
 import net.qilla.qlibrary.util.sound.QSounds;
-import net.qilla.qlibrary.util.sound.QSounds.Menu;
 import net.qilla.qlibrary.util.tools.NumberUtil;
 import net.qilla.qlibrary.util.tools.StringUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -162,8 +158,8 @@ public class ItemDropCreationMenu extends QStaticMenu {
             ClickType clickType = event.getClick();
             if(!clickType.isLeftClick()) return false;
 
-            this.fortuneAffected = !this.fortuneAffected;
-            super.addSocket(this.fortuneAffectedSocket());
+            fortuneAffected = !fortuneAffected;
+            super.addSocket(fortuneAffectedSocket());
             return true;
         }, CooldownType.MENU_CLICK);
     }
@@ -191,47 +187,31 @@ public class ItemDropCreationMenu extends QStaticMenu {
     }
 
     private boolean setMinAmount() {
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Minimum amount",
-                "that can drop");
-
-        SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-        signInput.init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-
-                try {
-                    this.minAmount = Math.max(1, Integer.parseInt(result));
-                    if(this.minAmount > maxAmount) this.maxAmount = minAmount;
-                    super.addSocket(this.amountSocket());
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                } catch(NumberFormatException ignore) {
-                }
-                super.open(false);
-            });
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Minimum amount", "that can drop");
+        super.requestSignInput(signText, result -> {
+            try {
+                this.minAmount = Math.max(1, Integer.parseInt(result));
+                if(this.minAmount > maxAmount) this.maxAmount = minAmount;
+                super.addSocket(this.amountSocket());
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            } catch(NumberFormatException ignore) {
+            }
+            super.open(false);
         });
         return true;
     }
 
     private boolean setMaxAmount() {
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Maximum amount",
-                "that can drop");
-
-        SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-        signInput.init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-
-                try {
-                    this.maxAmount = Math.max(1, Integer.parseInt(result));
-                    if(this.maxAmount < minAmount) this.minAmount = maxAmount;
-                    super.addSocket(this.amountSocket());
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                } catch(NumberFormatException ignore) {
-                }
-                super.open(false);
-            });
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Maximum amount", "that can drop");
+        super.requestSignInput(signText, result -> {
+            try {
+                this.maxAmount = Math.max(1, Integer.parseInt(result));
+                if(this.maxAmount < minAmount) this.minAmount = maxAmount;
+                super.addSocket(this.amountSocket());
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            } catch(NumberFormatException ignore) {
+            }
+            super.open(false);
         });
         return true;
     }
@@ -254,24 +234,15 @@ public class ItemDropCreationMenu extends QStaticMenu {
     private boolean setChance(InventoryClickEvent event) {
         ClickType clickType = event.getClick();
         if(!clickType.isLeftClick()) return false;
-
-        List<String> signText = List.of(
-                "^^^^^^^^^^^^^^^",
-                "Chance that this",
-                "item can drop");
-
-        SignInput signInput = new SignInput(super.getPlugin(), super.getPlayerData(), signText);
-        signInput.init(result -> {
-            Bukkit.getScheduler().runTask(super.getPlugin(), () -> {
-
-                try {
-                    this.chance = Math.max(0, Math.min(100, Double.parseDouble(result)));
-                    super.addSocket(this.chanceSocket());
-                    super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
-                } catch(NumberFormatException ignore) {
-                }
-                super.open(false);
-            });
+        List<String> signText = List.of("^^^^^^^^^^^^^^^", "Chance that this", "item can drop");
+        super.requestSignInput(signText, result -> {
+            try {
+                this.chance = Math.max(0, Math.min(100, Double.parseDouble(result)));
+                super.addSocket(this.chanceSocket());
+                super.getPlayer().playSound(QSounds.Menu.SIGN_INPUT, true);
+            } catch(NumberFormatException ignore) {
+            }
+            super.open(false);
         });
         return true;
     }
