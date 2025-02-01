@@ -4,7 +4,6 @@ import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.qilla.destructible.command.DestructibleCommand;
 import net.qilla.destructible.command.OverflowCommand;
-import net.qilla.destructible.command.temp.SelectCommand;
 import net.qilla.destructible.files.*;
 import net.qilla.destructible.mining.item.attributes.AttributeTypes;
 import net.qilla.destructible.player.GeneralListener;
@@ -49,7 +48,6 @@ public final class Destructible extends JavaPlugin {
         this.pluginLifecycle.registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             new DestructibleCommand(this, event.registrar()).register();
             new OverflowCommand(this, event.registrar()).register();
-            new SelectCommand(this, event.registrar()).register();
         });
     }
 

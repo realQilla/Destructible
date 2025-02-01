@@ -97,7 +97,6 @@ public class DRegistryHolder<K, V> extends ConcurrentHashMap<K, V> {
 
     public void subscribe(@NotNull RegistrySubscriber subscriber) {
         Preconditions.checkNotNull(subscriber, "Subscriber cannot be null");
-        System.out.println("Subscription made");
 
         synchronized(subscribers) {
             subscribers.add(subscriber);
@@ -115,7 +114,6 @@ public class DRegistryHolder<K, V> extends ConcurrentHashMap<K, V> {
     public void notifySubscriber() {
         synchronized(subscribers) {
             for(RegistrySubscriber subscriber : subscribers) {
-                System.out.println("Notified subscriber");
                 subscriber.onUpdate();
             }
         }

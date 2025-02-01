@@ -37,14 +37,14 @@ public class OverflowCommand {
                         .suggests((context, builder) -> {
                             String argument = builder.getRemaining();
 
-                            for(Player player : plugin.getServer().getOnlinePlayers() ) {
+                            for(Player player : plugin.getServer().getOnlinePlayers()) {
                                 String playerStr = player.getName();
                                 if(playerStr.regionMatches(true, 0, argument, 0, argument.length())) {
                                     builder.suggest(playerStr);
                                 }
                             }
                             return builder.buildFuture();
-                        })).build(), ALIAS);
+                        }).executes(this::openMenu)).build(), ALIAS);
     }
 
     private int openMenu(CommandContext<CommandSourceStack> context) {
@@ -59,18 +59,5 @@ public class OverflowCommand {
 
         playerData.newMenu(new OverflowMenu(plugin, playerData));
         return Command.SINGLE_SUCCESS;
-    }
-
-    private int openOtherMenu(CommandContext<CommandSourceStack> context) {
-        Player player = (Player) context.getSource().getSender();
-        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
-
-        if(playerData.hasCooldown(CooldownType.OPEN_MENU)) {
-            playerData.getPlayer().sendMessage("<red>Please wait a bit before accessing this menu.");
-            return 0;
-        }
-        playerData.hasCooldown(CooldownType.OPEN_MENU);
-
-        new OverflowMenu(plugin, playerData);
     }
 }
