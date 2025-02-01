@@ -1,6 +1,7 @@
 package net.qilla.destructible.command;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -18,6 +19,8 @@ public class OverflowCommand {
     private static final String COMMAND = "overflow";
     private static final List<String> ALIAS = List.of("o", "stash");
 
+    private static final String PLAYER = "player";
+
     private final Destructible plugin;
     private final Commands commands;
 
@@ -29,7 +32,19 @@ public class OverflowCommand {
     public void register() {
         this.commands.register(Commands.literal(COMMAND)
                 .requires(source -> source.getSender() instanceof Player)
-                .executes(this::openMenu).build(), ALIAS);
+                .executes(this::openMenu)
+                .then(Commands.argument(PLAYER, StringArgumentType.word())
+                        .suggests((context, builder) -> {
+                            String argument = builder.getRemaining();
+
+                            for(Player player : plugin.getServer().getOnlinePlayers() ) {
+                                String playerStr = player.getName();
+                                if(playerStr.regionMatches(true, 0, argument, 0, argument.length())) {
+                                    builder.suggest(playerStr);
+                                }
+                            }
+                            return builder.buildFuture();
+                        })).build(), ALIAS);
     }
 
     private int openMenu(CommandContext<CommandSourceStack> context) {
@@ -44,5 +59,18 @@ public class OverflowCommand {
 
         playerData.newMenu(new OverflowMenu(plugin, playerData));
         return Command.SINGLE_SUCCESS;
+    }
+
+    private int openOtherMenu(CommandContext<CommandSourceStack> context) {
+        Player player = (Player) context.getSource().getSender();
+        DPlayerData playerData = PLAYER_DATA_REGISTRY.getData(player);
+
+        if(playerData.hasCooldown(CooldownType.OPEN_MENU)) {
+            playerData.getPlayer().sendMessage("<red>Please wait a bit before accessing this menu.");
+            return 0;
+        }
+        playerData.hasCooldown(CooldownType.OPEN_MENU);
+
+        new OverflowMenu(plugin, playerData);
     }
 }

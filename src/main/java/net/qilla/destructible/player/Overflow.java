@@ -35,8 +35,10 @@ public class Overflow {
     }
 
     private void notifySubscribers() {
-        for(RegistrySubscriber subscriber : registrySubscribers) {
-            subscriber.onUpdate();
+        synchronized(registrySubscribers) {
+            for(RegistrySubscriber subscriber : registrySubscribers) {
+                subscriber.onUpdate();
+            }
         }
     }
 
@@ -69,6 +71,7 @@ public class Overflow {
                 return newValue;
             });
         }
+        this.notifySubscribers();
         return true;
     }
 
@@ -92,6 +95,7 @@ public class Overflow {
                 this.overflowItems.get(ID).subtractAmount(space);
                 itemStack.setAmount(space);
             }
+            this.notifySubscribers();
             return Optional.of(itemStack);
         }
     }
@@ -106,9 +110,11 @@ public class Overflow {
 
     public synchronized void remove(String itemID) {
         this.overflowItems.remove(itemID);
+        this.notifySubscribers();
     }
 
     public synchronized void clear() {
         this.overflowItems.clear();
+        this.notifySubscribers();
     }
 }

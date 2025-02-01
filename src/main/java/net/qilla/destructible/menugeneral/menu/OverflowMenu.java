@@ -54,7 +54,7 @@ public class OverflowMenu extends QDynamicMenu<Map.Entry<String, OverflowEntry>>
 
     @Override
     public void onUpdate() {
-        ((DPlayerData) super.getPlayerData()).getOverflow().getOverflow();
+        super.updateItemPopulation(((DPlayerData) super.getPlayerData()).getOverflow().getOverflow());
     }
 
     @Override
